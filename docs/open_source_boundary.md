@@ -1,0 +1,71 @@
+# STIR-Core Open Source Boundary
+
+## What Is Open Source (This Repository)
+
+The following components are released under the MIT License:
+
+| Component              | Description                                       |
+|------------------------|---------------------------------------------------|
+| STIR-Core format spec  | YAML schema and field definitions                 |
+| Example documents      | Sample STIR-Core Lite YAML files                  |
+| Core parser            | YAML loading and validation                       |
+| Core operators         | Deterministic distance and intersection functions |
+| Core runner            | Auto-detection and execution of spatial tasks     |
+| Lite normalizer        | Basic extraction of measurements from LLM output  |
+| Simple evaluator       | Comparison of LLM output against Core ground truth |
+
+These components are sufficient for:
+
+- Understanding the STIR format
+- Building STIR-compatible tools
+- Evaluating LLM spatial reasoning
+- Academic research on spatial task representation
+
+---
+
+## What Is NOT Open Source
+
+The following components are **not** included in this repository
+and are **not** covered by the MIT License:
+
+| Component                   | Status          |
+|-----------------------------|-----------------|
+| Full STIR Runtime           | Proprietary     |
+| UAV Rule Pack               | Proprietary     |
+| Real-world data connectors  | Proprietary     |
+| Audit / review backend      | Proprietary     |
+| Customer case studies       | Proprietary     |
+| Failure sample library      | Proprietary     |
+| Production normalizer       | Proprietary     |
+
+---
+
+## Why This Boundary Exists
+
+STIR-Core is the **format**. It defines how spatial tasks are expressed
+for LLMs. The business logic — domain-specific rules, data pipelines, audit
+trails, and production infrastructure — is separate and not part of the
+open source release.
+
+This separation:
+
+1. **Keeps Core light.** No database drivers, no API gateways, no complex
+   deployment configs.
+2. **Protects commercial value.** The heavy engineering is in the platform,
+   not the format.
+3. **Encourages adoption.** Anyone can build tools that read/write STIR
+   without licensing friction.
+4. **Prevents confusion.** Users know exactly what they get and what they
+   don't.
+
+---
+
+## Using STIR-Core
+
+If you build a tool that reads or writes STIR-Core format:
+
+- You are welcome to use the open source parser and operators.
+- You may extend the format with your own object types and operators.
+- You do not need to open source your extensions.
+
+Attribution is appreciated but not required by the MIT License.

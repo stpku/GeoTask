@@ -1,7 +1,9 @@
+# DEPRECATED: This file uses the old 'stir' top-level field for backward compatibility.
+# New documents should use 'geotask' field — see examples/geotask_core_lite.yaml
 stir:
   version: "0.1-lite"
-  name: "STIR-Core"
-  goal: "LLM-readable spatial task representation"
+  name: "STIR-Core (deprecated — use GeoTask Core)"
+  goal: "LLM-readable spatial task representation (legacy)"
 
 space:
   crs: "local_xy_m"

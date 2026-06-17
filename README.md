@@ -1,22 +1,27 @@
-# STIR-Core
+# GeoTask Core
 
 **Lightweight spatial task representation for LLMs.**
 
-STIR-Core 是一种面向大模型的轻量级空间任务表达格式，让大模型能够理解空间对象、
+GeoTask Core 是一种面向大模型的轻量级空间任务表达格式，让大模型能够理解空间对象、
 空间关系和计算任务，并能被本地确定性算子验证。
 
-> **STIR-Core only defines a lightweight spatial task representation.**
+> **GeoTask Core only defines a lightweight spatial task representation.**
 > Heavy audit, domain-specific rule packs, data connectors, and business
 > workflows should live outside the Core.
 
-> **STIR-Core 只定义轻量空间任务表达。审计、行业规则包、数据连接器和业务流程不属于 Core。**
+> **GeoTask Core 只定义轻量空间任务表达。审计、行业规则包、数据连接器和业务流程不属于 Core。**
+
+> **Migration note**: STIR was the original prototype name. The project has been
+> renamed to GeoTask to better communicate its purpose: representing spatial
+> tasks for LLMs. Old `stir` CLI and `stir:` YAML field are temporarily
+> supported but deprecated. See [MIGRATION.md](MIGRATION.md).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 
 ---
 
-## What STIR-Core Is
+## What GeoTask Core Is
 
 - A **human-readable and LLM-readable YAML format** for describing spatial objects,
   spatial operations, and spatial tasks.
@@ -24,41 +29,41 @@ STIR-Core 是一种面向大模型的轻量级空间任务表达格式，让大�
 - A **lightweight normalizer** that extracts structured results from unstructured
   LLM text output.
 
-## What STIR-Core Is NOT
+## What GeoTask Core Is NOT
 
 - ❌ **Not a GeoJSON replacement.** GeoJSON is a data interchange format for
-  geographic features. STIR-Core is a task representation format that includes
+  geographic features. GeoTask Core is a task representation format that includes
   operations, questions, and verification.
-- ❌ **Not a drone / UAV system.** STIR-UAV is a separate domain-specific rule
-  pack built on top of STIR-Core.
-- ❌ **Not a heavy audit platform.** STIR-Audit is a separate component for
+- ❌ **Not a drone / UAV system.** GeoTask UAV is a separate domain-specific rule
+  pack built on top of GeoTask Core.
+- ❌ **Not a heavy audit platform.** GeoTask Audit is a separate component for
   provenance tracking and compliance verification.
 - ❌ **Not a GIS library.** No PostGIS, GDAL, Shapely, or GeoPandas. The only
   dependency beyond stdlib is PyYAML.
 
-## Relationship to Other STIR Components
+## Relationship to Other GeoTask Components
 
 ```
 ┌──────────────────────────────────────────┐
-│              STIR-Audit                   │  ← Provenance, compliance, heavy audit
+│              GeoTask Audit                │  ← Provenance, compliance, heavy audit
 ├──────────────────────────────────────────┤
-│  STIR-UAV     │  STIR-Eval               │  ← Domain rule packs, evaluation
+│  GeoTask UAV   │  GeoTask Eval           │  ← Domain rule packs, evaluation
 ├───────────────┴──────────────────────────┤
-│            STIR-Core (this repo)         │  ← Format + minimal runtime
+│          GeoTask Core (this repo)        │  ← Format + minimal runtime
 └──────────────────────────────────────────┘
 ```
 
-- **STIR-Core**: The format. Self-contained, minimal, verifiable.
-- **STIR-Eval**: Evaluates LLM outputs against Core ground truth.
-- **STIR-UAV**: Domain-specific rule packs and object libraries for UAV operations.
-- **STIR-Audit**: Provenance tracking, audit trails, output contracts.
+- **GeoTask Core**: The format. Self-contained, minimal, verifiable.
+- **GeoTask Eval**: Evaluates LLM outputs against Core ground truth.
+- **GeoTask UAV**: Domain-specific rule packs and object libraries for UAV operations.
+- **GeoTask Audit**: Provenance tracking, audit trails, output contracts.
 
 ## Quick Start
 
 ```bash
 # Clone
-git clone https://gitee.com/stpku/stir-core.git
-cd stir-core
+git clone https://gitee.com/stpku/GeoTask.git
+cd geotask
 
 # Install in development mode
 pip install -e .
@@ -68,18 +73,18 @@ pip install pytest  # for tests
 pytest
 
 # CLI examples
-stir validate examples/stir_core_lite.yaml
-stir run examples/stir_core_lite.yaml
-stir normalize examples/deepseek_output_sample.txt
+geotask validate examples/geotask_core_lite.yaml
+geotask run examples/geotask_core_lite.yaml
+geotask normalize examples/deepseek_output_sample.txt
 ```
 
 ## Example Input
 
 ```yaml
-# examples/stir_core_lite.yaml
-stir:
+# examples/geotask_core_lite.yaml
+geotask:
   version: "0.1-lite"
-  name: "STIR-Core"
+  name: "GeoTask Core"
   goal: "LLM-readable spatial task representation"
 
 space:
@@ -118,7 +123,7 @@ task:
 ## Example Output
 
 ```bash
-$ stir run examples/stir_core_lite.yaml
+$ geotask run examples/geotask_core_lite.yaml
 ```
 
 ```yaml
@@ -148,31 +153,31 @@ verified_by:
 ## CLI Usage
 
 ```bash
-# Validate a STIR document
-stir validate examples/stir_core_lite.yaml
+# Validate a GeoTask document
+geotask validate examples/geotask_core_lite.yaml
 
-# Run a STIR document (validate + execute)
-stir run examples/stir_core_lite.yaml
+# Run a GeoTask document (validate + execute)
+geotask run examples/geotask_core_lite.yaml
 
 # Normalize LLM output into structured format
-stir normalize examples/deepseek_output_sample.txt
+geotask normalize examples/deepseek_output_sample.txt
 
 # Also works with python -m
-python -m stir_core.cli validate examples/stir_core_lite.yaml
-python -m stir_core.cli run examples/stir_core_lite.yaml
-python -m stir_core.cli normalize examples/deepseek_output_sample.txt
+python -m geotask_core.cli validate examples/geotask_core_lite.yaml
+python -m geotask_core.cli run examples/geotask_core_lite.yaml
+python -m geotask_core.cli normalize examples/deepseek_output_sample.txt
 ```
 
-## STIR-Eval Lite
+## GeoTask Eval Lite
 
-STIR-Eval Lite compares deterministic STIR-Core results with normalized LLM outputs.
+GeoTask Eval Lite compares deterministic GeoTask Core results with normalized LLM outputs.
 
-> STIR-Eval Lite 用于比较 STIR-Core 本地确定性结果与大模型输出归一化结果是否一致。
+> GeoTask Eval Lite 用于比较 GeoTask Core 本地确定性结果与大模型输出归一化结果是否一致。
 
 ```bash
 # Evaluate LLM output against Core ground truth
-stir eval examples/stir_core_lite.yaml examples/deepseek_output_sample.txt
-python -m stir_core.cli eval examples/stir_core_lite.yaml examples/deepseek_output_sample.txt
+geotask eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt
+python -m geotask_core.cli eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt
 ```
 
 **Scoring rubric** (100 points total):
@@ -230,7 +235,7 @@ See [`docs/eval_spec.md`](docs/eval_spec.md) for the full evaluation specificati
 ## Architecture
 
 ```
-src/stir_core/
+src/geotask_core/
 ├── __init__.py      # Package init
 ├── models.py        # Dataclasses: PointObject, LineObject, RectObject, StirDocument
 ├── parser.py        # YAML loader + validator
@@ -256,17 +261,25 @@ See [`docs/design_principles.md`](docs/design_principles.md):
 See [`docs/open_source_boundary.md`](docs/open_source_boundary.md).
 
 **Open Source (this repo)**:
-- STIR-Core format spec and examples
+- GeoTask Core format spec and examples
 - Core parser, operators, runner, lite normalizer
 - Simple evaluator
 
 **Not Open Source**:
-- Full STIR Runtime
+- Full GeoTask Runtime
 - UAV Rule Pack
 - Real-world data connectors
 - Audit / review backend
 - Customer case studies
 - Failure sample library
+
+## From STIR to GeoTask
+
+STIR was the original prototype name. The project has been renamed to GeoTask
+to better communicate its purpose: representing spatial tasks for LLMs.
+
+Old `stir` CLI and `stir:` YAML top-level field are temporarily supported
+but deprecated. See [MIGRATION.md](MIGRATION.md) for migration guidance.
 
 ## License
 
@@ -279,4 +292,4 @@ not patent rights. See [`docs/patent_boundary.md`](docs/patent_boundary.md).
 
 ## Repository
 
-- **Gitee (Primary)**: [https://gitee.com/stpku/stir-core](https://gitee.com/stpku/stir-core)
+- **Gitee (Primary)**: [https://gitee.com/stpku/GeoTask](https://gitee.com/stpku/GeoTask)

@@ -1,7 +1,7 @@
-"""Lightweight data structures for STIR-Core.
+"""Lightweight data structures for GeoTask Core.
 
-These models represent spatial objects and the top-level STIR document.
-They are deliberately simple — no heavy inheritance, no ORM, no GIS frameworks.
+These models represent spatial objects and the top-level GeoTask document.
+They are deliberately simple -- no heavy inheritance, no ORM, no GIS frameworks.
 """
 
 from dataclasses import dataclass, field
@@ -20,7 +20,7 @@ class PointObject:
 class LineObject:
     """A 2D line segment defined by two or more points.
 
-    In STIR-Core v0.1-lite, only the first two points are used as a segment.
+    In GeoTask Core v0.1-lite, only the first two points are used as a segment.
     """
 
     name: str
@@ -37,7 +37,7 @@ class RectObject:
 
 @dataclass
 class StirDocument:
-    """Top-level STIR document after parsing."""
+    """Top-level GeoTask (formerly STIR) document after parsing."""
 
     version: str
     name: str

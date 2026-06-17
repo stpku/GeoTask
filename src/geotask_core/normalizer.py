@@ -1,11 +1,11 @@
-"""STIR-Normalizer v0.1: Extract structured measurements from LLM output.
+"""GeoTask Normalizer v0.1: Extract structured measurements from LLM output.
 
 This module takes unstructured natural language output from GPT / DeepSeek
 and attempts to extract spatial measurements into a structured format
 compatible with the runner output schema.
 
-It is deliberately simple — production-grade normalization should live
-outside STIR-Core.
+It is deliberately simple -- production-grade normalization should live
+outside GeoTask Core.
 """
 
 import re

@@ -1,24 +1,27 @@
-# STIR-Core Format Specification v0.1-lite
+# GeoTask Core Format Specification v0.1-lite
+
+> **Migration note**: The old top-level field `stir:` is still accepted for
+> backward compatibility but is deprecated. New documents should use `geotask:`.
 
 ## Top-Level Structure
 
-A STIR-Core document has five top-level sections:
+A GeoTask Core document has five top-level sections:
 
 ```yaml
-stir:       # Metadata about this STIR document
-space:      # Coordinate system and unit declaration
-objects:    # Spatial objects referenced in the task
-ops:        # Operations available (formula strings)
-task:       # Questions to answer
+geotask:     # Metadata about this GeoTask document
+space:       # Coordinate system and unit declaration
+objects:     # Spatial objects referenced in the task
+ops:         # Operations available (formula strings)
+task:        # Questions to answer
 ```
 
-### `stir`
+### `geotask`
 
 | Field     | Type   | Required | Description                  |
 |-----------|--------|----------|------------------------------|
 | version   | string | Yes      | Format version (e.g. "0.1-lite") |
 | name      | string | Yes      | Human-readable document name |
-| goal      | string | Yes      | Purpose of this STIR document |
+| goal      | string | Yes      | Purpose of this GeoTask document |
 
 ### `space`
 
@@ -35,7 +38,7 @@ A mapping from object name to object definition. See Object Types below.
 ### `ops`
 
 A mapping from operation name to a human-readable formula/description string.
-The Core runtime uses its own deterministic implementation — these strings
+The Core runtime uses its own deterministic implementation -- these strings
 are for LLM context only.
 
 ### `task`
@@ -99,6 +102,21 @@ Only the first two points of `line_points` are used as the segment.
 
 ---
 
+## Backward Compatibility
+
+The deprecated `stir` top-level field is still accepted:
+
+```yaml
+# Deprecated - use 'geotask' instead
+stir:
+  version: "0.1-lite"
+```
+
+When the old `stir` field is detected, validation passes but a deprecation
+warning is emitted. New documents should always use `geotask`.
+
+---
+
 ## Current Limitations (v0.1-lite)
 
 1. **2D only**. No Z/elevation coordinate.
@@ -107,7 +125,7 @@ Only the first two points of `line_points` are used as the segment.
 3. **Axis-aligned rectangles only**. No rotated bounding boxes.
 4. **Only three object types**: point, line (segment), rect.
 5. **Only two operators**: distance_2d, line_intersects_rect.
-6. **No task chaining**. Each STIR document is self-contained.
+6. **No task chaining**. Each GeoTask document is self-contained.
 7. **No CRS transforms**. All coordinates are assumed to be in a local
    Cartesian system.
 8. **No unit conversion**. All distances are in the declared space unit.
@@ -116,13 +134,13 @@ Only the first two points of `line_points` are used as the segment.
 
 ## Extensions
 
-The STIR specification supports extension through:
+The GeoTask specification supports extension through:
 
 - **Domain-specific rule packs**: Additional object types and operators
-  defined outside Core (e.g., STIR-UAV rule pack).
+  defined outside Core (e.g., GeoTask UAV rule pack).
 - **Custom task fields**: The `task` section may include additional fields
   (e.g., `constraints`, `priority_policy`) ignored by the Core runner.
 - **Audit scaffolding**: Provenance and source references can be layered on
-  top of Core by external systems (e.g., STIR-Audit).
+  top of Core by external systems (e.g., GeoTask Audit).
 
 Extensions must not break Core parser compatibility.

@@ -1,4 +1,4 @@
-"""Tests for STIR-Core runner."""
+"""Tests for GeoTask Core runner."""
 
 import math
 import sys
@@ -6,8 +6,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from stir_core.parser import load_stir
-from stir_core.runner import run_stir
+from geotask_core.parser import load_geotask
+from geotask_core.runner import run_geotask, run_stir
 
 
 EXAMPLES_DIR = Path(__file__).resolve().parent.parent / "examples"
@@ -15,8 +15,8 @@ EXAMPLES_DIR = Path(__file__).resolve().parent.parent / "examples"
 
 def test_runner_outputs_distance():
     """Runner outputs takeoff_to_school_distance: 144.22."""
-    data = load_stir(EXAMPLES_DIR / "stir_core_lite.yaml")
-    result = run_stir(data)
+    data = load_geotask(EXAMPLES_DIR / "geotask_core_lite.yaml")
+    result = run_geotask(data)
 
     dist_entry = None
     for m in result["measurements"]:
@@ -32,8 +32,8 @@ def test_runner_outputs_distance():
 
 def test_runner_outputs_intersection_true():
     """Runner outputs route_intersects_zone: true."""
-    data = load_stir(EXAMPLES_DIR / "stir_core_lite.yaml")
-    result = run_stir(data)
+    data = load_geotask(EXAMPLES_DIR / "geotask_core_lite.yaml")
+    result = run_geotask(data)
 
     intersect_entry = None
     for m in result["measurements"]:
@@ -48,8 +48,8 @@ def test_runner_outputs_intersection_true():
 
 def test_runner_has_verified_by():
     """Runner output includes verified_by entries for both ops."""
-    data = load_stir(EXAMPLES_DIR / "stir_core_lite.yaml")
-    result = run_stir(data)
+    data = load_geotask(EXAMPLES_DIR / "geotask_core_lite.yaml")
+    result = run_geotask(data)
 
     ops = [v["operation"] for v in result["verified_by"]]
     assert "distance_2d" in ops
@@ -58,8 +58,8 @@ def test_runner_has_verified_by():
 
 def test_runner_conclusion_contains_summary():
     """Runner conclusion has a summary string."""
-    data = load_stir(EXAMPLES_DIR / "stir_core_lite.yaml")
-    result = run_stir(data)
+    data = load_geotask(EXAMPLES_DIR / "geotask_core_lite.yaml")
+    result = run_geotask(data)
 
     assert "summary" in result["conclusion"]
     assert "144.22" in result["conclusion"]["summary"]
@@ -70,7 +70,7 @@ def test_runner_conclusion_contains_summary():
 def test_runner_no_matching_objects_empty():
     """Runner returns empty measurements when no known objects exist."""
     data = {
-        "stir": {"version": "0.1", "name": "test", "goal": "test"},
+        "geotask": {"version": "0.1", "name": "test", "goal": "test"},
         "space": {"crs": "local", "unit": "meter", "axes": {"x": "east", "y": "north"}},
         "objects": {
             "x": {"type": "point", "xy": [1, 2]},
@@ -78,6 +78,14 @@ def test_runner_no_matching_objects_empty():
         "ops": {},
         "task": {},
     }
-    result = run_stir(data)
+    result = run_geotask(data)
     assert result["measurements"] == []
     assert "no measurements" in result["conclusion"]["summary"]
+
+
+def test_old_run_stir_alias_works():
+    """Old run_stir alias still functions."""
+    data = load_geotask(EXAMPLES_DIR / "geotask_core_lite.yaml")
+    result = run_stir(data)
+    assert len(result["measurements"]) == 2
+    assert "144.22" in result["conclusion"]["summary"]

@@ -1,28 +1,28 @@
-# STIR-Eval Lite v0.1 Specification
+# GeoTask Eval Lite v0.1 Specification
 
-## What Is STIR-Eval Lite
+## What Is GeoTask Eval Lite
 
-STIR-Eval Lite is a **validation layer** that compares deterministic STIR-Core
+GeoTask Eval Lite is a **validation layer** that compares deterministic GeoTask Core
 results with normalized LLM outputs. It answers the question:
 
 > "Did the LLM get the right answer?"
 
-It does **not** extend the STIR-Core format. It is a consumer of Core output.
+It does **not** extend the GeoTask Core format. It is a consumer of Core output.
 
-> **STIR-Eval is a validation layer, not part of the STIR-Core format itself.**
+> **GeoTask Eval is a validation layer, not part of the GeoTask Core format itself.**
 
-> STIR-Eval 是验证层，不属于 STIR-Core 格式本体。
+> GeoTask Eval 是验证层，不属于 GeoTask Core 格式本体。
 
 ---
 
 ## Inputs
 
-STIR-Eval takes two inputs:
+GeoTask Eval takes two inputs:
 
-1. **Core result** (`dict`): Output from `runner.run_stir()` — the deterministic
+1. **Core result** (`dict`): Output from `runner.run_geotask()` -- the deterministic
    ground truth computed by local operators.
 
-2. **Normalized output** (`dict`): Output from `normalizer.normalize_model_output()` —
+2. **Normalized output** (`dict`): Output from `normalizer.normalize_model_output()` --
    the LLM's answer extracted and structured into the measurement format.
 
 Both inputs share a common measurement schema (name, value, unit, verified_by).
@@ -31,7 +31,7 @@ Both inputs share a common measurement schema (name, value, unit, verified_by).
 
 ## Output
 
-STIR-Eval produces a machine-readable score dict:
+GeoTask Eval produces a machine-readable score dict:
 
 ```yaml
 score:
@@ -89,9 +89,9 @@ Total possible: **100 points**.
 
 - Expected: `core_result.conclusion.external_data_used`
 - Actual: `normalized_output.conclusion.external_data_used`
-- If missing from normalized output → warning (`external_data_used_missing_assumed_false`),
+- If missing from normalized output -> warning (`external_data_used_missing_assumed_false`),
   assumed `false`, no point deduction
-- If present but different → error, -5 points
+- If present but different -> error, -5 points
 
 ---
 
@@ -140,7 +140,7 @@ These limitations are intentional for v0.1. Future versions may add:
 ## Example
 
 ```bash
-$ stir eval examples/stir_core_lite.yaml examples/deepseek_output_sample.txt
+$ geotask eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt
 ```
 
 ```yaml
@@ -178,4 +178,4 @@ Separating them means:
 1. The format can evolve independently of scoring rules.
 2. Different evaluators (human review, automated, weighted) can be built
    without changing Core.
-3. Core stays minimal — no scoring logic, no rubric engine, no aggregation.
+3. Core stays minimal -- no scoring logic, no rubric engine, no aggregation.

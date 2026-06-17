@@ -168,6 +168,24 @@ python -m geotask_core.cli run examples/geotask_core_lite.yaml
 python -m geotask_core.cli normalize examples/deepseek_output_sample.txt
 ```
 
+## GeoTask Normalizer
+
+GeoTask Normalizer converts model outputs (natural language, YAML-like, Markdown)
+into structured GeoTask Results and verifies them against local deterministic operators.
+
+```bash
+# Extract only (without verification)
+geotask normalize examples/deepseek_output_sample.txt
+
+# Extract + verify against GeoTask Core ground truth
+geotask normalize examples/model_outputs/deepseek_cn.md --geotask examples/geotask_core_lite.yaml
+```
+
+Output includes `verified` / `contradicted` / `need_review` status for each measurement,
+along with expected values and differences for numeric checks.
+
+> GeoTask Normalizer 将模型输出归一化为统一 GeoTask Result，并用本地确定性算子验证。
+
 ## GeoTask Eval Lite
 
 GeoTask Eval Lite compares deterministic GeoTask Core results with normalized LLM outputs.

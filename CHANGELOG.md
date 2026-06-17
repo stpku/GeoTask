@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0-dev
+
+- Add GeoTask Normalizer v0.2 with enhanced extraction (CN/EN/YAML/Markdown).
+- Add local Verifier for normalized model outputs.
+- Add verified / contradicted / need_review statuses.
+- Add CLI --geotask flag for normalize command.
+- Add model output examples (DeepSeek CN, GPT YAML-like, Markdown, error cases).
+- Add result_schema.py with status constants and builder functions.
+- Add docs: normalizer_v0_2_design.md, patent_normalizer_disclosure.md.
+
 ## 0.1.0
 
 - Rename project from STIR to GeoTask.

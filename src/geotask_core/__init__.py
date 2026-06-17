@@ -12,6 +12,13 @@ from geotask_core.ops import distance_2d, line_intersects_rect
 from geotask_core.runner import run_geotask, run_stir
 from geotask_core.normalizer import normalize_model_output
 from geotask_core.evaluator import evaluate_model_output
+from geotask_core.verifier import verify_normalized_result
+from geotask_core.result_schema import (
+    STATUS_VERIFIED,
+    STATUS_CONTRADICTED,
+    STATUS_NEED_REVIEW,
+    STATUS_EXTRACTED,
+)
 
 __all__ = [
     "__version__",
@@ -29,4 +36,9 @@ __all__ = [
     "run_stir",
     "normalize_model_output",
     "evaluate_model_output",
+    "verify_normalized_result",
+    "STATUS_VERIFIED",
+    "STATUS_CONTRADICTED",
+    "STATUS_NEED_REVIEW",
+    "STATUS_EXTRACTED",
 ]

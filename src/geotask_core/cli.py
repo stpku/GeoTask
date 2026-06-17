@@ -3,11 +3,11 @@
 Usage:
     geotask validate <file.yaml>
     geotask run <file.yaml>
-    geotask normalize <file.txt>
+    geotask normalize <file.txt> [--geotask <file.yaml>]
     geotask eval <file.yaml> <model_output.txt>
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
-    python -m geotask_core.cli normalize <file.txt>
+    python -m geotask_core.cli normalize <file.txt> [--geotask <file.yaml>]
     python -m geotask_core.cli eval <file.yaml> <model_output.txt>
 
 The old `stir` CLI command is deprecated but still works as an alias.
@@ -61,11 +61,23 @@ def cmd_run(path: str):
     return result
 
 
-def cmd_normalize(path: str):
-    """Normalize an LLM output file."""
-    print(f"[normalize] {path}")
+def cmd_normalize(path: str, geotask_path: str | None = None):
+    """Normalize an LLM output file, optionally verifying against a GeoTask document."""
+    if geotask_path:
+        print(f"[normalize + verify] model={path}  geotask={geotask_path}")
+        geotask_data = load_geotask(geotask_path)
+        errors = validate_geotask(geotask_data)
+        if errors:
+            print(f"  GeoTask validation FAILED ({len(errors)} error(s)):")
+            for e in errors:
+                print(f"    - {e}")
+            sys.exit(1)
+    else:
+        print(f"[normalize] {path}")
+        geotask_data = None
+
     text = Path(path).read_text(encoding="utf-8")
-    result = normalize_model_output(text)
+    result = normalize_model_output(text, geotask_data=geotask_data)
     print_result(result)
     return result
 
@@ -103,24 +115,34 @@ def print_result(result: dict):
     print(yaml.dump(result, allow_unicode=True, default_flow_style=False, sort_keys=False))
 
 
+def _parse_geotask_flag(args: list[str]) -> tuple[str | None, int]:
+    """Parse --geotask <path> from args. Returns (path, consumed_count)."""
+    for i, arg in enumerate(args):
+        if arg == "--geotask" and i + 1 < len(args):
+            return args[i + 1], 2
+    return None, 0
+
+
 def main():
     cmd_name = _get_command_name()
     if cmd_name == "stir":
         print("Warning: 'stir' command is deprecated. Please use 'geotask' instead.", file=sys.stderr)
 
     if len(sys.argv) < 3:
-        print(f"Usage: {cmd_name} <command> <file> [<file2>]")
+        print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
         print("Commands: validate, run, normalize, eval")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
         print(f"  {cmd_name} run examples/geotask_core_lite.yaml")
         print(f"  {cmd_name} normalize examples/deepseek_output_sample.txt")
+        print(f"  {cmd_name} normalize examples/model_outputs/deepseek_cn.md --geotask examples/geotask_core_lite.yaml")
         print(f"  {cmd_name} eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt")
         print()
         print(f"  python -m geotask_core.cli validate examples/geotask_core_lite.yaml")
         print(f"  python -m geotask_core.cli run examples/geotask_core_lite.yaml")
         print(f"  python -m geotask_core.cli normalize examples/deepseek_output_sample.txt")
+        print(f"  python -m geotask_core.cli normalize examples/model_outputs/deepseek_cn.md --geotask examples/geotask_core_lite.yaml")
         print(f"  python -m geotask_core.cli eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt")
         print(f"")
         print(f"Backward compatibility: the old 'stir' YAML field and 'stir' CLI are accepted but deprecated.")
@@ -138,10 +160,16 @@ def main():
 
     path = sys.argv[2]
 
+    # normalize supports optional --geotask flag
+    if command == "normalize":
+        remaining = sys.argv[3:]
+        geotask_path, consumed = _parse_geotask_flag(remaining)
+        cmd_normalize(path, geotask_path=geotask_path)
+        return
+
     commands = {
         "validate": cmd_validate,
         "run": cmd_run,
-        "normalize": cmd_normalize,
     }
 
     if command not in commands:

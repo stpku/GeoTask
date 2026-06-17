@@ -1,6 +1,6 @@
-# STIR-Eval v0.1 — Expected evaluation result for the DeepSeek sample
+# GeoTask Eval v0.1 -- Expected evaluation result for the DeepSeek sample
 # This file documents the expected output when evaluating
-# examples/deepseek_output_sample.txt against examples/stir_core_lite.yaml
+# examples/deepseek_output_sample.txt against examples/geotask_core_lite.yaml
 
 score:
   total: 100

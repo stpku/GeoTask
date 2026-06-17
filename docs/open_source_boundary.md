@@ -1,4 +1,4 @@
-# STIR-Core Open Source Boundary
+# GeoTask Core Open Source Boundary
 
 ## What Is Open Source (This Repository)
 
@@ -6,8 +6,8 @@ The following components are released under the MIT License:
 
 | Component              | Description                                       |
 |------------------------|---------------------------------------------------|
-| STIR-Core format spec  | YAML schema and field definitions                 |
-| Example documents      | Sample STIR-Core Lite YAML files                  |
+| GeoTask Core format spec | YAML schema and field definitions               |
+| Example documents      | Sample GeoTask Core Lite YAML files               |
 | Core parser            | YAML loading and validation                       |
 | Core operators         | Deterministic distance and intersection functions |
 | Core runner            | Auto-detection and execution of spatial tasks     |
@@ -16,8 +16,8 @@ The following components are released under the MIT License:
 
 These components are sufficient for:
 
-- Understanding the STIR format
-- Building STIR-compatible tools
+- Understanding the GeoTask format
+- Building GeoTask-compatible tools
 - Evaluating LLM spatial reasoning
 - Academic research on spatial task representation
 
@@ -30,7 +30,7 @@ and are **not** covered by the MIT License:
 
 | Component                   | Status          |
 |-----------------------------|-----------------|
-| Full STIR Runtime           | Proprietary     |
+| Full GeoTask Runtime        | Proprietary     |
 | UAV Rule Pack               | Proprietary     |
 | Real-world data connectors  | Proprietary     |
 | Audit / review backend      | Proprietary     |
@@ -42,9 +42,9 @@ and are **not** covered by the MIT License:
 
 ## Why This Boundary Exists
 
-STIR-Core is the **format**. It defines how spatial tasks are expressed
-for LLMs. The business logic — domain-specific rules, data pipelines, audit
-trails, and production infrastructure — is separate and not part of the
+GeoTask Core is the **format**. It defines how spatial tasks are expressed
+for LLMs. The business logic -- domain-specific rules, data pipelines, audit
+trails, and production infrastructure -- is separate and not part of the
 open source release.
 
 This separation:
@@ -53,16 +53,16 @@ This separation:
    deployment configs.
 2. **Protects commercial value.** The heavy engineering is in the platform,
    not the format.
-3. **Encourages adoption.** Anyone can build tools that read/write STIR
+3. **Encourages adoption.** Anyone can build tools that read/write GeoTask
    without licensing friction.
 4. **Prevents confusion.** Users know exactly what they get and what they
    don't.
 
 ---
 
-## Using STIR-Core
+## Using GeoTask Core
 
-If you build a tool that reads or writes STIR-Core format:
+If you build a tool that reads or writes GeoTask Core format:
 
 - You are welcome to use the open source parser and operators.
 - You may extend the format with your own object types and operators.

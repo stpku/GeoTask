@@ -1,7 +1,7 @@
-"""STIR-Eval v0.1: Compare STIR-Core ground truth with LLM normalized output.
+"""GeoTask Eval v0.1: Compare GeoTask Core ground truth with LLM normalized output.
 
 This module provides a simple evaluator that:
-1. Compares deterministic STIR-Core results with normalized LLM outputs
+1. Compares deterministic GeoTask Core results with normalized LLM outputs
 2. Applies a fixed 100-point scoring rubric
 3. Produces a machine-readable score dict with errors and warnings
 
@@ -17,10 +17,10 @@ def evaluate_model_output(
     normalized_output: dict,
     tolerance: float = 0.01,
 ) -> dict:
-    """Evaluate normalized LLM output against STIR-Core ground truth.
+    """Evaluate normalized LLM output against GeoTask Core ground truth.
 
     Args:
-        core_result: Output from runner.run_stir() — treated as ground truth.
+        core_result: Output from runner.run_geotask() -- treated as ground truth.
         normalized_output: Output from normalizer.normalize_model_output().
         tolerance: Absolute tolerance for float comparison (default 0.01).
 

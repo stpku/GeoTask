@@ -1,4 +1,4 @@
-"""Deterministic spatial operators for STIR-Core.
+"""Deterministic spatial operators for GeoTask Core.
 
 These are the *only* computational operations in Core.
 All values computed here are verifiable without an LLM.
@@ -69,7 +69,7 @@ def line_intersects_rect(
 ) -> bool:
     """Check if a 2D line segment intersects an axis-aligned rectangle.
 
-    In STIR-Core v0.1-lite, only the first two points of line_points
+    In GeoTask Core v0.1-lite, only the first two points of line_points
     are used as the line segment.
 
     Boundary contact is considered intersection.

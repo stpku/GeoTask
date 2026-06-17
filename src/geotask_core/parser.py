@@ -1,4 +1,4 @@
-"""YAML parser and validator for STIR-Core Lite documents."""
+"""YAML parser and validator for GeoTask Core Lite documents."""
 
 from pathlib import Path
 from typing import Union
@@ -6,14 +6,14 @@ from typing import Union
 import yaml
 
 
-def load_stir(path: Union[str, Path]) -> dict:
-    """Load a STIR YAML file and return the parsed dict.
+def load_geotask(path: Union[str, Path]) -> dict:
+    """Load a GeoTask YAML file and return the parsed dict.
 
     Args:
         path: Path to a .yaml file.
 
     Returns:
-        Parsed dict with keys: stir, space, objects, ops, task.
+        Parsed dict with keys: geotask (or stir), space, objects, ops, task.
 
     Raises:
         FileNotFoundError: If the file does not exist.
@@ -21,15 +21,19 @@ def load_stir(path: Union[str, Path]) -> dict:
     """
     path = Path(path)
     if not path.exists():
-        raise FileNotFoundError(f"STIR file not found: {path}")
+        raise FileNotFoundError(f"GeoTask file not found: {path}")
 
     with open(path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
 
     if data is None:
-        raise ValueError(f"STIR file is empty or invalid: {path}")
+        raise ValueError(f"GeoTask file is empty or invalid: {path}")
 
     return data
+
+
+# Deprecated alias for backward compatibility
+load_stir = load_geotask
 
 
 def _validate_objects(objects: dict) -> list[str]:
@@ -91,35 +95,54 @@ def _validate_objects(objects: dict) -> list[str]:
     return errors
 
 
-def validate_stir(data: dict) -> list[str]:
-    """Validate a STIR document dict. Returns a list of error messages.
+def validate_geotask(data: dict) -> list[str]:
+    """Validate a GeoTask document dict. Returns a list of error messages.
 
     An empty list means the document is valid.
 
     Checks performed:
-      - Top-level keys: stir, space, objects, ops, task
-      - stir section: version, name, goal
+      - Top-level keys: geotask (or stir for backward compat), space, objects, ops, task
+      - geotask/stir section: version, name, goal
       - objects: valid types and required fields
+
+    Backward compatibility: the old 'stir' top-level key is accepted
+    but triggers a deprecation warning in CLI output.
     """
     errors = []
 
-    # Check top-level keys
-    required_keys = ["stir", "space", "objects", "ops", "task"]
-    for key in required_keys:
+    # Check top-level keys -- accept either 'geotask' (preferred) or 'stir' (deprecated)
+    has_geotask = "geotask" in data
+    has_stir = "stir" in data
+
+    if not has_geotask and not has_stir:
+        errors.append("missing top-level key: 'geotask' (or deprecated 'stir')")
+
+    # Validate metadata section (geotask or stir)
+    meta_key = "geotask" if has_geotask else "stir"
+    if has_stir and not has_geotask:
+        # Only old 'stir' field present -- accept but flag deprecated
+        data["_deprecated_stir_field"] = True
+
+    if meta_key in data and isinstance(data[meta_key], dict):
+        meta = data[meta_key]
+        for field in ["version", "name", "goal"]:
+            if field not in meta:
+                errors.append(f"'{meta_key}.{field}' is missing")
+    elif meta_key in data:
+        errors.append(f"'{meta_key}' must be a mapping (dict)")
+
+    # Check other required keys
+    other_keys = ["space", "objects", "ops", "task"]
+    for key in other_keys:
         if key not in data:
             errors.append(f"missing top-level key: '{key}'")
-
-    # Validate stir section
-    if "stir" in data and isinstance(data["stir"], dict):
-        stir = data["stir"]
-        for field in ["version", "name", "goal"]:
-            if field not in stir:
-                errors.append(f"'stir.{field}' is missing")
-    elif "stir" in data:
-        errors.append("'stir' must be a mapping (dict)")
 
     # Validate objects
     if "objects" in data:
         errors.extend(_validate_objects(data["objects"]))
 
     return errors
+
+
+# Deprecated alias for backward compatibility
+validate_stir = validate_geotask

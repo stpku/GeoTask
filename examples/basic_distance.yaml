@@ -1,6 +1,6 @@
-stir:
+geotask:
   version: "0.1-lite"
-  name: "STIR-Core"
+  name: "GeoTask Core"
   goal: "Basic distance example"
 
 space:

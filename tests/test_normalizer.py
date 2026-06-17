@@ -1,4 +1,4 @@
-"""Tests for STIR-Normalizer v0.1."""
+"""Tests for GeoTask Normalizer v0.1."""
 
 import math
 import sys
@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from stir_core.normalizer import normalize_model_output
+from geotask_core.normalizer import normalize_model_output
 
 
 EXAMPLES_DIR = Path(__file__).resolve().parent.parent / "examples"
@@ -68,7 +68,7 @@ def test_normalizer_no_need_review_for_complete_output():
     """Normalizer does not flag need_review when all fields extracted."""
     text = _load_sample()
     result = normalize_model_output(text)
-    # The DeepSeek sample should be complete enough — no need_review
+    # The DeepSeek sample should be complete enough -- no need_review
     # (Note: operator detection is fragile, so we only check that
     #  both measurements are present)
     assert len(result["measurements"]) >= 2

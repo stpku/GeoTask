@@ -1,18 +1,22 @@
-# STIR Patent Boundary
+# GeoTask Patent Boundary
 
 ## What Patents Cover
 
-STIR-related patents protect the **system and method**, not individual
+GeoTask-related patents protect the **system and method**, not individual
 data files or format strings:
 
 | Element                 | Patent Coverage                                       |
 |-------------------------|-------------------------------------------------------|
 | YAML file format        | **NOT** patentable (data format)                      |
 | Spatial task representation | Method for encoding spatial problems for LLM processing |
-| Object–operator–proposition binding | Linking objects, operations, and tasks in a verifiable structure |
+| Object-operator-proposition binding | Linking objects, operations, and tasks in a verifiable structure |
 | Agent orchestration     | Coordinating LLM agents for spatial reasoning            |
 | Deterministic verification | Running local operators to verify LLM outputs          |
 | Output normalization    | Extracting structured results from unstructured LLM text |
+
+**Important**: Patent documents should use neutral terminology such as
+"spatial task intermediate representation" rather than brand names.
+GeoTask is a brand name, not a patent term.
 
 ---
 
@@ -43,5 +47,5 @@ submitting.
 
 ## For Patent-Related Inquiries
 
-Contact the STIR maintainers through official channels. Do not discuss
+Contact the GeoTask maintainers through official channels. Do not discuss
 patent strategy in public issues or pull requests.

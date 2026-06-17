@@ -1,22 +1,22 @@
-"""Minimal STIR-Core runner.
+"""Minimal GeoTask Core runner.
 
-Executes spatial operations defined in a STIR document against
+Executes spatial operations defined in a GeoTask document against
 the declared objects. For v0.1-lite, the runner auto-detects
 well-known object names and computes the corresponding operations.
 """
 
-from stir_core.ops import distance_2d, line_intersects_rect
+from geotask_core.ops import distance_2d, line_intersects_rect
 
 
-def run_stir(data: dict) -> dict:
-    """Run spatial operations on a parsed STIR document.
+def run_geotask(data: dict) -> dict:
+    """Run spatial operations on a parsed GeoTask document.
 
     Auto-detects known object pairs:
-      - (takeoff, school) → distance_2d
-      - (route, zone) → line_intersects_rect
+      - (takeoff, school) -> distance_2d
+      - (route, zone) -> line_intersects_rect
 
     Args:
-        data: Parsed STIR dict (from parser.load_stir).
+        data: Parsed GeoTask dict (from parser.load_geotask).
 
     Returns:
         Dict with keys: measurements, conclusion, verified_by.
@@ -25,7 +25,7 @@ def run_stir(data: dict) -> dict:
     measurements = []
     verified_by = []
 
-    # Auto-detect: takeoff → school distance
+    # Auto-detect: takeoff -> school distance
     if "takeoff" in objects and "school" in objects:
         t = objects["takeoff"]
         s = objects["school"]
@@ -43,7 +43,7 @@ def run_stir(data: dict) -> dict:
                 "result": f"{val} meter",
             })
 
-    # Auto-detect: route ↔ zone intersection
+    # Auto-detect: route <-> zone intersection
     if "route" in objects and "zone" in objects:
         r = objects["route"]
         z = objects["zone"]
@@ -77,3 +77,7 @@ def run_stir(data: dict) -> dict:
         },
         "verified_by": verified_by,
     }
+
+
+# Deprecated alias for backward compatibility
+run_stir = run_geotask

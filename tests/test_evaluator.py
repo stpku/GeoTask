@@ -1,4 +1,4 @@
-"""Tests for STIR-Eval v0.1 evaluator — 100-point scoring rubric."""
+"""Tests for GeoTask Eval v0.1 evaluator -- 100-point scoring rubric."""
 
 import math
 import sys
@@ -9,10 +9,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from stir_core.evaluator import evaluate_model_output
-from stir_core.parser import load_stir
-from stir_core.runner import run_stir
-from stir_core.normalizer import normalize_model_output
+from geotask_core.evaluator import evaluate_model_output
+from geotask_core.parser import load_geotask
+from geotask_core.runner import run_geotask
+from geotask_core.normalizer import normalize_model_output
 
 
 EXAMPLES_DIR = Path(__file__).resolve().parent.parent / "examples"
@@ -82,8 +82,8 @@ def _make_norm(dist_val: Optional[float] = 144.22, intersect_val: Optional[bool]
 
 def test_eval_perfect_score_100():
     """DeepSeek sample should score 100."""
-    data = load_stir(EXAMPLES_DIR / "stir_core_lite.yaml")
-    core_result = run_stir(data)
+    data = load_geotask(EXAMPLES_DIR / "geotask_core_lite.yaml")
+    core_result = run_geotask(data)
     text = (EXAMPLES_DIR / "deepseek_output_sample.txt").read_text(encoding="utf-8")
     normalized = normalize_model_output(text)
 
@@ -99,7 +99,7 @@ def test_eval_perfect_score_100():
 # ── Distance mismatch ────────────────────────────────────────────────
 
 def test_eval_distance_mismatch():
-    """Wrong distance → total should be 60 (loss of 40)."""
+    """Wrong distance -> total should be 60 (loss of 40)."""
     core = _make_core(dist_val=144.22)
     norm = _make_norm(dist_val=999.0)
     result = evaluate_model_output(core, norm)
@@ -109,13 +109,13 @@ def test_eval_distance_mismatch():
 
 
 def test_eval_distance_missing():
-    """Missing distance in model → total = 45 (only intersection + ext_data, no ops)."""
+    """Missing distance in model -> total = 45 (only intersection + ext_data, no ops)."""
     core = _make_core(dist_val=144.22)
     norm = _make_norm(dist_val=None)
     result = evaluate_model_output(core, norm)
     # distance_match: false (0), intersection_match: true (40),
     # operator_match: false (distance_2d not in actual ops, 0),
-    # external_data_used_match: true (5) → 45
+    # external_data_used_match: true (5) -> 45
     assert result["score"]["total"] == 45
     assert result["score"]["distance_match"] == False
     assert "distance_value_missing" in result["errors"]
@@ -124,7 +124,7 @@ def test_eval_distance_missing():
 # ── Intersection mismatch ────────────────────────────────────────────
 
 def test_eval_intersection_mismatch():
-    """Wrong intersection → total = 60."""
+    """Wrong intersection -> total = 60."""
     core = _make_core(intersect_val=True)
     norm = _make_norm(intersect_val=False)
     result = evaluate_model_output(core, norm)
@@ -134,14 +134,14 @@ def test_eval_intersection_mismatch():
 
 
 def test_eval_intersection_missing():
-    """Missing intersection in model — ops also missing since no intersect op."""
+    """Missing intersection in model -- ops also missing since no intersect op."""
     # Core has both distance (144.22) and intersection (True)
     # Model has only distance (intersect_val=None)
     core = _make_core(dist_val=144.22, intersect_val=True)
     norm = _make_norm(dist_val=144.22, intersect_val=None)
     result = evaluate_model_output(core, norm)
     # distance: true (40), intersection: missing (0),
-    # operator: line_intersects_rect not in actual (0), ext_data: true (5) → 45
+    # operator: line_intersects_rect not in actual (0), ext_data: true (5) -> 45
     assert result["score"]["total"] == 45
     assert result["score"]["intersection_match"] == False
     assert "intersection_value_missing" in result["errors"]
@@ -150,7 +150,7 @@ def test_eval_intersection_missing():
 # ── Operator mismatch ────────────────────────────────────────────────
 
 def test_eval_operator_missing():
-    """Missing operator → total = 85 (loss of 15)."""
+    """Missing operator -> total = 85 (loss of 15)."""
     core = _make_core()
     norm = _make_norm(ops=["distance_2d"])  # only one op
     result = evaluate_model_output(core, norm)
@@ -160,7 +160,7 @@ def test_eval_operator_missing():
 
 
 def test_eval_operator_all_missing():
-    """No operators at all → total = 85."""
+    """No operators at all -> total = 85."""
     core = _make_core()
     norm = _make_norm(ops=[])
     result = evaluate_model_output(core, norm)
@@ -171,7 +171,7 @@ def test_eval_operator_all_missing():
 # ── external_data_used tests ─────────────────────────────────────────
 
 def test_eval_external_data_used_missing_warning():
-    """Missing external_data_used → warning, not error, still full score."""
+    """Missing external_data_used -> warning, not error, still full score."""
     core = _make_core()
     norm_raw = _make_norm()
     del norm_raw["conclusion"]["external_data_used"]
@@ -183,7 +183,7 @@ def test_eval_external_data_used_missing_warning():
 
 
 def test_eval_external_data_used_mismatch():
-    """external_data_used differs → -5 pts."""
+    """external_data_used differs -> -5 pts."""
     core = _make_core()
     norm = _make_norm(ext_data=True)
     result = evaluate_model_output(core, norm)
@@ -195,7 +195,7 @@ def test_eval_external_data_used_mismatch():
 # ── Multiple failures ────────────────────────────────────────────────
 
 def test_eval_all_wrong():
-    """Everything wrong → total = 0."""
+    """Everything wrong -> total = 0."""
     core = _make_core(dist_val=144.22, intersect_val=True)
     norm = _make_norm(dist_val=999.0, intersect_val=False, ops=[], ext_data=True)
     result = evaluate_model_output(core, norm)
@@ -206,7 +206,7 @@ def test_eval_all_wrong():
 # ── Float tolerance ──────────────────────────────────────────────────
 
 def test_eval_distance_within_tolerance():
-    """Distance within 0.01 tolerance → still 100."""
+    """Distance within 0.01 tolerance -> still 100."""
     core = _make_core(dist_val=144.22)
     norm = _make_norm(dist_val=144.225)  # diff = 0.005 < 0.01
     result = evaluate_model_output(core, norm)
@@ -215,7 +215,7 @@ def test_eval_distance_within_tolerance():
 
 
 def test_eval_distance_outside_tolerance():
-    """Distance outside 0.01 tolerance → -40."""
+    """Distance outside 0.01 tolerance -> -40."""
     core = _make_core(dist_val=144.22)
     norm = _make_norm(dist_val=144.24)  # diff = 0.02 > 0.01
     result = evaluate_model_output(core, norm)
@@ -250,8 +250,8 @@ def test_cli_eval_outputs_total_100():
     env = {**os.environ, "PYTHONPATH": str(Path(proj_root) / "src")}
     result = subprocess.run(
         [
-            sys.executable, "-m", "stir_core.cli", "eval",
-            str(EXAMPLES_DIR / "stir_core_lite.yaml"),
+            sys.executable, "-m", "geotask_core.cli", "eval",
+            str(EXAMPLES_DIR / "geotask_core_lite.yaml"),
             str(EXAMPLES_DIR / "deepseek_output_sample.txt"),
         ],
         capture_output=True,
@@ -268,29 +268,29 @@ def test_cli_eval_outputs_total_100():
 
 def test_existing_parser_still_works():
     """Parser tests can still be imported."""
-    from stir_core.parser import load_stir, validate_stir
-    data = load_stir(EXAMPLES_DIR / "stir_core_lite.yaml")
-    assert validate_stir(data) == []
+    from geotask_core.parser import load_geotask, validate_geotask
+    data = load_geotask(EXAMPLES_DIR / "geotask_core_lite.yaml")
+    assert validate_geotask(data) == []
 
 
 def test_existing_ops_still_works():
     """Ops still work."""
-    from stir_core.ops import distance_2d, line_intersects_rect
+    from geotask_core.ops import distance_2d, line_intersects_rect
     assert math.isclose(distance_2d([0, 0], [3, 4]), 5.0)
     assert line_intersects_rect([[-200, 0], [400, 0]], [250, -100, 350, 100]) == True
 
 
 def test_existing_runner_still_works():
     """Runner still works."""
-    from stir_core.runner import run_stir
-    data = load_stir(EXAMPLES_DIR / "stir_core_lite.yaml")
-    result = run_stir(data)
+    from geotask_core.runner import run_geotask
+    data = load_geotask(EXAMPLES_DIR / "geotask_core_lite.yaml")
+    result = run_geotask(data)
     assert len(result["measurements"]) == 2
 
 
 def test_existing_normalizer_still_works():
     """Normalizer still works."""
-    from stir_core.normalizer import normalize_model_output
+    from geotask_core.normalizer import normalize_model_output
     text = (EXAMPLES_DIR / "deepseek_output_sample.txt").read_text(encoding="utf-8")
     result = normalize_model_output(text)
     assert len(result["measurements"]) >= 2

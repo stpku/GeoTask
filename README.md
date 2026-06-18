@@ -276,6 +276,21 @@ pytest tests/test_core_normalizer_verifier_v0_3.py tests/test_ops_v0_3.py
 
 See [`docs/core_normalizer_verifier_v0_3.md`](docs/core_normalizer_verifier_v0_3.md) and `patent_evidence/08_core_v0_3/` for details.
 
+### How v0.3 Closes the v0.2 Boundary
+
+Benchmark v0.2 used a benchmark-local verifier (`benchmarks/encoding_v0_2/local_verifier.py`) for extended operator coverage. Core v0.3 backfills stable multi-operator capabilities into production `src/geotask_core/normalizer.py` and `verifier.py`, making the evidence directly traceable to the production system.
+
+> v0.3 将 v0.2 中稳定的多算子能力回灌到 production Core，关闭了 benchmark local verifier 的证据边界。
+
+### Attorney Delivery Files
+
+For patent counsel review:
+
+| File | Description |
+|------|-------------|
+| `patent_evidence/08_core_v0_3/core_v0_3_attorney_addendum.md` | Attorney-facing evidence summary |
+| `patent_evidence/08_core_v0_3/core_v0_3_delivery_note.md` | Evidence delivery instructions |
+
 ## Supported Object Types (v0.1-lite)
 
 | Type  | Fields               | Description                         |

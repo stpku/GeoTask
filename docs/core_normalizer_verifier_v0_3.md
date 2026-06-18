@@ -118,6 +118,18 @@ python -m geotask_core.cli normalize examples/deepseek_output_sample.txt \
 - Time format: HH:MM only
 - No polygon, 3D, or real map data support
 
+## How v0.3 Closes the v0.2 Local-Verifier Boundary
+
+In Benchmark v0.2, the 4 new operators were verified only through `benchmarks/encoding_v0_2/local_verifier.py` — a benchmark-layer utility, not the production GeoTask Core Normalizer or Verifier. This created an evidence boundary:
+
+- v0.1.1: 2 operators in production Core ✅
+- v0.2: 6 operators in benchmark, but only 2 in production Core ⚠️
+- v0.3: 6 operators in production Core ✅ (boundary closed)
+
+v0.3 backfills stable v0.2 capabilities into production `src/geotask_core/normalizer.py` and `verifier.py`, making the multi-operator evidence directly traceable to the claimed production system.
+
+> v0.3 将 v0.2 中稳定的多算子能力回灌到 production Core，使多算子证据可直接追溯到所主张的生产系统，关闭了 benchmark local verifier 的证据边界。
+
 ## Next Steps
 
 1. **v0.4**: Real LLM API benchmark using 24-case structure from v0.2

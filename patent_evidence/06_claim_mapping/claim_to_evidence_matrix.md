@@ -73,7 +73,10 @@ This matrix maps each patent technical feature (from the GeoTask system and meth
 
 ## v0.3 Core Backfill (NEW)
 
-v0.3 backfills stable v0.2 capabilities into production GeoTask Core:
+v0.3 backfills stable v0.2 capabilities into production GeoTask Core.
+
+> v0.3 closes the v0.2 local-verifier boundary by moving stable multi-operator normalization and verification capabilities into production GeoTask Core.
+> v0.3 通过将稳定的多算子归一化和验证能力迁移至生产级 GeoTask Core，关闭了 v0.2 的 benchmark local verifier 证据边界。
 
 | Patent Feature | v0.3 Production Evidence |
 |---------------|-------------------------|
@@ -85,6 +88,7 @@ v0.3 backfills stable v0.2 capabilities into production GeoTask Core:
 | Chinese negation | 不相交, 不包含 correctly detected |
 
 **Evidence**: `patent_evidence/08_core_v0_3/` | `tests/test_core_normalizer_verifier_v0_3.py`
+**Delivery**: `patent_evidence/08_core_v0_3/core_v0_3_attorney_addendum.md`
 
 ## v0.2 Evidence Extension
 

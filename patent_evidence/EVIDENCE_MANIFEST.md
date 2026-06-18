@@ -51,8 +51,13 @@ patent_evidence/
     ├── core_v0_3_capability_summary.md           # New capabilities in v0.3
     ├── core_v0_3_end_to_end_cases.md             # Production test case matrix
     ├── core_v0_3_claim_support_update.md         # v0.3 claim mapping
-    └── core_v0_3_boundary.md                     # Evidence boundary and limitations
+    ├── core_v0_3_boundary.md                     # Evidence boundary and limitations
+    ├── core_v0_3_attorney_addendum.md            # Attorney-facing v0.3 evidence summary (DELIVERY)
+    └── core_v0_3_delivery_note.md                # v0.3 delivery instructions (DELIVERY)
 ```
+
+**Evidence version**: `core-normalizer-verifier-v0.3`
+**Recommended tag**: `core-normalizer-verifier-v0.3`
 
 ---
 

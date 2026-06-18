@@ -41,8 +41,10 @@ v0.3 is the **production Core backfill** of capabilities demonstrated in Benchma
 
 ## Test Results
 
+**Branch**: `core/normalizer-verifier-v0.3` | **Commit**: `4669d29` | **Tag**: `core-normalizer-verifier-v0.3`
+
 ```bash
-pytest  # 363+ tests passing
+pytest  # 347/347 passed
 python benchmarks/encoding_v0_1/run_benchmark.py  # v0.1 unchanged
 python benchmarks/encoding_v0_2/run_benchmark.py  # v0.2 unchanged
 python -m geotask_core.cli validate examples/geotask_core_lite.yaml

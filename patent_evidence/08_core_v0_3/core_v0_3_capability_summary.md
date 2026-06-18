@@ -1,6 +1,14 @@
 # GeoTask Core Normalizer / Verifier v0.3 — Capability Summary
 
-## New Operators (v0.3 adds 4)
+**Branch**: `core/normalizer-verifier-v0.3` | **Commit**: `4669d29` | **Tag**: `core-normalizer-verifier-v0.3` | **Tests**: 347/347 passed
+
+## v0.3 as Production Core Backfill
+
+v0.3 closes the v0.2 benchmark-local-verifier boundary by backfilling stable multi-operator capabilities into production `src/geotask_core/normalizer.py` and `verifier.py`.
+
+> v0.3 将 v0.2 中稳定的多算子能力回灌到 production Core，关闭了 v0.2 中 benchmark 本地验证器的证据边界。
+
+## Supported Operators (v0.3 adds 4 to production Core)
 
 | Operator | v0.1/v0.2 | v0.3 Core | Description |
 |----------|-----------|-----------|-------------|

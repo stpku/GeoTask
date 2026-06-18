@@ -12,13 +12,14 @@
 
 ## What v0.3 Does NOT Prove
 
-❌ Real LLM accuracy — all tests use deterministic outputs.
+❌ Real LLM accuracy — all tests use deterministic simulated outputs.
 ❌ General NLP capability — normalizer uses regex patterns, not ML.
-❌ Complex GIS support — no polygon, 3D, or real map data.
+❌ Complex GIS support — no polygon, 3D, real coordinate systems, or real map data.
 ❌ External API integration — no map services, no data connectors.
 ❌ Statistical significance — end-to-end tests are functional, not inferential.
 ❌ Replacement for regulatory or human review — Core is a tool, not an authority.
 ❌ That benchmark v0.2 is obsolete — v0.2 provides broader structural coverage (24 cases).
+❌ Live LLM API evaluation — no real model APIs are called; all outputs are deterministic.
 
 ## Relationship to v0.2
 

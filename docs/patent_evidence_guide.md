@@ -199,3 +199,39 @@ Key capabilities in v0.3 production Core:
 - ~~将 v0.2 中稳定算子回灌 Core Normalizer（v0.3）~~ ✅ 已完成
 - 加入真实 LLM 评估（v0.4）
 - 运行统计显著性检验（v0.4）
+
+## How to Explain Core v0.3
+
+### Evidence layer positioning
+
+| Version | Role | When to cite |
+|---------|------|-------------|
+| **v0.1.1** | Initial end-to-end Core loop (2 ops) | Examiner questions whether Core has any end-to-end loop |
+| **v0.2** | Structural extensibility (6 ops, 24 cases) | Examiner questions whether encoding structure scales |
+| **v0.3** | Production Core backfill (6 ops in Core) | Examiner questions whether scalable structure is production-grade |
+
+### Key points when discussing v0.3
+
+1. **v0.1.1 is the initial end-to-end evidence** — proves the Core loop works for 2 core operators.
+
+2. **v0.2 is structural coverage evidence** — proves the encoding structure scales to 6 operators and 24 cases via a benchmark-local verifier.
+
+3. **v0.3 is the production Core backfill** — closes the v0.2 local-verifier boundary by integrating stable multi-operator capabilities into production `normalizer.py` and `verifier.py`.
+
+4. **Do not present v0.3 as live LLM accuracy** — all tests use deterministic simulated outputs. v0.4 will address real LLM evaluation.
+
+5. **Do not present v0.3 as replacing v0.2** — v0.2 provides broader structural coverage (24 cases). v0.3 provides production Core evidence.
+
+### Recommended attorney statement for v0.3
+
+> "Core v0.3 closes the Benchmark v0.2 local-verifier boundary by moving stable multi-operator capabilities into the production GeoTask Core Normalizer and Verifier. This strengthens the evidence for the claimed task-related spatial encoding, model-output normalization, deterministic verification, and verifiability-based status routing mechanisms."
+
+> "Core v0.3 通过将稳定的多算子能力迁移至生产级 GeoTask Core Normalizer 和 Verifier，关闭了 Benchmark v0.2 中本地 benchmark 验证器的边界问题。"
+
+### v0.3 delivery files
+
+For attorney review, prioritize:
+
+- `patent_evidence/08_core_v0_3/core_v0_3_attorney_addendum.md` — complete evidence summary
+- `patent_evidence/08_core_v0_3/core_v0_3_delivery_note.md` — delivery instructions
+- `patent_evidence/08_core_v0_3/core_v0_3_claim_support_update.md` — claim mapping

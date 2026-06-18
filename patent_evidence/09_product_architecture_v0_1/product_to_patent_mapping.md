@@ -23,6 +23,7 @@
 | **Context Gap Analyzer** | Identifies missing spatial data across heterogeneous sources before encoding; orchestrates data supplement from external sources | **P3 (Candidate — DO NOT DISCLOSE)** — Multi-source spatial context gap identification | Evidence NOT yet available; no gap identification prototype exists | **NO** — Gap identification logic is unpatented; disclosure destroys novelty |
 | **Domain Pack** | Maps industry-specific rules (aviation, construction, environmental) to spatial task templates and constraint verification operators; provides industry-specific object libraries and scoring logic | **P4 (Candidate — DO NOT DISCLOSE)** — Industry rule pack and spatial task template synergy | Evidence NOT yet available; GeoTask UAV is planned but not implemented | **NO** — Rule mapping mechanisms are unpatented; high-level concept (existence of domain packs) is public but mechanism details are not |
 | **Human Review Feedback Loop** | Collects human review outcomes (confirmed, corrected, rejected) and uses them to optimize encoding templates, verification thresholds, and triage policies over time | **P4 (Candidate — DO NOT DISCLOSE)** — Human review feedback-driven template optimization | Evidence NOT yet available; no feedback loop prototype exists | **NO** — Feedback optimization mechanism is unpatented; disclosure destroys novelty |
+| **LowAlt Site Precheck Pack** | Low-altitude site precheck constraint verification — composes Core operators into domain-specific precheck workflows for flight site evaluation | **P5 (Candidate — DO NOT DISCLOSE)** — Model-enhanced spatial constraint verification for low-altitude site precheck | `src/geotask_domain_packs/lowalt_site_precheck/`, `tests/test_lowalt_site_precheck_v0_1.py`, `patent_evidence/11_lowalt_site_precheck_v0_1/` | **NO** — DO NOT DISCLOSE — precheck orchestration mechanism is unpatented |
 
 ---
 
@@ -34,6 +35,7 @@
 | P2 (Candidate) | — | Encoding Planner (token data exists) | Model Router |
 | P3 (Candidate) | — | — | Context Gap Analyzer |
 | P4 (Candidate) | — | — | Domain Pack, Human Review Feedback Loop |
+| P5 (Candidate) | — | LowAlt Site Precheck Pack (mock MVP) | — |
 
 ---
 
@@ -56,6 +58,7 @@
 │  Rule mapping mechanisms (P4)                                   │
 │  Template synergy algorithms (P4)                               │
 │  Feedback loop optimization (P4)                                │
+│  LowAlt precheck orchestration (P5)                             │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -69,5 +72,6 @@
 - **编码规划器、模型路由器** → P2（候选），不可公开。
 - **上下文缺口分析器** → P3（候选），不可公开。
 - **行业规则包、人工复核反馈环** → P4（候选），不可公开。
+- **低空选址预检 Domain Pack** → P5（候选），不可公开。
 
-对于 P2–P4 候选专利方向涉及的模块，其技术机制细节在专利申请准备完成前**严禁**在公开材料中披露。
+对于 P2–P5 候选专利方向涉及的模块，其技术机制细节在专利申请准备完成前**严禁**在公开材料中披露。

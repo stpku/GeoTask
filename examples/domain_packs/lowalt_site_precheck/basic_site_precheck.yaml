@@ -1,0 +1,26 @@
+# LowAlt Site Precheck Mock Example — Basic Safe Case
+domain_pack: lowalt_site_precheck
+version: 0.1-mock
+description: Basic safe site precheck with no conflicts
+
+candidate_sites:
+  - site_id: "S001"
+    name: "Mock Helipad Alpha"
+    xy: [100, 200]
+
+sensitive_sites:
+  - site_id: "SS001"
+    category: "school"
+    xy: [500, 600]
+    risk_radius_m: 200
+
+flight_time_windows:
+  - start_time: "09:00"
+    end_time: "10:00"
+
+flight_altitude_band:
+  min_alt_m: 50
+  max_alt_m: 120
+
+# No restricted zones, no obstacles — safe case
+# Disclaimer: This is mock data. No real locations.

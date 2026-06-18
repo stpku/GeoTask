@@ -1,0 +1,25 @@
+# LowAlt Site Precheck Mock Example — Route Zone Conflict
+domain_pack: lowalt_site_precheck
+version: 0.1-mock
+description: Route intersects a restricted zone — contradicted
+
+candidate_sites:
+  - site_id: "S002"
+    name: "Mock Vertiport Beta"
+    xy: [0, 0]
+
+initial_routes:
+  - route_id: "R001"
+    points: [[0, 0], [500, 500]]
+
+restricted_zones:
+  - zone_id: "Z001"
+    bbox: [200, 200, 300, 300]
+    restriction_type: "no_fly"
+
+flight_time_windows:
+  - start_time: "08:00"
+    end_time: "12:00"
+
+# Route crosses restricted zone — should produce contradicted status
+# Disclaimer: This is mock data. No real locations.

@@ -43,7 +43,7 @@
 | Code evidence | `patent_evidence/02_code_evidence/` |
 | Attorney brief | `patent_evidence/00_attorney_brief/attorney_one_page_summary.md` |
 | Production code | `src/geotask_core/` (ops.py, normalizer.py, verifier.py, runner.py) |
-| Test suite | 407 passing tests |
+| Test suite | 460 passing tests |
 
 ### Filing Status
 
@@ -181,7 +181,7 @@ P1 provides general spatial verification with abstract operators. P5 applies the
 
 ### Suitable for Immediate Filing?
 
-Not yet. P5 depends on P4 (domain pack framework). Filing P5 before P4 would create dependency gaps in the claims.
+Not yet. P5 depends on P4 (domain pack framework). Filing P5 before P4 would create dependency gaps in the claims. However, mock MVP evidence is now available.
 
 ### Code/Evidence Needed Before Filing
 
@@ -189,9 +189,18 @@ Not yet. P5 depends on P4 (domain pack framework). Filing P5 before P4 would cre
 |------------|--------|
 | UAV domain pack (depends on P4) | Not started |
 | Low-altitude constraint operator set | Partial — altitude_overlap and time_overlap operators exist in Core v0.3 |
-| Regulatory zone verification tests | Not started |
+| LowAlt site precheck mock MVP | **Done** — `src/geotask_domain_packs/lowalt_site_precheck/`, 14 tests passing |
+| Regulatory zone verification tests | Partial — mock tests with fictional coordinates |
 | Flight path spatial constraint benchmark | Not started |
-| Internal design document | Not started |
+| Internal design document | Partial — `docs/lowalt_site_precheck_pack_v0_1.md` |
+
+### Mock MVP Evidence
+
+- **Status**: Candidate — Mock evidence in progress — DO NOT DISCLOSE
+- **Evidence**: `patent_evidence/11_lowalt_site_precheck_v0_1/`
+- **Code**: `src/geotask_domain_packs/lowalt_site_precheck/`
+- **Tests**: `tests/test_lowalt_site_precheck_v0_1.py` (14 tests)
+- **Documentation**: `docs/lowalt_site_precheck_pack_v0_1.md`
 
 ### Disclosure Risk
 
@@ -225,7 +234,7 @@ P1 (Filed) ──→ P2 (Next priority) ──→ P3 ──→ P4 ──→ P5
 - **P2（候选 — Runtime）**：编码规划与模型路由。商业核心竞争力所在，建议优先准备。**技术细节严禁公开披露。**
 - **P3（候选 — 上下文缺口）**：多源空间上下文缺口识别。需多源数据集成基础设施。**技术细节严禁公开披露。**
 - **P4（候选 — Domain Pack）**：行业规则包与人工复核反馈优化。需至少一个行业包实现。**技术细节严禁公开披露。**
-- **P5（候选 — 低空垂直应用）**：低空场景空间约束验证。依赖 P4 行业包框架。**技术细节严禁公开披露。**
+- **P5（候选 — 低空垂直应用）**：低空场景空间约束验证。依赖 P4 行业包框架。Mock MVP 证据已就绪。**技术细节严禁公开披露。**
 
 ### 建议提交顺序
 

@@ -324,6 +324,18 @@ For patent counsel review:
 | `time_overlap`       | two time intervals            | bool   | Time interval overlap (v0.3+)            |
 | `altitude_overlap`   | two altitude ranges           | bool   | Altitude range overlap (v0.3+)           |
 
+## Domain Pack Extensibility
+
+GeoTask Core supports private Domain Packs for industry-specific spatial
+task modeling and verification. Domain Packs define domain objects, rules,
+task templates, and verification workflows that extend Core without adding
+weight to the format specification.
+
+Example domain: low-altitude site precheck.
+
+> Domain Pack implementations and industry rules are proprietary and not
+> part of the open-source Core. See `docs/domain_pack_architecture.md`.
+
 ## Architecture
 
 ```

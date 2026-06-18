@@ -200,6 +200,57 @@ Key capabilities in v0.3 production Core:
 - 加入真实 LLM 评估（v0.4）
 - 运行统计显著性检验（v0.4）
 
+---
+
+## v0.1 Product Architecture Evidence
+
+> **CONFIDENTIAL — Evidence for internal and patent counsel use only. Do not disclose.**
+
+Product architecture patent positioning is documented in:
+
+- `patent_evidence/09_product_architecture_v0_1/product_architecture_patent_positioning.md`
+- `patent_evidence/09_product_architecture_v0_1/invention_ledger.md` — 11 invention points (INV-001 through INV-011)
+- `patent_evidence/09_product_architecture_v0_1/patent_portfolio_roadmap.md` — P1 (Filed) through P5 (Candidate)
+- `patent_evidence/09_product_architecture_v0_1/product_to_patent_mapping.md` — Module → patent mapping
+- `patent_evidence/09_product_architecture_v0_1/commercial_boundary_note.md` — Commercial boundary
+
+INV-006 through INV-011 are candidate patent mechanisms. Their technical details **MUST NOT** appear in public materials.
+
+---
+
+## P1/P2 Boundary Audit
+
+> **CONFIDENTIAL — DO NOT DISCLOSE P2 mechanisms.**
+
+The P1/P2 boundary audit ensures that P1 (Filed) and P2 (Candidate) have clear, non-overlapping technical scopes:
+
+| File | Purpose |
+|------|---------|
+| `patent_evidence/10_p1_p2_boundary_audit/p1_coverage_audit.md` | P1 coverage assessment for INV-001 through INV-010 |
+| `patent_evidence/10_p1_p2_boundary_audit/p2_non_overlap_design.md` | P2 joint scheduling non-overlap design |
+| `patent_evidence/10_p1_p2_boundary_audit/attorney_questions_for_p1_p2.md` | Questions for patent counsel |
+| `patent_evidence/10_p1_p2_boundary_audit/disclosure_boundary_note.md` | Disclosure boundary warning |
+
+Key distinction: P1 covers the **encoding format and verification method**. P2 covers the **runtime decision layer** — encoding planning under token budget constraints and model routing with verification-cost joint scheduling. P2 mechanisms are NOT YET FILED and must not be disclosed.
+
+---
+
+## LowAlt Site Precheck Mock MVP
+
+> **CONFIDENTIAL — DO NOT DISCLOSE P5 mechanisms.**
+
+The LowAlt Site Precheck Pack is a mock domain pack demonstrating how GeoTask Core operators compose into industry-specific precheck workflows:
+
+| Evidence | Location |
+|----------|----------|
+| Domain pack documentation | `docs/lowalt_site_precheck_pack_v0_1.md` |
+| Domain pack source code | `src/geotask_domain_packs/lowalt_site_precheck/` |
+| Domain pack tests (14 tests) | `tests/test_lowalt_site_precheck_v0_1.py` |
+| Patent evidence directory | `patent_evidence/11_lowalt_site_precheck_v0_1/` |
+| Disclosure boundary | `patent_evidence/11_lowalt_site_precheck_v0_1/lowalt_disclosure_boundary.md` |
+
+This is a **Mock MVP** using fictional `local_xy_m` coordinates. It does NOT access real airspace, regulatory, or customer data. The precheck orchestration mechanism is a **P5 candidate** and must not be disclosed publicly.
+
 ## How to Explain Core v0.3
 
 ### Evidence layer positioning

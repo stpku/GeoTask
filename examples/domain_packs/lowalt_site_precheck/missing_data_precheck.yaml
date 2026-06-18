@@ -1,0 +1,21 @@
+# LowAlt Site Precheck Mock Example — Missing Data
+domain_pack: lowalt_site_precheck
+version: 0.1-mock
+description: Missing obstacle and time restriction data — triggers data gaps
+
+candidate_sites:
+  - site_id: "S003"
+    name: "Mock Site Gamma"
+    xy: [300, 400]
+
+flight_time_windows:
+  - start_time: "06:00"
+    end_time: "18:00"
+
+flight_altitude_band:
+  min_alt_m: 0
+  max_alt_m: 150
+
+# No sensitive_sites, restricted_zones, obstacles, or restriction_time_windows
+# This triggers planned_data_gaps in the result
+# Disclaimer: This is mock data. No real locations.

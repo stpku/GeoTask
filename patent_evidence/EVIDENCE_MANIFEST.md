@@ -9,7 +9,7 @@
 | Real filing documents included | **No** — Only checklists and placeholders |
 | Customer data included | **No** |
 | Third-party confidential materials | **No** |
-| Git branch | `architecture/product-and-patent-v0.1` |
+| Git branch | `product/patent-and-lowalt-mvp-v0.1` |
 | Base branch | `core/normalizer-verifier-v0.3` |
 
 ---
@@ -57,10 +57,18 @@ patent_evidence/
 └── 09_product_architecture_v0_1/                 # v0.1 product architecture + patent portfolio
     ├── README.md                                 # Package overview
     ├── product_architecture_patent_positioning.md # Product architecture patent positioning
-    ├── invention_ledger.md                       # 10 invention points ledger
+    ├── invention_ledger.md                       # 11 invention points ledger
     ├── patent_portfolio_roadmap.md               # P1-P5 patent portfolio roadmap
     ├── product_to_patent_mapping.md              # Module → patent mapping
     └── commercial_boundary_note.md               # Commercial boundary declaration
+└── 10_p1_p2_boundary_audit/                      # P1/P2 boundary audit (NEW)
+    ├── README.md                                 # Audit overview
+    ├── p1_coverage_audit.md                      # P1 coverage assessment for INV-001–INV-010
+    ├── p2_non_overlap_design.md                  # P2 non-overlap design (joint scheduling)
+    ├── attorney_questions_for_p1_p2.md           # Questions for patent counsel
+    └── disclosure_boundary_note.md               # Disclosure boundary warning
+└── 11_lowalt_site_precheck_v0_1/                 # LowAlt site precheck evidence (NEW)
+    └── lowalt_disclosure_boundary.md             # Disclosure boundary for P5 candidate
 ```
 
 **Evidence version**: `core-normalizer-verifier-v0.3`
@@ -112,9 +120,9 @@ patent_evidence/
 | Metric | Value |
 |--------|-------|
 | Total test modules | 13+ |
-| Total test functions | 406+ |
+| Total test functions | 460+ |
 | All tests passing | ✅ Yes |
-| Last run | `pytest` — 406 passed |
+| Last run | `pytest` — 460 passed |
 
 Test modules:
 - `test_ops.py`, `test_ops_v0_3.py`, `test_parser.py`, `test_runner.py` — Core functionality
@@ -127,6 +135,9 @@ Test modules:
 - `test_runtime_contracts_v0_1.py` — Runtime contract validation
 - `test_mock_runtime_v0_1.py` — Mock runtime pipeline
 - `test_product_architecture_evidence_v0_1.py` — Architecture evidence integrity
+- `test_p1_p2_boundary_audit_v0_1.py` — P1/P2 boundary audit evidence
+- `test_lowalt_patent_evidence_v0_1.py` — LowAlt patent evidence integrity
+- `test_lowalt_site_precheck_v0_1.py` — LowAlt domain pack functional tests
 
 ---
 

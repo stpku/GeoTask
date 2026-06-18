@@ -1,0 +1,13 @@
+case_id,encoding_type,input_token_estimate,output_token_estimate,total_token_estimate,normalized_success,overall_status,expected_overall_status,status_matched,measurements_count,verified_count,contradicted_count,need_review_count,review_reasons,benchmark_score,token_efficiency_score
+case_001_distance_intersection,natural_language,174,227,401,True,verified,verified,True,2,2,0,0,[],84.6,0.229
+case_001_distance_intersection,geotask_yaml,197,72,269,True,verified,verified,True,2,2,0,0,[],86.8,0.342
+case_001_distance_intersection,compact_dsl,79,13,92,True,verified,verified,True,2,2,0,0,[],100.0,1.0
+case_002_wrong_distance,natural_language,174,169,343,True,contradicted,contradicted,True,2,1,1,0,[],75.2,0.262
+case_002_wrong_distance,geotask_yaml,197,72,269,True,contradicted,contradicted,True,2,1,1,0,[],76.7,0.335
+case_002_wrong_distance,compact_dsl,79,11,90,True,contradicted,contradicted,True,2,1,1,0,[],90.0,1.0
+case_003_not_intersect,natural_language,174,365,539,True,contradicted,contradicted,True,2,1,1,0,[],73.4,0.171
+case_003_not_intersect,geotask_yaml,197,72,269,True,contradicted,contradicted,True,2,1,1,0,[],76.8,0.342
+case_003_not_intersect,compact_dsl,79,13,92,True,contradicted,contradicted,True,2,1,1,0,[],90.0,1.0
+case_004_missing_operator,natural_language,174,157,331,True,verified,verified,True,2,2,0,0,['operator_reference_missing'],85.3,0.266
+case_004_missing_operator,geotask_yaml,197,43,240,True,verified,verified,True,2,2,0,0,['operator_reference_missing'],87.3,0.367
+case_004_missing_operator,compact_dsl,79,9,88,True,verified,verified,True,2,2,0,0,['operator_reference_missing'],100.0,1.0

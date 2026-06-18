@@ -1,0 +1,13 @@
+# LowAlt Site Precheck Mock Example — Invalid Reference (Empty Input)
+domain_pack: lowalt_site_precheck
+version: 0.1-mock
+description: Empty input — all fields missing, triggers data gaps
+
+candidate_sites: []
+initial_routes: []
+sensitive_sites: []
+restricted_zones: []
+obstacles: []
+
+# Intentionally empty — produces need_review with data gap warnings
+# Disclaimer: This is mock data. No real locations.

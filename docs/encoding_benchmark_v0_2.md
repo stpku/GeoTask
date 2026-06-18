@@ -47,4 +47,3 @@ Compact DSL reduced avg tokens from 69 to 51 (25.5% reduction, 1.3x compression)
 - Simulated outputs, not real LLM
 - Approximate token counting
 - 24 cases, descriptive only
-- **v0.2 uses benchmark-local verifier** (`benchmarks/encoding_v0_2/local_verifier.py`) for operator verification — does not imply production GeoTask Core Normalizer fully supports all 6 operators. The local verifier is scoped to the 24 deterministic test cases. v0.3 will backfill stable operators into Core Normalizer.

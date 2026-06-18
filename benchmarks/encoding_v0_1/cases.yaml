@@ -1,0 +1,39 @@
+# GeoTask Encoding Benchmark v0.1 — Test Cases
+#
+# 4 cases × 3 encoding types = 12 benchmark runs.
+# All cases use the same base spatial scene:
+#   site/takeoff at (0,0), school at (120,80), route from (-200,0) to (400,0),
+#   zone rect [250, -100, 350, 100]
+#
+# Ground truth:
+#   distance(site, school) = sqrt(120^2 + 80^2) ≈ 144.22
+#   route intersects zone = true (line passes through rectangle region)
+
+cases:
+  - case_id: "case_001_distance_intersection"
+    description: "Correct distance + correct intersection judgment"
+    expected:
+      distance: 144.22
+      route_intersects_zone: true
+      expected_overall_status: "verified"
+
+  - case_id: "case_002_wrong_distance"
+    description: "Model outputs wrong distance (150 instead of 144.22)"
+    expected:
+      model_distance: 150.0
+      expected_distance: 144.22
+      expected_overall_status: "contradicted"
+
+  - case_id: "case_003_not_intersect"
+    description: "Model incorrectly outputs no intersection"
+    expected:
+      model_intersection: false
+      expected_intersection: true
+      expected_overall_status: "contradicted"
+
+  - case_id: "case_004_missing_operator"
+    description: "Model outputs correct values but omits operator references"
+    expected:
+      distance: 144.22
+      route_intersects_zone: true
+      expected_review_reason: "operator_reference_missing"

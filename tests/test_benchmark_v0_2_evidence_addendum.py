@@ -206,11 +206,14 @@ def docs_guide_text():
 
 
 def test_docs_guide_has_how_to_explain_v0_2(docs_guide_text):
-    """docs/patent_evidence_guide.md has How to explain Benchmark v0.2 section."""
+    """docs/patent_evidence_guide.md explains v0.2 boundary and relationship to v0.1.1."""
     lower = docs_guide_text.lower()
-    assert "how to explain" in lower and "v0.2" in lower, (
-        "Must have 'How to explain Benchmark v0.2' section"
+    # Guide was restructured for v0.3; v0.2 explanation is under "Key points when discussing v0.2"
+    assert ("key points when discussing v0.2" in lower
+            or "how to explain" in lower), (
+        "Must have v0.2 explanation section"
     )
+    assert "v0.2" in lower
 
 
 # ── Integration Test ────────────────────────────────────────────────────────

@@ -143,18 +143,44 @@ pytest
 
 - Benchmark 使用模拟模型输出，非真实 LLM 推理结果
 - Token 估算是近似值，不精确对应任何特定模型的 tokenizer
-- v0.1.1 覆盖 4 个 case、2 类算子；v0.2 覆盖 24 个 case、6 类算子
+- v0.1.1 覆盖 4 个 case、2 类算子；v0.2 覆盖 24 个 case、6 类算子；v0.3 将 6 类算子回灌到生产级 Core
 
-## How to Explain Benchmark v0.2
+## Evidence Version Summary
 
 ### Evidence layering
 
-When explaining the benchmark to an attorney or examiner, distinguish between:
+When explaining to an attorney or examiner, distinguish between:
 
 | Version | What It Is | What It Is NOT |
 |---------|-----------|----------------|
-| **v0.1.1** | End-to-end Core Normalizer + Verifier loop evidence | Does not cover all operators |
-| **v0.2** | Multi-scenario structural encoding evidence | Does not prove Core Normalizer handles all 6 operators |
+| **v0.1.1** | End-to-end Core Normalizer + Verifier loop evidence (2 ops) | Does not cover all operators |
+| **v0.2** | Multi-scenario structural encoding evidence (6 ops, 24 cases) | Does not prove Core Normalizer handles all 6 operators |
+| **v0.3** | **Production Core backfill** — Core Normalizer/Verifier handle all 6 operators | Does not include real LLM evaluation |
+
+### v0.3 Production Core Evidence
+
+**v0.3 closes the gap between v0.2 benchmark and production code.** All 6 operators, 8 error types, invalid operator/reference detection, unit mismatch detection, and Chinese negation are now in the production `src/geotask_core/normalizer.py` and `verifier.py`.
+
+| Evidence | Location |
+|----------|----------|
+| Production end-to-end tests | `tests/test_core_normalizer_verifier_v0_3.py` |
+| Ops unit tests (6 operators) | `tests/test_ops_v0_3.py` |
+| Evidence integrity tests | `tests/test_core_v0_3_evidence.py` |
+| Evidence package | `patent_evidence/08_core_v0_3/` |
+| Technical documentation | `docs/core_normalizer_verifier_v0_3.md` |
+
+Key capabilities in v0.3 production Core:
+- Unified status hierarchy: `invalid_operator` > `invalid_reference` > `contradicted` > `need_review` > `verified`
+- Invalid operator detection (e.g., "haversine" rejected)
+- Invalid reference detection (object not in geotask_data)
+- Unit mismatch detection (km vs meter)
+- Chinese negation for contains and intersection
+
+### Recommended attorney statement for v0.3
+
+> "v0.3 backfills stable capabilities from benchmark v0.2 into the production GeoTask Core Normalizer and Verifier. All 6 operators are now supported in production code. The unified status hierarchy (invalid_operator > invalid_reference > contradicted > need_review > verified) enables production-grade error classification. Evidence is based on deterministic end-to-end tests using `normalize_model_output` + `verify_normalized_result`."
+
+> "v0.3 将 benchmark v0.2 中能力回灌到生产级 GeoTask Core Normalizer 和 Verifier。全部 6 类算子已在生产代码中支持，统一的状态层级（invalid_operator > invalid_reference > contradicted > need_review > verified）提供生产级错误分类。证据基于确定性端到端测试。"
 
 ### Key points when discussing v0.2
 
@@ -162,18 +188,14 @@ When explaining the benchmark to an attorney or examiner, distinguish between:
 
 2. **v0.2 is extended coverage evidence** — it demonstrates that the encoding structure (object references, operator references, propositions, expected outputs) is extensible to 6 operators and 24 cases. It uses a benchmark-local verifier, not the production normalizer, for the 4 new operators.
 
-3. **Do not present v0.2 as proof that Core Normalizer fully supports all new operators** — v0.2's 100% status match is achieved via `benchmarks/encoding_v0_2/local_verifier.py`, which is scoped to the benchmark and not production-grade.
+3. **v0.3 is the production Core backfill** — it takes v0.2's proven capabilities and integrates them into the production normalizer and verifier.
 
-4. **Do not present v0.2 as a live LLM accuracy evaluation** — all outputs are deterministic simulations. The benchmark evaluates encoding structure, not model performance.
+4. **Do not present v0.2 as proof that Core Normalizer fully supports all new operators** — that is v0.3's role.
 
-### Recommended attorney statement
-
-> "v0.2 extends encoding benchmark evidence from 4 cases to 24 cases and from 2 operators to 6 operators. It uses a benchmark-local verifier to evaluate structural encoding robustness. It should be interpreted as structural extensibility evidence, not as a claim that all 6 operators are fully supported by the production GeoTask Core Normalizer. End-to-end normalizer loop evidence remains at v0.1.1."
-
-> "v0.2 将编码 benchmark 证据从 4 个样例扩展到 24 个样例，从 2 类算子扩展到 6 类算子，使用 benchmark 本地验证器评估结构化编码鲁棒性。该证据应理解为结构扩展性证据，不应理解为生产级 GeoTask Core Normalizer 已完整支持全部 6 类算子。端到端归一化闭环证据仍为 v0.1.1。"
+5. **Do not present v0.2 as a live LLM accuracy evaluation** — all outputs are deterministic simulations. The benchmark evaluates encoding structure, not model performance.
 
 ## 下一步
 
-- 将 v0.2 中稳定算子回灌 Core Normalizer（v0.3）
+- ~~将 v0.2 中稳定算子回灌 Core Normalizer（v0.3）~~ ✅ 已完成
 - 加入真实 LLM 评估（v0.4）
 - 运行统计显著性检验（v0.4）

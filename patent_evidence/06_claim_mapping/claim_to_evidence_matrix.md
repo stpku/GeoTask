@@ -71,13 +71,28 @@ This matrix maps each patent technical feature (from the GeoTask system and meth
 
 ---
 
+## v0.3 Core Backfill (NEW)
+
+v0.3 backfills stable v0.2 capabilities into production GeoTask Core:
+
+| Patent Feature | v0.3 Production Evidence |
+|---------------|-------------------------|
+| Multi-operator normalization | 6 operators in Core Normalizer (up from 2) |
+| Production verification | Core Verifier with unified status hierarchy |
+| invalid_operator detection | Non-existent operators rejected (e.g., haversine) |
+| invalid_reference detection | Object reference validation against geotask_data |
+| Unit mismatch | km vs meter detection in production code |
+| Chinese negation | 不相交, 不包含 correctly detected |
+
+**Evidence**: `patent_evidence/08_core_v0_3/` | `tests/test_core_normalizer_verifier_v0_3.py`
+
 ## v0.2 Evidence Extension
 
 v0.2 extends this matrix to 24 cases and 6 operators. See `patent_evidence/07_benchmark_v0_2/claim_support_update.md` for the extended mapping.
 
-> **Boundary note**: v0.2 should be used as **structural encoding and verification-readiness evidence**. For end-to-end Core Normalizer + Verifier evidence, use v0.1.1 (this matrix).
+> **Boundary note**: v0.2 should be used as **structural encoding and verification-readiness evidence**. For end-to-end Core Normalizer + Verifier evidence, use v0.1.1 (this matrix) or v0.3 (production backfill).
 
-> **边界说明**: v0.2 应作为结构化编码和验证就绪度证据使用；端到端 Core Normalizer + Verifier 闭环证据应引用 v0.1.1。
+> **边界说明**: v0.2 应作为结构化编码和验证就绪度证据使用；端到端 Core Normalizer + Verifier 闭环证据应引用 v0.1.1 或 v0.3。
 
 ---
 

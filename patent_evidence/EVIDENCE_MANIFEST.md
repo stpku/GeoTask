@@ -46,6 +46,12 @@ patent_evidence/
     ├── claim_support_update.md                   # v0.2 claim mapping updates
     ├── v0_2_normalizer_boundary.md               # ⚠️ Normalizer/verifier boundary explanation
     └── v0_2_attorney_addendum.md                 # Attorney-facing v0.2 evidence summary
+└── 08_core_v0_3/                                 # v0.3 production Core evidence (NEW)
+    ├── README.md                                 # v0.3 evidence overview
+    ├── core_v0_3_capability_summary.md           # New capabilities in v0.3
+    ├── core_v0_3_end_to_end_cases.md             # Production test case matrix
+    ├── core_v0_3_claim_support_update.md         # v0.3 claim mapping
+    └── core_v0_3_boundary.md                     # Evidence boundary and limitations
 ```
 
 ---

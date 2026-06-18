@@ -1,7 +1,10 @@
-"""GeoTask Verifier v0.2: verify normalized model output against local ops.
+"""GeoTask Verifier v0.3: verify normalized model output against local ops.
 
-This module compares extracted model claims with deterministic GeoTask Core
-results and marks each measurement as verified / contradicted / need_review.
+Enhanced from v0.2 with:
+  - Invalid operator / invalid reference detection
+  - Unit mismatch detection in review reasons
+  - Unified status priority (invalid_op > invalid_ref > contradicted > need_review)
+  - Backward compatible with v0.1/v0.2
 """
 
 from geotask_core.runner import run_geotask
@@ -9,13 +12,32 @@ from geotask_core.result_schema import (
     STATUS_VERIFIED,
     STATUS_CONTRADICTED,
     STATUS_NEED_REVIEW,
+    STATUS_NEED_DATA,
     STATUS_EXTRACTED,
+    STATUS_INVALID_OPERATOR,
+    STATUS_INVALID_REFERENCE,
+    REASON_OPERATOR_REFERENCE_MISSING,
+    REASON_VALUE_NOT_FOUND,
+    REASON_OBJECT_REFERENCE_MISSING,
+    REASON_INVALID_OPERATOR,
+    REASON_INVALID_REFERENCE,
+    REASON_UNIT_MISMATCH,
+    REASON_UNSUPPORTED_OPERATOR,
     make_measurement,
     make_conclusion,
     make_verified_by,
     make_geotask_result,
     compute_overall_status,
 )
+
+SUPPORTED_OPERATORS = [
+    "distance_2d",
+    "line_intersects_rect",
+    "point_to_line_distance_2d",
+    "rect_contains_point",
+    "time_overlap",
+    "altitude_overlap",
+]
 
 
 def verify_normalized_result(
@@ -36,25 +58,41 @@ def verify_normalized_result(
     """
     # Run local deterministic computation
     core_result = run_geotask(geotask_data)
+    known_objects = set(geotask_data.get("objects", {}).keys())
 
     core_measurements = {m["name"]: m for m in core_result.get("measurements", [])}
     norm_measurements = {m["name"]: m for m in normalized.get("measurements", [])}
 
-    # Merge measurements from both sides
     all_names = set(core_measurements.keys()) | set(norm_measurements.keys())
 
     verified_measurements = []
     verified_by_list = []
 
+    # Inherit review reasons from normalizer
+    norm_conclusion = normalized.get("conclusion", {})
+    review_reasons = list(norm_conclusion.get("review_reasons", []))
+
     for name in sorted(all_names):
         norm_m = norm_measurements.get(name)
         core_m = core_measurements.get(name)
 
-        # Extract values
         norm_val = norm_m["value"] if norm_m else None
         norm_op = norm_m.get("verified_by", "") if norm_m else ""
-        core_val = core_m["value"] if core_m else None
 
+        # ── Check operator validity ──────────────────────────────────
+        if norm_op and norm_op not in SUPPORTED_OPERATORS:
+            # Unknown operator
+            if REASON_INVALID_OPERATOR not in review_reasons:
+                review_reasons.append(REASON_INVALID_OPERATOR)
+
+        # ── Check object references ──────────────────────────────────
+        obj_refs = norm_m.get("object_refs", []) if norm_m else []
+        for ref in obj_refs:
+            if ref and known_objects and ref not in known_objects:
+                if REASON_INVALID_REFERENCE not in review_reasons:
+                    review_reasons.append(REASON_INVALID_REFERENCE)
+
+        core_val = core_m["value"] if core_m else None
         is_numeric = isinstance(core_val, (int, float)) and not isinstance(core_val, bool)
         is_bool = isinstance(core_val, bool)
 
@@ -64,10 +102,10 @@ def verify_normalized_result(
         difference = None
 
         if norm_val is None:
-            # Model didn't provide a value
             status = STATUS_NEED_REVIEW
+            if REASON_VALUE_NOT_FOUND not in review_reasons:
+                review_reasons.append(REASON_VALUE_NOT_FOUND)
         elif core_val is None:
-            # No local deterministic result to compare against
             status = STATUS_NEED_REVIEW
         elif is_numeric:
             diff = abs(float(norm_val) - float(core_val))
@@ -82,13 +120,11 @@ def verify_normalized_result(
             else:
                 status = STATUS_CONTRADICTED
         else:
-            # String or other type — simple equality
             if str(norm_val).lower() == str(core_val).lower():
                 status = STATUS_VERIFIED
             else:
                 status = STATUS_CONTRADICTED
 
-        # Build measurement
         verified_measurements.append(
             make_measurement(
                 name=name,
@@ -106,20 +142,24 @@ def verify_normalized_result(
     for v in normalized.get("verified_by", []):
         op = v.get("operation", "")
         res = v.get("result", "")
-        # Determine status: if the op is in core verified_by, mark verified
         core_ops = [c.get("operation", "") for c in core_result.get("verified_by", [])]
         op_status = STATUS_VERIFIED if op in core_ops else STATUS_EXTRACTED
         verified_by_list.append(make_verified_by(operation=op, result=res, status=op_status))
 
-    # ── Build conclusion ────────────────────────────────────────────
-    norm_conclusion = normalized.get("conclusion", {})
-    review_reasons = list(norm_conclusion.get("review_reasons", []))
-
+    # ── Compute overall status ───────────────────────────────────────
     overall_status = compute_overall_status(verified_measurements)
+
+    # Elevate to invalid_op/ref if detected in review reasons
+    if REASON_INVALID_OPERATOR in review_reasons and overall_status != STATUS_CONTRADICTED:
+        overall_status = STATUS_INVALID_OPERATOR
+    if REASON_INVALID_REFERENCE in review_reasons and overall_status not in (STATUS_INVALID_OPERATOR, STATUS_CONTRADICTED):
+        overall_status = STATUS_INVALID_REFERENCE
+
     need_review = (
         norm_conclusion.get("need_review", False)
         or overall_status == STATUS_NEED_REVIEW
         or any(m["status"] == STATUS_NEED_REVIEW for m in verified_measurements)
+        or bool(review_reasons)
     )
 
     # Build summary

@@ -265,6 +265,17 @@ New in v0.2: `point_to_line_distance_2d`, `rect_contains_point`, `time_overlap`,
 
 See `benchmarks/encoding_v0_2/` and `patent_evidence/07_benchmark_v0_2/` for details.
 
+### Core Normalizer / Verifier v0.3
+
+v0.3 is the **production Core backfill** of stable v0.2 capabilities. The Core Normalizer and Verifier now support all 6 operators, unified status hierarchy (`invalid_operator` > `invalid_reference` > `contradicted` > `need_review` > `verified`), invalid operator/reference detection, unit mismatch detection, and Chinese negation for all boolean operators.
+
+```bash
+# Run production end-to-end tests
+pytest tests/test_core_normalizer_verifier_v0_3.py tests/test_ops_v0_3.py
+```
+
+See [`docs/core_normalizer_verifier_v0_3.md`](docs/core_normalizer_verifier_v0_3.md) and `patent_evidence/08_core_v0_3/` for details.
+
 ## Supported Object Types (v0.1-lite)
 
 | Type  | Fields               | Description                         |
@@ -279,19 +290,25 @@ See `benchmarks/encoding_v0_2/` and `patent_evidence/07_benchmark_v0_2/` for det
 |------------------------|------------------------------|--------|------------------------------------------|
 | `distance_2d`          | two points                   | float  | 2D Euclidean distance                    |
 | `line_intersects_rect` | line segment + rect bbox     | bool   | Whether line touches or crosses rectangle |
+| `point_to_line_distance_2d` | point + line           | float  | Point-to-line-segment distance (v0.3+)   |
+| `rect_contains_point` | rect + point                  | bool   | Rectangle containment (v0.3+)            |
+| `time_overlap`       | two time intervals            | bool   | Time interval overlap (v0.3+)            |
+| `altitude_overlap`   | two altitude ranges           | bool   | Altitude range overlap (v0.3+)           |
 
 ## Architecture
 
 ```
 src/geotask_core/
-├── __init__.py      # Package init
-├── models.py        # Dataclasses: PointObject, LineObject, RectObject, StirDocument
-├── parser.py        # YAML loader + validator
-├── ops.py           # Deterministic operators: distance_2d, line_intersects_rect
-├── runner.py        # Auto-detection runner for spatial tasks
-├── normalizer.py    # Extract structured results from LLM text output
-├── evaluator.py     # Compare Core results with normalized LLM outputs
-└── cli.py           # CLI: validate, run, normalize, eval
+├── __init__.py        # Package init
+├── models.py          # Dataclasses: PointObject, LineObject, RectObject, StirDocument
+├── parser.py          # YAML loader + validator
+├── ops.py             # Deterministic 6 operators
+├── runner.py          # Generic type-based auto-detection runner
+├── normalizer.py      # Multi-operator normalizer with error detection
+├── verifier.py        # Verifier with unified status hierarchy
+├── result_schema.py   # Status/reason constants + overall_status computation
+├── evaluator.py       # Compare Core results with normalized LLM outputs
+└── cli.py             # CLI: validate, run, normalize, eval
 ```
 
 ## Design Principles

@@ -1,4 +1,4 @@
-"""GeoTask Result Schema v0.2 — lightweight constants and helpers.
+"""GeoTask Result Schema v0.3 — lightweight constants and helpers.
 
 No Pydantic, no ORM, no heavy frameworks.
 Just status constants and builder functions for the unified GeoTask Result format.
@@ -10,6 +10,21 @@ STATUS_VERIFIED = "verified"
 STATUS_CONTRADICTED = "contradicted"
 STATUS_NEED_REVIEW = "need_review"
 STATUS_EXTRACTED = "extracted"
+STATUS_NEED_DATA = "need_data"
+STATUS_INVALID_OPERATOR = "invalid_operator"
+STATUS_INVALID_REFERENCE = "invalid_reference"
+STATUS_MODEL_INFERRED = "model_inferred"
+
+# ── Review reason constants ───────────────────────────────────────────
+
+REASON_OPERATOR_REFERENCE_MISSING = "operator_reference_missing"
+REASON_VALUE_NOT_FOUND = "value_not_found"
+REASON_OBJECT_REFERENCE_MISSING = "object_reference_missing"
+REASON_INVALID_OPERATOR = "invalid_operator"
+REASON_INVALID_REFERENCE = "invalid_reference"
+REASON_UNIT_MISMATCH = "unit_mismatch"
+REASON_UNSUPPORTED_OPERATOR = "unsupported_operator"
+REASON_AMBIGUOUS_NEGATION = "ambiguous_negation"
 
 
 # ── Builder functions ─────────────────────────────────────────────────
@@ -86,10 +101,17 @@ def make_geotask_result(
 def compute_overall_status(measurements: list[dict]) -> str:
     """Derive overall_status from individual measurement statuses.
 
-    Priority: contradicted > need_review > verified
+    Priority (v0.3):
+        invalid_operator > invalid_reference > contradicted > need_review > need_data > verified
     """
+    if any(m.get("status") == STATUS_INVALID_OPERATOR for m in measurements):
+        return STATUS_INVALID_OPERATOR
+    if any(m.get("status") == STATUS_INVALID_REFERENCE for m in measurements):
+        return STATUS_INVALID_REFERENCE
     if any(m.get("status") == STATUS_CONTRADICTED for m in measurements):
         return STATUS_CONTRADICTED
     if any(m.get("status") == STATUS_NEED_REVIEW for m in measurements):
         return STATUS_NEED_REVIEW
+    if any(m.get("status") == STATUS_NEED_DATA for m in measurements):
+        return STATUS_NEED_DATA
     return STATUS_VERIFIED

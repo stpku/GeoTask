@@ -8,15 +8,7 @@ import math
 
 
 def distance_2d(a: list[float], b: list[float]) -> float:
-    """Compute 2D Euclidean distance between two points.
-
-    Args:
-        a: [x1, y1]
-        b: [x2, y2]
-
-    Returns:
-        Euclidean distance sqrt((x1 - x2)^2 + (y1 - y2)^2)
-    """
+    """Compute 2D Euclidean distance between two points."""
     dx = a[0] - b[0]
     dy = a[1] - b[1]
     return math.sqrt(dx * dx + dy * dy)
@@ -69,17 +61,7 @@ def line_intersects_rect(
 ) -> bool:
     """Check if a 2D line segment intersects an axis-aligned rectangle.
 
-    In GeoTask Core v0.1-lite, only the first two points of line_points
-    are used as the line segment.
-
     Boundary contact is considered intersection.
-
-    Args:
-        line_points: [[x1, y1], [x2, y2], ...]
-        bbox: [min_x, min_y, max_x, max_y]
-
-    Returns:
-        True if any part of the line segment crosses or touches the rectangle.
     """
     if len(line_points) < 2:
         return False
@@ -87,18 +69,16 @@ def line_intersects_rect(
     p1 = line_points[0]
     p2 = line_points[1]
 
-    # If either endpoint is inside (or on boundary), it intersects
     if _point_in_rect(p1, bbox) or _point_in_rect(p2, bbox):
         return True
 
     min_x, min_y, max_x, max_y = bbox[0], bbox[1], bbox[2], bbox[3]
 
-    # Check intersection with each of the 4 edges of the rect
     edges = [
-        ([min_x, min_y], [max_x, min_y]),  # bottom
-        ([max_x, min_y], [max_x, max_y]),  # right
-        ([max_x, max_y], [min_x, max_y]),  # top
-        ([min_x, max_y], [min_x, min_y]),  # left
+        ([min_x, min_y], [max_x, min_y]),
+        ([max_x, min_y], [max_x, max_y]),
+        ([max_x, max_y], [min_x, max_y]),
+        ([min_x, max_y], [min_x, min_y]),
     ]
 
     for e1, e2 in edges:
@@ -106,3 +86,51 @@ def line_intersects_rect(
             return True
 
     return False
+
+
+def point_to_line_distance_2d(point: list[float], line_points: list[list[float]]) -> float:
+    """Compute the shortest 2D distance from a point to a line segment."""
+    px, py = point[0], point[1]
+    x1, y1 = line_points[0][0], line_points[0][1]
+    x2, y2 = line_points[1][0], line_points[1][1]
+
+    dx = x2 - x1
+    dy = y2 - y1
+
+    if dx == 0 and dy == 0:
+        return math.sqrt((px - x1) ** 2 + (py - y1) ** 2)
+
+    t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)
+    t = max(0.0, min(1.0, t))
+
+    proj_x = x1 + t * dx
+    proj_y = y1 + t * dy
+
+    return math.sqrt((px - proj_x) ** 2 + (py - proj_y) ** 2)
+
+
+def rect_contains_point(bbox: list[float], point: list[float]) -> bool:
+    """Check if a point is inside or on the boundary of an axis-aligned rectangle."""
+    x, y = point[0], point[1]
+    min_x, min_y, max_x, max_y = bbox[0], bbox[1], bbox[2], bbox[3]
+    return min_x <= x <= max_x and min_y <= y <= max_y
+
+
+def time_overlap(a: list[str], b: list[str]) -> bool:
+    """Check if two time intervals ["HH:MM","HH:MM"] overlap (boundary contact counts)."""
+    a_start = _time_to_minutes(a[0])
+    a_end = _time_to_minutes(a[1])
+    b_start = _time_to_minutes(b[0])
+    b_end = _time_to_minutes(b[1])
+    return a_start <= b_end and b_start <= a_end
+
+
+def altitude_overlap(a: list[float], b: list[float]) -> bool:
+    """Check if two altitude ranges [min, max] overlap (boundary contact counts)."""
+    return a[0] <= b[1] and b[0] <= a[1]
+
+
+def _time_to_minutes(t: str) -> int:
+    """Convert HH:MM string to minutes since midnight."""
+    parts = t.split(":")
+    return int(parts[0]) * 60 + int(parts[1])

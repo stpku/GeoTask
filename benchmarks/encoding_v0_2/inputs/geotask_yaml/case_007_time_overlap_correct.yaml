@@ -1,0 +1,22 @@
+geotask:
+  version: "0.1-lite"
+  name: "case_007_time_overlap_correct"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+
+objects:
+  flight_time:
+    type: time
+    interval: ['10:00', '11:00']
+  restricted:
+    type: time
+    interval: ['10:30', '12:00']
+
+ops:
+  time_overlap: "whether time intervals overlap (boundary counts)"
+
+task:
+  questions:
+    - "time_overlap_result"

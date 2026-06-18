@@ -1,0 +1,3 @@
+OBJ flight_alt=A(50,80); restricted_alt=A(100,150)
+CHK altitude_overlap_result=altitude_overlap(flight_alt,restricted_alt)->bool
+ASK return value, unit, operator, status

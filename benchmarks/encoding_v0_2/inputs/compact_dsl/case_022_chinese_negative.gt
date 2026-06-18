@@ -1,0 +1,3 @@
+OBJ route=L(-200,0;400,0); zone=R(250,-100,350,100)
+CHK route_intersects_zone=line_intersects_rect(route,zone)->bool
+ASK return value, unit, operator, status

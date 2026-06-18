@@ -1,0 +1,22 @@
+geotask:
+  version: "0.1-lite"
+  name: "case_004_rect_contains_correct"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+
+objects:
+  zone:
+    type: rect
+    bbox: [0, 0, 100, 100]
+  target:
+    type: point
+    xy: [50, 50]
+
+ops:
+  rect_contains_point: "whether point is inside rectangle boundary"
+
+task:
+  questions:
+    - "zone_contains_target"

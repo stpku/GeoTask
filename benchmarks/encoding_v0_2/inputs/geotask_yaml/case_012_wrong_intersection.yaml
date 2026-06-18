@@ -1,0 +1,22 @@
+geotask:
+  version: "0.1-lite"
+  name: "case_012_wrong_intersection"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+
+objects:
+  route:
+    type: line
+    points: [[-200, 0], [400, 0]]
+  zone:
+    type: rect
+    bbox: [250, -100, 350, 100]
+
+ops:
+  line_intersects_rect: "whether line segment crosses or touches rectangle"
+
+task:
+  questions:
+    - "route_intersects_zone"

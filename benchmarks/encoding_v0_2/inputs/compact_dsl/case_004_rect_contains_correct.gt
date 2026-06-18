@@ -1,0 +1,3 @@
+OBJ zone=R(0,0,100,100); target=P(50,50)
+CHK zone_contains_target=rect_contains_point(zone,target)->bool
+ASK return value, unit, operator, status

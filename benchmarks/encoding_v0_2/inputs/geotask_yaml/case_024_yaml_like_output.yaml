@@ -1,0 +1,30 @@
+geotask:
+  version: "0.1-lite"
+  name: "case_024_yaml_like_output"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+
+objects:
+  takeoff:
+    type: point
+    xy: [0, 0]
+  school:
+    type: point
+    xy: [120, 80]
+  route:
+    type: line
+    points: [[-200, 0], [400, 0]]
+  zone:
+    type: rect
+    bbox: [250, -100, 350, 100]
+
+ops:
+  distance_2d: "Euclidean distance sqrt((x1-x2)^2+(y1-y2)^2)"
+  line_intersects_rect: "whether line segment crosses or touches rectangle"
+
+task:
+  questions:
+    - "takeoff_to_school_distance"
+    - "route_intersects_zone"

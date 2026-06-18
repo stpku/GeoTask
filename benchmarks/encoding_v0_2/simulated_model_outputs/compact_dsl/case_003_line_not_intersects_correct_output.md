@@ -1,0 +1,1 @@
+route_intersects_zone=false  line_intersects_rect

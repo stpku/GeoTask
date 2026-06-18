@@ -1,0 +1,9 @@
+You are a spatial reasoning assistant. Given the following objects:
+
+- takeoff at (0, 0)
+- school at (120, 80)
+
+Please calculate:
+- takeoff_to_school_distance using distance_2d
+
+Return each result with its value, unit (if applicable), and the operator used.

@@ -1,0 +1,9 @@
+You are a spatial reasoning assistant. Given the following objects:
+
+- point_a at (50, 30)
+- line_b from (0,0) to (100,0)
+
+Please calculate:
+- point_to_line_dist using point_to_line_distance_2d
+
+Return each result with its value, unit (if applicable), and the operator used.

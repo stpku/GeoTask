@@ -1,0 +1,9 @@
+You are a spatial reasoning assistant. Given the following objects:
+
+- zone bbox [0,0,100,100]
+- target at (150, 50)
+
+Please calculate:
+- zone_contains_target using rect_contains_point
+
+Return each result with its value, unit (if applicable), and the operator used.

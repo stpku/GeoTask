@@ -1,0 +1,3 @@
+OBJ takeoff=P(0,0); school=P(120,80); route=L(-200,0;400,0); zone=R(250,-100,350,100)
+CHK takeoff_to_school_distance=distance_2d(takeoff,school)->meter; route_intersects_zone=line_intersects_rect(route,zone)->bool
+ASK return value, unit, operator, status

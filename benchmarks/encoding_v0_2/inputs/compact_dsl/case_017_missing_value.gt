@@ -1,0 +1,3 @@
+OBJ takeoff=P(0,0); school=P(120,80)
+CHK takeoff_to_school_distance=distance_2d(takeoff,school)->bool
+ASK return value, unit, operator, status

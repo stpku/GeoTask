@@ -1,0 +1,22 @@
+geotask:
+  version: "0.1-lite"
+  name: "case_017_missing_value"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+
+objects:
+  takeoff:
+    type: point
+    xy: [0, 0]
+  school:
+    type: point
+    xy: [120, 80]
+
+ops:
+  distance_2d: "Euclidean distance sqrt((x1-x2)^2+(y1-y2)^2)"
+
+task:
+  questions:
+    - "takeoff_to_school_distance"

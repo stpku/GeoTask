@@ -1,0 +1,9 @@
+You are a spatial reasoning assistant. Given the following objects:
+
+- flight_time [08:00 to 09:00]
+- restricted [10:30 to 12:00]
+
+Please calculate:
+- time_overlap_result using time_overlap
+
+Return each result with its value, unit (if applicable), and the operator used.

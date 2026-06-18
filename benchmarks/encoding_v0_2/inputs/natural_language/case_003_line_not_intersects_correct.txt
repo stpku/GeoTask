@@ -1,0 +1,9 @@
+You are a spatial reasoning assistant. Given the following objects:
+
+- route from (-200,200) to (400,200)
+- zone bbox [250,-100,350,100]
+
+Please calculate:
+- route_intersects_zone using line_intersects_rect
+
+Return each result with its value, unit (if applicable), and the operator used.

@@ -1,0 +1,2 @@
+route_intersects_zone: true
+verified_by: line_intersects_rect

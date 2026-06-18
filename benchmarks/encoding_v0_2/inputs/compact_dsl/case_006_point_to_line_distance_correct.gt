@@ -1,0 +1,3 @@
+OBJ point_a=P(50,30); line_b=L(0,0;100,0)
+CHK point_to_line_dist=point_to_line_distance_2d(point_a,line_b)->meter
+ASK return value, unit, operator, status

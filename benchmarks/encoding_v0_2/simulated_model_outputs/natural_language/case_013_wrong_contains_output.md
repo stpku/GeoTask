@@ -1,0 +1,2 @@
+zone_contains_target: true
+verified_by: rect_contains_point

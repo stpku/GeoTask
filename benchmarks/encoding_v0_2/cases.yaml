@@ -1,0 +1,248 @@
+# GeoTask Encoding Benchmark v0.2 — Test Cases
+# 24+ cases across 5 groups × 3 encodings = 72+ runs.
+#
+# Groups:
+#   A. basic_correct     (cases 001-005)
+#   B. new_operators     (cases 006-010)
+#   C. contradicted      (cases 011-015)
+#   D. need_review       (cases 016-020)
+#   E. robustness        (cases 021-024)
+
+cases:
+  # ═══════════════════════════════════════════════════════════════════
+  # Group A: Basic Correct Computation
+  # ═══════════════════════════════════════════════════════════════════
+  - case_id: "case_001_distance_2d_correct"
+    case_group: "basic_correct"
+    description: "Correct 2D point-to-point distance"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, unit: meter, type: float}
+    expected_overall_status: verified
+
+  - case_id: "case_002_line_intersects_correct"
+    case_group: "basic_correct"
+    description: "Line segment intersects rectangle — correct true"
+    scene:
+      objects: {route: {type: line, points: [[-200,0],[400,0]]}, zone: {type: rect, bbox: [250,-100,350,100]}}
+    checks:
+      - {name: route_intersects_zone, op: line_intersects_rect, args: ["route","zone"], expected: true, type: bool}
+    expected_overall_status: verified
+
+  - case_id: "case_003_line_not_intersects_correct"
+    case_group: "basic_correct"
+    description: "Line segment does NOT intersect rectangle — correct false"
+    scene:
+      objects: {route: {type: line, points: [[-200,200],[400,200]]}, zone: {type: rect, bbox: [250,-100,350,100]}}
+    checks:
+      - {name: route_intersects_zone, op: line_intersects_rect, args: ["route","zone"], expected: false, type: bool}
+    expected_overall_status: verified
+
+  - case_id: "case_004_rect_contains_correct"
+    case_group: "basic_correct"
+    description: "Rectangle contains point — correct true"
+    scene:
+      objects: {zone: {type: rect, bbox: [0,0,100,100]}, target: {type: point, xy: [50, 50]}}
+    checks:
+      - {name: zone_contains_target, op: rect_contains_point, args: ["zone","target"], expected: true, type: bool}
+    expected_overall_status: verified
+
+  - case_id: "case_005_rect_not_contains_correct"
+    case_group: "basic_correct"
+    description: "Rectangle does not contain point — correct false"
+    scene:
+      objects: {zone: {type: rect, bbox: [0,0,100,100]}, target: {type: point, xy: [150, 50]}}
+    checks:
+      - {name: zone_contains_target, op: rect_contains_point, args: ["zone","target"], expected: false, type: bool}
+    expected_overall_status: verified
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Group B: New Operators
+  # ═══════════════════════════════════════════════════════════════════
+  - case_id: "case_006_point_to_line_distance_correct"
+    case_group: "new_operators"
+    description: "Point-to-line-segment distance correct"
+    scene:
+      objects: {point_a: {type: point, xy: [50, 30]}, line_b: {type: line, points: [[0,0],[100,0]]}}
+    checks:
+      - {name: point_to_line_dist, op: point_to_line_distance_2d, args: ["point_a","line_b"], expected: 30.0, unit: meter, type: float}
+    expected_overall_status: verified
+
+  - case_id: "case_007_time_overlap_correct"
+    case_group: "new_operators"
+    description: "Time intervals overlap — correct true"
+    scene:
+      objects: {flight_time: {type: time, interval: ["10:00","11:00"]}, restricted: {type: time, interval: ["10:30","12:00"]}}
+    checks:
+      - {name: time_overlap_result, op: time_overlap, args: ["flight_time","restricted"], expected: true, type: bool}
+    expected_overall_status: verified
+
+  - case_id: "case_008_time_not_overlap_correct"
+    case_group: "new_operators"
+    description: "Time intervals do NOT overlap — correct false"
+    scene:
+      objects: {flight_time: {type: time, interval: ["08:00","09:00"]}, restricted: {type: time, interval: ["10:30","12:00"]}}
+    checks:
+      - {name: time_overlap_result, op: time_overlap, args: ["flight_time","restricted"], expected: false, type: bool}
+    expected_overall_status: verified
+
+  - case_id: "case_009_altitude_overlap_correct"
+    case_group: "new_operators"
+    description: "Altitude ranges overlap — correct true"
+    scene:
+      objects: {flight_alt: {type: altitude, range: [80, 120]}, restricted_alt: {type: altitude, range: [100, 150]}}
+    checks:
+      - {name: altitude_overlap_result, op: altitude_overlap, args: ["flight_alt","restricted_alt"], expected: true, type: bool}
+    expected_overall_status: verified
+
+  - case_id: "case_010_altitude_not_overlap_correct"
+    case_group: "new_operators"
+    description: "Altitude ranges do NOT overlap — correct false"
+    scene:
+      objects: {flight_alt: {type: altitude, range: [50, 80]}, restricted_alt: {type: altitude, range: [100, 150]}}
+    checks:
+      - {name: altitude_overlap_result, op: altitude_overlap, args: ["flight_alt","restricted_alt"], expected: false, type: bool}
+    expected_overall_status: verified
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Group C: Contradicted (wrong model output)
+  # ═══════════════════════════════════════════════════════════════════
+  - case_id: "case_011_wrong_distance"
+    case_group: "contradicted"
+    description: "Model outputs wrong distance"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, model_output: 150.0, unit: meter, type: float}
+    expected_overall_status: contradicted
+
+  - case_id: "case_012_wrong_intersection"
+    case_group: "contradicted"
+    description: "Model incorrectly says no intersection"
+    scene:
+      objects: {route: {type: line, points: [[-200,0],[400,0]]}, zone: {type: rect, bbox: [250,-100,350,100]}}
+    checks:
+      - {name: route_intersects_zone, op: line_intersects_rect, args: ["route","zone"], expected: true, model_output: false, type: bool}
+    expected_overall_status: contradicted
+
+  - case_id: "case_013_wrong_contains"
+    case_group: "contradicted"
+    description: "Model incorrectly says rect contains point"
+    scene:
+      objects: {zone: {type: rect, bbox: [0,0,100,100]}, target: {type: point, xy: [150, 50]}}
+    checks:
+      - {name: zone_contains_target, op: rect_contains_point, args: ["zone","target"], expected: false, model_output: true, type: bool}
+    expected_overall_status: contradicted
+
+  - case_id: "case_014_wrong_time_overlap"
+    case_group: "contradicted"
+    description: "Model incorrectly says time intervals overlap"
+    scene:
+      objects: {flight_time: {type: time, interval: ["08:00","09:00"]}, restricted: {type: time, interval: ["10:30","12:00"]}}
+    checks:
+      - {name: time_overlap_result, op: time_overlap, args: ["flight_time","restricted"], expected: false, model_output: true, type: bool}
+    expected_overall_status: contradicted
+
+  - case_id: "case_015_wrong_altitude_overlap"
+    case_group: "contradicted"
+    description: "Model incorrectly says altitude ranges overlap"
+    scene:
+      objects: {flight_alt: {type: altitude, range: [50, 80]}, restricted_alt: {type: altitude, range: [100, 150]}}
+    checks:
+      - {name: altitude_overlap_result, op: altitude_overlap, args: ["flight_alt","restricted_alt"], expected: false, model_output: true, type: bool}
+    expected_overall_status: contradicted
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Group D: Need Review / Need Data
+  # ═══════════════════════════════════════════════════════════════════
+  - case_id: "case_016_missing_operator"
+    case_group: "need_review"
+    description: "Correct values but missing operator references"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}, route: {type: line, points: [[-200,0],[400,0]]}, zone: {type: rect, bbox: [250,-100,350,100]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, unit: meter, type: float}
+      - {name: route_intersects_zone, op: line_intersects_rect, args: ["route","zone"], expected: true, type: bool}
+    expected_review_reason: operator_reference_missing
+
+  - case_id: "case_017_missing_value"
+    case_group: "need_review"
+    description: "Model output missing numeric value"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, type: float}
+    expected_review_reason: distance_value_not_found
+    expected_overall_status: need_review
+
+  - case_id: "case_018_missing_object_reference"
+    case_group: "need_review"
+    description: "Model output lacks clear object references"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, unit: meter, type: float}
+    expected_review_reason: object_reference_ambiguous
+    expected_overall_status: need_review
+
+  - case_id: "case_019_invalid_operator"
+    case_group: "need_review"
+    description: "Model references non-existent operator"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, unit: meter, type: float}
+    expected_operator_error: invalid_operator_detected
+    expected_overall_status: need_review
+
+  - case_id: "case_020_invalid_reference"
+    case_group: "need_review"
+    description: "Model references non-existent object"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, unit: meter, type: float}
+    expected_object_error: invalid_reference_detected
+    expected_overall_status: need_review
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Group E: Robustness
+  # ═══════════════════════════════════════════════════════════════════
+  - case_id: "case_021_unit_mismatch"
+    case_group: "robustness"
+    description: "Model outputs unit mismatch (km instead of m)"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, unit: meter, type: float}
+    expected_review_reason: unit_mismatch
+    expected_overall_status: need_review
+
+  - case_id: "case_022_chinese_negative"
+    case_group: "robustness"
+    description: "Chinese '不相交' must not be confused with intersection true"
+    scene:
+      objects: {route: {type: line, points: [[-200,0],[400,0]]}, zone: {type: rect, bbox: [250,-100,350,100]}}
+    checks:
+      - {name: route_intersects_zone, op: line_intersects_rect, args: ["route","zone"], expected: true, type: bool}
+    expected_overall_status: verified  # NL may contradicted, structured handles correctly
+
+  - case_id: "case_023_markdown_mixed"
+    case_group: "robustness"
+    description: "Markdown mixed output — extraction robustness"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, unit: meter, type: float}
+    expected_overall_status: verified
+
+  - case_id: "case_024_yaml_like_output"
+    case_group: "robustness"
+    description: "YAML-like structured output — extraction robustness"
+    scene:
+      objects: {takeoff: {type: point, xy: [0, 0]}, school: {type: point, xy: [120, 80]}, route: {type: line, points: [[-200,0],[400,0]]}, zone: {type: rect, bbox: [250,-100,350,100]}}
+    checks:
+      - {name: takeoff_to_school_distance, op: distance_2d, args: ["takeoff","school"], expected: 144.22, unit: meter, type: float}
+      - {name: route_intersects_zone, op: line_intersects_rect, args: ["route","zone"], expected: true, type: bool}
+    expected_overall_status: verified

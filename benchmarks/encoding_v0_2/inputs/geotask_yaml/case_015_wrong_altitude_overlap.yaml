@@ -1,0 +1,22 @@
+geotask:
+  version: "0.1-lite"
+  name: "case_015_wrong_altitude_overlap"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+
+objects:
+  flight_alt:
+    type: altitude
+    range: [50, 80]
+  restricted_alt:
+    type: altitude
+    range: [100, 150]
+
+ops:
+  altitude_overlap: "whether altitude ranges overlap (boundary counts)"
+
+task:
+  questions:
+    - "altitude_overlap_result"

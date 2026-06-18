@@ -1,0 +1,22 @@
+geotask:
+  version: "0.1-lite"
+  name: "case_006_point_to_line_distance_correct"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+
+objects:
+  point_a:
+    type: point
+    xy: [50, 30]
+  line_b:
+    type: line
+    points: [[0, 0], [100, 0]]
+
+ops:
+  point_to_line_distance_2d: "shortest distance from point to line segment"
+
+task:
+  questions:
+    - "point_to_line_dist"

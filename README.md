@@ -235,6 +235,36 @@ errors: []
 
 See [`docs/eval_spec.md`](docs/eval_spec.md) for the full evaluation specification.
 
+## GeoTask Encoding Benchmark
+
+GeoTask Encoding Benchmark compares natural language, GeoTask YAML, and compact DSL encodings for spatial tasks. It evaluates approximate token cost, normalization success, verification success, and benchmark score.
+
+The current benchmark uses **deterministic simulated outputs** and does not claim live LLM accuracy. It is intended to evaluate token cost, normalization behavior, verification behavior, and patent evidence reproducibility.
+
+```bash
+python benchmarks/encoding_v0_1/run_benchmark.py
+```
+
+Results are output to `benchmarks/encoding_v0_1/outputs/` and copied to `patent_evidence/03_benchmark/`.
+
+See [`docs/encoding_benchmark_v0_1.md`](docs/encoding_benchmark_v0_1.md) for the full benchmark report,
+and [`docs/patent_evidence_guide.md`](docs/patent_evidence_guide.md) for patent evidence usage.
+
+### Benchmark v0.2 (Expanded)
+
+The v0.2 benchmark extends to **24 cases** across **6 operators**, **5 case groups**, and **8 error types** — a 6× expansion over v0.1.
+
+```bash
+python benchmarks/encoding_v0_2/run_benchmark.py
+```
+
+**Results**: natural_language 96% | geotask_yaml 100% | compact_dsl 100% status match.
+Compact DSL uses 35% fewer tokens than natural language while achieving perfect verification.
+
+New in v0.2: `point_to_line_distance_2d`, `rect_contains_point`, `time_overlap`, `altitude_overlap` operators; unit mismatch, Chinese negation, Markdown/YAML extraction robustness tests.
+
+See `benchmarks/encoding_v0_2/` and `patent_evidence/07_benchmark_v0_2/` for details.
+
 ## Supported Object Types (v0.1-lite)
 
 | Type  | Fields               | Description                         |

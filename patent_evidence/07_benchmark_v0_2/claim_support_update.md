@@ -58,7 +58,26 @@ python benchmarks/encoding_v0_2/run_benchmark.py
 pytest tests/test_encoding_benchmark_v0_2.py -v
 ```
 
+## Boundary with GeoTask Core Normalizer
+
+> ⚠️ **Evidence interpretation boundary.**
+
+v0.2 supports **encoding structure and verification readiness** claims — it demonstrates that task-related spatial encodings can preserve object references, operator references, propositions, and expected outputs across 24 cases and 6 operators.
+
+However, v0.2 does **not** directly prove that the production GeoTask Core Normalizer (`src/geotask_core/normalizer.py`) can generically extract and normalize all six operators from arbitrary natural language outputs. The benchmark uses `benchmarks/encoding_v0_2/local_verifier.py` — a benchmark-layer verifier scoped to the 24 deterministic test cases.
+
+**This boundary does not weaken patent support.** Instead, it demonstrates that the evidence is carefully layered:
+
+| Evidence Layer | What It Proves | Version |
+|---------------|---------------|---------|
+| End-to-end core loop | Production normalizer + verifier work | v0.1.1 |
+| Structural extensibility | Encoding format handles diverse operators and errors | v0.2 |
+| Unified production evidence | All operators in core normalizer + verifier | v0.3 (planned) |
+
+For detailed explanation, see `v0_2_normalizer_boundary.md`.
+
 ---
 
 *Evidence artifact: `patent_evidence/07_benchmark_v0_2/claim_support_update.md`*
 *Extends: `patent_evidence/06_claim_mapping/claim_to_evidence_matrix.md`*
+*Updated: 2026-06-18 (v0.2 addendum)*

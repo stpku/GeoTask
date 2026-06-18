@@ -97,15 +97,30 @@ pytest tests/test_encoding_benchmark_v0_2.py -v
 | Results JSON | `benchmarks/encoding_v0_2/outputs/` | Structured results |
 | Charts | `benchmarks/encoding_v0_2/outputs/charts/` | 6 visualization PNGs |
 
+## Normalizer / Verifier Boundary
+
+> ⚠️ **Important for patent evidence interpretation.**
+
+v0.2 uses a **benchmark-local verifier** (`benchmarks/encoding_v0_2/local_verifier.py`) for extended operator coverage — it does **not** imply that the production GeoTask Core Normalizer fully supports all six operators.
+
+- **v0.1.1** remains the **end-to-end Core Normalizer + Verifier evidence** (2 operators, 4 cases).
+- **v0.2** provides **multi-scenario structural evidence** (6 operators, 24 cases, 8 error types) — demonstrating encoding extensibility, not production normalizer completeness.
+- **v0.3** will backfill stable operators and error handling into Core Normalizer / Verifier.
+
+For detailed boundary explanation, see `v0_2_normalizer_boundary.md`.
+For attorney-facing summary, see `v0_2_attorney_addendum.md`.
+
 ## Boundaries
 
 - **No live LLM API calls** — all model outputs are deterministic simulations
 - **Token counts are estimates** — approximate, relative comparison only (tiktoken support optional)
-- **GeoTask Core operators** — new operators added to `src/geotask_core/ops.py` but not to the main runner
+- **v0.2 uses benchmark local verifier** — not production GeoTask Core Normalizer for new operators
+- **GeoTask Core operators** — new operators added to `src/geotask_core/ops.py` but not to the main runner/normalizer
 - **No external data** — no real-world coordinates, no map APIs
 - **v0.1 backward compatible** — existing tests and benchmark pass unchanged
 
 ---
 
 *Evidence artifact: `patent_evidence/07_benchmark_v0_2/README.md`*
+*Updated: 2026-06-18 (v0.2 addendum)*
 *Generated: 2026-06-18 | Benchmark: GeoTask Encoding Benchmark v0.2*

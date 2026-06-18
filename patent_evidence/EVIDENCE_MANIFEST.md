@@ -43,7 +43,9 @@ patent_evidence/
 └── 07_benchmark_v0_2/                           # v0.2 benchmark evidence (NEW)
     ├── README.md                                 # v0.2 evidence summary
     ├── case_coverage.md                          # 24-case operator/error matrix
-    └── claim_support_update.md                   # v0.2 claim mapping updates
+    ├── claim_support_update.md                   # v0.2 claim mapping updates
+    ├── v0_2_normalizer_boundary.md               # ⚠️ Normalizer/verifier boundary explanation
+    └── v0_2_attorney_addendum.md                 # Attorney-facing v0.2 evidence summary
 ```
 
 ---

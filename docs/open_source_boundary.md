@@ -7,12 +7,16 @@ The following components are released under the MIT License:
 | Component              | Description                                       |
 |------------------------|---------------------------------------------------|
 | GeoTask Core format spec | YAML schema and field definitions               |
-| Example documents      | Sample GeoTask Core Lite YAML files               |
+| Example documents      | Sample GeoTask Core YAML files                    |
 | Core parser            | YAML loading and validation                       |
-| Core operators         | Deterministic distance and intersection functions |
+| Core operators         | Deterministic 6 spatial operators                 |
 | Core runner            | Auto-detection and execution of spatial tasks     |
-| Lite normalizer        | Basic extraction of measurements from LLM output  |
+| Core normalizer        | Multi-operator extraction (Chinese/English/YAML/Markdown) |
+| Core verifier          | Deterministic verification with unified status hierarchy |
 | Simple evaluator       | Comparison of LLM output against Core ground truth |
+| CLI                    | validate, run, normalize, eval commands           |
+| Runtime SDK contracts  | Interface definitions (Protocols, dataclasses) — reference only |
+| Mock runtime           | Deterministic mock pipeline — demonstration only  |
 
 These components are sufficient for:
 
@@ -31,12 +35,15 @@ and are **not** covered by the MIT License:
 | Component                   | Status          |
 |-----------------------------|-----------------|
 | Full GeoTask Runtime        | Proprietary     |
-| UAV Rule Pack               | Proprietary     |
+| Domain Packs (industry rules) | Proprietary     |
 | Real-world data connectors  | Proprietary     |
 | Audit / review backend      | Proprietary     |
 | Customer case studies       | Proprietary     |
 | Failure sample library      | Proprietary     |
-| Production normalizer       | Proprietary     |
+| Encoding planner (production) | Proprietary     |
+| Model routing policy (production) | Proprietary   |
+| Cost control and governance | Proprietary     |
+| Industry scoring models     | Proprietary     |
 
 ---
 
@@ -69,3 +76,11 @@ If you build a tool that reads or writes GeoTask Core format:
 - You do not need to open source your extensions.
 
 Attribution is appreciated but not required by the MIT License.
+
+---
+
+## See Also
+
+- [`open_core_commercial_runtime_boundary.md`](open_core_commercial_runtime_boundary.md) — Detailed Core/Runtime/Domain Pack boundary with open vs. private classification
+- [`product_architecture_v0_1.md`](product_architecture_v0_1.md) — Full product architecture with Mermaid diagrams
+- [`patent_boundary.md`](patent_boundary.md) — Patent rights and open source interaction

@@ -44,19 +44,30 @@ GeoTask Core 是一种面向大模型的轻量级空间任务表达格式，让�
 ## Relationship to Other GeoTask Components
 
 ```
-┌──────────────────────────────────────────┐
-│              GeoTask Audit                │  ← Provenance, compliance, heavy audit
-├──────────────────────────────────────────┤
-│  GeoTask UAV   │  GeoTask Eval           │  ← Domain rule packs, evaluation
-├───────────────┴──────────────────────────┤
-│          GeoTask Core (this repo)        │  ← Format + minimal runtime
-└──────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│              GeoTask Domain Pack                  │  ← Industry rules, data adapters
+├──────────────────────────────────────────────────┤
+│              GeoTask Runtime (private)            │  ← Orchestration, governance
+├──────────────────────────────────────────────────┤
+│  GeoTask Audit   │  GeoTask Eval                 │  ← Provenance, evaluation
+├─────────────────┴────────────────────────────────┤
+│           GeoTask Core (this repo)               │  ← Format + minimal runtime
+└──────────────────────────────────────────────────┘
 ```
 
-- **GeoTask Core**: The format. Self-contained, minimal, verifiable.
+- **GeoTask Core**: The format. Self-contained, minimal, verifiable. Open source.
+- **GeoTask Runtime**: Private orchestration and governance layer. Not in this repo.
+- **GeoTask Domain Pack**: Private industry-specific extension packages. Not in this repo.
 - **GeoTask Eval**: Evaluates LLM outputs against Core ground truth.
-- **GeoTask UAV**: Domain-specific rule packs and object libraries for UAV operations.
 - **GeoTask Audit**: Provenance tracking, audit trails, output contracts.
+
+> **GeoTask Core provides lightweight spatial task representation and deterministic
+> verification primitives. Commercial orchestration, model-routing policies,
+> domain rule packs, data connectors, audit strategies, and operational workflows
+> are intentionally separated from GeoTask Core.**
+>
+> **GeoTask Core 提供轻量空间任务表达和确定性验证基础能力。商业编排、模型路由策略、
+> 行业规则包、数据连接器、审计策略和业务工作流均与 GeoTask Core 保持边界隔离。**
 
 ## Quick Start
 
@@ -166,6 +177,9 @@ geotask normalize examples/deepseek_output_sample.txt
 python -m geotask_core.cli validate examples/geotask_core_lite.yaml
 python -m geotask_core.cli run examples/geotask_core_lite.yaml
 python -m geotask_core.cli normalize examples/deepseek_output_sample.txt
+
+# Mock runtime (demonstration of future Runtime pipeline)
+python -m geotask_runtime.mock_runtime examples/geotask_core_lite.yaml
 ```
 
 ## GeoTask Normalizer
@@ -313,18 +327,29 @@ For patent counsel review:
 ## Architecture
 
 ```
-src/geotask_core/
-├── __init__.py        # Package init
-├── models.py          # Dataclasses: PointObject, LineObject, RectObject, StirDocument
-├── parser.py          # YAML loader + validator
-├── ops.py             # Deterministic 6 operators
-├── runner.py          # Generic type-based auto-detection runner
-├── normalizer.py      # Multi-operator normalizer with error detection
-├── verifier.py        # Verifier with unified status hierarchy
-├── result_schema.py   # Status/reason constants + overall_status computation
-├── evaluator.py       # Compare Core results with normalized LLM outputs
-└── cli.py             # CLI: validate, run, normalize, eval
+src/geotask_core/         ← Open source: format + deterministic runtime
+├── __init__.py
+├── models.py             # Dataclasses: PointObject, LineObject, RectObject, StirDocument
+├── parser.py             # YAML loader + validator
+├── ops.py                # Deterministic 6 operators
+├── runner.py             # Generic type-based auto-detection runner
+├── normalizer.py         # Multi-operator normalizer with error detection
+├── verifier.py           # Verifier with unified status hierarchy
+├── result_schema.py      # Status/reason constants + overall_status computation
+├── evaluator.py          # Compare Core results with normalized LLM outputs
+└── cli.py                # CLI: validate, run, normalize, eval
+
+src/geotask_runtime/      ← Private: contracts + mock (reference only)
+├── __init__.py
+├── contracts.py          # TaskRequest, EncodingPlan, GovernedTaskResult, etc.
+├── planner.py            # RuleBasedEncodingPlanner (mock)
+├── router.py             # MockModelRouter (mock)
+├── result_governance.py  # DeterministicResultGovernor (mock)
+├── domain_pack.py        # GenericSpatialDomainPack (demo)
+└── mock_runtime.py       # End-to-end mock pipeline + CLI
 ```
+
+See [`docs/product_architecture_v0_1.md`](docs/product_architecture_v0_1.md) for the full product architecture.
 
 ## Design Principles
 
@@ -338,16 +363,18 @@ See [`docs/design_principles.md`](docs/design_principles.md):
 
 ## Open Source Boundary
 
-See [`docs/open_source_boundary.md`](docs/open_source_boundary.md).
+See [`docs/open_source_boundary.md`](docs/open_source_boundary.md) and
+[`docs/open_core_commercial_runtime_boundary.md`](docs/open_core_commercial_runtime_boundary.md).
 
 **Open Source (this repo)**:
 - GeoTask Core format spec and examples
-- Core parser, operators, runner, lite normalizer
-- Simple evaluator
+- Core parser, operators, runner, normalizer, verifier
+- Evaluator and CLI
+- Runtime SDK contracts and mock interfaces (reference only)
 
 **Not Open Source**:
-- Full GeoTask Runtime
-- UAV Rule Pack
+- Full GeoTask Runtime (encoding planner, model routing, governance, cost control)
+- Domain Packs (industry rules, scoring logic, data adapters)
 - Real-world data connectors
 - Audit / review backend
 - Customer case studies

@@ -1,0 +1,41 @@
+geotask:
+  version: "0.1-runtime"
+  name: "multi_operator_runtime"
+  goal: "Multi-operator spatial task"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+
+objects:
+  takeoff:
+    type: "point"
+    xy: [0, 0]
+  school:
+    type: "point"
+    xy: [120, 80]
+  route:
+    type: "line"
+    points:
+      - [-200, 0]
+      - [400, 0]
+  zone:
+    type: "rect"
+    bbox: [250, -100, 350, 100]
+
+ops:
+  distance_2d: "sqrt((x1-x2)^2 + (y1-y2)^2)"
+  line_intersects_rect: "line-rect intersection check"
+  point_to_line_distance_2d: "point to line segment distance"
+  rect_contains_point: "rect-point containment"
+
+task:
+  questions:
+    - "Calculate distance from takeoff to school."
+    - "Check if route intersects zone."
+    - "Calculate distance from school to route line."
+    - "Check if zone contains takeoff point."
+
+runtime:
+  token_budget: 500
+  encoding_hint: "auto"

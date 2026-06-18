@@ -9,8 +9,8 @@
 | Real filing documents included | **No** — Only checklists and placeholders |
 | Customer data included | **No** |
 | Third-party confidential materials | **No** |
-| Git branch | `benchmark/encoding-v0.2` |
-| Base branch | `evidence/hardening-v0.1.1` |
+| Git branch | `architecture/product-and-patent-v0.1` |
+| Base branch | `core/normalizer-verifier-v0.3` |
 
 ---
 
@@ -54,6 +54,13 @@ patent_evidence/
     ├── core_v0_3_boundary.md                     # Evidence boundary and limitations
     ├── core_v0_3_attorney_addendum.md            # Attorney-facing v0.3 evidence summary (DELIVERY)
     └── core_v0_3_delivery_note.md                # v0.3 delivery instructions (DELIVERY)
+└── 09_product_architecture_v0_1/                 # v0.1 product architecture + patent portfolio
+    ├── README.md                                 # Package overview
+    ├── product_architecture_patent_positioning.md # Product architecture patent positioning
+    ├── invention_ledger.md                       # 10 invention points ledger
+    ├── patent_portfolio_roadmap.md               # P1-P5 patent portfolio roadmap
+    ├── product_to_patent_mapping.md              # Module → patent mapping
+    └── commercial_boundary_note.md               # Commercial boundary declaration
 ```
 
 **Evidence version**: `core-normalizer-verifier-v0.3`
@@ -104,18 +111,22 @@ patent_evidence/
 
 | Metric | Value |
 |--------|-------|
-| Total test modules | 8 |
-| Total test functions | 113 |
+| Total test modules | 13+ |
+| Total test functions | 406+ |
 | All tests passing | ✅ Yes |
-| Last run | `pytest` — 113 passed in 0.34s |
+| Last run | `pytest` — 406 passed |
 
 Test modules:
-- `test_ops.py`, `test_parser.py`, `test_runner.py` — Core functionality
+- `test_ops.py`, `test_ops_v0_3.py`, `test_parser.py`, `test_runner.py` — Core functionality
 - `test_normalizer.py`, `test_normalizer_v0_2.py` — Extraction
 - `test_verifier.py` — Verification
 - `test_evaluator.py` — Eval scoring
-- `test_encoding_benchmark.py` — Benchmark validation (38 tests)
-- `test_evidence_hardening.py` — Evidence integrity checks
+- `test_core_normalizer_verifier_v0_3.py` — v0.3 production E2E
+- `test_encoding_benchmark.py`, `test_encoding_benchmark_v0_2.py` — Benchmark validation
+- `test_evidence_hardening.py`, `test_evidence_delivery_note.py` — Evidence integrity
+- `test_runtime_contracts_v0_1.py` — Runtime contract validation
+- `test_mock_runtime_v0_1.py` — Mock runtime pipeline
+- `test_product_architecture_evidence_v0_1.py` — Architecture evidence integrity
 
 ---
 

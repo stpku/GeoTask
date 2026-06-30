@@ -34,6 +34,11 @@ Required top-level keys:
 - `ops`
 - `task`
 
+Optional reserved top-level keys:
+
+- `assertions`
+- `expected_results`
+
 The deprecated top-level `stir` key is still accepted for backward
 compatibility when `geotask` is absent.
 
@@ -121,6 +126,8 @@ Stable diagnostic codes include:
 - `unknown_object_type`
 - `invalid_coordinates`
 - `invalid_interval`
+- `unknown_field`
+- `invalid_operator`
 
 `invalid_interval` is used for invalid time intervals and altitude ranges. For
 example:
@@ -134,6 +141,20 @@ example:
   code: invalid_interval
   message: "objects.band_a.range: invalid_interval: must be [min, max] with min <= max."
   suggested_fix: "Use a numeric two-item range with min <= max."
+```
+
+Unknown fields and unsupported operators also surface structured diagnostics.
+Examples:
+
+```yaml
+- path: mystery
+  code: unknown_field
+  message: "Unexpected top-level field 'mystery'."
+  suggested_fix: "Remove 'mystery' or move it under a supported section."
+- path: ops.geo_distance
+  code: invalid_operator
+  message: "Unsupported operator 'geo_distance' in ops."
+  suggested_fix: "Use one of: distance_2d, line_intersects_rect, point_to_line_distance_2d, rect_contains_point, time_overlap, altitude_overlap."
 ```
 
 ## Examples

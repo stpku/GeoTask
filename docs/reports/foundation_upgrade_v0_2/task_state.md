@@ -38,7 +38,9 @@ or expanding P2/P5 or LowAlt-sensitive material.
   `report --format json|markdown`.
 - Loop C: added public-safe Core examples and generic time/altitude validation.
 - Loop D: added structured parser diagnostics and CLI validation output.
+- Loop E: broadened diagnostics to unknown fields and unsupported operators,
+  and aligned `inspect schema` with optional reserved sections.
 
 ## In Progress
 
-- Loop D verification and local commit.
+- Loop E verification and local commit.

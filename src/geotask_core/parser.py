@@ -6,8 +6,18 @@ from typing import Union
 
 import yaml
 
+from geotask_core.operator_registry import operator_names
+
 
 VALID_OBJECT_TYPES = ("point", "line", "rect", "time", "altitude")
+ALLOWED_TOP_LEVEL_KEYS = ("geotask", "stir", "space", "objects", "ops", "task", "assertions", "expected_results")
+ALLOWED_OBJECT_FIELDS = {
+    "point": {"type", "xy"},
+    "line": {"type", "points"},
+    "rect": {"type", "bbox"},
+    "time": {"type", "interval"},
+    "altitude": {"type", "range"},
+}
 
 
 def load_geotask(path: Union[str, Path]) -> dict:
@@ -91,6 +101,16 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
                 f"Use one of: {expected}.",
             ))
             continue
+
+        allowed_fields = ALLOWED_OBJECT_FIELDS[obj_type]
+        for field in obj.keys():
+            if field not in allowed_fields:
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.{field}",
+                    "unknown_field",
+                    f"Unexpected field '{field}' for object '{name}' of type '{obj_type}'.",
+                    f"Remove '{field}' or replace it with one of: {', '.join(sorted(allowed_fields))}.",
+                ))
 
         if obj_type == "point":
             xy = obj.get("xy")
@@ -279,6 +299,17 @@ def validate_geotask_diagnostics(data: dict) -> list[dict]:
             f"Change '{meta_key}' to a mapping with version, name, and goal.",
         ))
 
+    for key in data.keys():
+        if key == "_deprecated_stir_field":
+            continue
+        if key not in ALLOWED_TOP_LEVEL_KEYS:
+            diagnostics.append(_diagnostic(
+                key,
+                "unknown_field",
+                f"Unexpected top-level field '{key}'.",
+                f"Remove '{key}' or move it under a supported section.",
+            ))
+
     # Check other required keys
     other_keys = ["space", "objects", "ops", "task"]
     for key in other_keys:
@@ -293,6 +324,26 @@ def validate_geotask_diagnostics(data: dict) -> list[dict]:
     # Validate objects
     if "objects" in data:
         diagnostics.extend(_validate_objects_diagnostics(data["objects"]))
+
+    if "ops" in data:
+        ops = data["ops"]
+        if not isinstance(ops, dict):
+            diagnostics.append(_diagnostic(
+                "ops",
+                "invalid_type",
+                "'ops' must be a mapping (dict).",
+                "Change 'ops' to a mapping from operator name to description.",
+            ))
+        else:
+            supported = set(operator_names())
+            for op_name in ops.keys():
+                if str(op_name) not in supported:
+                    diagnostics.append(_diagnostic(
+                        f"ops.{op_name}",
+                        "invalid_operator",
+                        f"Unsupported operator '{op_name}' in ops.",
+                        f"Use one of: {', '.join(operator_names())}.",
+                    ))
 
     return diagnostics
 

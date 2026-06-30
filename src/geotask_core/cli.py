@@ -175,6 +175,7 @@ def _schema_description() -> dict:
     return {
         "schema": {
             "required_top_level_keys": ["geotask", "space", "objects", "ops", "task"],
+            "optional_top_level_keys": ["assertions", "expected_results"],
             "geotask": {
                 "required_fields": ["version", "name", "goal"],
                 "description": "Document metadata.",
@@ -197,6 +198,12 @@ def _schema_description() -> dict:
             "task": {
                 "common_fields": ["questions"],
                 "description": "Human-readable task prompts and requested checks.",
+            },
+            "assertions": {
+                "description": "Optional reserved section for future declarative checks.",
+            },
+            "expected_results": {
+                "description": "Optional reserved section for future expected output fixtures.",
             },
             "extension_boundary": (
                 "Domain-specific extensions should be handled by domain packs "

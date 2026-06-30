@@ -71,3 +71,11 @@
 |---|---:|---|
 | `pytest tests/test_parser_diagnostics.py` | Failed | Expected RED: `validate_geotask_diagnostics` was missing. |
 | `pytest tests/test_parser_diagnostics.py tests/test_parser.py tests/test_cli_foundation_commands.py` | Passed | `27 passed`; verifies new diagnostics and compatibility. |
+
+## Loop E
+
+| Command | Result | Notes |
+|---|---:|---|
+| `pytest tests/test_parser_diagnostics.py` | Failed | Expected RED: unknown field and invalid operator diagnostics were missing. |
+| `pytest tests/test_cli_foundation_commands.py::test_cli_inspect_schema_outputs_minimal_structure` | Failed | Expected RED: `inspect schema` did not yet mention optional reserved sections. |
+| `pytest tests/test_parser_diagnostics.py tests/test_parser.py tests/test_cli_foundation_commands.py` | Passed | `30 passed`; verifies unknown-field/operator diagnostics and CLI schema output. |

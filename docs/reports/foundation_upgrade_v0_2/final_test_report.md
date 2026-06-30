@@ -6,8 +6,8 @@ Date: 2026-06-30
 
 - Original target baseline: `476/476 passed`.
 - Repaired baseline before feature loops: `476 passed`.
-- Final test count: `502 passed`.
-- New tests added: `26`.
+- Final test count: `505 passed`.
+- New tests added: `29`.
 
 ## Pytest
 
@@ -20,7 +20,7 @@ pytest
 Result:
 
 ```text
-502 passed
+505 passed
 ```
 
 ## CLI Smoke
@@ -73,8 +73,8 @@ structured encodings.
 
 ## Known Remaining Issues
 
-- Parser diagnostics are improved for generic time/altitude intervals but are
-  not yet broadened across references, operator existence, unknown fields, and
-  expected result sections.
+- Parser diagnostics now cover interval issues, unknown fields, and unsupported
+  operators, but are not yet broadened across invalid references and expected
+  result section semantics.
 - CLI `--debug` traceback behavior is not yet implemented.
 - Domain pack interface genericization remains a future loop.

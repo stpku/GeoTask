@@ -1,6 +1,6 @@
 # Foundation Upgrade v0.2 Final Handoff
 
-Status: ready for second local commit
+Status: ready for next local commit
 
 ## Branch And HEAD
 
@@ -21,6 +21,9 @@ Status: ready for second local commit
 - Schema Diagnostics: added structured parser diagnostics with `path`, `code`,
   `message`, and `suggested_fix`, plus CLI validation output that surfaces those
   fields.
+- Diagnostics Expansion: added `unknown_field` and `invalid_operator`
+  structured validation, and aligned `inspect schema` with optional reserved
+  sections `assertions` and `expected_results`.
 
 ## Added Or Modified Files
 
@@ -61,8 +64,8 @@ Tests:
 
 ## Test Results
 
-- Final pytest: `502 passed`.
-- New tests added: `26`.
+- Final pytest: `505 passed`.
+- New tests added so far: `29`.
 - CLI smoke: passed.
 - Mock runtime smoke: passed.
 - Benchmark v0.1: passed with exit code 0.
@@ -83,8 +86,9 @@ Tests:
 ## Local Commits
 
 - `4073fa7 foundation: upgrade core registry cli and examples`
-- A second Loop D local commit is expected immediately after final verification;
-  the final assistant response will include the actual commit hash.
+- `30abc05 foundation: add structured schema diagnostics`
+- A further local commit is expected immediately after final verification; the
+  final assistant response will include the actual commit hash.
 
 ## Current Blockers
 
@@ -92,6 +96,6 @@ None for this safe stopping point.
 
 ## Recommended Next Task
 
-Broaden structured validation to invalid object references, unknown operators,
-unknown fields, and expected result sections, while preserving the existing
-`validate_geotask()` string-list API for backward compatibility.
+Broaden structured validation to invalid object references and expected result
+section semantics, while preserving the existing `validate_geotask()` string-list
+API for backward compatibility.

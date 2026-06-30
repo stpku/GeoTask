@@ -63,3 +63,11 @@
 37. Updated CLI validation failures to print structured diagnostics without
     tracebacks.
 38. Ran focused diagnostics/parser/CLI tests: `27 passed`.
+39. Added RED tests for unknown top-level fields, unknown object fields,
+    unsupported operators, and optional reserved schema sections in
+    `inspect schema`.
+40. Extended parser diagnostics to cover `unknown_field` and
+    `invalid_operator`.
+41. Updated CLI `inspect schema` and `docs/geotask_yaml_schema.md` to describe
+    optional reserved sections `assertions` and `expected_results`.
+42. Ran focused diagnostics/parser/CLI tests again: `30 passed`.

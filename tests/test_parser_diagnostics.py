@@ -78,6 +78,45 @@ def test_validate_geotask_diagnostics_invalid_interval():
     assert "start <= end" in diag["suggested_fix"]
 
 
+def test_validate_geotask_diagnostics_unknown_top_level_field():
+    """Unexpected top-level keys get an explicit unknown_field diagnostic."""
+    data = _base_doc()
+    data["mystery"] = {"value": 1}
+
+    diagnostics = validate_geotask_diagnostics(data)
+
+    diag = next(d for d in diagnostics if d["path"] == "mystery")
+    assert diag["code"] == "unknown_field"
+    assert "Unexpected top-level field" in diag["message"]
+    assert "Remove 'mystery'" in diag["suggested_fix"]
+
+
+def test_validate_geotask_diagnostics_unknown_operator():
+    """Unsupported ops entries surface a stable invalid_operator diagnostic."""
+    data = _base_doc()
+    data["ops"] = {"geo_distance": "unsupported op"}
+
+    diagnostics = validate_geotask_diagnostics(data)
+
+    diag = next(d for d in diagnostics if d["path"] == "ops.geo_distance")
+    assert diag["code"] == "invalid_operator"
+    assert "geo_distance" in diag["message"]
+    assert "distance_2d" in diag["suggested_fix"]
+
+
+def test_validate_geotask_diagnostics_unknown_object_field():
+    """Unexpected object fields get a path-level unknown_field diagnostic."""
+    data = _base_doc()
+    data["objects"] = {"point_a": {"type": "point", "xy": [0, 0], "color": "red"}}
+
+    diagnostics = validate_geotask_diagnostics(data)
+
+    diag = next(d for d in diagnostics if d["path"] == "objects.point_a.color")
+    assert diag["code"] == "unknown_field"
+    assert "Unexpected field 'color'" in diag["message"]
+    assert "Remove 'color'" in diag["suggested_fix"]
+
+
 def test_validate_geotask_remains_string_list_compatible():
     """Legacy validate_geotask API still returns strings with familiar fragments."""
     data = _base_doc()
@@ -106,4 +145,3 @@ def test_cli_validate_failure_prints_structured_diagnostics(tmp_path):
     assert "unknown_object_type" in combined
     assert "Suggested fix" in combined
     assert "Traceback" not in combined
-

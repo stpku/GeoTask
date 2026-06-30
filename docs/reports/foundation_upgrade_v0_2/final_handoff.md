@@ -1,11 +1,11 @@
 # Foundation Upgrade v0.2 Final Handoff
 
-Status: ready for local commit
+Status: ready for second local commit
 
 ## Branch And HEAD
 
 - Branch: `foundation/geotask-upgrade-marathon-v0.2`
-- HEAD before final local commit: `18a75559c1084a12a4299a7970ebd5a9a2df4d72`
+- HEAD before Loop D local commit: `4073fa713b0556a85dffb4d93233e341816d87e6`
 - Push: no
 
 ## Completed Mainlines
@@ -18,6 +18,9 @@ Status: ready for local commit
   public-safe Core examples, and YAML schema docs.
 - Benchmark Stability: patched the v0.2 report generator so local verifier
   boundary wording survives benchmark regeneration.
+- Schema Diagnostics: added structured parser diagnostics with `path`, `code`,
+  `message`, and `suggested_fix`, plus CLI validation output that surfaces those
+  fields.
 
 ## Added Or Modified Files
 
@@ -54,11 +57,12 @@ Tests:
 - `tests/test_cli_foundation_commands.py`
 - `tests/test_core_examples_v0_2.py`
 - `tests/test_encoding_benchmark.py`
+- `tests/test_parser_diagnostics.py`
 
 ## Test Results
 
-- Final pytest: `497 passed`.
-- New tests added: `21`.
+- Final pytest: `502 passed`.
+- New tests added: `26`.
 - CLI smoke: passed.
 - Mock runtime smoke: passed.
 - Benchmark v0.1: passed with exit code 0.
@@ -78,9 +82,9 @@ Tests:
 
 ## Local Commits
 
-No local commit existed at the time this handoff file was written. A local commit
-is expected immediately after final verification; the final assistant response
-will include the actual commit hash.
+- `4073fa7 foundation: upgrade core registry cli and examples`
+- A second Loop D local commit is expected immediately after final verification;
+  the final assistant response will include the actual commit hash.
 
 ## Current Blockers
 
@@ -88,7 +92,6 @@ None for this safe stopping point.
 
 ## Recommended Next Task
 
-Add structured parser diagnostics with `path`, `code`, `message`, and
-`suggested_fix`, while preserving the existing `validate_geotask()` string-list
-API for backward compatibility.
-
+Broaden structured validation to invalid object references, unknown operators,
+unknown fields, and expected result sections, while preserving the existing
+`validate_geotask()` string-list API for backward compatibility.

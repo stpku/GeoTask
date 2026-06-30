@@ -54,3 +54,12 @@
     verifier boundary in generated docs and reports.
 32. Reran benchmark v0.2 and targeted boundary test: passed.
 33. Reran full `pytest`: `497 passed`.
+34. Continued with Loop D after local commit `4073fa7`.
+35. Added failing tests for `validate_geotask_diagnostics()` and structured CLI
+    validation output.
+36. Added structured parser diagnostics with `path`, `code`, `message`, and
+    `suggested_fix`, while preserving `validate_geotask()` string-list
+    compatibility.
+37. Updated CLI validation failures to print structured diagnostics without
+    tracebacks.
+38. Ran focused diagnostics/parser/CLI tests: `27 passed`.

@@ -6,8 +6,8 @@ Date: 2026-06-30
 
 - Original target baseline: `476/476 passed`.
 - Repaired baseline before feature loops: `476 passed`.
-- Final test count: `497 passed`.
-- New tests added: `21`.
+- Final test count: `502 passed`.
+- New tests added: `26`.
 
 ## Pytest
 
@@ -20,7 +20,7 @@ pytest
 Result:
 
 ```text
-497 passed
+502 passed
 ```
 
 ## CLI Smoke
@@ -34,6 +34,7 @@ Passed:
 - `python -m geotask_core.cli inspect examples`
 - `python -m geotask_core.cli report examples/core/minimal_valid.yaml --format json`
 - `python -m geotask_core.cli report examples/core/minimal_valid.yaml --format markdown`
+- `python -m geotask_core.cli validate examples/core/time_altitude_overlap.yaml`
 - `python -m geotask_runtime.mock_runtime examples/geotask_core_lite.yaml`
 
 ## Benchmark Smoke
@@ -73,7 +74,7 @@ structured encodings.
 ## Known Remaining Issues
 
 - Parser diagnostics are improved for generic time/altitude intervals but are
-  still plain strings rather than full structured diagnostic objects.
+  not yet broadened across references, operator existence, unknown fields, and
+  expected result sections.
 - CLI `--debug` traceback behavior is not yet implemented.
 - Domain pack interface genericization remains a future loop.
-

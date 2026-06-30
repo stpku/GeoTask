@@ -64,3 +64,10 @@
 | `python -m geotask_core.cli inspect examples` | Passed | Exit 0. |
 | `python -m geotask_core.cli report examples/core/minimal_valid.yaml --format json` | Passed | Exit 0. |
 | `python -m geotask_core.cli report examples/core/minimal_valid.yaml --format markdown` | Passed | Exit 0. |
+
+## Loop D
+
+| Command | Result | Notes |
+|---|---:|---|
+| `pytest tests/test_parser_diagnostics.py` | Failed | Expected RED: `validate_geotask_diagnostics` was missing. |
+| `pytest tests/test_parser_diagnostics.py tests/test_parser.py tests/test_cli_foundation_commands.py` | Passed | `27 passed`; verifies new diagnostics and compatibility. |

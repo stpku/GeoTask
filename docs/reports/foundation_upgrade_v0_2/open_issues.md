@@ -4,12 +4,12 @@
 
 - CLI now exposes `validate`, `run`, `explain`, `inspect operators`,
   `inspect schema`, `inspect examples`, `report`, `normalize`, and `eval`.
-  Remaining CLI hardening: fuller `--debug` handling and structured validation
-  diagnostics.
-- Parser validation still returns plain strings rather than structured
-  diagnostics with paths, codes, and suggested fixes. Loop C added stable
-  `invalid_interval` strings for generic time/altitude objects, but not the full
-  structured diagnostic model.
+  Remaining CLI hardening: fuller `--debug` handling.
+- Parser validation now has `validate_geotask_diagnostics()` with `path`,
+  `code`, `message`, and `suggested_fix`, while keeping the legacy
+  `validate_geotask()` string-list API. Remaining diagnostic work: broaden
+  structured validation to references, operators, unknown fields, and expected
+  result sections.
 - Existing public docs describe benchmark boundaries, but there is not yet a
   consolidated public-safe benchmark usage guide.
 

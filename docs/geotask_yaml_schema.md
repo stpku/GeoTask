@@ -102,22 +102,38 @@ python -m geotask_core.cli inspect operators
 
 ## Diagnostics
 
-The current parser returns plain diagnostic strings. Stable diagnostic fragments
-include:
+New callers should use `validate_geotask_diagnostics()` for structured
+diagnostics. Each diagnostic contains:
 
-- `missing top-level key`
-- `unknown type`
-- `missing 'xy'`
-- `missing 'points'`
-- `missing 'bbox'`
+- `path`: document path, such as `objects.window_a.interval`.
+- `code`: stable diagnostic code.
+- `message`: human-readable explanation.
+- `suggested_fix`: concise repair guidance.
+
+The legacy `validate_geotask()` API still returns a list of strings for
+backward compatibility. Those strings are rendered from the same structured
+diagnostics.
+
+Stable diagnostic codes include:
+
+- `missing_field`
+- `invalid_type`
+- `unknown_object_type`
+- `invalid_coordinates`
 - `invalid_interval`
 
 `invalid_interval` is used for invalid time intervals and altitude ranges. For
 example:
 
-```text
-objects.window_a.interval: invalid_interval: must be ['HH:MM', 'HH:MM'] with start <= end
-objects.band_a.range: invalid_interval: must be [min, max] with min <= max
+```yaml
+- path: objects.window_a.interval
+  code: invalid_interval
+  message: "objects.window_a.interval: invalid_interval: must be ['HH:MM', 'HH:MM'] with start <= end."
+  suggested_fix: "Use a valid two-item HH:MM interval with start <= end."
+- path: objects.band_a.range
+  code: invalid_interval
+  message: "objects.band_a.range: invalid_interval: must be [min, max] with min <= max."
+  suggested_fix: "Use a numeric two-item range with min <= max."
 ```
 
 ## Examples
@@ -139,4 +155,3 @@ python -m geotask_core.cli inspect examples
 The schema describes general Core data only. It does not define approval
 statuses, regulatory thresholds, model routing, cost optimization, or
 domain-specific review workflows.
-

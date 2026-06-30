@@ -36,7 +36,9 @@ or expanding P2/P5 or LowAlt-sensitive material.
 - Loop A: added public-safe Core operator registry metadata and CLI inspection.
 - Loop B: added CLI `explain`, `inspect schema`, `inspect examples`, and
   `report --format json|markdown`.
+- Loop C: added public-safe Core examples and generic time/altitude validation.
+- Loop D: added structured parser diagnostics and CLI validation output.
 
 ## In Progress
 
-- Final report, local commit, and handoff.
+- Loop D verification and local commit.

@@ -17,7 +17,10 @@ import sys
 import json
 from pathlib import Path
 
-from geotask_core.parser import load_geotask, validate_geotask
+from geotask_core.parser import (
+    load_geotask,
+    validate_geotask_diagnostics,
+)
 from geotask_core.runner import run_geotask
 from geotask_core.normalizer import normalize_model_output
 from geotask_core.evaluator import evaluate_model_output
@@ -36,13 +39,11 @@ def cmd_validate(path: str):
     """Validate a GeoTask YAML file."""
     print(f"[validate] {path}")
     data = load_geotask(path)
-    errors = validate_geotask(data)
+    diagnostics = validate_geotask_diagnostics(data)
     if data.get("_deprecated_stir_field"):
         print("  Warning: Using deprecated 'stir' top-level field. Please migrate to 'geotask'.", file=sys.stderr)
-    if errors:
-        print(f"  Validation FAILED ({len(errors)} error(s)):")
-        for e in errors:
-            print(f"    - {e}")
+    if diagnostics:
+        _print_validation_diagnostics(diagnostics, prefix="  ")
         sys.exit(1)
     print("  Validation OK")
     return data
@@ -52,13 +53,11 @@ def cmd_run(path: str):
     """Run a GeoTask document."""
     print(f"[run] {path}")
     data = load_geotask(path)
-    errors = validate_geotask(data)
+    diagnostics = validate_geotask_diagnostics(data)
     if data.get("_deprecated_stir_field"):
         print("  Warning: Using deprecated 'stir' top-level field. Please migrate to 'geotask'.", file=sys.stderr)
-    if errors:
-        print(f"  Validation FAILED ({len(errors)} error(s)):")
-        for e in errors:
-            print(f"    - {e}")
+    if diagnostics:
+        _print_validation_diagnostics(diagnostics, prefix="  ")
         sys.exit(1)
 
     result = run_geotask(data)
@@ -71,11 +70,9 @@ def cmd_normalize(path: str, geotask_path: str | None = None):
     if geotask_path:
         print(f"[normalize + verify] model={path}  geotask={geotask_path}")
         geotask_data = load_geotask(geotask_path)
-        errors = validate_geotask(geotask_data)
-        if errors:
-            print(f"  GeoTask validation FAILED ({len(errors)} error(s)):")
-            for e in errors:
-                print(f"    - {e}")
+        diagnostics = validate_geotask_diagnostics(geotask_data)
+        if diagnostics:
+            _print_validation_diagnostics(diagnostics, prefix="  ", label="GeoTask")
             sys.exit(1)
     else:
         print(f"[normalize] {path}")
@@ -93,13 +90,11 @@ def cmd_eval(geotask_path: str, model_path: str):
 
     # Run Core for ground truth
     data = load_geotask(geotask_path)
-    errors = validate_geotask(data)
+    diagnostics = validate_geotask_diagnostics(data)
     if data.get("_deprecated_stir_field"):
         print("  Warning: Using deprecated 'stir' top-level field. Please migrate to 'geotask'.", file=sys.stderr)
-    if errors:
-        print(f"  Core validation FAILED ({len(errors)} error(s)):")
-        for e in errors:
-            print(f"    - {e}")
+    if diagnostics:
+        _print_validation_diagnostics(diagnostics, prefix="  ", label="Core")
         sys.exit(1)
 
     core_result = run_geotask(data)
@@ -117,13 +112,27 @@ def cmd_eval(geotask_path: str, model_path: str):
 def _load_valid_geotask(path: str, label: str = "GeoTask") -> dict:
     """Load and validate a GeoTask document for non-interactive CLI commands."""
     data = load_geotask(path)
-    errors = validate_geotask(data)
-    if errors:
-        print(f"{label} validation FAILED ({len(errors)} error(s)):", file=sys.stderr)
-        for e in errors:
-            print(f"  - {e}", file=sys.stderr)
+    diagnostics = validate_geotask_diagnostics(data)
+    if diagnostics:
+        _print_validation_diagnostics(diagnostics, label=label, stream=sys.stderr)
         sys.exit(1)
     return data
+
+
+def _print_validation_diagnostics(
+    diagnostics: list[dict],
+    prefix: str = "",
+    label: str = "Validation",
+    stream=None,
+):
+    """Print structured validation diagnostics without a traceback."""
+    out = stream or sys.stdout
+    print(f"{prefix}{label} FAILED ({len(diagnostics)} error(s)):", file=out)
+    for diagnostic in diagnostics:
+        print(f"{prefix}  - path: {diagnostic['path']}", file=out)
+        print(f"{prefix}    code: {diagnostic['code']}", file=out)
+        print(f"{prefix}    message: {diagnostic['message']}", file=out)
+        print(f"{prefix}    Suggested fix: {diagnostic['suggested_fix']}", file=out)
 
 
 def cmd_inspect(args: list[str]):

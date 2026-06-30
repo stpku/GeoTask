@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from typing import Union
+import re
 
 import yaml
 
@@ -44,7 +45,7 @@ def _validate_objects(objects: dict) -> list[str]:
         errors.append("'objects' must be a mapping (dict)")
         return errors
 
-    valid_types = {"point", "line", "rect"}
+    valid_types = {"point", "line", "rect", "time", "altitude"}
 
     for name, obj in objects.items():
         if not isinstance(obj, dict):
@@ -92,7 +93,63 @@ def _validate_objects(objects: dict) -> list[str]:
                     f"object '{name}' (rect): 'bbox' must be [min_x, min_y, max_x, max_y]"
                 )
 
+        elif obj_type == "time":
+            interval = obj.get("interval")
+            path = f"objects.{name}.interval"
+            if interval is None:
+                errors.append(f"object '{name}' (time): missing 'interval'")
+            elif not _is_valid_time_interval(interval):
+                errors.append(
+                    f"{path}: invalid_interval: must be ['HH:MM', 'HH:MM'] with start <= end"
+                )
+
+        elif obj_type == "altitude":
+            altitude_range = obj.get("range")
+            path = f"objects.{name}.range"
+            if altitude_range is None:
+                errors.append(f"object '{name}' (altitude): missing 'range'")
+            elif not _is_valid_number_interval(altitude_range):
+                errors.append(
+                    f"{path}: invalid_interval: must be [min, max] with min <= max"
+                )
+
     return errors
+
+
+def _is_valid_time_interval(value) -> bool:
+    """Return True for a two-item HH:MM interval with start <= end."""
+    if not isinstance(value, list) or len(value) != 2:
+        return False
+    try:
+        start = _time_to_minutes(value[0])
+        end = _time_to_minutes(value[1])
+    except (TypeError, ValueError):
+        return False
+    return start <= end
+
+
+def _time_to_minutes(value: str) -> int:
+    """Parse an HH:MM time string into minutes since midnight."""
+    if not isinstance(value, str) or not re.match(r"^\d{1,2}:\d{2}$", value):
+        raise ValueError("invalid time")
+    hour_str, minute_str = value.split(":")
+    hour = int(hour_str)
+    minute = int(minute_str)
+    if hour > 23 or minute > 59:
+        raise ValueError("invalid time")
+    return hour * 60 + minute
+
+
+def _is_valid_number_interval(value) -> bool:
+    """Return True for a numeric two-item interval with min <= max."""
+    if not isinstance(value, list) or len(value) != 2:
+        return False
+    low, high = value
+    if isinstance(low, bool) or isinstance(high, bool):
+        return False
+    if not isinstance(low, (int, float)) or not isinstance(high, (int, float)):
+        return False
+    return low <= high
 
 
 def validate_geotask(data: dict) -> list[str]:

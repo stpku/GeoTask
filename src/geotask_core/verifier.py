@@ -8,6 +8,7 @@ Enhanced from v0.2 with:
 """
 
 from geotask_core.runner import run_geotask
+from geotask_core.operator_registry import operator_names
 from geotask_core.result_schema import (
     STATUS_VERIFIED,
     STATUS_CONTRADICTED,
@@ -30,14 +31,7 @@ from geotask_core.result_schema import (
     compute_overall_status,
 )
 
-SUPPORTED_OPERATORS = [
-    "distance_2d",
-    "line_intersects_rect",
-    "point_to_line_distance_2d",
-    "rect_contains_point",
-    "time_overlap",
-    "altitude_overlap",
-]
+SUPPORTED_OPERATORS = operator_names()
 
 
 def verify_normalized_result(

@@ -47,3 +47,4 @@ Compact DSL reduced avg tokens from 69 to 51 (25.5% reduction, 1.3x compression)
 - Simulated outputs, not real LLM
 - Approximate token counting
 - 24 cases, descriptive only
+- Benchmark scoring uses a benchmark-local verifier for deterministic case replay. This local verifier boundary is separate from the production Core verifier and must not be interpreted as live model, regulatory, or domain-specific validation.

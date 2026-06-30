@@ -28,7 +28,16 @@ def render_report(rows,agg,outdir,repo_root):
     l.append("\n## Charts\n")
     for ch in ["token_cost_by_encoding.png","verification_success_by_encoding.png","normalization_success_by_encoding.png","benchmark_score_by_encoding.png","status_distribution_by_encoding.png","token_reduction_by_encoding.png"]:
         l.append(f"![{ch}](charts/{ch})\n")
-    l.append("\n## Limitations\n- Simulated outputs, not real LLM\n- Approximate token counting\n- 24 cases, descriptive only\n")
+    l.append(
+        "\n## Limitations\n"
+        "- Simulated outputs, not real LLM\n"
+        "- Approximate token counting\n"
+        "- 24 cases, descriptive only\n"
+        "- Benchmark scoring uses a benchmark-local verifier for deterministic "
+        "case replay. This local verifier boundary is separate from the "
+        "production Core verifier and must not be interpreted as live model, "
+        "regulatory, or domain-specific validation.\n"
+    )
     txt="\n".join(l)
     path.write_text(txt,encoding="utf-8")
     (repo_root/"docs"/"encoding_benchmark_v0_2.md").write_text(txt,encoding="utf-8")

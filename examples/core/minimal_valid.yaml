@@ -1,0 +1,27 @@
+geotask:
+  version: "0.2"
+  name: "Minimal Core Distance"
+  goal: "Compute a deterministic distance between two local points."
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+  axes:
+    x: "east"
+    y: "north"
+
+objects:
+  point_a:
+    type: "point"
+    xy: [0, 0]
+  point_b:
+    type: "point"
+    xy: [3, 4]
+
+ops:
+  distance_2d: "2D Euclidean distance"
+
+task:
+  questions:
+    - "Compute the distance from point_a to point_b."
+

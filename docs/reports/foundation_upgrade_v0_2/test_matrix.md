@@ -79,3 +79,12 @@
 | `pytest tests/test_parser_diagnostics.py` | Failed | Expected RED: unknown field and invalid operator diagnostics were missing. |
 | `pytest tests/test_cli_foundation_commands.py::test_cli_inspect_schema_outputs_minimal_structure` | Failed | Expected RED: `inspect schema` did not yet mention optional reserved sections. |
 | `pytest tests/test_parser_diagnostics.py tests/test_parser.py tests/test_cli_foundation_commands.py` | Passed | `30 passed`; verifies unknown-field/operator diagnostics and CLI schema output. |
+
+## Loop F
+
+| Command | Result | Notes |
+|---|---:|---|
+| `pytest tests/test_parser_diagnostics.py` | Failed | Expected RED: assertions/expected_results section semantics were missing. |
+| `pytest tests/test_core_examples_v0_2.py` | Failed | Expected RED: public-safe example for assertions/expected_results did not exist yet. |
+| `pytest tests/test_core_examples_v0_2.py` | Passed | `6 passed` after adding the example and docs. |
+| `pytest tests/test_parser_diagnostics.py tests/test_parser.py tests/test_cli_foundation_commands.py tests/test_core_examples_v0_2.py` | Passed | `40 passed`; verifies parser, CLI schema output, and examples. |

@@ -44,6 +44,8 @@ def test_cli_inspect_schema_outputs_minimal_structure():
     assert "task" in result.stdout
     assert "assertions" in result.stdout
     assert "expected_results" in result.stdout
+    assert "object_refs" in result.stdout
+    assert "entry_required_fields" in result.stdout
 
 
 def test_cli_inspect_examples_lists_public_safe_examples():

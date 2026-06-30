@@ -200,10 +200,13 @@ def _schema_description() -> dict:
                 "description": "Human-readable task prompts and requested checks.",
             },
             "assertions": {
-                "description": "Optional reserved section for future declarative checks.",
+                "description": "Optional declarative validation checks.",
+                "entry_required_fields": ["id", "operator", "object_refs"],
             },
             "expected_results": {
-                "description": "Optional reserved section for future expected output fixtures.",
+                "description": "Optional expected output fixtures.",
+                "entry_required_fields": ["name", "value"],
+                "entry_optional_fields": ["unit"],
             },
             "extension_boundary": (
                 "Domain-specific extensions should be handled by domain packs "

@@ -40,7 +40,9 @@ or expanding P2/P5 or LowAlt-sensitive material.
 - Loop D: added structured parser diagnostics and CLI validation output.
 - Loop E: broadened diagnostics to unknown fields and unsupported operators,
   and aligned `inspect schema` with optional reserved sections.
+- Loop F: turned `assertions` and `expected_results` into minimally validated
+  public-safe schema sections with examples.
 
 ## In Progress
 
-- Loop E verification and local commit.
+- Loop F verification and local commit.

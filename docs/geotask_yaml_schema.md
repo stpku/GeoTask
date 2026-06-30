@@ -42,6 +42,46 @@ Optional reserved top-level keys:
 The deprecated top-level `stir` key is still accepted for backward
 compatibility when `geotask` is absent.
 
+## Optional Validation Sections
+
+### Assertions
+
+`assertions` is an optional list of declarative validation checks.
+
+```yaml
+assertions:
+  - id: "distance_check"
+    operator: "distance_2d"
+    object_refs: ["takeoff", "school"]
+```
+
+Each assertion currently requires:
+
+- `id`
+- `operator`
+- `object_refs`
+
+The operator must be a registered Core operator, and every `object_refs` entry
+must refer to a known object id from `objects`.
+
+### Expected Results
+
+`expected_results` is an optional list of expected output fixtures.
+
+```yaml
+expected_results:
+  - name: "takeoff_to_school_distance"
+    value: 144.22
+    unit: "meter"
+```
+
+Each expected result currently requires:
+
+- `name`
+- `value`
+
+`unit` is optional.
+
 ## Object Types
 
 ### Point
@@ -163,6 +203,7 @@ Public-safe Core examples:
 
 - `examples/core/minimal_valid.yaml`
 - `examples/core/time_altitude_overlap.yaml`
+- `examples/core/assertions_expected_results.yaml`
 - `examples/geotask_core_lite.yaml`
 
 List examples from the CLI:

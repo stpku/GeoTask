@@ -10,6 +10,8 @@ patent-sensitive workflows.
 - `examples/core/minimal_valid.yaml`: minimal point distance example.
 - `examples/core/time_altitude_overlap.yaml`: generic time and altitude interval
   overlap example.
+- `examples/core/assertions_expected_results.yaml`: schema example for optional
+  `assertions` and `expected_results` sections.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection
@@ -19,4 +21,3 @@ patent-sensitive workflows.
 
 Files under `examples/domain_packs/` are not public-safe Core examples. They are
 kept separate to avoid mixing Core documentation with domain-specific material.
-

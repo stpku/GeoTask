@@ -71,3 +71,12 @@
 41. Updated CLI `inspect schema` and `docs/geotask_yaml_schema.md` to describe
     optional reserved sections `assertions` and `expected_results`.
 42. Ran focused diagnostics/parser/CLI tests again: `30 passed`.
+43. Added RED tests for minimal `assertions` and `expected_results` schema
+    semantics, including invalid references and expected result field coverage.
+44. Implemented parser validation for `assertions` and `expected_results`.
+45. Added `examples/core/assertions_expected_results.yaml` and updated example
+    docs.
+46. Expanded `inspect schema` with minimal field shapes for `assertions` and
+    `expected_results`.
+47. Ran focused parser/CLI/example tests: `40 passed`.
+48. Ran full `pytest`: `509 passed`.

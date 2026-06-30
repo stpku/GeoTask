@@ -70,6 +70,7 @@ def test_public_safe_core_examples_validate_and_run():
     expected_examples = [
         CORE_EXAMPLES / "minimal_valid.yaml",
         CORE_EXAMPLES / "time_altitude_overlap.yaml",
+        CORE_EXAMPLES / "assertions_expected_results.yaml",
     ]
 
     for example in expected_examples:
@@ -85,6 +86,7 @@ def test_examples_readme_lists_core_examples():
 
     assert "examples/core/minimal_valid.yaml" in readme
     assert "examples/core/time_altitude_overlap.yaml" in readme
+    assert "examples/core/assertions_expected_results.yaml" in readme
     assert "public-safe" in readme
 
 
@@ -96,3 +98,5 @@ def test_geotask_yaml_schema_doc_covers_time_altitude_examples():
     assert "altitude" in text
     assert "invalid_interval" in text
     assert "examples/core/time_altitude_overlap.yaml" in text
+    assert "assertions" in text
+    assert "expected_results" in text

@@ -8,8 +8,9 @@
 - Parser validation now has `validate_geotask_diagnostics()` with `path`,
   `code`, `message`, and `suggested_fix`, while keeping the legacy
   `validate_geotask()` string-list API. Remaining diagnostic work: broaden
-  structured validation to invalid references, expected result sections, and
-  richer task/assertion semantics. Unknown fields and unsupported operators are
+  structured validation to richer task/assertion semantics such as duplicate ids,
+  task-level structure, and deeper expected-result contracts. Invalid references,
+  unknown fields, unsupported operators, and minimal expected result sections are
   now covered.
 - Existing public docs describe benchmark boundaries, but there is not yet a
   consolidated public-safe benchmark usage guide.

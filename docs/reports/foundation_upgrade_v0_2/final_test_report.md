@@ -6,8 +6,8 @@ Date: 2026-06-30
 
 - Original target baseline: `476/476 passed`.
 - Repaired baseline before feature loops: `476 passed`.
-- Final test count: `505 passed`.
-- New tests added: `29`.
+- Final test count: `509 passed`.
+- New tests added: `33`.
 
 ## Pytest
 
@@ -20,7 +20,7 @@ pytest
 Result:
 
 ```text
-505 passed
+509 passed
 ```
 
 ## CLI Smoke
@@ -35,6 +35,7 @@ Passed:
 - `python -m geotask_core.cli report examples/core/minimal_valid.yaml --format json`
 - `python -m geotask_core.cli report examples/core/minimal_valid.yaml --format markdown`
 - `python -m geotask_core.cli validate examples/core/time_altitude_overlap.yaml`
+- `python -m geotask_core.cli inspect schema`
 - `python -m geotask_runtime.mock_runtime examples/geotask_core_lite.yaml`
 
 ## Benchmark Smoke
@@ -61,6 +62,7 @@ structured encodings.
 
 - `examples/core/minimal_valid.yaml`
 - `examples/core/time_altitude_overlap.yaml`
+- `examples/core/assertions_expected_results.yaml`
 - `examples/README.md`
 
 ## Public-Safe Boundary
@@ -74,7 +76,8 @@ structured encodings.
 ## Known Remaining Issues
 
 - Parser diagnostics now cover interval issues, unknown fields, and unsupported
-  operators, but are not yet broadened across invalid references and expected
-  result section semantics.
+  operators, invalid references, and minimal expected result section semantics,
+  but are not yet broadened across duplicate ids and deeper task/assertion
+  semantics.
 - CLI `--debug` traceback behavior is not yet implemented.
 - Domain pack interface genericization remains a future loop.

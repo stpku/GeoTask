@@ -18,6 +18,8 @@ ALLOWED_OBJECT_FIELDS = {
     "time": {"type", "interval"},
     "altitude": {"type", "range"},
 }
+ALLOWED_ASSERTION_FIELDS = {"id", "operator", "object_refs"}
+ALLOWED_EXPECTED_RESULT_FIELDS = {"name", "value", "unit"}
 
 
 def load_geotask(path: Union[str, Path]) -> dict:
@@ -247,6 +249,146 @@ def _is_valid_number_interval(value) -> bool:
     return low <= high
 
 
+def _validate_assertions_diagnostics(assertions, known_objects: set[str]) -> list[dict]:
+    """Validate optional assertion entries."""
+    diagnostics = []
+    if not isinstance(assertions, list):
+        return [_diagnostic(
+            "assertions",
+            "invalid_type",
+            "'assertions' must be a list.",
+            "Use a list of assertion entries with id, operator, and object_refs.",
+        )]
+
+    supported_operators = set(operator_names())
+    for index, entry in enumerate(assertions):
+        base_path = f"assertions[{index}]"
+        if not isinstance(entry, dict):
+            diagnostics.append(_diagnostic(
+                base_path,
+                "invalid_type",
+                f"{base_path} must be a mapping (dict).",
+                "Use a mapping with id, operator, and object_refs.",
+            ))
+            continue
+
+        for field in entry.keys():
+            if field not in ALLOWED_ASSERTION_FIELDS:
+                diagnostics.append(_diagnostic(
+                    f"{base_path}.{field}",
+                    "unknown_field",
+                    f"Unexpected field '{field}' in {base_path}.",
+                    f"Remove '{field}' or replace it with one of: {', '.join(sorted(ALLOWED_ASSERTION_FIELDS))}.",
+                ))
+
+        if "id" not in entry:
+            diagnostics.append(_diagnostic(
+                f"{base_path}.id",
+                "missing_field",
+                f"'{base_path}.id' is missing.",
+                "Add a stable assertion id.",
+            ))
+
+        operator = entry.get("operator")
+        if operator is None:
+            diagnostics.append(_diagnostic(
+                f"{base_path}.operator",
+                "missing_field",
+                f"'{base_path}.operator' is missing.",
+                "Add a registered Core operator name.",
+            ))
+        elif operator not in supported_operators:
+            diagnostics.append(_diagnostic(
+                f"{base_path}.operator",
+                "invalid_operator",
+                f"Unsupported operator '{operator}' in {base_path}.",
+                f"Use one of: {', '.join(operator_names())}.",
+            ))
+
+        object_refs = entry.get("object_refs")
+        if object_refs is None:
+            diagnostics.append(_diagnostic(
+                f"{base_path}.object_refs",
+                "missing_field",
+                f"'{base_path}.object_refs' is missing.",
+                "Add a list of referenced object ids.",
+            ))
+        elif not isinstance(object_refs, list):
+            diagnostics.append(_diagnostic(
+                f"{base_path}.object_refs",
+                "invalid_type",
+                f"'{base_path}.object_refs' must be a list.",
+                "Use a list of object id strings.",
+            ))
+        else:
+            for ref_index, ref in enumerate(object_refs):
+                if not isinstance(ref, str):
+                    diagnostics.append(_diagnostic(
+                        f"{base_path}.object_refs[{ref_index}]",
+                        "invalid_type",
+                        f"'{base_path}.object_refs[{ref_index}]' must be a string.",
+                        "Use an existing object id string.",
+                    ))
+                elif ref not in known_objects:
+                    diagnostics.append(_diagnostic(
+                        f"{base_path}.object_refs[{ref_index}]",
+                        "invalid_reference",
+                        f"Unknown object reference '{ref}' in {base_path}.",
+                        f"Use one of the known object ids: {', '.join(sorted(known_objects))}.",
+                    ))
+
+    return diagnostics
+
+
+def _validate_expected_results_diagnostics(expected_results) -> list[dict]:
+    """Validate optional expected result fixtures."""
+    diagnostics = []
+    if not isinstance(expected_results, list):
+        return [_diagnostic(
+            "expected_results",
+            "invalid_type",
+            "'expected_results' must be a list.",
+            "Use a list of expected result entries with at least name and value.",
+        )]
+
+    for index, entry in enumerate(expected_results):
+        base_path = f"expected_results[{index}]"
+        if not isinstance(entry, dict):
+            diagnostics.append(_diagnostic(
+                base_path,
+                "invalid_type",
+                f"{base_path} must be a mapping (dict).",
+                "Use a mapping with at least name and value.",
+            ))
+            continue
+
+        for field in entry.keys():
+            if field not in ALLOWED_EXPECTED_RESULT_FIELDS:
+                diagnostics.append(_diagnostic(
+                    f"{base_path}.{field}",
+                    "unknown_field",
+                    f"Unexpected field '{field}' in {base_path}.",
+                    f"Remove '{field}' or replace it with one of: {', '.join(sorted(ALLOWED_EXPECTED_RESULT_FIELDS))}.",
+                ))
+
+        if "name" not in entry:
+            diagnostics.append(_diagnostic(
+                f"{base_path}.name",
+                "missing_field",
+                f"'{base_path}.name' is missing.",
+                "Add the expected measurement or result name.",
+            ))
+        if "value" not in entry:
+            diagnostics.append(_diagnostic(
+                f"{base_path}.value",
+                "missing_field",
+                f"'{base_path}.value' is missing.",
+                "Add the expected output value.",
+            ))
+
+    return diagnostics
+
+
 def validate_geotask_diagnostics(data: dict) -> list[dict]:
     """Validate a GeoTask document dict. Returns structured diagnostics.
 
@@ -344,6 +486,14 @@ def validate_geotask_diagnostics(data: dict) -> list[dict]:
                         f"Unsupported operator '{op_name}' in ops.",
                         f"Use one of: {', '.join(operator_names())}.",
                     ))
+
+    known_objects = set(data.get("objects", {}).keys()) if isinstance(data.get("objects"), dict) else set()
+
+    if "assertions" in data:
+        diagnostics.extend(_validate_assertions_diagnostics(data["assertions"], known_objects))
+
+    if "expected_results" in data:
+        diagnostics.extend(_validate_expected_results_diagnostics(data["expected_results"]))
 
     return diagnostics
 

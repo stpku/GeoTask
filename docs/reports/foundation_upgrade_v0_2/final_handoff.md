@@ -24,6 +24,8 @@ Status: ready for next local commit
 - Diagnostics Expansion: added `unknown_field` and `invalid_operator`
   structured validation, and aligned `inspect schema` with optional reserved
   sections `assertions` and `expected_results`.
+- Assertion/Expected Result Schema: added minimal parser validation for
+  `assertions` and `expected_results`, plus a public-safe example.
 
 ## Added Or Modified Files
 
@@ -43,6 +45,7 @@ Examples:
 
 - `examples/core/minimal_valid.yaml`
 - `examples/core/time_altitude_overlap.yaml`
+- `examples/core/assertions_expected_results.yaml`
 - `examples/README.md`
 
 Docs:
@@ -64,8 +67,8 @@ Tests:
 
 ## Test Results
 
-- Final pytest: `505 passed`.
-- New tests added so far: `29`.
+- Final pytest: `509 passed`.
+- New tests added so far: `33`.
 - CLI smoke: passed.
 - Mock runtime smoke: passed.
 - Benchmark v0.1: passed with exit code 0.
@@ -87,6 +90,7 @@ Tests:
 
 - `4073fa7 foundation: upgrade core registry cli and examples`
 - `30abc05 foundation: add structured schema diagnostics`
+- `fcea7b7 foundation: extend schema diagnostics coverage`
 - A further local commit is expected immediately after final verification; the
   final assistant response will include the actual commit hash.
 
@@ -96,6 +100,6 @@ None for this safe stopping point.
 
 ## Recommended Next Task
 
-Broaden structured validation to invalid object references and expected result
-section semantics, while preserving the existing `validate_geotask()` string-list
-API for backward compatibility.
+Broaden structured validation to duplicate ids, richer task/assertion semantics,
+and deeper expected result contracts while preserving the existing
+`validate_geotask()` string-list API for backward compatibility.

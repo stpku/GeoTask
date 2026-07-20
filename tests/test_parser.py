@@ -79,7 +79,7 @@ def test_validate_point_missing_xy():
         "task": {},
     }
     errors = validate_geotask(data)
-    assert any("missing 'xy'" in e for e in errors)
+    assert any("missing" in e.lower() and ("xy" in e.lower() or "coordinates" in e.lower()) for e in errors)
 
 
 def test_validate_line_too_few_points():

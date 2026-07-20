@@ -9,17 +9,42 @@ import yaml
 from geotask_core.operator_registry import operator_names
 
 
-VALID_OBJECT_TYPES = ("point", "line", "rect", "time", "altitude")
-ALLOWED_TOP_LEVEL_KEYS = ("geotask", "stir", "space", "objects", "ops", "task", "assertions", "expected_results")
+VALID_OBJECT_TYPES = (
+    "point", "line", "rect", "time", "altitude",
+    # v1.0 object types
+    "polyline", "time_interval", "altitude_interval", "feature_collection",
+)
+ALLOWED_TOP_LEVEL_KEYS = (
+    "geotask", "stir", "space", "objects", "ops", "task",
+    "assertions", "expected_results",
+    # v1.0 top-level fields
+    "tasks", "execution", "output_contract", "verification",
+    "operator_set", "operator_contracts", "extensions",
+)
 ALLOWED_OBJECT_FIELDS = {
-    "point": {"type", "xy"},
-    "line": {"type", "points"},
+    "point": {"type", "xy", "coordinates"},
+    "line": {"type", "points", "coordinates"},
     "rect": {"type", "bbox"},
     "time": {"type", "interval"},
     "altitude": {"type", "range"},
+    # v1.0 object fields
+    "polyline": {"type", "coordinates", "points"},
+    "time_interval": {"type", "interval", "start", "end"},
+    "altitude_interval": {"type", "range", "min", "max", "unit", "datum"},
+    "feature_collection": {"type", "feature_type", "features"},
 }
-ALLOWED_ASSERTION_FIELDS = {"id", "operator", "object_refs"}
+ALLOWED_ASSERTION_FIELDS = {
+    "id", "operator", "object_refs",
+    # v1.0 assertion fields
+    "parameters", "expected_type", "unit", "tolerance",
+    "depends_on", "condition", "on_error",
+}
 ALLOWED_EXPECTED_RESULT_FIELDS = {"name", "value", "unit"}
+
+# v1.0 required top-level fields
+V1_REQUIRED_TOP_LEVEL = ("geotask", "space", "objects", "tasks", "execution", "output_contract")
+# v0.x required top-level fields
+V0_REQUIRED_TOP_LEVEL = ("geotask", "space", "objects", "ops", "task")
 
 
 def load_geotask(path: Union[str, Path]) -> dict:
@@ -116,35 +141,47 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
 
         if obj_type == "point":
             xy = obj.get("xy")
-            if xy is None:
+            coords = obj.get("coordinates")
+            # Accept either xy (legacy) or coordinates (v1.0)
+            if xy is not None:
+                if not isinstance(xy, list) or len(xy) != 2:
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}.xy",
+                        "invalid_coordinates",
+                        f"object '{name}' (point): 'xy' must be [x, y].",
+                        "Use exactly two numeric coordinate values.",
+                    ))
+            elif coords is not None:
+                if not isinstance(coords, list) or len(coords) != 2:
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}.coordinates",
+                        "invalid_coordinates",
+                        f"object '{name}' (point): 'coordinates' must be [x, y].",
+                        "Use exactly two numeric coordinate values.",
+                    ))
+            else:
                 diagnostics.append(_diagnostic(
                     f"objects.{name}.xy",
                     "missing_field",
-                    f"object '{name}' (point): missing 'xy'.",
-                    "Add xy: [x, y].",
-                ))
-            elif not isinstance(xy, list) or len(xy) != 2:
-                diagnostics.append(_diagnostic(
-                    f"objects.{name}.xy",
-                    "invalid_coordinates",
-                    f"object '{name}' (point): 'xy' must be [x, y].",
-                    "Use exactly two numeric coordinate values.",
+                    f"object '{name}' (point): missing coordinates (use 'xy' or 'coordinates').",
+                    "Add xy: [x, y] or coordinates: [x, y].",
                 ))
 
-        elif obj_type == "line":
-            points = obj.get("points")
+        elif obj_type in ("line", "polyline"):
+            points = obj.get("points") or obj.get("coordinates")
+            path = f"objects.{name}.{obj.get('points') and 'points' or 'coordinates'}"
             if points is None:
                 diagnostics.append(_diagnostic(
                     f"objects.{name}.points",
                     "missing_field",
-                    f"object '{name}' (line): missing 'points'.",
-                    "Add points with at least two [x, y] coordinates.",
+                    f"object '{name}' ({obj_type}): missing points/coordinates.",
+                    "Add points or coordinates with at least two [x, y] pairs.",
                 ))
             elif not isinstance(points, list) or len(points) < 2:
                 diagnostics.append(_diagnostic(
                     f"objects.{name}.points",
                     "invalid_coordinates",
-                    f"object '{name}' (line): 'points' must contain at least 2 points.",
+                    f"object '{name}' ({obj_type}): points/coordinates must contain at least 2 points.",
                     "Use points: [[x1, y1], [x2, y2], ...].",
                 ))
             else:
@@ -153,7 +190,7 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
                         diagnostics.append(_diagnostic(
                             f"objects.{name}.points[{i}]",
                             "invalid_coordinates",
-                            f"object '{name}' (line): points[{i}] must be [x, y].",
+                            f"object '{name}' ({obj_type}): points[{i}] must be [x, y].",
                             "Use exactly two numeric coordinate values for each point.",
                         ))
 
@@ -174,14 +211,14 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
                     "Use exactly four numeric bbox values.",
                 ))
 
-        elif obj_type == "time":
+        elif obj_type in ("time", "time_interval"):
             interval = obj.get("interval")
             path = f"objects.{name}.interval"
             if interval is None:
                 diagnostics.append(_diagnostic(
                     path,
                     "missing_field",
-                    f"object '{name}' (time): missing 'interval'.",
+                    f"object '{name}' ({obj_type}): missing 'interval'.",
                     "Add interval: ['HH:MM', 'HH:MM'].",
                 ))
             elif not _is_valid_time_interval(interval):
@@ -192,14 +229,14 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
                     "Use a valid two-item HH:MM interval with start <= end.",
                 ))
 
-        elif obj_type == "altitude":
+        elif obj_type in ("altitude", "altitude_interval"):
             altitude_range = obj.get("range")
             path = f"objects.{name}.range"
             if altitude_range is None:
                 diagnostics.append(_diagnostic(
                     path,
                     "missing_field",
-                    f"object '{name}' (altitude): missing 'range'.",
+                    f"object '{name}' ({obj_type}): missing 'range'.",
                     "Add range: [min, max].",
                 ))
             elif not _is_valid_number_interval(altitude_range):
@@ -208,6 +245,16 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
                     "invalid_interval",
                     f"{path}: invalid_interval: must be [min, max] with min <= max.",
                     "Use a numeric two-item range with min <= max.",
+                ))
+
+        elif obj_type == "feature_collection":
+            # Basic structural check only — v1.0 validator handles full validation
+            if "features" not in obj:
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.features",
+                    "missing_field",
+                    f"object '{name}' (feature_collection): missing 'features'.",
+                    "Add a 'features' list.",
                 ))
 
     return diagnostics
@@ -423,16 +470,44 @@ def validate_geotask_diagnostics(data: dict) -> list[dict]:
         # Only old 'stir' field present -- accept but flag deprecated
         data["_deprecated_stir_field"] = True
 
+    # Detect v1.0 documents (have tasks/execution or schema_version="1.0")
+    is_v1 = (
+        "tasks" in data
+        or "execution" in data
+        or (
+            isinstance(data.get(meta_key), dict)
+            and str(data[meta_key].get("schema_version", "")) == "1.0"
+        )
+    )
+
     if meta_key in data and isinstance(data[meta_key], dict):
         meta = data[meta_key]
-        for field in ["version", "name", "goal"]:
-            if field not in meta:
+        if is_v1:
+            # v1.0: version/goal are optional; schema_version/name required
+            if "schema_version" not in meta and "version" not in meta:
                 diagnostics.append(_diagnostic(
-                    f"{meta_key}.{field}",
+                    f"{meta_key}.schema_version",
                     "missing_field",
-                    f"'{meta_key}.{field}' is missing.",
-                    f"Add '{field}' to the '{meta_key}' metadata section.",
+                    f"'{meta_key}.schema_version' is missing.",
+                    "Add 'schema_version' to the '{meta_key}' metadata section.",
                 ))
+            if "name" not in meta:
+                diagnostics.append(_diagnostic(
+                    f"{meta_key}.name",
+                    "missing_field",
+                    f"'{meta_key}.name' is missing.",
+                    f"Add 'name' to the '{meta_key}' metadata section.",
+                ))
+        else:
+            # Legacy: version, name, goal all required
+            for field in ["version", "name", "goal"]:
+                if field not in meta:
+                    diagnostics.append(_diagnostic(
+                        f"{meta_key}.{field}",
+                        "missing_field",
+                        f"'{meta_key}.{field}' is missing.",
+                        f"Add '{field}' to the '{meta_key}' metadata section.",
+                    ))
     elif meta_key in data:
         diagnostics.append(_diagnostic(
             meta_key,
@@ -453,8 +528,11 @@ def validate_geotask_diagnostics(data: dict) -> list[dict]:
             ))
 
     # Check other required keys
-    other_keys = ["space", "objects", "ops", "task"]
-    for key in other_keys:
+    if is_v1:
+        required_keys = ["space", "objects", "tasks", "execution", "output_contract"]
+    else:
+        required_keys = ["space", "objects", "ops", "task"]
+    for key in required_keys:
         if key not in data:
             diagnostics.append(_diagnostic(
                 key,

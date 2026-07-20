@@ -21,8 +21,8 @@ def test_task_context_defaults():
 
 
 def test_encoding_plan():
-    plan = EncodingPlan(encoding_type=EncodingType.COMPACT_DSL, reason="token_budget")
-    assert plan.encoding_type == EncodingType.COMPACT_DSL
+    plan = EncodingPlan(encoding_type=EncodingType.compact_dsl, reason="token_budget")
+    assert plan.encoding_type == EncodingType.compact_dsl
     assert plan.estimated_tokens == 0
 
 
@@ -55,9 +55,9 @@ def test_runtime_event():
 
 
 def test_encoding_type_values():
-    assert EncodingType.NATURAL_LANGUAGE.value == "natural_language"
-    assert EncodingType.GEOTASK_YAML.value == "geotask_yaml"
-    assert EncodingType.COMPACT_DSL.value == "compact_dsl"
+    assert EncodingType.natural_language.value == "natural_language"
+    assert EncodingType.geotask_yaml.value == "geotask_yaml"
+    assert EncodingType.compact_dsl.value == "compact_dsl"
 
 
 def test_task_status_values():

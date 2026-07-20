@@ -72,13 +72,13 @@ class MockModelRouter:
             )
 
         format_instruction = {
-            EncodingType.NATURAL_LANGUAGE: (
+            EncodingType.natural_language: (
                 "Respond in natural language with measurement values."
             ),
-            EncodingType.GEOTASK_YAML: (
+            EncodingType.geotask_yaml: (
                 "Respond in YAML format with measurements and verified_by."
             ),
-            EncodingType.COMPACT_DSL: (
+            EncodingType.compact_dsl: (
                 "Respond in compact DSL: name=value unit [operator]."
             ),
         }

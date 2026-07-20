@@ -206,8 +206,8 @@ def test_validate_geotask_remains_string_list_compatible():
 
     assert errors
     assert all(isinstance(error, str) for error in errors)
-    assert any("missing 'xy'" in error for error in errors)
-    assert any("objects.point_a.xy" in error for error in errors)
+    assert any("missing" in error.lower() and ("xy" in error.lower() or "coordinates" in error.lower()) for error in errors)
+    assert any("objects.point_a.xy" in error or "objects.point_a.coordinates" in error for error in errors)
 
 
 def test_cli_validate_failure_prints_structured_diagnostics(tmp_path):

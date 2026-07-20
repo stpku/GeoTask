@@ -1,4 +1,4 @@
-"""Minimal GeoTask Core runner v0.3.
+"""Minimal GeoTask Core runner v0.3 → v1.0 bridge.
 
 Executes spatial operations defined in a GeoTask document against
 the declared objects. Enhanced with:
@@ -7,6 +7,12 @@ the declared objects. Enhanced with:
     point_to_line_distance_2d, rect_contains_point, time_overlap,
     altitude_overlap)
   - Object-type-based auto-pairing (not name-based)
+  - v1.0 assertion-driven execution for documents with explicit
+    assertions or execution sections.
+
+For legacy documents without assertions, the original auto-detection
+logic runs unchanged. For v1.0 documents (with assertions or execution),
+the document is canonicalized and executed via the v1.0 pipeline.
 """
 
 from geotask_core.ops import (
@@ -22,7 +28,9 @@ from geotask_core.ops import (
 def run_geotask(data: dict) -> dict:
     """Run spatial operations on a parsed GeoTask document.
 
-    Auto-detection uses the ops section plus compatible object types.
+    When the document has an explicit 'assertions' or 'execution' section,
+    delegates to the v1.0 canonicalize → validate → execute pipeline.
+    Otherwise, uses legacy auto-detection (backward compatible).
 
     Args:
         data: Parsed GeoTask dict (from parser.load_geotask).
@@ -30,6 +38,92 @@ def run_geotask(data: dict) -> dict:
     Returns:
         Dict with keys: measurements, conclusion, verified_by.
     """
+    # ── v1.0 path: explicit assertions or execution section ──────────
+    if data.get("assertions") or data.get("execution"):
+        return _run_v1(data)
+
+    # ── Legacy path: auto-detection from ops section ─────────────────
+    return _run_legacy(data)
+
+
+def _run_v1(data: dict) -> dict:
+    """Execute via v1.0 canonicalize → execute pipeline.
+
+    Returns legacy-compatible output format.
+    """
+    from geotask_core.v1.canonicalizer import canonicalize
+    from geotask_core.v1.validator import validate_canonical
+    from geotask_core.v1.executor import execute_canonical
+
+    doc = canonicalize(data)
+    diagnostics = validate_canonical(doc)
+
+    # If validation fails, still attempt execution but include diagnostics
+    result = execute_canonical(doc)
+
+    # Convert diagnostics to warning strings
+    if diagnostics:
+        for d in diagnostics:
+            warning = (
+                f"{d.get('path', '')}: {d.get('code', '')}: "
+                f"{d.get('message', '')}"
+            )
+            if warning not in result.warnings:
+                result.warnings.append(warning)
+
+    # Build legacy-compatible output
+    return _v1_result_to_legacy(result)
+
+
+def _v1_result_to_legacy(result) -> dict:
+    """Convert v1.0 GeotaskResult to legacy output format."""
+    # Use the pre-built legacy projections if available
+    if result.measurements:
+        return {
+            "measurements": result.measurements,
+            "conclusion": result.conclusion,
+            "verified_by": result.verified_by,
+        }
+
+    # Fallback: build from checks
+    measurements = []
+    verified_by = []
+    for check in result.checks:
+        measurements.append({
+            "name": check.assertion_id,
+            "value": check.value,
+            "unit": check.unit,
+            "object_refs": check.object_refs,
+            "verified_by": check.operator,
+        })
+        verified_by.append({
+            "operation": check.operator,
+            "result": str(check.value).lower()
+            if isinstance(check.value, bool) else str(check.value or ""),
+        })
+
+    parts = []
+    for m in measurements:
+        unit_str = f" {m['unit']}" if m.get("unit") else ""
+        val = m["value"]
+        val_str = (
+            str(val).lower() if isinstance(val, bool)
+            else str(val) if val is not None else "N/A"
+        )
+        parts.append(f"{m['name']}={val_str}{unit_str}")
+
+    return {
+        "measurements": measurements,
+        "conclusion": {
+            "summary": "; ".join(parts) if parts else "no measurements computed",
+            "external_data_used": False,
+        },
+        "verified_by": verified_by,
+    }
+
+
+def _run_legacy(data: dict) -> dict:
+    """Legacy auto-detection runner (unchanged from v0.3)."""
     objects = data.get("objects", {})
     ops_list = data.get("ops", {})
     measurements = []
@@ -68,21 +162,33 @@ def run_geotask(data: dict) -> dict:
         measurements.append({
             "name": f"{l_name}_intersects_{r_name}",
             "value": val, "unit": None,
-            "object_refs": [l_name, r_name], "verified_by": "line_intersects_rect",
+            "object_refs": [l_name, r_name],
+            "verified_by": "line_intersects_rect",
         })
-        verified_by.append({"operation": "line_intersects_rect", "result": str(val).lower()})
+        verified_by.append({
+            "operation": "line_intersects_rect",
+            "result": str(val).lower(),
+        })
 
     # ── point_to_line_distance_2d: point ⟂ line ────────────────────────
     if has_ptl and points and lines:
         p_name = list(points.keys())[0]
         l_name = list(lines.keys())[0]
-        val = round(point_to_line_distance_2d(points[p_name]["xy"], lines[l_name]["points"]), 2)
+        val = round(
+            point_to_line_distance_2d(
+                points[p_name]["xy"], lines[l_name]["points"]
+            ), 2,
+        )
         measurements.append({
             "name": f"{p_name}_to_{l_name}_distance",
             "value": val, "unit": "meter",
-            "object_refs": [p_name, l_name], "verified_by": "point_to_line_distance_2d",
+            "object_refs": [p_name, l_name],
+            "verified_by": "point_to_line_distance_2d",
         })
-        verified_by.append({"operation": "point_to_line_distance_2d", "result": f"{val} meter"})
+        verified_by.append({
+            "operation": "point_to_line_distance_2d",
+            "result": f"{val} meter",
+        })
 
     # ── rect_contains_point: rect ∋ point ──────────────────────────────
     if has_contains and rects and points:
@@ -92,43 +198,64 @@ def run_geotask(data: dict) -> dict:
         measurements.append({
             "name": f"{r_name}_contains_{p_name}",
             "value": val, "unit": None,
-            "object_refs": [r_name, p_name], "verified_by": "rect_contains_point",
+            "object_refs": [r_name, p_name],
+            "verified_by": "rect_contains_point",
         })
-        verified_by.append({"operation": "rect_contains_point", "result": str(val).lower()})
+        verified_by.append({
+            "operation": "rect_contains_point",
+            "result": str(val).lower(),
+        })
 
     # ── time_overlap: time intervals ──────────────────────────────────
     if has_time:
-        time_objects = {k: v for k, v in objects.items() if v.get("type") == "time"}
+        time_objects = {
+            k: v for k, v in objects.items() if v.get("type") == "time"
+        }
         if len(time_objects) >= 2:
             t_names = list(time_objects.keys())
             a, b = t_names[0], t_names[1]
-            val = time_overlap(time_objects[a]["interval"], time_objects[b]["interval"])
+            val = time_overlap(
+                time_objects[a]["interval"], time_objects[b]["interval"]
+            )
             measurements.append({
                 "name": f"{a}_{b}_overlap",
                 "value": val, "unit": None,
                 "object_refs": [a, b], "verified_by": "time_overlap",
             })
-            verified_by.append({"operation": "time_overlap", "result": str(val).lower()})
+            verified_by.append({
+                "operation": "time_overlap",
+                "result": str(val).lower(),
+            })
 
     # ── altitude_overlap: altitude ranges ─────────────────────────────
     if has_alt:
-        alt_objects = {k: v for k, v in objects.items() if v.get("type") == "altitude"}
+        alt_objects = {
+            k: v for k, v in objects.items() if v.get("type") == "altitude"
+        }
         if len(alt_objects) >= 2:
             a_names = list(alt_objects.keys())
             a, b = a_names[0], a_names[1]
-            val = altitude_overlap(alt_objects[a]["range"], alt_objects[b]["range"])
+            val = altitude_overlap(
+                alt_objects[a]["range"], alt_objects[b]["range"]
+            )
             measurements.append({
                 "name": f"{a}_{b}_overlap",
                 "value": val, "unit": None,
                 "object_refs": [a, b], "verified_by": "altitude_overlap",
             })
-            verified_by.append({"operation": "altitude_overlap", "result": str(val).lower()})
+            verified_by.append({
+                "operation": "altitude_overlap",
+                "result": str(val).lower(),
+            })
 
     # Build summary
     parts = []
     for m in measurements:
         unit_str = f" {m['unit']}" if m.get("unit") else ""
-        val_str = str(m["value"]).lower() if isinstance(m["value"], bool) else m["value"]
+        val_str = (
+            str(m["value"]).lower() if isinstance(m["value"], bool)
+            else m["value"]
+        )
         parts.append(f"{m['name']}={val_str}{unit_str}")
     summary = "; ".join(parts) if parts else "no measurements computed"
 

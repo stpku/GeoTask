@@ -1,27 +1,39 @@
-"""GeoTask Runtime contracts v0.1 — dataclasses and enums.
+"""GeoTask Runtime contracts — dataclasses and enums for v1.0 orchestration.
 
-THIS IS A SKELETON / INTERFACE DEFINITION.
-All types here define the contract between public Core and private Runtime.
+Imports v1.0 enums from geotask_core.v1.enums for canonical type definitions.
+Maintains backward compatibility with v0.1 TaskStatus values.
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Optional
+
+# ── Re-export v1.0 canonical types from Core ────────────────────────
+from geotask_core.v1.enums import (
+    AssuranceLevel,
+    ClaimStatus,
+    EncodingType,
+    ExecutionMode,
+    ExecutionStatus,
+    ExecutorType,
+    VerificationMode,
+)
+
+# ── Backward-compatible TaskStatus (v0.1) ───────────────────────────
 from enum import Enum
 
 
-class EncodingType(str, Enum):
-    NATURAL_LANGUAGE = "natural_language"
-    GEOTASK_YAML = "geotask_yaml"
-    COMPACT_DSL = "compact_dsl"
-
-
 class TaskStatus(str, Enum):
+    """Legacy task status values (v0.1 compatible)."""
     VERIFIED = "verified"
     CONTRADICTED = "contradicted"
     NEED_REVIEW = "need_review"
     INVALID_OPERATOR = "invalid_operator"
     INVALID_REFERENCE = "invalid_reference"
 
+
+# ── v1.0 Runtime Contracts ──────────────────────────────────────────
 
 @dataclass
 class TaskRequest:
@@ -34,6 +46,8 @@ class TaskRequest:
     constraints: list[str] = field(default_factory=list)
     token_budget: Optional[int] = None
     metadata: dict = field(default_factory=dict)
+    # v1.0: execution mode preference
+    preferred_execution_mode: str = ""  # ExecutionMode value
 
 
 @dataclass
@@ -47,7 +61,7 @@ class TaskContext:
 
 @dataclass
 class EncodingPlan:
-    encoding_type: EncodingType
+    encoding_type: EncodingType  # v1.0: typed enum
     encoded_task: str = ""
     estimated_tokens: int = 0
     required_objects: list[str] = field(default_factory=list)
@@ -90,6 +104,9 @@ class VerificationPlan:
     required_operators: list[str] = field(default_factory=list)
     required_data: list[str] = field(default_factory=list)
     review_requirements: list[str] = field(default_factory=list)
+    # v1.0: verification mode and required assurance
+    verification_mode: str = ""  # VerificationMode value
+    required_assurance: str = ""  # AssuranceLevel value
 
 
 @dataclass
@@ -108,3 +125,8 @@ class GovernedTaskResult:
     review_reasons: list[str] = field(default_factory=list)
     used_encoding_plan: Optional[EncodingPlan] = None
     runtime_events: list[RuntimeEvent] = field(default_factory=list)
+    # v1.0: execution and assurance tracking
+    execution_mode: str = ""  # ExecutionMode value
+    execution_status: str = ""  # ExecutionStatus value
+    assurance_level: str = ""  # AssuranceLevel value
+    verification_mode: str = ""  # VerificationMode value

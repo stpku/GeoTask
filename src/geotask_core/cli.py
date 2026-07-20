@@ -19,7 +19,7 @@ from pathlib import Path
 
 from geotask_core.parser import (
     load_geotask,
-    validate_geotask_diagnostics,
+    validate_document,
 )
 from geotask_core.runner import run_geotask
 from geotask_core.normalizer import normalize_model_output
@@ -39,13 +39,18 @@ def cmd_validate(path: str):
     """Validate a GeoTask YAML file."""
     print(f"[validate] {path}")
     data = load_geotask(path)
-    diagnostics = validate_geotask_diagnostics(data)
+    diagnostics = validate_document(data)
     if data.get("_deprecated_stir_field"):
         print("  Warning: Using deprecated 'stir' top-level field. Please migrate to 'geotask'.", file=sys.stderr)
-    if diagnostics:
-        _print_validation_diagnostics(diagnostics, prefix="  ")
+    errors = [d for d in diagnostics if d.get("severity", "error") == "error"]
+    warnings_only = [d for d in diagnostics if d.get("severity") == "warning"]
+    if warnings_only:
+        _print_validation_diagnostics(warnings_only, prefix="  ", label="Warnings")
+    if errors:
+        _print_validation_diagnostics(errors, prefix="  ")
         sys.exit(1)
-    print("  Validation OK")
+    if not diagnostics:
+        print("  Validation OK")
     return data
 
 
@@ -53,11 +58,15 @@ def cmd_run(path: str):
     """Run a GeoTask document."""
     print(f"[run] {path}")
     data = load_geotask(path)
-    diagnostics = validate_geotask_diagnostics(data)
+    diagnostics = validate_document(data)
     if data.get("_deprecated_stir_field"):
         print("  Warning: Using deprecated 'stir' top-level field. Please migrate to 'geotask'.", file=sys.stderr)
-    if diagnostics:
-        _print_validation_diagnostics(diagnostics, prefix="  ")
+    errors = [d for d in diagnostics if d.get("severity", "error") == "error"]
+    warnings_only = [d for d in diagnostics if d.get("severity") == "warning"]
+    if warnings_only:
+        _print_validation_diagnostics(warnings_only, prefix="  ", label="Warnings")
+    if errors:
+        _print_validation_diagnostics(errors, prefix="  ")
         sys.exit(1)
 
     result = run_geotask(data)
@@ -70,9 +79,13 @@ def cmd_normalize(path: str, geotask_path: str | None = None):
     if geotask_path:
         print(f"[normalize + verify] model={path}  geotask={geotask_path}")
         geotask_data = load_geotask(geotask_path)
-        diagnostics = validate_geotask_diagnostics(geotask_data)
-        if diagnostics:
-            _print_validation_diagnostics(diagnostics, prefix="  ", label="GeoTask")
+        diagnostics = validate_document(geotask_data)
+        errors = [d for d in diagnostics if d.get("severity", "error") == "error"]
+        warnings_only = [d for d in diagnostics if d.get("severity") == "warning"]
+        if warnings_only:
+            _print_validation_diagnostics(warnings_only, prefix="  ", label="GeoTask Warnings")
+        if errors:
+            _print_validation_diagnostics(errors, prefix="  ", label="GeoTask")
             sys.exit(1)
     else:
         print(f"[normalize] {path}")
@@ -90,11 +103,15 @@ def cmd_eval(geotask_path: str, model_path: str):
 
     # Run Core for ground truth
     data = load_geotask(geotask_path)
-    diagnostics = validate_geotask_diagnostics(data)
+    diagnostics = validate_document(data)
     if data.get("_deprecated_stir_field"):
         print("  Warning: Using deprecated 'stir' top-level field. Please migrate to 'geotask'.", file=sys.stderr)
-    if diagnostics:
-        _print_validation_diagnostics(diagnostics, prefix="  ", label="Core")
+    errors = [d for d in diagnostics if d.get("severity", "error") == "error"]
+    warnings_only = [d for d in diagnostics if d.get("severity") == "warning"]
+    if warnings_only:
+        _print_validation_diagnostics(warnings_only, prefix="  ", label="Core Warnings")
+    if errors:
+        _print_validation_diagnostics(errors, prefix="  ", label="Core")
         sys.exit(1)
 
     core_result = run_geotask(data)
@@ -112,9 +129,10 @@ def cmd_eval(geotask_path: str, model_path: str):
 def _load_valid_geotask(path: str, label: str = "GeoTask") -> dict:
     """Load and validate a GeoTask document for non-interactive CLI commands."""
     data = load_geotask(path)
-    diagnostics = validate_geotask_diagnostics(data)
-    if diagnostics:
-        _print_validation_diagnostics(diagnostics, label=label, stream=sys.stderr)
+    diagnostics = validate_document(data)
+    errors = [d for d in diagnostics if d.get("severity", "error") == "error"]
+    if errors:
+        _print_validation_diagnostics(errors, label=label, stream=sys.stderr)
         sys.exit(1)
     return data
 
@@ -127,9 +145,18 @@ def _print_validation_diagnostics(
 ):
     """Print structured validation diagnostics without a traceback."""
     out = stream or sys.stdout
-    print(f"{prefix}{label} FAILED ({len(diagnostics)} error(s)):", file=out)
+    error_count = sum(1 for d in diagnostics if d.get("severity", "error") != "warning")
+    warning_count = sum(1 for d in diagnostics if d.get("severity") == "warning")
+    total = len(diagnostics)
+    if error_count and warning_count:
+        print(f"{prefix}{label} FAILED ({error_count} error(s), {warning_count} warning(s)):", file=out)
+    elif error_count:
+        print(f"{prefix}{label} FAILED ({error_count} error(s)):", file=out)
+    else:
+        print(f"{prefix}{label} ({warning_count} warning(s)):", file=out)
     for diagnostic in diagnostics:
-        print(f"{prefix}  - path: {diagnostic['path']}", file=out)
+        sev = diagnostic.get("severity", "error")
+        print(f"{prefix}  - [{sev.upper()}] path: {diagnostic['path']}", file=out)
         print(f"{prefix}    code: {diagnostic['code']}", file=out)
         print(f"{prefix}    message: {diagnostic['message']}", file=out)
         print(f"{prefix}    Suggested fix: {diagnostic['suggested_fix']}", file=out)

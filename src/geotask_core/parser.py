@@ -9,6 +9,43 @@ import yaml
 from geotask_core.operator_registry import operator_names
 
 
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Duplicate YAML Key Detection
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class _UniqueKeyLoader(yaml.SafeLoader):
+    """Custom YAML loader that rejects duplicate mapping keys at any depth."""
+
+
+def _construct_mapping_no_dupes(loader: yaml.Loader, node: yaml.nodes.MappingNode, deep: bool = False) -> dict:
+    """Construct a mapping, raising yaml.constructor.ConstructorError on duplicate keys.
+
+    Works at all nesting levels because overriding the DEFAULT_MAPPING_TAG
+    constructor replaces the default mapping construction for the entire
+    YAML parse tree.
+    """
+    mapping: dict = {}
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if key in mapping:
+            raise yaml.constructor.ConstructorError(
+                None,
+                None,
+                f"duplicate key '{key}'",
+                key_node.start_mark,
+            )
+        value = loader.construct_object(value_node, deep=deep)
+        mapping[key] = value
+    return mapping
+
+
+_UniqueKeyLoader.add_constructor(
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+    _construct_mapping_no_dupes,
+)
+
+
 VALID_OBJECT_TYPES = (
     "point", "line", "rect", "time", "altitude",
     # v1.0 object types
@@ -54,18 +91,23 @@ def load_geotask(path: Union[str, Path]) -> dict:
         path: Path to a .yaml file.
 
     Returns:
-        Parsed dict with keys: geotask (or stir), space, objects, ops, task.
+        Parsed dict.
 
     Raises:
         FileNotFoundError: If the file does not exist.
-        yaml.YAMLError: If the YAML is malformed.
+        yaml.YAMLError: If the YAML is malformed or contains duplicate keys.
     """
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"GeoTask file not found: {path}")
 
     with open(path, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f)
+        raw = f.read()
+
+    try:
+        data = yaml.load(raw, Loader=_UniqueKeyLoader)
+    except yaml.constructor.ConstructorError as e:
+        raise yaml.YAMLError(f"Duplicate key detected in {path}: {e}") from e
 
     if data is None:
         raise ValueError(f"GeoTask file is empty or invalid: {path}")
@@ -77,13 +119,14 @@ def load_geotask(path: Union[str, Path]) -> dict:
 load_stir = load_geotask
 
 
-def _diagnostic(path: str, code: str, message: str, suggested_fix: str) -> dict:
+def _diagnostic(path: str, code: str, message: str, suggested_fix: str, severity: str = "error") -> dict:
     """Build a structured validation diagnostic."""
     return {
         "path": path,
         "code": code,
         "message": message,
         "suggested_fix": suggested_fix,
+        "severity": severity,
     }
 
 
@@ -213,13 +256,41 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
 
         elif obj_type in ("time", "time_interval"):
             interval = obj.get("interval")
+            start = obj.get("start")
+            end_v = obj.get("end")
             path = f"objects.{name}.interval"
-            if interval is None:
+
+            # v1.0 standard: start/end fields
+            if start is not None or end_v is not None:
+                if start is None or end_v is None:
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}",
+                        "missing_field",
+                        f"object '{name}' ({obj_type}): both 'start' and 'end' are required when using standard fields.",
+                        "Provide both start: and end: values.",
+                    ))
+                elif not _is_valid_time_interval([start, end_v]):
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}",
+                        "invalid_interval",
+                        f"objects.{name}: invalid_interval: start must be <= end, both HH:MM.",
+                        "Use valid HH:MM strings with start <= end.",
+                    ))
+                # Check for conflict with legacy interval
+                if interval is not None and (start is not None and end_v is not None):
+                    if interval != [start, end_v]:
+                        diagnostics.append(_diagnostic(
+                            f"objects.{name}",
+                            "invalid_interval",
+                            f"objects.{name}: conflicting 'interval' and 'start'/'end' values.",
+                            "Use either 'interval' (legacy) or 'start'+'end' (standard), not both with different values.",
+                        ))
+            elif interval is None:
                 diagnostics.append(_diagnostic(
                     path,
                     "missing_field",
-                    f"object '{name}' ({obj_type}): missing 'interval'.",
-                    "Add interval: ['HH:MM', 'HH:MM'].",
+                    f"object '{name}' ({obj_type}): missing interval (use 'interval' or 'start'+'end').",
+                    "Add interval: ['HH:MM', 'HH:MM'] or start: 'HH:MM', end: 'HH:MM'.",
                 ))
             elif not _is_valid_time_interval(interval):
                 diagnostics.append(_diagnostic(
@@ -231,13 +302,41 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
 
         elif obj_type in ("altitude", "altitude_interval"):
             altitude_range = obj.get("range")
+            min_v = obj.get("min")
+            max_v = obj.get("max")
             path = f"objects.{name}.range"
-            if altitude_range is None:
+
+            # v1.0 standard: min/max fields
+            if min_v is not None or max_v is not None:
+                if min_v is None or max_v is None:
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}",
+                        "missing_field",
+                        f"object '{name}' ({obj_type}): both 'min' and 'max' are required when using standard fields.",
+                        "Provide both min: and max: numeric values.",
+                    ))
+                elif not _is_valid_number_interval([min_v, max_v]):
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}",
+                        "invalid_interval",
+                        f"objects.{name}: invalid_interval: min must be <= max, both numbers.",
+                        "Use valid numeric values with min <= max.",
+                    ))
+                # Check for conflict with legacy range
+                if altitude_range is not None and (min_v is not None and max_v is not None):
+                    if altitude_range != [min_v, max_v]:
+                        diagnostics.append(_diagnostic(
+                            f"objects.{name}",
+                            "invalid_interval",
+                            f"objects.{name}: conflicting 'range' and 'min'/'max' values.",
+                            "Use either 'range' (legacy) or 'min'+'max' (standard), not both with different values.",
+                        ))
+            elif altitude_range is None:
                 diagnostics.append(_diagnostic(
                     path,
                     "missing_field",
-                    f"object '{name}' ({obj_type}): missing 'range'.",
-                    "Add range: [min, max].",
+                    f"object '{name}' ({obj_type}): missing range (use 'range' or 'min'+'max').",
+                    "Add range: [min, max] or min: N, max: N.",
                 ))
             elif not _is_valid_number_interval(altitude_range):
                 diagnostics.append(_diagnostic(
@@ -436,11 +535,11 @@ def _validate_expected_results_diagnostics(expected_results) -> list[dict]:
     return diagnostics
 
 
-def validate_geotask_diagnostics(data: dict) -> list[dict]:
-    """Validate a GeoTask document dict. Returns structured diagnostics.
+def _validate_raw_schema(data: dict) -> list[dict]:
+    """Validate a GeoTask document dict (raw schema only, no canonicalization).
 
-    An empty list means the document is valid. Each diagnostic includes:
-    path, code, message, and suggested_fix.
+    An empty list means the document is valid at the raw schema level.
+    Each diagnostic includes: path, code, message, and suggested_fix.
 
     Checks performed:
       - Top-level keys: geotask (or stir for backward compat), space, objects, ops, task
@@ -449,6 +548,10 @@ def validate_geotask_diagnostics(data: dict) -> list[dict]:
 
     Backward compatibility: the old 'stir' top-level key is accepted
     but triggers a deprecation warning in CLI output.
+    
+    This is an internal function. External callers should use
+    ``validate_document()`` for unified validation or
+    ``validate_geotask_diagnostics()`` for backward compat.
     """
     diagnostics = []
 
@@ -576,13 +679,90 @@ def validate_geotask_diagnostics(data: dict) -> list[dict]:
     return diagnostics
 
 
+def validate_document(data: dict) -> list[dict]:
+    """Unified validation: raw schema + canonicalization + canonical validation.
+    
+    Execution order:
+      1. Raw Schema Validation (_validate_raw_schema)
+      2. Canonicalization (canonicalize)  
+      3. Canonical Validation (validate_canonical)
+      4. Deduplicate diagnostics by (path, code)
+    
+    Returns:
+        List of diagnostic dicts, each with: path, code, message, suggested_fix, severity.
+        severity is "error" or "warning". Warnings do not block execution.
+    """
+    from geotask_core.v1.canonicalizer import canonicalize
+    from geotask_core.v1.validator import validate_canonical
+
+    diagnostics: list[dict] = list(_validate_raw_schema(data))
+
+    # Step 2: Canonicalization — catch errors and convert to diagnostics
+    try:
+        doc = canonicalize(data)
+    except Exception as exc:
+        diagnostics.append(_diagnostic(
+            "canonicalize",
+            "canonicalization_error",
+            f"Failed to canonicalize document: {exc}",
+            "Check document structure and field values for correctness.",
+            severity="error",
+        ))
+        return diagnostics
+
+    # Step 3: Canonical Validation
+    try:
+        canon_diags = validate_canonical(doc)
+    except Exception as exc:
+        diagnostics.append(_diagnostic(
+            "validate_canonical",
+            "canonical_validation_error",
+            f"Failed to run canonical validation: {exc}",
+            "Check document structure and field values for correctness.",
+            severity="error",
+        ))
+        return diagnostics
+
+    # Step 4: Deduplicate by (path, code) — keep more severe, then first seen
+    seen: dict[tuple, dict] = {}
+    for d in diagnostics + canon_diags:
+        key = (d.get("path", ""), d.get("code", ""))
+        sev = d.get("severity", "error")
+        if key not in seen:
+            if "severity" not in d:
+                d["severity"] = "error"
+            seen[key] = d
+        else:
+            existing_sev = seen[key].get("severity", "error")
+            # Keep error over warning; if same, keep first
+            if sev == "error" and existing_sev == "warning":
+                if "severity" not in d:
+                    d["severity"] = "error"
+                seen[key] = d
+
+    return list(seen.values())
+
+
+def validate_geotask_diagnostics(data: dict) -> list[dict]:
+    """Validate a GeoTask document dict. Returns structured diagnostics.
+
+    This function delegates to validate_document() for unified validation
+    (raw schema + canonicalization + canonical validation).
+
+    An empty list means the document is valid. Each diagnostic includes:
+    path, code, message, and suggested_fix, plus severity ("error" or "warning").
+    """
+    return validate_document(data)
+
+
 def validate_geotask(data: dict) -> list[str]:
     """Validate a GeoTask document dict. Returns a list of error messages.
 
     This legacy API is kept for backward compatibility. New callers should use
-    validate_geotask_diagnostics() for path/code/message/suggested_fix fields.
+    validate_document() for structured diagnostics or
+    validate_geotask_diagnostics() for the legacy wrapper.
     """
-    return [_format_diagnostic(d) for d in validate_geotask_diagnostics(data)]
+    return [_format_diagnostic(d) for d in validate_document(data)]
 
 
 # Deprecated alias for backward compatibility

@@ -16,7 +16,7 @@ def test_planner_compact_dsl_low_budget():
     req = TaskRequest(task_id="t1", task_type="distance", task_goal="Dist", token_budget=80)
     ctx = TaskContext(available_operators=["distance_2d"])
     plan = planner.plan(req, ctx)
-    assert plan.encoding_type == EncodingType.compact_dsl
+    assert plan.encoding_type == EncodingType.COMPACT_DSL
     assert len(plan.reason) > 0
 
 
@@ -25,7 +25,7 @@ def test_planner_compact_dsl_boundary():
     req = TaskRequest(task_id="t1", task_type="distance", task_goal="Dist", token_budget=120)
     ctx = TaskContext()
     plan = planner.plan(req, ctx)
-    assert plan.encoding_type == EncodingType.compact_dsl
+    assert plan.encoding_type == EncodingType.COMPACT_DSL
 
 
 def test_planner_geotask_yaml_mid_budget():
@@ -34,7 +34,7 @@ def test_planner_geotask_yaml_mid_budget():
                       requested_outputs=["o1", "o2", "o3"])
     ctx = TaskContext(available_operators=["distance_2d"])
     plan = planner.plan(req, ctx)
-    assert plan.encoding_type == EncodingType.geotask_yaml
+    assert plan.encoding_type == EncodingType.GEOTASK_YAML
 
 
 def test_planner_natural_language_no_budget():
@@ -42,7 +42,7 @@ def test_planner_natural_language_no_budget():
     req = TaskRequest(task_id="t3", task_type="simple", task_goal="Check", token_budget=1000)
     ctx = TaskContext()
     plan = planner.plan(req, ctx)
-    assert plan.encoding_type == EncodingType.natural_language
+    assert plan.encoding_type == EncodingType.NATURAL_LANGUAGE
 
 
 def test_planner_produces_reason():

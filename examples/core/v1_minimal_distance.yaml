@@ -52,5 +52,5 @@ execution:
 output_contract:
   format: "structured"
   required_fields:
-    - "distance_value"
+    - "ab_distance"
   allow_additional_fields: true

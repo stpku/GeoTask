@@ -47,23 +47,46 @@ def run_geotask(data: dict) -> dict:
 
 
 def _run_v1(data: dict) -> dict:
-    """Execute via v1.0 canonicalize → execute pipeline.
+    """Execute via v1.0 unified validation → canonicalize → execute pipeline.
 
-    Returns legacy-compatible output format.
+    Validation errors with severity="error" block execution.
+    Returns v1.0 ``GeotaskResult.to_dict()`` format.
     """
     from geotask_core.v1.canonicalizer import canonicalize
-    from geotask_core.v1.validator import validate_canonical
-    from geotask_core.v1.executor import execute_canonical
+    from geotask_core.v1.executor import execute_canonical, GeotaskResult
+    from geotask_core.parser import validate_document
 
+    # ── Unified validation ──────────────────────────────────────────
+    all_diags = validate_document(data)
+    errors = [d for d in all_diags if d.get("severity", "error") == "error"]
+
+    if errors:
+        # Build a failed result with diagnostics in result.errors
+        result = GeotaskResult(
+            task_id=data.get("geotask", {}).get("name", "unknown"),
+        )
+        result.execution.status = "failed"
+        result.overall.status = "unverifiable"
+        result.overall.assurance_level = "unverified"
+        for d in errors:
+            result.errors.append({
+                "path": d.get("path", ""),
+                "code": d.get("code", ""),
+                "message": d.get("message", ""),
+            })
+        for d in [d for d in all_diags if d.get("severity") == "warning"]:
+            result.warnings.append(
+                f"{d.get('path', '')}: {d.get('code', '')}: {d.get('message', '')}"
+            )
+        return _v1_result_to_legacy(result)
+
+    # ── Execute ─────────────────────────────────────────────────────
     doc = canonicalize(data)
-    diagnostics = validate_canonical(doc)
-
-    # If validation fails, still attempt execution but include diagnostics
     result = execute_canonical(doc)
 
-    # Convert diagnostics to warning strings
-    if diagnostics:
-        for d in diagnostics:
+    # Attach any warnings from validation
+    for d in all_diags:
+        if d.get("severity") == "warning":
             warning = (
                 f"{d.get('path', '')}: {d.get('code', '')}: "
                 f"{d.get('message', '')}"
@@ -71,7 +94,6 @@ def _run_v1(data: dict) -> dict:
             if warning not in result.warnings:
                 result.warnings.append(warning)
 
-    # Build legacy-compatible output
     return _v1_result_to_legacy(result)
 
 

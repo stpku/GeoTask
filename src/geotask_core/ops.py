@@ -59,21 +59,19 @@ def _point_in_rect(p: list[float], bbox: list[float]) -> bool:
 def line_intersects_rect(
     line_points: list[list[float]], bbox: list[float]
 ) -> bool:
-    """Check if a 2D line segment intersects an axis-aligned rectangle.
+    """Check if any segment of a polyline intersects an axis-aligned rectangle.
 
-    Boundary contact is considered intersection.
+    Iterates **all** consecutive point pairs (segments):
+        points[0]→points[1], points[1]→points[2], …, points[n-2]→points[n-1]
+
+    Returns ``True`` as soon as any segment touches or crosses the rectangle.
+    Boundary contact counts as intersection.
     """
     if len(line_points) < 2:
         return False
 
-    p1 = line_points[0]
-    p2 = line_points[1]
-
-    if _point_in_rect(p1, bbox) or _point_in_rect(p2, bbox):
-        return True
-
+    # Pre-compute rectangle edges once
     min_x, min_y, max_x, max_y = bbox[0], bbox[1], bbox[2], bbox[3]
-
     edges = [
         ([min_x, min_y], [max_x, min_y]),
         ([max_x, min_y], [max_x, max_y]),
@@ -81,23 +79,31 @@ def line_intersects_rect(
         ([min_x, max_y], [min_x, min_y]),
     ]
 
-    for e1, e2 in edges:
-        if _segments_intersect(p1, p2, e1, e2):
+    # Check every consecutive segment
+    for i in range(len(line_points) - 1):
+        p1 = line_points[i]
+        p2 = line_points[i + 1]
+
+        if _point_in_rect(p1, bbox) or _point_in_rect(p2, bbox):
             return True
+
+        for e1, e2 in edges:
+            if _segments_intersect(p1, p2, e1, e2):
+                return True
 
     return False
 
 
-def point_to_line_distance_2d(point: list[float], line_points: list[list[float]]) -> float:
-    """Compute the shortest 2D distance from a point to a line segment."""
-    px, py = point[0], point[1]
-    x1, y1 = line_points[0][0], line_points[0][1]
-    x2, y2 = line_points[1][0], line_points[1][1]
-
+def _point_to_segment_distance(
+    px: float, py: float,
+    x1: float, y1: float, x2: float, y2: float,
+) -> float:
+    """Compute the shortest 2D distance from point (px,py) to segment (x1,y1)-(x2,y2)."""
     dx = x2 - x1
     dy = y2 - y1
 
-    if dx == 0 and dy == 0:
+    if dx == 0.0 and dy == 0.0:
+        # Degenerate segment — distance to the point itself
         return math.sqrt((px - x1) ** 2 + (py - y1) ** 2)
 
     t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)
@@ -107,6 +113,41 @@ def point_to_line_distance_2d(point: list[float], line_points: list[list[float]]
     proj_y = y1 + t * dy
 
     return math.sqrt((px - proj_x) ** 2 + (py - proj_y) ** 2)
+
+
+def point_to_line_distance_2d(point: list[float], line_points: list[list[float]]) -> float:
+    """Compute the shortest 2D distance from a point to a polyline.
+
+    Iterates **all** consecutive segments and returns the minimum distance.
+    Degenerate (zero-length) segments are handled gracefully.
+
+    Args:
+        point: ``[x, y]``
+        line_points: ``[[x1,y1], [x2,y2], ...]`` — must have ≥ 2 points.
+
+    Returns:
+        Minimum Euclidean distance from *point* to any segment of the polyline.
+
+    Raises:
+        ValueError: If fewer than 2 points are provided.
+    """
+    if len(line_points) < 2:
+        raise ValueError(
+            f"point_to_line_distance_2d requires at least 2 points, "
+            f"got {len(line_points)}"
+        )
+
+    px, py = point[0], point[1]
+    min_dist = float("inf")
+
+    for i in range(len(line_points) - 1):
+        x1, y1 = line_points[i][0], line_points[i][1]
+        x2, y2 = line_points[i + 1][0], line_points[i + 1][1]
+        dist = _point_to_segment_distance(px, py, x1, y1, x2, y2)
+        if dist < min_dist:
+            min_dist = dist
+
+    return min_dist
 
 
 def rect_contains_point(bbox: list[float], point: list[float]) -> bool:

@@ -59,7 +59,7 @@ class RuleBasedEncodingPlanner:
         required_constraints = list(request.constraints)
 
         if request.token_budget is not None and request.token_budget <= 120:
-            encoding_type = EncodingType.compact_dsl
+            encoding_type = EncodingType.COMPACT_DSL
             reason = (
                 f"token_budget={request.token_budget} <= 120: "
                 "compact DSL selected for minimal token usage"
@@ -67,7 +67,7 @@ class RuleBasedEncodingPlanner:
             estimated_tokens = min(request.token_budget, 100)
 
         elif is_multi:
-            encoding_type = EncodingType.geotask_yaml
+            encoding_type = EncodingType.GEOTASK_YAML
             reason = (
                 f"task_type='{request.task_type}' or "
                 f"{output_count} requested_outputs >= 3: "
@@ -80,7 +80,7 @@ class RuleBasedEncodingPlanner:
             and request.token_budget <= 300
             and needs_human_readable
         ):
-            encoding_type = EncodingType.geotask_yaml
+            encoding_type = EncodingType.GEOTASK_YAML
             reason = (
                 f"token_budget={request.token_budget} <= 300 "
                 "with human_readable flag: YAML selected"
@@ -88,7 +88,7 @@ class RuleBasedEncodingPlanner:
             estimated_tokens = min(request.token_budget, 250)
 
         else:
-            encoding_type = EncodingType.natural_language
+            encoding_type = EncodingType.NATURAL_LANGUAGE
             reason = "default: natural language encoding"
             estimated_tokens = 200 + object_count * 40 + output_count * 30
 

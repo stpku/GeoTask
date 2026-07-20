@@ -22,6 +22,11 @@ class EncodingType(str, Enum):
     geotask_json     = "geotask_json"
     compact_dsl      = "compact_dsl"
 
+# Backward-compatible uppercase aliases (v0.1 Runtime contract)
+EncodingType.NATURAL_LANGUAGE = EncodingType.natural_language
+EncodingType.GEOTASK_YAML     = EncodingType.geotask_yaml
+EncodingType.COMPACT_DSL      = EncodingType.compact_dsl
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # -- Execution

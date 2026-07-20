@@ -416,13 +416,12 @@ def test_cyclic_dependency() -> None:
 
 
 def test_polyline_all_segments() -> None:
-    """Polyline with 3+ points — ``point_to_line_distance_2d`` dispatches correctly.
+    """Polyline with 3+ points — ``point_to_line_distance_2d`` checks all segments.
 
-    The current implementation (ops.py) only evaluates the first 2 points of a
-    polyline as documented in the operator contract's known_limitation.  This
-    test validates the current behaviour with a 3-point polyline; when
-    multi-segment support is added the expected value should be updated to
-    the minimum across all segments (2.0 instead of sqrt(29) ≈ 5.385).
+    Point [12, 5] to polyline [[0,0], [10,0], [10,10]]:
+    - Segment 1 ([0,0]→[10,0]): projection t=1.0 → [10,0] → distance sqrt(29) ≈ 5.385
+    - Segment 2 ([10,0]→[10,10]): projection t=0.5 → [10,5] → distance 2.0
+    Minimum = 2.0 (closest segment is the second one).
     """
     from geotask_core.v1.canonicalizer import canonicalize
     from geotask_core.v1.executor import execute_canonical
@@ -437,20 +436,16 @@ def test_polyline_all_segments() -> None:
         "ops": {"point_to_line_distance_2d": "distance from point to polyline"},
         "task": {},
         "assertions": [
-            {"id": "ptl", "operator": "point_to_line_distance_2d", "object_refs": ["query_pt", "poly"]},
+            {"id": "ptl", "operator": "point_to_line_distance_2d",
+             "object_refs": ["query_pt", "poly"]},
         ],
     })
     result = execute_canonical(doc)
     check = result.checks[0]
 
-    # Current behavior: only first 2 points → segment ((0,0)→(10,0))
-    #   Projection t = max(0, min(1, ((12-0)*10+(5-0)*0)/(10*10+0*0)))
-    #   = max(0, min(1, 120/100)) = 1.0  → proj = [10, 0]
-    #   distance = sqrt((12-10)^2 + (5-0)^2) = sqrt(29) ≈ 5.385
-    expected = math.sqrt(29)
-
-    assert math.isclose(check.value, expected, rel_tol=1e-6), (
-        f"Expected first-segment distance {expected:.4f}, got {check.value:.4f}"
+    # Correct multi-segment distance: minimum is 2.0 (second segment)
+    assert math.isclose(check.value, 2.0, rel_tol=1e-6), (
+        f"Expected min-segment distance 2.0, got {check.value:.4f}"
     )
     assert check.status == "verified"
 
@@ -546,18 +541,18 @@ def test_legacy_cli_keeps_working() -> None:
 
 
 def test_v1_native_execution() -> None:
-    """Load ``v1_minimal_distance.yaml`` via ``run_geotask``, verify measurements."""
+    """Load ``v1_minimal_distance.yaml`` via ``run_geotask`` — returns v1.0 ``to_dict()`` format."""
     from geotask_core.runner import run_geotask
 
     data = _load_yaml("examples/core/v1_minimal_distance.yaml")
     result = run_geotask(data)
 
-    assert "measurements" in result
-    assert len(result["measurements"]) >= 1
-    dist = result["measurements"][0]
-    assert math.isclose(dist["value"], 5.0, rel_tol=0.01)
-    assert dist["name"] == "ab_distance"
-    assert "distance_2d" in str(result["verified_by"])
+    # run_geotask returns legacy format for backward compat
+    assert result["measurements"], "expected measurements in result"
+    m = result["measurements"][0]
+    assert math.isclose(m["value"], 5.0, rel_tol=0.01)
+    assert m["name"] == "ab_distance"
+    assert m["verified_by"] == "distance_2d"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

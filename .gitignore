@@ -19,6 +19,9 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
+# OpenCode / AI agent
+.omx/
+
 # Virtual env
 .venv/
 venv/

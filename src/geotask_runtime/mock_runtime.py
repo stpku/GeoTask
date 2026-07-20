@@ -41,16 +41,16 @@ def _generate_mock_response(model_request: ModelRequest) -> ModelResponse:
     Falls back to simple mock values.
     """
     plan = model_request.encoding_plan
-    encoding_type = plan.encoding_type if plan else EncodingType.natural_language
+    encoding_type = plan.encoding_type if plan else EncodingType.NATURAL_LANGUAGE
 
     objects = plan.required_objects if plan else []
     operators = plan.required_operators if plan else []
 
-    if encoding_type == EncodingType.natural_language:
+    if encoding_type == EncodingType.NATURAL_LANGUAGE:
         raw_text = _generate_natural_language(objects, operators)
-    elif encoding_type == EncodingType.geotask_yaml:
+    elif encoding_type == EncodingType.GEOTASK_YAML:
         raw_text = _generate_yaml(objects, operators)
-    elif encoding_type == EncodingType.compact_dsl:
+    elif encoding_type == EncodingType.COMPACT_DSL:
         raw_text = _generate_compact_dsl(objects, operators)
     else:
         raw_text = _generate_natural_language(objects, operators)

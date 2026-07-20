@@ -994,28 +994,36 @@ def _check_output_contract(oc: OutputContract) -> list[dict]:
     # ordering must reference fields in required_fields if present
     ordering = oc.ordering
     if isinstance(ordering, dict) and ordering:
-        ordering_fields: set[str] = set()
-        for key, value in ordering.items():
-            ordering_fields.add(key)
-            if isinstance(value, str):
-                ordering_fields.add(value)
-            elif isinstance(value, list):
-                for item in value:
-                    if isinstance(item, str):
-                        ordering_fields.add(item)
-
         required_set = set(required)
-        for f in ordering_fields:
-            if f not in required_set:
-                diags.append(
-                    _diagnostic(
-                        "output_contract.ordering",
-                        OUTPUT_CONTRACT_VIOLATION,
-                        f"Ordering references field '{f}' not in required_fields.",
-                        f"Add '{f}' to required_fields or remove it from ordering.",
-                        severity="warning",
-                    )
+        by_field = ordering.get("by", "")
+        direction = ordering.get("direction", "")
+
+        # Only check ordering.by value against required_fields — the keys
+        # ("by", "direction") and the direction value ("ascending",
+        # "descending") are NOT field names.
+        if by_field and by_field not in required_set:
+            diags.append(
+                _diagnostic(
+                    "output_contract.ordering.by",
+                    OUTPUT_CONTRACT_VIOLATION,
+                    f"Ordering 'by' field '{by_field}' not in required_fields.",
+                    f"Add '{by_field}' to required_fields or change ordering.by.",
+                    severity="warning",
                 )
+            )
+
+        # Validate direction
+        if direction and direction not in ("ascending", "descending"):
+            diags.append(
+                _diagnostic(
+                    "output_contract.ordering.direction",
+                    OUTPUT_CONTRACT_VIOLATION,
+                    f"Ordering direction must be 'ascending' or "
+                    f"'descending', got '{direction}'.",
+                    f"Set ordering.direction to 'ascending' or 'descending'.",
+                    severity="warning",
+                )
+            )
 
     return diags
 

@@ -122,13 +122,8 @@ POINT_TO_LINE_DISTANCE_2D = OperatorContract(
     deterministic=True,
     semantics={
         "note": (
-            "Actually checks ALL segments of the polyline and "
-            "returns the minimum distance."
-        ),
-        "known_limitation": (
-            "The current implementation only checks the first 2 points "
-            "of the polyline. Full multi-segment distance calculation "
-            "is planned for a future release."
+            "Iterates all consecutive segments of the polyline "
+            "and returns the minimum point-to-segment distance."
         ),
     },
     model_execution={
@@ -430,9 +425,10 @@ class AssertionDispatcher:
             contract, assertion.object_refs, objects
         )
 
-        # Get and call implementation
+        # Get and call implementation — pass assertion.parameters as kwargs
         impl = self._get_implementation(contract)
-        return impl(*params)
+        kwargs: dict[str, Any] = dict(assertion.parameters) if assertion.parameters else {}
+        return impl(*params, **kwargs)
 
     # ── Parameter Extraction ──────────────────────────────────────────────
 

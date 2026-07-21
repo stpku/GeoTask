@@ -15,9 +15,7 @@ from typing import Any, Callable
 from geotask_core.v1.ir import Assertion, GeoObject, OperatorContract
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  v1.0 Operator Contracts
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- v1.0 Operator Contracts
 
 DISTANCE_2D = OperatorContract(
     name="distance_2d",
@@ -298,9 +296,7 @@ ALTITUDE_OVERLAP = OperatorContract(
 )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Operator Registry
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Operator Registry
 
 
 class OperatorRegistry:
@@ -369,9 +365,7 @@ class OperatorRegistry:
         return name in self._contracts
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Assertion Dispatcher
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Assertion Dispatcher
 
 
 class AssertionDispatcher:
@@ -389,7 +383,7 @@ class AssertionDispatcher:
     def __init__(self, registry: OperatorRegistry) -> None:
         self._registry = registry
 
-    # ── Public API ────────────────────────────────────────────────────────
+    # -- Public API
 
     def dispatch(
         self,
@@ -430,7 +424,7 @@ class AssertionDispatcher:
         kwargs: dict[str, Any] = dict(assertion.parameters) if assertion.parameters else {}
         return impl(*params, **kwargs)
 
-    # ── Parameter Extraction ──────────────────────────────────────────────
+    # -- Parameter Extraction
 
     def _extract_params(
         self,
@@ -559,7 +553,7 @@ class AssertionDispatcher:
             f"for object '{obj.id}'."
         )
 
-    # ── Implementation Binding ────────────────────────────────────────────
+    # -- Implementation Binding
 
     def _get_implementation(self, contract: OperatorContract) -> Callable:
         """Dynamically import and return the bound implementation.
@@ -597,9 +591,7 @@ class AssertionDispatcher:
         return func
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Built-in contract list & default registry
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Built-in contract list & default registry
 
 _BUILTIN_CONTRACTS: list[OperatorContract] = [
     DISTANCE_2D,

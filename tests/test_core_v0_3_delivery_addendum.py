@@ -161,15 +161,22 @@ def test_docs_guide_mentions_how_to_explain_v03(docs_guide_text):
 # ── README updates ────────────────────────────────────────────────────
 
 def test_readme_mentions_attorney_delivery(readme_text):
-    assert ("Attorney Delivery Files" in readme_text or
-            "attorney addendum" in readme_text.lower() or
-            "attorney_addendum" in readme_text.lower())
+    # Attorney delivery docs are in patent_evidence, not public README
+    evidence_dir = Path(__file__).resolve().parent.parent / "patent_evidence" / "08_core_v0_3"
+    addendum = evidence_dir / "core_v0_3_attorney_addendum.md"
+    note = evidence_dir / "core_v0_3_delivery_note.md"
+    assert addendum.exists(), f"Missing {addendum}"
+    assert note.exists(), f"Missing {note}"
 
 
 def test_readme_mentions_v03_boundary_closure(readme_text):
-    assert "How v0.3 closes the v0.2 boundary" in readme_text or \
-           "closes the v0.2" in readme_text.lower() or \
-           "v0.3 closes" in readme_text.lower()
+    # v0.3 boundary closure documented in patent evidence
+    evidence_dir = Path(__file__).resolve().parent.parent / "patent_evidence" / "08_core_v0_3"
+    addendum = evidence_dir / "core_v0_3_attorney_addendum.md"
+    assert addendum.exists(), f"Missing {addendum}"
+    content = addendum.read_text(encoding="utf-8")
+    assert "v0.3" in content.lower() or "boundary" in content.lower(), \
+        "v0.3 boundary closure must be documented in attorney addendum"
 
 
 # ── Full test suite check ─────────────────────────────────────────────

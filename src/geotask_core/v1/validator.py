@@ -56,9 +56,7 @@ if TYPE_CHECKING:
     pass
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Diagnostic helpers
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Diagnostic helpers
 
 _VALID_CRS_TYPES: set[str] = {"local_cartesian", "projected", "geographic", "unknown"}
 
@@ -119,9 +117,7 @@ def _hhmm_to_minutes(s: str) -> int:
     return int(h) * 60 + int(m)
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Document structure
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Document structure
 
 
 def _check_metadata(meta: GeotaskMetadata) -> list[dict]:
@@ -200,9 +196,7 @@ def _check_duplicate_ids(doc: CanonicalDocument) -> list[dict]:
     return diags
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Space
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Space
 
 
 def _check_space(space: SpaceDefinition) -> list[dict]:
@@ -235,9 +229,7 @@ def _check_space(space: SpaceDefinition) -> list[dict]:
     return diags
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Objects
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Objects
 
 
 def _check_objects(objects: dict[str, GeoObject]) -> list[dict]:
@@ -663,9 +655,7 @@ def _check_feature_collection_data(path: str, data: dict) -> list[dict]:
     return diags
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Tasks and Assertions
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Tasks and Assertions
 
 
 def _check_tasks_and_assertions(
@@ -737,6 +727,7 @@ def _check_tasks_and_assertions(
                         f"Operator '{assertion.operator}' is not registered. "
                         f"Available: {default_registry.list_names()}.",
                         "Use a registered operator or register a new one.",
+                        severity="error",
                     )
                 )
 
@@ -749,6 +740,7 @@ def _check_tasks_and_assertions(
                             INVALID_REFERENCE,
                             f"Assertion '{assertion.id}' references unknown object '{ref}'.",
                             "Ensure object_refs reference existing object ids.",
+                            severity="error",
                         )
                     )
 
@@ -789,9 +781,7 @@ def _check_tasks_and_assertions(
     return diags
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Operator binding
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Operator binding
 
 
 def _check_operator_binding(
@@ -847,9 +837,7 @@ def _check_operator_binding(
     return diags
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Execution
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Execution
 
 
 def _check_execution(
@@ -952,9 +940,7 @@ def _check_execution(
     return diags
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Output contract
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Output contract
 
 
 def _check_output_contract(oc: OutputContract) -> list[dict]:
@@ -1028,9 +1014,7 @@ def _check_output_contract(oc: OutputContract) -> list[dict]:
     return diags
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Assurance reachability
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Assurance reachability
 
 
 def _check_assurance_reachability(
@@ -1092,9 +1076,7 @@ def _check_assurance_reachability(
     return diags
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Graph cycle detection
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Graph cycle detection
 
 
 def _detect_cycle_in_graph(
@@ -1134,9 +1116,7 @@ def _detect_cycle_in_graph(
     return None
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Public API
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Public API
 
 
 def validate_canonical(doc: CanonicalDocument) -> list[dict]:

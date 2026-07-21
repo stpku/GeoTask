@@ -35,7 +35,8 @@ from geotask_core.v1.enums import (
 from geotask_core.v1.ir import CanonicalDocument, GeotaskMetadata
 from geotask_core.v1.canonicalizer import canonicalize
 from geotask_core.v1.validator import validate_canonical
-from geotask_core.v1.executor import execute_canonical, GeotaskResult
+from geotask_core.v1.executor import execute_canonical
+from geotask_core.v1.result import GeotaskResult
 
 __all__ = [
     "__version__",

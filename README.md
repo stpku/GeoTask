@@ -1,414 +1,108 @@
 # GeoTask Core
 
-**Lightweight spatial task representation for LLMs.**
-
-GeoTask Core 是一种面向大模型的轻量级空间任务表达格式，让大模型能够理解空间对象、
-空间关系和计算任务，并能被本地确定性算子验证。
-
-> **GeoTask Core only defines a lightweight spatial task representation.**
-> Heavy audit, domain-specific rule packs, data connectors, and business
-> workflows should live outside the Core.
-
-> **GeoTask Core 只定义轻量空间任务表达。审计、行业规则包、数据连接器和业务流程不属于 Core。**
-
-> **Migration note**: STIR was the original prototype name. The project has been
-> renamed to GeoTask to better communicate its purpose: representing spatial
-> tasks for LLMs. Old `stir` CLI and `stir:` YAML field are temporarily
-> supported but deprecated. See [MIGRATION.md](MIGRATION.md).
+**Lightweight spatial task representation for LLMs with deterministic verification.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 
----
+GeoTask Core lets you describe spatial objects, operations, and tasks in a YAML format that LLMs can read and reason about. It then verifies every computed result using local deterministic operators. No network calls, no model dependencies, no ambiguity. If an LLM claims a distance is 144.22 meters, GeoTask Core computes it locally and confirms or contradicts the claim.
 
-## What GeoTask Core Is
+**Why agents need GeoTask.** LLMs are fluent but unreliable with spatial reasoning. They can hallucinate distances, flip coordinates, or misinterpret geometric relationships. GeoTask Core gives agent frameworks a verifiable spatial layer: define the objects, state the assertions, run the operators, and inspect the assurance level. Every result carries a provenance chain from object references through operator contracts to deterministic computation.
 
-- A **human-readable and LLM-readable YAML format** for describing spatial objects,
-  spatial operations, and spatial tasks.
-- A **minimal deterministic runtime** that verifies LLM spatial reasoning outputs.
-- A **lightweight normalizer** that extracts structured results from unstructured
-  LLM text output.
-
-## What GeoTask Core Is NOT
-
-- ❌ **Not a GeoJSON replacement.** GeoJSON is a data interchange format for
-  geographic features. GeoTask Core is a task representation format that includes
-  operations, questions, and verification.
-- ❌ **Not a drone / UAV system.** GeoTask UAV is a separate domain-specific rule
-  pack built on top of GeoTask Core.
-- ❌ **Not a heavy audit platform.** GeoTask Audit is a separate component for
-  provenance tracking and compliance verification.
-- ❌ **Not a GIS library.** No PostGIS, GDAL, Shapely, or GeoPandas. The only
-  dependency beyond stdlib is PyYAML.
-
-## Relationship to Other GeoTask Components
-
-```
-┌──────────────────────────────────────────────────┐
-│              GeoTask Domain Pack                  │  ← Industry rules, data adapters
-├──────────────────────────────────────────────────┤
-│              GeoTask Runtime (private)            │  ← Orchestration, governance
-├──────────────────────────────────────────────────┤
-│  GeoTask Audit   │  GeoTask Eval                 │  ← Provenance, evaluation
-├─────────────────┴────────────────────────────────┤
-│           GeoTask Core (this repo)               │  ← Format + minimal runtime
-└──────────────────────────────────────────────────┘
-```
-
-- **GeoTask Core**: The format. Self-contained, minimal, verifiable. Open source.
-- **GeoTask Runtime**: Private orchestration and governance layer. Not in this repo.
-- **GeoTask Domain Pack**: Private industry-specific extension packages. Not in this repo.
-- **GeoTask Eval**: Evaluates LLM outputs against Core ground truth.
-- **GeoTask Audit**: Provenance tracking, audit trails, output contracts.
-
-> **GeoTask Core provides lightweight spatial task representation and deterministic
-> verification primitives. Commercial orchestration, model-routing policies,
-> domain rule packs, data connectors, audit strategies, and operational workflows
-> are intentionally separated from GeoTask Core.**
->
-> **GeoTask Core 提供轻量空间任务表达和确定性验证基础能力。商业编排、模型路由策略、
-> 行业规则包、数据连接器、审计策略和业务工作流均与 GeoTask Core 保持边界隔离。**
-
-## Quick Start
+## Quickstart
 
 ```bash
-# Clone
-git clone https://gitee.com/stpku/GeoTask.git
-cd geotask
-
-# Install in development mode
+git clone https://github.com/GeoTask/geotask-core.git
+cd geotask-core
 pip install -e .
-pip install pytest  # for tests
+pip install pytest
 
-# Run tests
+geotask validate examples/core/v1_minimal_distance.yaml
+geotask run examples/core/v1_minimal_distance.yaml
 pytest
-
-# CLI examples
-geotask validate examples/geotask_core_lite.yaml
-geotask run examples/geotask_core_lite.yaml
-geotask normalize examples/deepseek_output_sample.txt
 ```
 
-## Example Input
+## Minimal Example
 
 ```yaml
-# examples/geotask_core_lite.yaml
 geotask:
-  version: "0.1-lite"
-  name: "GeoTask Core"
-  goal: "LLM-readable spatial task representation"
-
-space:
-  crs: "local_xy_m"
-  unit: "meter"
-  axes:
-    x: "east"
-    y: "north"
+  id: "example"
+  schema_version: "1.0"
 
 objects:
-  takeoff:
-    type: "point"
-    xy: [0, 0]
-  school:
-    type: "point"
-    xy: [120, 80]
-  route:
-    type: "line"
-    points:
-      - [-200, 0]
-      - [400, 0]
-  zone:
-    type: "rect"
-    bbox: [250, -100, 350, 100]
+  a: {type: "point", coordinates: [0, 0]}
+  b: {type: "point", coordinates: [3, 4]}
 
-ops:
-  distance_2d: "sqrt((x1 - x2)^2 + (y1 - y2)^2)"
-  line_intersects_rect: "true if any part of a line segment crosses or touches the rectangle"
+operator_set: [distance_2d]
 
-task:
-  questions:
-    - "Calculate the 2D distance from takeoff to school."
-    - "Determine whether route intersects zone."
+tasks:
+  - id: "calc"
+    assertions:
+      - id: "ab"
+        operator: "distance_2d"
+        object_refs: ["a", "b"]
 ```
 
-## Example Output
+This produces a verified result: `ab = 5.0 meter` with `assurance_level: local_deterministic`.
+
+## Core Concepts
+
+```
+objects => assertions => execution => result => assurance
+```
+
+1. **Objects.** Declare spatial primitives: `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`.
+2. **Assertions.** Bind objects to operators with explicit references. `{operator: "distance_2d", object_refs: ["a", "b"]}`.
+3. **Execution.** Dispatch assertions through the local executor. Each assertion becomes a `CheckResult` with a value, unit, and status.
+4. **Result.** A `GeotaskResult` aggregates all checks, summary counts, and derivation metadata.
+5. **Assurance.** Every result carries an `AssuranceLevel` from `unverified` (0) to `local_deterministic` (3) and beyond, letting callers decide when a result is trustworthy.
+
+## Main Chain
+
+```
+parse YAML => canonicalize (v1 IR) => validate => execute => GeotaskResult
+```
+
+The canonical IR (`CanonicalDocument`) is the single source of truth between all stages. Validation produces structured diagnostics. Execution dispatches assertions through the operator registry and collects results with assurance metadata.
+
+## Current Capabilities
+
+**Operators** (6, all deterministic):
+
+| Operator | Input | Output |
+|---|---|---|
+| `distance_2d` | point, point | number |
+| `line_intersects_rect` | polyline, rect | boolean |
+| `point_to_line_distance_2d` | point, polyline | number |
+| `rect_contains_point` | rect, point | boolean |
+| `time_overlap` | time_interval, time_interval | boolean |
+| `altitude_overlap` | altitude_interval, altitude_interval | boolean |
+
+**Object types** (5): `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`.
+
+**Dependencies:** Python 3.10+ and PyYAML. Zero GIS libraries.
+
+## What's Not Here
+
+- **No model executor.** GeoTask Core only runs local deterministic operators. It does not call any LLM.
+- **No orchestrator.** Task routing, model selection, and pipeline orchestration live in the private GeoTask Runtime.
+- **No domain packs.** Industry-specific rules, data connectors, and scoring logic are separate.
+- **No benchmarks.** Encoding benchmarks and evaluation suites are internal tooling.
+- **No network I/O.** Core is entirely offline and deterministic.
+
+## CLI
 
 ```bash
-$ geotask run examples/geotask_core_lite.yaml
+geotask validate <file.yaml>     # check document structure
+geotask run <file.yaml>          # validate + execute
+geotask normalize <output.txt>   # extract structured results from LLM output
+geotask eval <file.yaml> <txt>   # compare LLM output against ground truth
 ```
-
-```yaml
-measurements:
-  - name: takeoff_to_school_distance
-    value: 144.22
-    unit: meter
-    object_refs: [takeoff, school]
-    verified_by: distance_2d
-  - name: route_intersects_zone
-    value: true
-    unit: null
-    object_refs: [route, zone]
-    verified_by: line_intersects_rect
-
-conclusion:
-  summary: "takeoff_to_school_distance=144.22 meter; route_intersects_zone=true"
-  external_data_used: false
-
-verified_by:
-  - operation: distance_2d
-    result: "144.22 meter"
-  - operation: line_intersects_rect
-    result: "true"
-```
-
-## CLI Usage
-
-```bash
-# Validate a GeoTask document
-geotask validate examples/geotask_core_lite.yaml
-
-# Run a GeoTask document (validate + execute)
-geotask run examples/geotask_core_lite.yaml
-
-# Normalize LLM output into structured format
-geotask normalize examples/deepseek_output_sample.txt
-
-# Also works with python -m
-python -m geotask_core.cli validate examples/geotask_core_lite.yaml
-python -m geotask_core.cli run examples/geotask_core_lite.yaml
-python -m geotask_core.cli normalize examples/deepseek_output_sample.txt
-
-# Mock runtime (demonstration of future Runtime pipeline)
-python -m geotask_runtime.mock_runtime examples/geotask_core_lite.yaml
-```
-
-## GeoTask Normalizer
-
-GeoTask Normalizer converts model outputs (natural language, YAML-like, Markdown)
-into structured GeoTask Results and verifies them against local deterministic operators.
-
-```bash
-# Extract only (without verification)
-geotask normalize examples/deepseek_output_sample.txt
-
-# Extract + verify against GeoTask Core ground truth
-geotask normalize examples/model_outputs/deepseek_cn.md --geotask examples/geotask_core_lite.yaml
-```
-
-Output includes `verified` / `contradicted` / `need_review` status for each measurement,
-along with expected values and differences for numeric checks.
-
-> GeoTask Normalizer 将模型输出归一化为统一 GeoTask Result，并用本地确定性算子验证。
-
-## GeoTask Eval Lite
-
-GeoTask Eval Lite compares deterministic GeoTask Core results with normalized LLM outputs.
-
-> GeoTask Eval Lite 用于比较 GeoTask Core 本地确定性结果与大模型输出归一化结果是否一致。
-
-```bash
-# Evaluate LLM output against Core ground truth
-geotask eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt
-python -m geotask_core.cli eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt
-```
-
-**Scoring rubric** (100 points total):
-
-| Check              | Points | What it verifies                                     |
-|--------------------|--------|------------------------------------------------------|
-| Distance match     | 40     | `takeoff_to_school_distance` within tolerance        |
-| Intersection match | 40     | `route_intersects_zone` boolean matches              |
-| Operator match     | 15     | All expected operators present in model output       |
-| External data      | 5      | `external_data_used` flag matches                    |
-
-**Example eval output**:
-
-```yaml
-score:
-  total: 100
-  distance_match: true
-  intersection_match: true
-  operator_match: true
-  external_data_used_match: true
-
-details:
-  expected_distance: 144.22
-  actual_distance: 144.22
-  expected_intersection: true
-  actual_intersection: true
-  expected_operations:
-    - distance_2d
-    - line_intersects_rect
-  actual_operations:
-    - distance_2d
-    - line_intersects_rect
-
-warnings: []
-errors: []
-```
-
-See [`docs/eval_spec.md`](docs/eval_spec.md) for the full evaluation specification.
-
-## GeoTask Encoding Benchmark
-
-GeoTask Encoding Benchmark compares natural language, GeoTask YAML, and compact DSL encodings for spatial tasks. It evaluates approximate token cost, normalization success, verification success, and benchmark score.
-
-The current benchmark uses **deterministic simulated outputs** and does not claim live LLM accuracy. It is intended to evaluate token cost, normalization behavior, verification behavior, and patent evidence reproducibility.
-
-```bash
-python benchmarks/encoding_v0_1/run_benchmark.py
-```
-
-Results are output to `benchmarks/encoding_v0_1/outputs/` and copied to `patent_evidence/03_benchmark/`.
-
-See [`docs/encoding_benchmark_v0_1.md`](docs/encoding_benchmark_v0_1.md) for the full benchmark report,
-and [`docs/patent_evidence_guide.md`](docs/patent_evidence_guide.md) for patent evidence usage.
-
-### Benchmark v0.2 (Expanded)
-
-The v0.2 benchmark extends to **24 cases** across **6 operators**, **5 case groups**, and **8 error types** — a 6× expansion over v0.1.
-
-```bash
-python benchmarks/encoding_v0_2/run_benchmark.py
-```
-
-**Results**: natural_language 96% | geotask_yaml 100% | compact_dsl 100% status match.
-Compact DSL uses 35% fewer tokens than natural language while achieving perfect verification.
-
-New in v0.2: `point_to_line_distance_2d`, `rect_contains_point`, `time_overlap`, `altitude_overlap` operators; unit mismatch, Chinese negation, Markdown/YAML extraction robustness tests.
-
-See `benchmarks/encoding_v0_2/` and `patent_evidence/07_benchmark_v0_2/` for details.
-
-### Core Normalizer / Verifier v0.3
-
-v0.3 is the **production Core backfill** of stable v0.2 capabilities. The Core Normalizer and Verifier now support all 6 operators, unified status hierarchy (`invalid_operator` > `invalid_reference` > `contradicted` > `need_review` > `verified`), invalid operator/reference detection, unit mismatch detection, and Chinese negation for all boolean operators.
-
-```bash
-# Run production end-to-end tests
-pytest tests/test_core_normalizer_verifier_v0_3.py tests/test_ops_v0_3.py
-```
-
-See [`docs/core_normalizer_verifier_v0_3.md`](docs/core_normalizer_verifier_v0_3.md) and `patent_evidence/08_core_v0_3/` for details.
-
-### How v0.3 Closes the v0.2 Boundary
-
-Benchmark v0.2 used a benchmark-local verifier (`benchmarks/encoding_v0_2/local_verifier.py`) for extended operator coverage. Core v0.3 backfills stable multi-operator capabilities into production `src/geotask_core/normalizer.py` and `verifier.py`, making the evidence directly traceable to the production system.
-
-> v0.3 将 v0.2 中稳定的多算子能力回灌到 production Core，关闭了 benchmark local verifier 的证据边界。
-
-### Attorney Delivery Files
-
-For patent counsel review:
-
-| File | Description |
-|------|-------------|
-| `patent_evidence/08_core_v0_3/core_v0_3_attorney_addendum.md` | Attorney-facing evidence summary |
-| `patent_evidence/08_core_v0_3/core_v0_3_delivery_note.md` | Evidence delivery instructions |
-
-## Supported Object Types (v0.1-lite)
-
-| Type  | Fields               | Description                         |
-|-------|----------------------|-------------------------------------|
-| point | `xy: [x, y]`         | A 2D point                          |
-| line  | `points: [[x,y],...]`| A line segment (2+ points)          |
-| rect  | `bbox: [min_x, min_y, max_x, max_y]` | Axis-aligned rectangle |
-
-## Supported Operators (v0.1-lite)
-
-| Operator               | Input                        | Output | Description                              |
-|------------------------|------------------------------|--------|------------------------------------------|
-| `distance_2d`          | two points                   | float  | 2D Euclidean distance                    |
-| `line_intersects_rect` | line segment + rect bbox     | bool   | Whether line touches or crosses rectangle |
-| `point_to_line_distance_2d` | point + line           | float  | Point-to-line-segment distance (v0.3+)   |
-| `rect_contains_point` | rect + point                  | bool   | Rectangle containment (v0.3+)            |
-| `time_overlap`       | two time intervals            | bool   | Time interval overlap (v0.3+)            |
-| `altitude_overlap`   | two altitude ranges           | bool   | Altitude range overlap (v0.3+)           |
-
-## Domain Pack Extensibility
-
-GeoTask Core supports private Domain Packs for industry-specific spatial
-task modeling and verification. Domain Packs define domain objects, rules,
-task templates, and verification workflows that extend Core without adding
-weight to the format specification.
-
-Example domain: low-altitude site precheck.
-
-> Domain Pack implementations and industry rules are proprietary and not
-> part of the open-source Core. See `docs/domain_pack_architecture.md`.
-
-## Architecture
-
-```
-src/geotask_core/         ← Open source: format + deterministic runtime
-├── __init__.py
-├── models.py             # Dataclasses: PointObject, LineObject, RectObject, StirDocument
-├── parser.py             # YAML loader + validator
-├── ops.py                # Deterministic 6 operators
-├── runner.py             # Generic type-based auto-detection runner
-├── normalizer.py         # Multi-operator normalizer with error detection
-├── verifier.py           # Verifier with unified status hierarchy
-├── result_schema.py      # Status/reason constants + overall_status computation
-├── evaluator.py          # Compare Core results with normalized LLM outputs
-└── cli.py                # CLI: validate, run, normalize, eval
-
-src/geotask_runtime/      ← Private: contracts + mock (reference only)
-├── __init__.py
-├── contracts.py          # TaskRequest, EncodingPlan, GovernedTaskResult, etc.
-├── planner.py            # RuleBasedEncodingPlanner (mock)
-├── router.py             # MockModelRouter (mock)
-├── result_governance.py  # DeterministicResultGovernor (mock)
-├── domain_pack.py        # GenericSpatialDomainPack (demo)
-└── mock_runtime.py       # End-to-end mock pipeline + CLI
-```
-
-See [`docs/product_architecture_v0_1.md`](docs/product_architecture_v0_1.md) for the full product architecture.
-
-## Design Principles
-
-See [`docs/design_principles.md`](docs/design_principles.md):
-
-1. **Core Must Be Light** — No heavy dependencies, no platform features.
-2. **Format and Evaluation Are Separate** — Core is the format; evaluation is external.
-3. **General-Purpose First** — Universal object types and operators only.
-4. **LLM-Friendly First** — Format designed for LLM readability.
-5. **Incrementally Enhanceable** — Start small, grow intentionally.
-
-## Open Source Boundary
-
-See [`docs/open_source_boundary.md`](docs/open_source_boundary.md) and
-[`docs/open_core_commercial_runtime_boundary.md`](docs/open_core_commercial_runtime_boundary.md).
-
-**Open Source (this repo)**:
-- GeoTask Core format spec and examples
-- Core parser, operators, runner, normalizer, verifier
-- Evaluator and CLI
-- Runtime SDK contracts and mock interfaces (reference only)
-
-**Not Open Source**:
-- Full GeoTask Runtime (encoding planner, model routing, governance, cost control)
-- Domain Packs (industry rules, scoring logic, data adapters)
-- Real-world data connectors
-- Audit / review backend
-- Customer case studies
-- Failure sample library
-
-## From STIR to GeoTask
-
-STIR was the original prototype name. The project has been renamed to GeoTask
-to better communicate its purpose: representing spatial tasks for LLMs.
-
-Old `stir` CLI and `stir:` YAML top-level field are temporarily supported
-but deprecated. See [MIGRATION.md](MIGRATION.md) for migration guidance.
 
 ## License
 
-MIT License — see [`LICENSE`](LICENSE).
+MIT. See [LICENSE](LICENSE).
 
-Patents covering the underlying **system and method** (spatial task representation,
-object–operator–proposition binding, agent orchestration, deterministic verification)
-are retained separately. The MIT License covers the software code and documentation,
-not patent rights. See [`docs/patent_boundary.md`](docs/patent_boundary.md).
+## Contributing
 
-## Repository
-
-- **Gitee (Primary)**: [https://gitee.com/stpku/GeoTask](https://gitee.com/stpku/GeoTask)
+See [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup, code style, and PR process. Architecture details are in [docs/architecture.md](docs/architecture.md). Operator extension guide is in [docs/operator-guide.md](docs/operator-guide.md).

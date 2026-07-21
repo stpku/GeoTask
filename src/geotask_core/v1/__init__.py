@@ -20,6 +20,13 @@ from geotask_core.v1.ir import (
     OutputContract,
     CanonicalDocument,
 )
+from geotask_core.v1.result import (
+    CheckResult,
+    ExecutionSummary,
+    ResultSummary,
+    OverallResult,
+    GeotaskResult,
+)
 
 __all__ = [
     "GeotaskVersion",
@@ -35,4 +42,9 @@ __all__ = [
     "VerificationDefinition",
     "OutputContract",
     "CanonicalDocument",
+    "CheckResult",
+    "ExecutionSummary",
+    "ResultSummary",
+    "OverallResult",
+    "GeotaskResult",
 ]

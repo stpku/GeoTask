@@ -28,9 +28,7 @@ from geotask_core.v1.ir import (
 )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Operator → expected input type pairs (for auto-generating assertions)
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Operator → expected input type pairs (for auto-generating assertions)
 
 _OPERATOR_INPUT_TYPES: dict[str, list[str]] = {
     "distance_2d":                ["point", "point"],
@@ -51,9 +49,7 @@ _LEGACY_OBJECT_FIELD_TO_DATA_KEY: dict[str, str] = {
 }
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Public API
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Public API
 
 
 def canonicalize(data: dict[str, Any]) -> CanonicalDocument:
@@ -99,9 +95,7 @@ def document_to_dict(doc: CanonicalDocument) -> dict[str, Any]:
     return _canonical_document_to_dict(doc)
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Schema detection
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Schema detection
 
 
 def _detect_schema(data: dict[str, Any]) -> str:
@@ -149,21 +143,19 @@ def _detect_schema(data: dict[str, Any]) -> str:
     return "v1.0"
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Legacy 0.x → v1.0 conversion
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Legacy 0.x → v1.0 conversion
 
 
 def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
     """Convert a legacy 0.x dict to a full CanonicalDocument."""
     warnings: list[str] = []
 
-    # ── Top-level wrappers ────────────────────────────────────────────────
+    # -- Top-level wrappers
     gt = data.get("geotask", data.get("stir", {}))
     if not isinstance(gt, dict):
         gt = {}
 
-    # ── Metadata ──────────────────────────────────────────────────────────
+    # -- Metadata
     name: str = str(gt.get("name", "unnamed"))
     doc_id = _generate_stable_id(name)
     metadata = GeotaskMetadata(
@@ -177,7 +169,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         tags=list(gt.get("tags", [])),
     )
 
-    # ── Space ─────────────────────────────────────────────────────────────
+    # -- Space 
     space_raw = data.get("space", {})
     if not isinstance(space_raw, dict):
         space_raw = {}
@@ -204,7 +196,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         precision=dict(space_raw.get("precision", {})),
     )
 
-    # ── Objects ───────────────────────────────────────────────────────────
+    # -- Objects 
     objects_raw = data.get("objects", {})
     if not isinstance(objects_raw, dict):
         objects_raw = {}
@@ -220,7 +212,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         geo_data = _convert_legacy_object_data(obj_data, obj_type, obj_id, warnings)
         objects[str(obj_id)] = GeoObject(id=str(obj_id), type=obj_type, data=geo_data)
 
-    # ── Operator set & contracts ──────────────────────────────────────────
+    # -- Operator set & contracts 
     ops_raw = data.get("ops", {})
     if not isinstance(ops_raw, dict):
         ops_raw = {}
@@ -233,12 +225,12 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
             description=str(op_desc) if isinstance(op_desc, str) else "",
         )
 
-    # ── Task ──────────────────────────────────────────────────────────────
+    # -- Task 
     task_raw = data.get("task", {})
     if not isinstance(task_raw, dict):
         task_raw = {}
 
-    # ── Assertions (explicit or auto-generated) ───────────────────────────
+    # -- Assertions (explicit or auto-generated) 
     explicit_assertions: list[dict[str, Any]] = list(data.get("assertions", []))
     if explicit_assertions:
         assertions = _parse_assertions(explicit_assertions, warnings)
@@ -260,7 +252,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
     )
     tasks: list[Task] = [task]
 
-    # ── Execution ─────────────────────────────────────────────────────────
+    # -- Execution 
     exec_raw = data.get("execution", {})
     if not isinstance(exec_raw, dict):
         exec_raw = {}
@@ -286,7 +278,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
             steps=execution_steps,
         )
 
-    # ── Verification ──────────────────────────────────────────────────────
+    # -- Verification 
     verif_raw = data.get("verification", {})
     if not isinstance(verif_raw, dict):
         verif_raw = {}
@@ -297,7 +289,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         failure_policy=dict(verif_raw.get("failure_policy", {})),
     )
 
-    # ── Output Contract ───────────────────────────────────────────────────
+    # -- Output Contract 
     oc_raw = data.get("output_contract", {})
     if not isinstance(oc_raw, dict):
         oc_raw = {}
@@ -310,10 +302,10 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         ordering=dict(oc_raw.get("ordering", {})),
     )
 
-    # ── Expected results ──────────────────────────────────────────────────
+    # -- Expected results 
     expected_results: list[Any] = list(data.get("expected_results", []))
 
-    # ── Extensions ────────────────────────────────────────────────────────
+    # -- Extensions 
     extensions: dict[str, Any] = dict(data.get("extensions", {}))
 
     doc = CanonicalDocument(
@@ -337,16 +329,14 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
     return doc
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  v1.0 native parsing
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- v1.0 native parsing
 
 
 def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
     """Parse a v1.0-native (or already-canonicalised) dict into CanonicalDocument."""
     warnings: list[str] = []
 
-    # ── Metadata ──────────────────────────────────────────────────────────
+    # -- Metadata 
     md = data.get("metadata", {})
     if not isinstance(md, dict) or not md:
         # Empty or non-dict metadata — try extracting from geotask wrapper
@@ -378,7 +368,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         tags=list(md.get("tags", [])),
     )
 
-    # ── Space ─────────────────────────────────────────────────────────────
+    # -- Space 
     sp = data.get("space", {})
     if not isinstance(sp, dict):
         sp = {}
@@ -401,7 +391,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         precision=dict(sp.get("precision", {})),
     )
 
-    # ── Objects ───────────────────────────────────────────────────────────
+    # -- Objects 
     objects_raw = data.get("objects", {})
     if not isinstance(objects_raw, dict):
         objects_raw = {}
@@ -423,10 +413,10 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
             id=str(obj_id), type=obj_type, data=obj_data_dict
         )
 
-    # ── Operator set ──────────────────────────────────────────────────────
+    # -- Operator set 
     operator_set: list[str] = _coerce_str_list(data.get("operator_set", []))
 
-    # ── Operator contracts ────────────────────────────────────────────────
+    # -- Operator contracts 
     oc_raw = data.get("operator_contracts", {})
     operator_contracts: dict[str, OperatorContract] = {}
     if isinstance(oc_raw, dict):
@@ -449,7 +439,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
                     implementation=str(cdata.get("implementation", "")),
                 )
 
-    # ── Tasks ─────────────────────────────────────────────────────────────
+    # -- Tasks 
     tasks_raw = data.get("tasks", [])
     tasks: list[Task] = []
     for tdata in (tasks_raw if isinstance(tasks_raw, list) else []):
@@ -470,11 +460,11 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
             outputs=list(tdata.get("outputs", [])),
         ))
 
-    # ── Execution ─────────────────────────────────────────────────────────
+    # -- Execution 
     exec_raw = data.get("execution", {})
     execution = _parse_execution(exec_raw if isinstance(exec_raw, dict) else {})
 
-    # ── Verification ──────────────────────────────────────────────────────
+    # -- Verification 
     verif_raw = data.get("verification", {})
     if not isinstance(verif_raw, dict):
         verif_raw = {}
@@ -485,7 +475,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         failure_policy=dict(verif_raw.get("failure_policy", {})),
     )
 
-    # ── Output Contract ───────────────────────────────────────────────────
+    # -- Output Contract 
     oc_d = data.get("output_contract", {})
     if not isinstance(oc_d, dict):
         oc_d = {}
@@ -498,7 +488,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         ordering=dict(oc_d.get("ordering", {})),
     )
 
-    # ── Remaining top-level fields ────────────────────────────────────────
+    # -- Remaining top-level fields 
     expected_results: list[Any] = list(data.get("expected_results", []))
     extensions: dict[str, Any] = dict(data.get("extensions", {}))
 
@@ -523,9 +513,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
     return doc
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Legacy object data conversion
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Legacy object data conversion
 
 
 def _convert_legacy_object_data(
@@ -555,9 +543,7 @@ def _convert_legacy_object_data(
     return result
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Assertion helpers
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Assertion helpers
 
 
 def _parse_assertions(
@@ -690,9 +676,7 @@ def _fallback_pair(
     return refs if len(refs) == len(expected_types) else []
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Execution parsing
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Execution parsing
 
 
 def _parse_execution(raw: dict[str, Any]) -> ExecutionDefinition:
@@ -719,9 +703,7 @@ def _parse_execution(raw: dict[str, Any]) -> ExecutionDefinition:
     )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Serialisation (for idempotency)
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Serialisation (for idempotency)
 
 
 def _canonical_document_to_dict(doc: CanonicalDocument) -> dict[str, Any]:
@@ -809,9 +791,7 @@ def _dataclass_to_dict(obj: Any) -> Any:
     return obj
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-#  Utilities
-# ═══════════════════════════════════════════════════════════════════════════════
+# -- Utilities
 
 
 def _generate_stable_id(name: str) -> str:

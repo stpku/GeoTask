@@ -1,0 +1,186 @@
+# GeoTask Core — Public Export Manifest
+manifest_version: "1.0"
+project: "geotask-core"
+
+include:
+  # Public Core source
+  - "src/geotask_core/**"
+
+  # Public tests — explicit whitelist (NOT tests/**)
+  - "tests/test_architecture_boundaries.py"
+  - "tests/test_cli_foundation_commands.py"
+  - "tests/test_cli_inspect.py"
+  - "tests/test_core_examples_v0_2.py"
+  - "tests/test_operator_registry.py"
+  - "tests/test_ops.py"
+  - "tests/test_ops_v0_3.py"
+  - "tests/test_parser.py"
+  - "tests/test_parser_diagnostics.py"
+  - "tests/test_runner.py"
+  - "tests/test_evaluator.py"
+  - "tests/test_normalizer.py"
+  - "tests/test_normalizer_v0_2.py"
+  - "tests/test_verifier.py"
+  - "tests/test_runtime_contracts_v0_1.py"
+  - "tests/v1/**"
+
+  # CI and release tooling (public)
+  - ".github/workflows/ci.yml"
+  - ".release/public-manifest.yaml"
+  - ".release/verify_public_export.py"
+  - ".release/scan_public_export.py"
+  - ".release/hash_public_export.py"
+  - ".release/README.md"
+
+  # Public examples
+  - "examples/core/**"
+  - "examples/geotask_core_lite.yaml"
+  - "examples/basic_distance.yaml"
+  - "examples/route_zone_intersection.yaml"
+  - "examples/deepseek_output_sample.txt"
+  - "examples/eval_expected_result.yaml"
+  - "examples/model_outputs/**"
+  - "examples/README.md"
+
+  # Public docs
+  - "docs/architecture.md"
+  - "docs/operator-guide.md"
+  - "docs/cli_usage.md"
+  - "docs/design_principles.md"
+  - "docs/format_spec.md"
+  - "docs/geotask_yaml_schema.md"
+  - "docs/open_source_boundary.md"
+  - "docs/open_core_commercial_runtime_boundary.md"
+  - "docs/operator_registry.md"
+  - "docs/patent_boundary.md"
+  - "docs/product_architecture_v0_1.md"
+  - "docs/normalizer_v0_2_design.md"
+  - "docs/eval_spec.md"
+  - "docs/architecture_decisions/**"
+
+  # Root docs
+  - "README.md"
+  - "LICENSE"
+  - "CHANGELOG.md"
+  - "MIGRATION.md"
+  - "pyproject.toml"
+  - "requirements.txt"
+  - "CONTRIBUTING.md"
+  - "SECURITY.md"
+
+exclude:
+  - "**/__pycache__/**"
+  - "**/__pycache__"
+  - "**/*.pyc"
+  - "**/*.pyo"
+  - "**/.pytest_cache/**"
+  - "**/.coverage"
+  - "**/.coverage.*"
+  - "**/.DS_Store"
+  - "tests/test_public_export.py"
+  - "patent_evidence/**"
+  - ".omx/**"
+  - ".ai-bridge/**"
+  - "benchmarks/**"
+  - "docs/reports/**"
+  - "docs/superpowers/**"
+  - "docs/GeoTask Specification v1.0.md"
+  - "docs/patent_evidence_guide.md"
+  - "docs/patent_normalizer_disclosure.md"
+  - "docs/encoding_benchmark_v0_1.md"
+  - "docs/encoding_benchmark_v0_2.md"
+  - "docs/core_normalizer_verifier_v0_3.md"
+  - "docs/lowalt_site_precheck_pack_v0_1.md"
+  - "docs/release_v0_1_0.md"
+  - "docs/repository_migration.md"
+  - "docs/productization_roadmap_v0_1.md"
+  - "docs/domain_pack_architecture.md"
+  - "docs/patent_boundary.md"
+  - "scripts/**"
+  - "examples/domain_packs/**"
+  - "examples/runtime/**"
+  - "examples/stir_core_lite.yaml"
+
+required:
+  - "README.md"
+  - "LICENSE"
+  - "pyproject.toml"
+  - "src/geotask_core/__init__.py"
+  - ".github/workflows/ci.yml"
+
+forbidden_paths:
+  - "src/geotask_runtime/"
+  - "src/geotask_domain_packs/"
+  - "patent_evidence/"
+  - "benchmarks/"
+  - ".omx/"
+  - ".ai-bridge/"
+  - "scripts/"
+  - "docs/reports/"
+  - "docs/superpowers/"
+  - "examples/domain_packs/"
+  - "examples/runtime/"
+
+forbidden_content_patterns:
+  - pattern: "geotask_internal"
+    description: "Internal import"
+    severity: "error"
+  - pattern: "private_runtime"
+    description: "Private runtime reference"
+    severity: "error"
+  - pattern: 'from geotask_domain_packs'
+    description: "Domain pack import in Core"
+    severity: "error"
+  - pattern: 'from geotask_runtime\.(planner|router|mock_runtime|domain_pack|result_governance)'
+    description: "Private runtime module import in Core"
+    severity: "error"
+
+boundary_rules:
+  forbidden_core_imports:
+    - "geotask_domain_packs"
+    - "geotask_runtime.planner"
+    - "geotask_runtime.router"
+    - "geotask_runtime.mock_runtime"
+    - "geotask_runtime.domain_pack"
+    - "geotask_runtime.result_governance"
+  allowed_core_imports:
+    - "geotask_runtime.contracts"
+    - "geotask_core"
+    - "geotask_core.v1"
+
+binary_extensions:
+  - ".pyc"
+  - ".pyo"
+  - ".pyd"
+  - ".so"
+  - ".dll"
+  - ".dylib"
+  - ".exe"
+  - ".bin"
+  - ".zip"
+  - ".tar"
+  - ".gz"
+  - ".7z"
+  - ".png"
+  - ".jpg"
+  - ".jpeg"
+  - ".gif"
+  - ".ico"
+  - ".pdf"
+  - ".docx"
+
+# Exception model — each scanner has its own independent exception list
+exact_exceptions:
+  allowed_forbidden_imports:
+    - from_pattern: "geotask_runtime.contracts"
+      in_file: "tests/**"
+      reason: "Runtime contracts are public interface definitions"
+  allowed_secret_findings: []
+  allowed_internal_paths: []
+  allowed_binary_files: []
+
+output:
+  format: "text"
+  show_file_sizes: true
+  show_total_count: true
+  show_total_size: true

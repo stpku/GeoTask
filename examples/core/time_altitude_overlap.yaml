@@ -1,0 +1,35 @@
+geotask:
+  version: "0.2"
+  name: "Generic Time And Altitude Overlap"
+  goal: "Check generic interval overlap with deterministic Core operators."
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+  axes:
+    x: "east"
+    y: "north"
+
+objects:
+  window_a:
+    type: "time"
+    interval: ["08:00", "10:00"]
+  window_b:
+    type: "time"
+    interval: ["09:00", "11:00"]
+  band_a:
+    type: "altitude"
+    range: [100, 200]
+  band_b:
+    type: "altitude"
+    range: [150, 250]
+
+ops:
+  time_overlap: "true when two time intervals overlap"
+  altitude_overlap: "true when two altitude ranges overlap"
+
+task:
+  questions:
+    - "Determine whether window_a overlaps window_b."
+    - "Determine whether band_a overlaps band_b."
+

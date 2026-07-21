@@ -1,0 +1,28 @@
+geotask:
+  version: "0.1-lite"
+  name: "GeoTask Core"
+  goal: "Route-zone intersection example"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+  axes:
+    x: "east"
+    y: "north"
+
+objects:
+  route:
+    type: "line"
+    points:
+      - [-200, 0]
+      - [400, 0]
+  zone:
+    type: "rect"
+    bbox: [250, -100, 350, 100]
+
+ops:
+  line_intersects_rect: "true if any part of a line segment crosses or touches the rectangle"
+
+task:
+  questions:
+    - "Determine whether route intersects zone."

@@ -1,0 +1,56 @@
+geotask:
+  id: "minimal-distance-v1"
+  name: "Minimal v1.0 Distance"
+  description: "Compute a deterministic distance between two local points."
+  schema_version: "1.0"
+  language: "en"
+  domain: "general_spatial"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  axes:
+    x: "east"
+    y: "north"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+  precision:
+    decimal_places: 3
+    tolerance: 0.01
+
+objects:
+  point_a:
+    type: "point"
+    coordinates: [0, 0]
+  point_b:
+    type: "point"
+    coordinates: [3, 4]
+
+operator_set:
+  - distance_2d
+
+tasks:
+  - id: "compute_distance"
+    family: "measurement"
+    goal: "Calculate the Euclidean distance between point_a and point_b."
+    assertions:
+      - id: "ab_distance"
+        operator: "distance_2d"
+        object_refs: ["point_a", "point_b"]
+        expected_type: "number"
+        unit: "meter"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "calc"
+      executor: "local"
+      assertion_refs: ["ab_distance"]
+      depends_on: []
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "ab_distance"
+  allow_additional_fields: true

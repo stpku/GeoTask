@@ -1,0 +1,69 @@
+geotask:
+  id: "multi-op-v1"
+  name: "v1.0 Multi-Operator"
+  description: "Demonstrate multiple operator assertions with explicit object binding."
+  schema_version: "1.0"
+  language: "en"
+  domain: "general_spatial"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  site_a:
+    type: "point"
+    coordinates: [0, 0]
+  site_b:
+    type: "point"
+    coordinates: [120, 80]
+  road:
+    type: "polyline"
+    coordinates:
+      - [0, 50]
+      - [200, 50]
+  restricted_zone:
+    type: "rect"
+    bbox: [50, 30, 150, 120]
+
+operator_set:
+  - distance_2d
+  - point_to_polyline_distance
+  - rect_contains_point
+
+tasks:
+  - id: "spatial_checks"
+    family: "measurement"
+    goal: "Run multiple spatial checks with explicit object binding."
+    assertions:
+      - id: "site_distance"
+        operator: "distance_2d"
+        object_refs: ["site_a", "site_b"]
+        expected_type: "number"
+        unit: "meter"
+
+      - id: "road_proximity"
+        operator: "point_to_line_distance_2d"
+        object_refs: ["site_a", "road"]
+        expected_type: "number"
+        unit: "meter"
+
+      - id: "zone_containment"
+        operator: "rect_contains_point"
+        object_refs: ["restricted_zone", "site_a"]
+        expected_type: "boolean"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_all"
+      executor: "local"
+      assertion_refs: ["site_distance", "road_proximity", "zone_containment"]
+      depends_on: []
+
+output_contract:
+  format: "structured"
+  required_fields: []
+  allow_additional_fields: true

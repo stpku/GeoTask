@@ -1,0 +1,26 @@
+geotask:
+  version: "0.1-lite"
+  name: "GeoTask Core"
+  goal: "Basic distance example"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+  axes:
+    x: "east"
+    y: "north"
+
+objects:
+  a:
+    type: "point"
+    xy: [0, 0]
+  b:
+    type: "point"
+    xy: [3, 4]
+
+ops:
+  distance_2d: "sqrt((x1 - x2)^2 + (y1 - y2)^2)"
+
+task:
+  questions:
+    - "Calculate the 2D distance from a to b."

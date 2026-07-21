@@ -1,0 +1,25 @@
+# GeoTask Eval v0.1 -- Expected evaluation result for the DeepSeek sample
+# This file documents the expected output when evaluating
+# examples/deepseek_output_sample.txt against examples/geotask_core_lite.yaml
+
+score:
+  total: 100
+  distance_match: true
+  intersection_match: true
+  operator_match: true
+  external_data_used_match: true
+
+details:
+  expected_distance: 144.22
+  actual_distance: 144.22
+  expected_intersection: true
+  actual_intersection: true
+  expected_operations:
+    - distance_2d
+    - line_intersects_rect
+  actual_operations:
+    - distance_2d
+    - line_intersects_rect
+
+warnings: []
+errors: []

@@ -1,0 +1,37 @@
+geotask:
+  version: "0.2"
+  name: "Assertions And Expected Results"
+  goal: "Demonstrate public-safe schema sections for assertions and expected results."
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+  axes:
+    x: "east"
+    y: "north"
+
+objects:
+  takeoff:
+    type: "point"
+    xy: [0, 0]
+  school:
+    type: "point"
+    xy: [120, 80]
+
+ops:
+  distance_2d: "2D Euclidean distance"
+
+task:
+  questions:
+    - "Calculate the deterministic distance from takeoff to school."
+
+assertions:
+  - id: "distance_check"
+    operator: "distance_2d"
+    object_refs: ["takeoff", "school"]
+
+expected_results:
+  - name: "takeoff_to_school_distance"
+    value: 144.22
+    unit: "meter"
+

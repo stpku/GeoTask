@@ -1,0 +1,40 @@
+geotask:
+  version: "0.1-lite"
+  name: "GeoTask Core"
+  goal: "LLM-readable spatial task representation"
+
+space:
+  crs: "local_xy_m"
+  unit: "meter"
+  axes:
+    x: "east"
+    y: "north"
+
+objects:
+  takeoff:
+    type: "point"
+    xy: [0, 0]
+
+  route:
+    type: "line"
+    points:
+      - [-200, 0]
+      - [400, 0]
+
+  zone:
+    type: "rect"
+    bbox: [250, -100, 350, 100]
+
+  school:
+    type: "point"
+    xy: [120, 80]
+
+ops:
+  distance_2d: "sqrt((x1 - x2)^2 + (y1 - y2)^2)"
+  line_intersects_rect: "true if any part of a line segment crosses or touches the rectangle"
+
+task:
+  questions:
+    - "Calculate the 2D distance from takeoff to school."
+    - "Determine whether route intersects zone."
+    - "Return measurements, conclusion, and the operation used for verification."

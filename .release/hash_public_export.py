@@ -16,7 +16,7 @@ import os
 import sys
 from pathlib import Path
 
-EXCLUDE_DIRS = {"dist", ".egg-info", "__pycache__", ".pytest_cache"}
+EXCLUDE_DIRS = {".git", "dist", "build", ".egg-info", "__pycache__", ".pytest_cache"}
 
 
 def _excluded(rel_path: str) -> bool:
@@ -24,11 +24,16 @@ def _excluded(rel_path: str) -> bool:
     return rel_path.endswith(".sha256.json") or rel_path.endswith("_report.txt")
 
 
+def _excluded_dir(dirname: str) -> bool:
+    """Return True if this directory should be excluded from walking."""
+    return dirname in EXCLUDE_DIRS or dirname.endswith(".egg-info")
+
+
 def generate_manifest(export_dir: Path, output_path: Path) -> dict:
     """Generate SHA-256 manifest for all files in export_dir."""
     manifest: list[dict] = []
     for root, dirs, files in os.walk(export_dir):
-        dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
+        dirs[:] = [d for d in dirs if not _excluded_dir(d)]
         for f in sorted(files):
             fp = Path(root) / f
             rel = fp.relative_to(export_dir).as_posix()
@@ -77,7 +82,7 @@ def verify_manifest(export_dir: Path, manifest_path: Path) -> bool:
 
     # Check for untracked files
     for root, dirs, files in os.walk(export_dir):
-        dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
+        dirs[:] = [d for d in dirs if not _excluded_dir(d)]
         for f in files:
             rel = (Path(root) / f).relative_to(export_dir).as_posix()
             if _excluded(rel):

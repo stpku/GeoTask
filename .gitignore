@@ -1,10 +1,27 @@
+# Python
 __pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-.coverage
+*.py[cod]
+*.egg-info/
 dist/
 build/
-*.egg-info/
+*.whl
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# OpenCode / AI agent
+.omx/
+
+# Virtual env
 .venv/
 venv/

@@ -1,5 +1,10 @@
 [
   {
+    "path": ".gitignore",
+    "size": 241,
+    "sha256": "5b5c36301cc91bd80ee5c3864defcedc4633af77537f06666ae566ede64220b3"
+  },
+  {
     "path": "CHANGELOG.md",
     "size": 1173,
     "sha256": "d085977f0aea39cffacd422a6dc25e9f9d20c672f684c948b377fa90d157f7a5"
@@ -41,8 +46,8 @@
   },
   {
     "path": ".github/workflows/ci.yml",
-    "size": 1784,
-    "sha256": "fd9f625f0f07039f50e238f58d879dfd9533edc3612b8e3e9976381cefe0983c"
+    "size": 1696,
+    "sha256": "4e2bb360fc690fabb87700b5e22e00fb4f14dcb9051bb285efb422e84bc36d26"
   },
   {
     "path": ".release/README.md",
@@ -51,13 +56,13 @@
   },
   {
     "path": ".release/hash_public_export.py",
-    "size": 4596,
-    "sha256": "327ca62436bef2d414c350b03197c7e83995af46b5c809a79f1aa5bea4263142"
+    "size": 4800,
+    "sha256": "ca4599e791574f5eafd9c4402dc713c997fce1cd9a2786c78bf802a51a22a2ce"
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 4927,
-    "sha256": "0dc5d7d2155aaff24d05be8b927e0117e24d6e98dbfd25299861c63c00ab8a46"
+    "size": 5013,
+    "sha256": "ebeb4a6b53ae9a2d888a5443874fa7c8e628e81a7b1eb52b9916971b2e24b18a"
   },
   {
     "path": ".release/scan_public_export.py",
@@ -66,8 +71,8 @@
   },
   {
     "path": ".release/verify_public_export.py",
-    "size": 9809,
-    "sha256": "04d5dd2a096d7722d93fad5049d34efee15b299c84ef77ef5d7b19239b5788b9"
+    "size": 10242,
+    "sha256": "f67b47c60f0e2da1cd9deb8418ed12a8269565f51748575b97457ebf1f4d1f10"
   },
   {
     "path": "docs/architecture.md",

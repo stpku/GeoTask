@@ -31,6 +31,13 @@ import yaml
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MANIFEST_PATH = PROJECT_ROOT / ".release" / "public-manifest.yaml"
 
+EXCLUDE_DIRS = {".git", "dist", "build", "__pycache__", ".pytest_cache"}
+EVIDENCE_FILES = {"public-files.sha256.json", "release_report.txt"}
+
+
+def _is_excluded_dir(dirname: str) -> bool:
+    return dirname in EXCLUDE_DIRS or dirname.endswith(".egg-info")
+
 
 def load_manifest() -> dict:
     with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
@@ -54,13 +61,19 @@ def check_whitelist(export_dir: Path, manifest: dict) -> list[str]:
     includes: list[str] = manifest.get("include", [])
     errors: list[str] = []
 
-    for root, _dirs, files in os.walk(export_dir):
+    for root, dirs, files in os.walk(export_dir):
+        dirs[:] = [d for d in dirs if not _is_excluded_dir(d)]
         for f in files:
             full = Path(root) / f
             rel = os.path.relpath(full, export_dir).replace("\\", "/")
 
+            if rel in EVIDENCE_FILES:
+                continue
+
             if not matches_any(rel, includes):
-                errors.append(f"WHITELIST: '{rel}' not matched by any include pattern")
+                errors.append(
+                    f"WHITELIST: '{rel}' not matched by any include pattern"
+                )
 
     return errors
 

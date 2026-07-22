@@ -1,10 +1,5 @@
 [
   {
-    "path": ".gitattributes",
-    "size": 165,
-    "sha256": "a343f16f5301fbb0aa17fd652421dadad4939947431f6b57885d2988c4a32cbb"
-  },
-  {
     "path": ".gitignore",
     "size": 241,
     "sha256": "5b5c36301cc91bd80ee5c3864defcedc4633af77537f06666ae566ede64220b3"
@@ -66,8 +61,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 4969,
-    "sha256": "f8678c3800abe5fbcfd571ff2fbe8901618f41d9ff1c895b6fc3242ea9d289b8"
+    "size": 4991,
+    "sha256": "452a1ee3ae3d9d009e70e15517461062d42219615d372648b71b777930aa3e18"
   },
   {
     "path": ".release/scan_public_export.py",

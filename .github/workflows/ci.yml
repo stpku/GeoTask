@@ -56,3 +56,13 @@ jobs:
           python-version: "3.13"
       - run: pip install pyyaml
       - run: python .release/verify_public_export.py .
+
+  hash:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python .release/hash_public_export.py verify . public-files.sha256.json

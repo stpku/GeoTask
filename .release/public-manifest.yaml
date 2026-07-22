@@ -6,6 +6,7 @@ include:
   # CI and git
   - ".github/workflows/ci.yml"
   - ".gitignore"
+  - ".gitattributes"
 
   # Public Core source
   - "src/geotask_core/**"

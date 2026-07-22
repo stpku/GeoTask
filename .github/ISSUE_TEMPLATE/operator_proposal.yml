@@ -1,0 +1,74 @@
+name: Operator Proposal
+description: Propose a new deterministic spatial operator
+labels: ["operator", "enhancement"]
+body:
+  - type: input
+    id: operator-name
+    attributes:
+      label: Operator Name
+      description: Proposed name (e.g., `polygon_area`)
+    validations:
+      required: true
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose
+      description: What spatial computation does this operator perform?
+    validations:
+      required: true
+  - type: textarea
+    id: input-types
+    attributes:
+      label: Input Object Types
+      description: Required object type(s) and arity
+      value: |
+        - point
+        - polyline
+    validations:
+      required: true
+  - type: input
+    id: output-type
+    attributes:
+      label: Output Type
+      description: "number" or "boolean"
+    validations:
+      required: true
+  - type: textarea
+    id: math-definition
+    attributes:
+      label: Mathematical Definition
+    validations:
+      required: true
+  - type: input
+    id: units
+    attributes:
+      label: Units
+      description: Units of the result (e.g., "meter", "none")
+  - type: textarea
+    id: boundary-conditions
+    attributes:
+      label: Boundary Conditions
+      description: Edge cases and boundary behavior
+  - type: checkboxes
+    id: determinism
+    attributes:
+      label: Determinism
+      options:
+        - label: This operator is fully deterministic given the same inputs
+    validations:
+      required: true
+  - type: textarea
+    id: example-yaml
+    attributes:
+      label: Example YAML
+      description: Minimal GeoTask YAML demonstrating this operator
+      render: yaml
+  - type: input
+    id: expected-result
+    attributes:
+      label: Expected Result
+  - type: textarea
+    id: test-plan
+    attributes:
+      label: Test Plan
+      description: Normal case, boundary cases, error cases

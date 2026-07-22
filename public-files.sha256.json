@@ -15,9 +15,14 @@
     "sha256": "d085977f0aea39cffacd422a6dc25e9f9d20c672f684c948b377fa90d157f7a5"
   },
   {
+    "path": "CODE_OF_CONDUCT.md",
+    "size": 1840,
+    "sha256": "b365cb5d4f2e7526f8e1a2eeeb2443641c8f1f0f830a42a30cec2479e75e8d40"
+  },
+  {
     "path": "CONTRIBUTING.md",
-    "size": 3743,
-    "sha256": "748c50758ce3bd961a273c2fe20ffd5052bd217ad7ff9f01c54a8604aa7235a2"
+    "size": 1077,
+    "sha256": "6c7fc37c450d568947ab7fdc971575c466838b7ad5b63baa9b676a85233a8c43"
   },
   {
     "path": "LICENSE",
@@ -26,28 +31,68 @@
   },
   {
     "path": "MIGRATION.md",
-    "size": 1261,
-    "sha256": "33e96942698bc8ac9390dcd7d5b4f95e51224a9d134186df8e55bdd72b5bc274"
+    "size": 1243,
+    "sha256": "d30999e35ad646cb8f5d64fbd133a240e0fb27f79a4d69c6e2eef62d91d8b1c0"
   },
   {
     "path": "README.md",
-    "size": 4631,
-    "sha256": "4380911a8a8b59f06c9a1f51966c19348b2198d62d262439ec5cf6001f62ce90"
+    "size": 6164,
+    "sha256": "fd8421e4262d12ed81d509c9cc3204f2cae84c71f3917cb0652bde7213f17a73"
+  },
+  {
+    "path": "README.zh-CN.md",
+    "size": 5854,
+    "sha256": "42b01990243ba796e4480ace00ea7b5078fb23c18fee320ab2af8f22deafd3af"
   },
   {
     "path": "SECURITY.md",
-    "size": 3407,
-    "sha256": "2f4f4ff3b7e4058c02a266f4db601bcaf94c520ec4660fd08d07720f35d3dae0"
+    "size": 1800,
+    "sha256": "2b42d6926b52bc88b3a41b4903b8b59b86e6918cac8813dde5976f2a86f67fe2"
   },
   {
     "path": "pyproject.toml",
-    "size": 1293,
-    "sha256": "5d0428d03ead93168c2870b8fd5a32bec7202ef3ecc582fdbe6d8e7f78832f91"
+    "size": 1644,
+    "sha256": "33f986ab4289d80252abfb27cf3d5cd73d622cd356681ace7e3002ae76127002"
   },
   {
     "path": "requirements.txt",
     "size": 13,
     "sha256": "46ab49a3e33f78c3f3313886a94834884a636df9589516bba066ae6122c46844"
+  },
+  {
+    "path": ".github/PULL_REQUEST_TEMPLATE.md",
+    "size": 760,
+    "sha256": "4b71c3313d5ee97ba125c517e17c204cfe025da77fc1fc5f67e3a259d7077873"
+  },
+  {
+    "path": ".github/dependabot.yml",
+    "size": 272,
+    "sha256": "25525b1c54d2057343dfbcec0228a63cbdc1394050776e2d151093218f003bb5"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+    "size": 1080,
+    "sha256": "490ef90f6b84dab0628d6293c46a8326c2d2312b237cf454beeac5351c7d4fbc"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/config.yml",
+    "size": 204,
+    "sha256": "e18374bf1513ef66ddfb2b76cb0c44282ec7f09b32c1042341dfe5fdeaee2563"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/documentation.yml",
+    "size": 459,
+    "sha256": "a1f5eb1e74fb8502f3e889949e1cb1e2e9cf018cbdec02052053fd5164b3f3f0"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+    "size": 806,
+    "sha256": "390f3318397775cc3195d98c2bc88bd8b8d9a697fdf274657cfa4bdb9ed68a4e"
+  },
+  {
+    "path": ".github/ISSUE_TEMPLATE/operator_proposal.yml",
+    "size": 1876,
+    "sha256": "c4d26ca76fd82f9f55ff7f383afeea001f1a02b755d81294065c857a3ee1f5d7"
   },
   {
     "path": ".github/workflows/ci.yml",
@@ -66,8 +111,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 4991,
-    "sha256": "452a1ee3ae3d9d009e70e15517461062d42219615d372648b71b777930aa3e18"
+    "size": 5045,
+    "sha256": "5672dfa191bd1b66744c5ef5b6374759b61df0b6e23f34a9411715dbeb2fabb7"
   },
   {
     "path": ".release/scan_public_export.py",
@@ -247,7 +292,7 @@
   {
     "path": "src/geotask_core/__init__.py",
     "size": 2226,
-    "sha256": "c6c9102a5e486366af6c83765817a73a7024b8585016be0e7b28d3c5884b70e5"
+    "sha256": "d84c5f56a34bba0016f2aa8cf959eeec0cd0014cfe873c63fe7fd3e888af3137"
   },
   {
     "path": "src/geotask_core/cli.py",

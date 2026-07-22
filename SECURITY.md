@@ -1,54 +1,49 @@
-# Security
+# Security Policy
 
-## No Secrets in Core
+## Reporting a Vulnerability
 
-GeoTask Core is a pure computation library. It contains no API keys, credentials, tokens, connection strings, or authentication material of any kind. The codebase is safe to clone, audit, and redistribute.
+GeoTask Core is a deterministic computation library. It contains no credentials,
+secrets, API keys, or network connections. All results are produced by local
+operators — no external services are called.
 
-If you discover credentials anywhere in this repository, it is an error. Please report it immediately.
+If you discover a security vulnerability, please **do not** open a public issue.
 
-## Reporting Vulnerabilities
+If GitHub private vulnerability reporting is enabled for this repository, use
+the repository's Security page to submit the report privately:
 
-If you find a security issue, do not open a public issue. Send details to the maintainers privately. We respond within 72 hours and will confirm receipt.
+**https://github.com/stpku/GeoTask/security**
 
-Security issues include:
+If no private reporting option is visible, do not publish vulnerability details
+in a public issue. Open a minimal issue requesting a private contact channel,
+without including exploit details, sensitive inputs, or reproduction material.
 
-- Code paths that could produce incorrect deterministic results (false verification)
-- Inputs that cause the parser or validator to produce inconsistent diagnostics
-- YAML parsing that could trigger unintended behavior (e.g., arbitrary code execution via unsafe constructors)
-- Operator implementations with edge-case bugs that produce wrong values
+## What We Care About
 
-## Model Execution Boundaries
+- Input handling that could cause unexpected behavior
+- Integer overflow or floating-point edge cases in spatial operators
+- YAML parsing vulnerabilities
+- Information leakage through error messages or diagnostics
+- Build or CI pipeline exposures
 
-GeoTask Core does not call any LLM. It does not send data over the network. It does not load model weights. The execution mode `model_only` and the `model` executor type are defined as enums for completeness but have no runtime implementation in Core. They exist as interface placeholders for the private GeoTask Runtime layer.
+## What's Out of Scope
 
-This means:
+- Model-output verification errors (these are correctness issues, not security)
+- Domain Pack or Runtime vulnerabilities (separate repositories)
+- Deployment-specific configuration issues
 
-- Core cannot leak prompt data to a model provider.
-- Core cannot be used as a model proxy or relay.
-- Core's output does not depend on any model. Given the same input YAML, it produces the same result every time.
+## Determinism vs. Correctness
 
-## Deterministic Verification Guarantees
+GeoTask Core guarantees **determinism**: the same input to the same version of a
+registered operator always produces the same output. It does not claim mathematical
+correctness in the formal proof sense. Results should be interpreted as:
 
-Every operator in Core is a pure function with no side effects:
+> The result was produced by the repository's deterministic implementation for
+> the declared input at the stated assurance level.
 
-- `distance_2d`, `point_to_line_distance_2d`: pure math using `math.sqrt`.
-- `line_intersects_rect`: computational geometry with no external dependencies.
-- `rect_contains_point`: simple bounding-box arithmetic.
-- `time_overlap`, `altitude_overlap`: integer or float comparisons.
+## Supported Versions
 
-The verification guarantee: if an assertion is dispatched to a Core operator and the execution returns without error, the computed value is mathematically correct for the declared object data. There is no approximation, no model inference, and no external data source involved.
+Only the `main` branch of the public repository is supported.
 
-The assurance level `local_deterministic` (3) means exactly this: the result was computed by a known, deterministic, locally executed function. Higher assurance levels (`model_local_agreement`, `independent_cross_verified`, `human_reviewed`) are the responsibility of the Runtime layer or external verification systems.
-
-## Supply Chain
-
-The only runtime dependency is PyYAML. We pin `pyyaml>=6.0` to avoid known vulnerabilities in earlier versions. We use `yaml.safe_load` exclusively to prevent arbitrary code execution during YAML parsing.
-
-No other packages are imported at runtime. Development dependencies (`pytest`, `matplotlib`) are optional and listed under `[project.optional-dependencies]`.
-
-## Input Safety
-
-- All YAML input is parsed with `yaml.safe_load`. Constructors that execute arbitrary Python code are never used.
-- Object IDs and operator names are validated against a strict regex pattern (`^[A-Za-z][A-Za-z0-9_.-]{0,127}$`).
-- Numeric inputs are bounded by Python's float range. No arbitrary-precision or unbounded allocation paths exist.
-- Document size is not enforced by Core, but downstream systems should impose their own limits before passing documents to Core.
+| Branch | Supported |
+|--------|-----------|
+| `main` | ✅ |

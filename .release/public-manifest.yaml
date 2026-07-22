@@ -5,8 +5,15 @@ project: "geotask-core"
 include:
   # CI and git
   - ".github/workflows/ci.yml"
+  - ".github/dependabot.yml"
+  - ".github/ISSUE_TEMPLATE/*.yml"
+  - ".github/PULL_REQUEST_TEMPLATE.md"
   - ".gitignore"
   - ".gitattributes"
+
+  # Community
+  - "CODE_OF_CONDUCT.md"
+  - "README.zh-CN.md"
 
   # Public Core source
   - "src/geotask_core/**"
@@ -107,7 +114,11 @@ exclude:
 
 required:
   - "README.md"
+  - "README.zh-CN.md"
   - "LICENSE"
+  - "CONTRIBUTING.md"
+  - "SECURITY.md"
+  - "CODE_OF_CONDUCT.md"
   - "pyproject.toml"
   - "src/geotask_core/__init__.py"
   - ".github/workflows/ci.yml"
@@ -149,7 +160,6 @@ boundary_rules:
     - "geotask_runtime.domain_pack"
     - "geotask_runtime.result_governance"
   allowed_core_imports:
-    - "geotask_runtime.contracts"
     - "geotask_core"
     - "geotask_core.v1"
 
@@ -176,10 +186,6 @@ binary_extensions:
 
 # Exception model — each scanner has its own independent exception list
 exact_exceptions:
-  allowed_forbidden_imports:
-    - from_pattern: "geotask_runtime.contracts"
-      in_file: "tests/**"
-      reason: "Runtime contracts are public interface definitions"
   allowed_secret_findings: []
   allowed_internal_paths: []
   allowed_binary_files: []

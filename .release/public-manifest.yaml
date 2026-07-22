@@ -25,7 +25,6 @@ include:
   - "tests/test_normalizer.py"
   - "tests/test_normalizer_v0_2.py"
   - "tests/test_verifier.py"
-  - "tests/test_runtime_contracts_v0_1.py"
   - "tests/v1/**"
 
   # CI and release tooling (public)

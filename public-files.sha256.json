@@ -61,8 +61,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 5013,
-    "sha256": "ebeb4a6b53ae9a2d888a5443874fa7c8e628e81a7b1eb52b9916971b2e24b18a"
+    "size": 4969,
+    "sha256": "f8678c3800abe5fbcfd571ff2fbe8901618f41d9ff1c895b6fc3242ea9d289b8"
   },
   {
     "path": ".release/scan_public_export.py",
@@ -418,11 +418,6 @@
     "path": "tests/test_runner.py",
     "size": 3130,
     "sha256": "3bd316b9acdfdf833fde2f9c8a079ae01e7985dd380ce925e9b7d548b4eed717"
-  },
-  {
-    "path": "tests/test_runtime_contracts_v0_1.py",
-    "size": 2203,
-    "sha256": "0d54ef1f7c6a6cea81e7318250549df64437dbd6439014037f88f33124f35702"
   },
   {
     "path": "tests/test_verifier.py",

@@ -1,0 +1,19 @@
+name: Documentation
+description: Report a documentation issue or suggest an improvement
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: issue
+    attributes:
+      label: What needs improvement?
+    validations:
+      required: true
+  - type: input
+    id: path
+    attributes:
+      label: Document path
+      placeholder: README.md, docs/operator-guide.md, etc.
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested change

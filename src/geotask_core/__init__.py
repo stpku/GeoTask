@@ -6,7 +6,7 @@ Old import paths (stir_core.*) are still supported as deprecated aliases.
 v1.0 modules are available under geotask_core.v1.*
 """
 
-__version__ = "0.2.0"
+__version__ = "0.1.0"
 
 from geotask_core.models import (
     PointObject, LineObject, RectObject, StirDocument,

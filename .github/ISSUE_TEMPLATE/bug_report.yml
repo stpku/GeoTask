@@ -1,0 +1,46 @@
+name: Bug Report
+description: Report a bug in GeoTask Core
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Minimal steps to reproduce the issue.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: true
+  - type: input
+    id: geotask-version
+    attributes:
+      label: GeoTask Version
+      description: 'Output of `python -c "import geotask_core; print(geotask_core.__version__)"`'
+  - type: input
+    id: python-version
+    attributes:
+      label: Python Version
+      description: Output of `python --version`
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating System
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context

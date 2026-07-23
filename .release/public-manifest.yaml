@@ -3,6 +3,12 @@ manifest_version: "1.0"
 project: "geotask-core"
 
 include:
+  # CI and git
+  - ".github/workflows/ci.yml"
+  - ".github/workflows/pages.yml"
+  - ".gitignore"
+  - ".gitattributes"
+
   # Public Core source
   - "src/geotask_core/**"
 
@@ -11,6 +17,7 @@ include:
   - "tests/test_cli_foundation_commands.py"
   - "tests/test_cli_inspect.py"
   - "tests/test_core_examples_v0_2.py"
+  - "tests/test_mobile_experience_page.py"
   - "tests/test_operator_registry.py"
   - "tests/test_ops.py"
   - "tests/test_ops_v0_3.py"
@@ -21,7 +28,6 @@ include:
   - "tests/test_normalizer.py"
   - "tests/test_normalizer_v0_2.py"
   - "tests/test_verifier.py"
-  - "tests/test_runtime_contracts_v0_1.py"
   - "tests/v1/**"
 
   # CI and release tooling (public)
@@ -41,6 +47,9 @@ include:
   - "examples/eval_expected_result.yaml"
   - "examples/model_outputs/**"
   - "examples/README.md"
+
+  # Public mobile experience page
+  - "site/**"
 
   # Public docs
   - "docs/architecture.md"
@@ -107,6 +116,7 @@ required:
   - "pyproject.toml"
   - "src/geotask_core/__init__.py"
   - ".github/workflows/ci.yml"
+  - ".gitignore"
 
 forbidden_paths:
   - "src/geotask_runtime/"

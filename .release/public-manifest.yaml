@@ -78,6 +78,7 @@ include:
   - "SECURITY.md"
 
 exclude:
+  - "site/**"
   - "**/__pycache__/**"
   - "**/__pycache__"
   - "**/*.pyc"

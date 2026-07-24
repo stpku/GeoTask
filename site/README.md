@@ -3,12 +3,16 @@
 This directory contains the static mobile page used by the `GeoTask 每周一例` series.
 It has no backend, analytics, cookies, account system, model key, or external JavaScript dependency.
 
-## Current case
+## Current cases
 
-- Case: `GT01`
-- Task: distance between `(0, 0)` and `(3, 4)`
-- Expected result: `ab_distance = 5.0 meter`
+- `GT01`: distance between `(0, 0)` and `(3, 4)`; expected result `ab_distance = 5.0 meter`
+- `GT02`: distance between `(0, 0)` and `(120, 80)`; compare a model result with the browser-local deterministic result `144.22 meter`
 - Public repository: <https://github.com/stpku/GeoTask>
+
+Primary experience URLs:
+
+- <https://skyswind.tailf4fad8.ts.net/geotask/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt02/>
 
 ## GitHub Pages deployment
 
@@ -29,16 +33,44 @@ The same directory can be uploaded unchanged to either:
 1. an OBS bucket configured for static website hosting and a custom HTTPS domain; or
 2. an existing Nginx static directory behind a custom HTTPS domain.
 
-For Nginx, copy `site/index.html` to a directory such as `/var/www/geotask-experience/` and use a
-minimal location block:
+For Nginx, deploy the complete `site/` tree. Copying only the root `index.html` leaves nested cases
+such as `gt02/index.html` unavailable:
+
+```bash
+sudo rsync -a --delete site/ /var/www/geotask-experience/
+test -f /var/www/geotask-experience/index.html
+test -f /var/www/geotask-experience/gt02/index.html
+```
+
+The repository also includes `site/deploy-nginx.sh`, which performs the recursive sync, checks both
+GT01 and GT02, validates Nginx, and reloads the service.
+
+Use a static location that serves directory index files and does not rewrite every missing nested
+path back to GT01:
 
 ```nginx
+location = /geotask {
+    return 301 /geotask/;
+}
+
 location /geotask/ {
     alias /var/www/geotask-experience/;
-    try_files $uri $uri/ /geotask/index.html;
-    add_header Cache-Control "public, max-age=300";
+    index index.html;
+    autoindex off;
+    add_header Cache-Control "no-cache";
 }
 ```
+
+After deployment:
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt02/
+```
+
+The GT02 response must come from `/var/www/geotask-experience/gt02/index.html`. Do not configure a
+fallback to `/geotask/index.html`, because that masks missing nested files by showing GT01.
 
 Clipboard access is most reliable on HTTPS. Do not put model API keys or other secrets into this
 static directory.

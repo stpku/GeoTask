@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第02期：把模型给出的距离交给浏览器本地确定性算子复算。">
+  <title>GeoTask GT02｜距离结果独立验证</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #14344d;
+      --blue: #256fa8;
+      --teal: #16867f;
+      --ink: #17242d;
+      --muted: #65737d;
+      --line: #d8e2e8;
+      --paper: #ffffff;
+      --soft: #f3f7fa;
+      --success: #e9f7f3;
+      --success-line: #acd8ce;
+      --danger: #fff0ef;
+      --danger-line: #e5b5b0;
+      --danger-ink: #a33a32;
+      --warm: #fff7e8;
+      --shadow: 0 14px 40px rgba(20, 52, 77, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(37,111,168,.15), transparent 38%),
+        linear-gradient(180deg, #edf4f8 0, #f8fafb 36%, #ffffff 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    button, a, input { -webkit-tap-highlight-color: transparent; }
+    .shell { width: min(100%, 760px); margin: 0 auto; padding: 20px 16px 48px; }
+    .brand { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 2px 2px 16px; }
+    .brand-name { display: flex; align-items: center; gap: 10px; color: var(--navy); font-weight: 700; }
+    .mark {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: var(--navy); color: white; font-size: 14px; letter-spacing: .5px;
+    }
+    .back { color: var(--blue); text-decoration: none; font-size: 14px; font-weight: 750; }
+
+    .hero {
+      padding: 28px 22px 24px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #14344d, #1b5274);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+    .eyebrow { margin: 0 0 8px; color: #9bdbd7; font-size: 14px; font-weight: 700; }
+    h1 { margin: 0; font-size: clamp(27px, 7.6vw, 43px); line-height: 1.22; letter-spacing: -.5px; }
+    .lead { margin: 16px 0 0; color: #d8e7ef; font-size: 16px; }
+    .formula {
+      margin-top: 20px; padding: 14px 16px; border: 1px solid rgba(255,255,255,.22);
+      border-radius: 16px; background: rgba(255,255,255,.08); text-align: center;
+      font-size: 18px; font-weight: 750;
+    }
+
+    .card {
+      margin-top: 16px; padding: 22px 18px;
+      border: 1px solid var(--line); border-radius: 20px;
+      background: rgba(255,255,255,.96); box-shadow: 0 9px 28px rgba(20,52,77,.06);
+    }
+    h2 { margin: 0 0 12px; color: var(--navy); font-size: 21px; line-height: 1.35; }
+    h3 { margin: 18px 0 8px; color: var(--navy); font-size: 17px; }
+    p { margin: 8px 0; }
+    .muted { color: var(--muted); font-size: 14px; }
+
+    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+    .fact { padding: 13px; border-radius: 14px; background: var(--soft); }
+    .fact small { display: block; color: var(--muted); }
+    .fact strong { display: block; margin-top: 2px; color: var(--navy); font-size: 17px; }
+
+    .steps { display: grid; gap: 10px; margin: 14px 0 18px; }
+    .step { display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 14px; background: var(--soft); }
+    .num {
+      flex: 0 0 28px; height: 28px; border-radius: 9px;
+      display: grid; place-items: center; background: var(--teal); color: white; font-weight: 800;
+    }
+    .step strong { display: block; color: var(--navy); }
+    .step span { color: var(--muted); font-size: 14px; }
+
+    .primary, .secondary, .sample {
+      border: 0; cursor: pointer; font: inherit; font-weight: 800;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .primary, .secondary { width: 100%; min-height: 54px; border-radius: 15px; }
+    .primary { background: var(--teal); color: white; box-shadow: 0 8px 22px rgba(22,134,127,.23); }
+    .secondary { margin-top: 10px; background: #eaf2f7; color: var(--navy); }
+    .primary:active, .secondary:active, .sample:active { transform: scale(.985); }
+    .primary:disabled { opacity: .7; cursor: wait; }
+
+    .status {
+      min-height: 28px; margin: 10px 2px 0; color: var(--teal);
+      font-size: 14px; font-weight: 700; text-align: center;
+    }
+    .tip { margin-top: 6px; color: var(--muted); font-size: 13px; text-align: center; }
+
+    .input-label { display: block; margin-top: 10px; color: var(--navy); font-weight: 800; }
+    .input-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; }
+    input {
+      width: 100%; min-height: 52px; border: 1px solid #b9cbd6; border-radius: 14px;
+      padding: 0 14px; background: white; color: var(--ink); font: inherit; font-size: 19px;
+    }
+    input:focus { outline: 3px solid rgba(37,111,168,.15); border-color: var(--blue); }
+    .unit { display: grid; place-items: center; min-width: 70px; padding: 0 12px; border-radius: 14px; background: var(--soft); color: var(--navy); font-weight: 800; }
+    .samples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .sample { padding: 8px 12px; border-radius: 999px; background: var(--soft); color: var(--blue); font-size: 13px; }
+
+    .verification {
+      margin-top: 16px; padding: 17px; border-radius: 17px; border: 1px solid var(--line); background: var(--soft);
+    }
+    .verification.verified { background: var(--success); border-color: var(--success-line); }
+    .verification.contradicted { background: var(--danger); border-color: var(--danger-line); }
+    .verification-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .verification-head strong { color: var(--navy); }
+    .badge { padding: 5px 10px; border-radius: 999px; background: #dfe9ef; color: var(--navy); font-size: 12px; font-weight: 850; }
+    .verified .badge { background: #ccebe3; color: #0f716a; }
+    .contradicted .badge { background: #f2d0cd; color: var(--danger-ink); }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+    .metric { padding: 10px; border-radius: 12px; background: rgba(255,255,255,.72); }
+    .metric small { display: block; color: var(--muted); }
+    .metric code { color: var(--navy); font-size: 15px; font-weight: 850; }
+    .message { margin-top: 12px; color: var(--muted); font-size: 14px; }
+    .contradicted .message { color: var(--danger-ink); }
+
+    .paths { display: grid; gap: 10px; }
+    .path { padding: 14px; border-radius: 14px; background: var(--soft); }
+    .path strong { color: var(--navy); }
+    .path code { color: var(--teal); font-weight: 800; }
+    .warning { margin-top: 12px; padding: 13px 14px; border-radius: 14px; background: var(--warm); color: #74520f; font-size: 14px; }
+
+    details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
+    summary { cursor: pointer; color: var(--blue); font-weight: 750; }
+    pre {
+      margin: 12px 0 0; padding: 14px; overflow: auto; max-height: 430px;
+      border-radius: 14px; background: #111c24; color: #deebf2;
+      font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+
+    .links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .link {
+      display: flex; justify-content: center; align-items: center; min-height: 46px;
+      border: 1px solid var(--line); border-radius: 13px; color: var(--navy);
+      text-decoration: none; font-weight: 750; background: white;
+    }
+    footer { padding: 28px 8px 0; text-align: center; color: var(--muted); font-size: 12px; }
+
+    @media (min-width: 620px) {
+      .shell { padding-top: 34px; }
+      .hero { padding: 38px 36px 32px; }
+      .card { padding: 28px 26px; }
+      .paths { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand">
+      <div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT02</span></div>
+      <a class="back" href="../">返回 GT01</a>
+    </div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">答对，不等于已经通过验证</p>
+      <h1 id="title">模型算出了 144.22 米，谁来证明它没算错？</h1>
+      <p class="lead">同一份空间任务，一条路径交给模型，一条路径由浏览器本地确定性复算。</p>
+      <div class="formula" aria-label="本期任务">A = (0, 0)　B = (120, 80)　distance_2d</div>
+    </section>
+
+    <section class="card" aria-labelledby="task-title">
+      <h2 id="task-title">本期任务</h2>
+      <p>计算起飞点与学校之间的二维欧氏距离。坐标已明确为本地平面坐标，单位为米。</p>
+      <div class="facts">
+        <div class="fact"><small>起飞点 takeoff</small><strong>(0, 0)</strong></div>
+        <div class="fact"><small>学校 school</small><strong>(120, 80)</strong></div>
+        <div class="fact"><small>指定算子</small><strong>distance_2d</strong></div>
+        <div class="fact"><small>确定性结果</small><strong>144.22 meter</strong></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型执行任务</h2>
+      <div class="steps">
+        <div class="step"><span class="num">1</span><div><strong>复制完整 GT02 任务</strong><span>主按钮会复制任务并尝试打开 DeepSeek。</span></div></div>
+        <div class="step"><span class="num">2</span><div><strong>粘贴、发送并记下数值</strong><span>只需记住模型给出的距离，例如 144.22。</span></div></div>
+      </div>
+      <button class="primary" id="copy-open" type="button">复制 GT02 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT02 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">微信内无法打开时，请点右上角“···”，选择“在浏览器打开”。</p>
+
+      <details>
+        <summary>查看将被复制的完整 GeoTask</summary>
+        <pre id="task-source">geotask:
+  id: "gt02-independent-distance-verification"
+  name: "GT02 Independent Distance Verification"
+  schema_version: "1.0"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+
+objects:
+  takeoff:
+    type: "point"
+    coordinates: [0, 0]
+  school:
+    type: "point"
+    coordinates: [120, 80]
+
+operator_set:
+  - distance_2d
+
+tasks:
+  - id: "verify_takeoff_to_school_distance"
+    family: "measurement"
+    goal: "Calculate the Euclidean distance between takeoff and school."
+    assertions:
+      - id: "takeoff_to_school_distance"
+        operator: "distance_2d"
+        object_refs: ["takeoff", "school"]
+        unit: "meter"
+
+execution:
+  mode: "model_then_local_verify"
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "takeoff_to_school_distance"
+    - "assurance_level"
+    - "verification_status"
+
+instructions_for_model:
+  - "Return the numeric distance in meter."
+  - "Mark the model-produced result as model_generated."
+  - "Do not claim local_deterministic verification unless a separate deterministic executor has run."</pre>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：用另一条计算链独立复算</h2>
+      <p>把模型给出的距离数值填入下面。页面会在你的浏览器中执行固定的二维距离公式，不调用任何后台。</p>
+
+      <label class="input-label" for="model-result">模型给出的距离</label>
+      <div class="input-row">
+        <input id="model-result" type="number" inputmode="decimal" step="0.01" placeholder="例如 144.22" autocomplete="off">
+        <span class="unit">meter</span>
+      </div>
+      <div class="samples" aria-label="演示样例">
+        <button class="sample" type="button" data-sample="144.22">填入 144.22</button>
+        <button class="sample" type="button" data-sample="150">试试错误值 150</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:14px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head">
+          <strong>验证结果</strong>
+          <span class="badge" id="verification-badge">等待输入</span>
+        </div>
+        <div class="metrics">
+          <div class="metric"><small>模型结果</small><code id="model-value">—</code></div>
+          <div class="metric"><small>本地确定性结果</small><code id="local-value">144.222051 m</code></div>
+          <div class="metric"><small>绝对差异</small><code id="difference-value">—</code></div>
+          <div class="metric"><small>比较容差</small><code>0.01 m</code></div>
+        </div>
+        <p class="message" id="verification-message">模型结果属于 model_generated；点击“本地验证”后，页面会增加一条 local_deterministic 证据。</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="meaning-title">
+      <h2 id="meaning-title">这里演示的不是“让 AI 再想一次”</h2>
+      <div class="paths">
+        <div class="path"><strong>模型路径</strong><br><code>model_generated</code><br><span class="muted">模型理解任务、选择步骤并生成候选结果。</span></div>
+        <div class="path"><strong>确定性路径</strong><br><code>local_deterministic</code><br><span class="muted">固定程序按照明确公式独立计算，相同输入得到相同输出。</span></div>
+      </div>
+      <p class="warning">本页用浏览器 JavaScript 演示独立复算；GeoTask Core 的正式确定性执行由本地 Python 算子完成。两者使用相同的二维欧氏距离语义。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title">
+      <h2 id="join-title">查看项目与继续体验</h2>
+      <p>下一期将把两个点换成一条多段路线和一个限制区，测试模型能否正确判断相交关系。</p>
+      <div class="links">
+        <a class="link" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a>
+        <a class="link" href="../">返回 GT01</a>
+      </div>
+    </section>
+
+    <footer>
+      <div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div>
+      <div>本页的距离复算完全发生在当前浏览器中。</div>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const deepseekUrl = "https://chat.deepseek.com/";
+      const deterministicValue = Math.hypot(120, 80);
+      const tolerance = 0.01;
+      const verificationStates = {
+        verified: {
+          state: "verified",
+          label: "verified",
+          message: "模型结果与本地确定性结果在 0.01 米容差内一致。"
+        },
+        contradicted: {
+          state: "contradicted",
+          label: "contradicted",
+          message: "模型结果与本地确定性结果不一致，不能把候选答案标记为已验证。"
+        }
+      };
+
+      const source = document.getElementById("task-source");
+      const copyOpen = document.getElementById("copy-open");
+      const copyOnly = document.getElementById("copy-only");
+      const copyStatus = document.getElementById("copy-status");
+      const modelInput = document.getElementById("model-result");
+      const verifyButton = document.getElementById("verify");
+      const verifyStatus = document.getElementById("verify-status");
+      const verificationCard = document.getElementById("verification-card");
+      const badge = document.getElementById("verification-badge");
+      const modelValueNode = document.getElementById("model-value");
+      const localValueNode = document.getElementById("local-value");
+      const differenceNode = document.getElementById("difference-value");
+      const messageNode = document.getElementById("verification-message");
+
+      function taskText() {
+        return source.textContent.trim() + "\n";
+      }
+
+      function fallbackCopy(text) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        area.setSelectionRange(0, text.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(area);
+        return ok;
+      }
+
+      async function copyTask() {
+        const text = taskText();
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (_) {
+          // Continue with the compatibility copy path.
+        }
+        return fallbackCopy(text);
+      }
+
+      async function handleCopy(openDeepSeek) {
+        copyOpen.disabled = true;
+        copyStatus.textContent = "正在复制…";
+        const copied = await copyTask();
+        copyOpen.disabled = false;
+
+        if (!copied) {
+          copyStatus.textContent = "自动复制失败，请展开任务并长按复制。";
+          return;
+        }
+
+        copyStatus.textContent = openDeepSeek
+          ? "已复制，即将打开 DeepSeek。得到数值后请返回本页验证。"
+          : "已复制。可粘贴到任意大模型，得到数值后返回本页验证。";
+
+        if (openDeepSeek) {
+          window.setTimeout(() => window.location.assign(deepseekUrl), 600);
+        }
+      }
+
+      function formatNumber(value, digits = 6) {
+        return Number(value).toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
+      }
+
+      function verifyModelResult() {
+        const modelValue = Number(modelInput.value.trim());
+        if (!Number.isFinite(modelValue) || modelInput.value.trim() === "") {
+          verifyStatus.textContent = "请输入模型给出的数值，例如 144.22。";
+          modelInput.focus();
+          return;
+        }
+
+        const difference = Math.abs(modelValue - deterministicValue);
+        const state = difference <= tolerance
+          ? verificationStates.verified
+          : verificationStates.contradicted;
+
+        verificationCard.classList.remove("verified", "contradicted");
+        verificationCard.classList.add(state.state);
+        badge.textContent = state.label;
+        modelValueNode.textContent = `${formatNumber(modelValue, 6)} m`;
+        localValueNode.textContent = `${formatNumber(deterministicValue, 6)} m`;
+        differenceNode.textContent = `${formatNumber(difference, 6)} m`;
+        messageNode.textContent = `${state.message} 候选结果来源：model_generated；复算证据：local_deterministic。`;
+        verifyStatus.textContent = state.state === "verified"
+          ? "验证通过：两条执行路径的结果一致。"
+          : "发现冲突：请不要直接使用该候选结果。";
+      }
+
+      copyOpen.addEventListener("click", () => handleCopy(true));
+      copyOnly.addEventListener("click", () => handleCopy(false));
+      verifyButton.addEventListener("click", verifyModelResult);
+      modelInput.addEventListener("keydown", event => {
+        if (event.key === "Enter") verifyModelResult();
+      });
+      document.querySelectorAll("[data-sample]").forEach(button => {
+        button.addEventListener("click", () => {
+          modelInput.value = button.dataset.sample;
+          verifyModelResult();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

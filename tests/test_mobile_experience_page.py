@@ -50,7 +50,7 @@ def test_pages_workflow_deploys_site_directory() -> None:
 
     assert workflow["permissions"]["pages"] == "write"
     steps = workflow["jobs"]["deploy"]["steps"]
-    upload_step = next(step for step in steps if step.get("uses") == "actions/upload-pages-artifact@v3")
+    upload_step = next(step for step in steps if step.get("uses") == "actions/upload-pages-artifact@v4")
     assert upload_step["with"]["path"] == "site"
     assert any(step.get("uses") == "actions/deploy-pages@v4" for step in steps)
 
@@ -59,4 +59,5 @@ def test_public_manifest_exports_page_and_workflow() -> None:
     manifest = yaml.safe_load(MANIFEST.read_text(encoding="utf-8"))
 
     assert "site/**" in manifest["include"]
+    assert "site/**" not in manifest.get("exclude", [])
     assert ".github/workflows/pages.yml" in manifest["include"]

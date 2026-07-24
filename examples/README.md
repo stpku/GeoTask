@@ -14,6 +14,8 @@ patent-sensitive workflows.
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions
   combined by an explicit public-safe `AND` decision rule.
+- `examples/core/unverifiable_constraint.yaml`: two verified assertions and one
+  unverifiable required condition combined with three-valued unknown propagation.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

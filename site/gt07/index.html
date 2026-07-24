@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第07期：必要条件不可验证时，不强行输出布尔结论。">
+  <title>GeoTask GT07｜一个条件算不出来，还能硬给答案吗</title>
+  <style>
+    :root{color-scheme:light;--navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--amber:#b97816;--ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;--success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--danger-ink:#a33a32;--unknown:#fff7e8;--unknown-line:#e4c77f;--shadow:0 14px 40px rgba(20,52,77,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,760px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.5vw,43px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}.formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:17px;font-weight:750}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}
+    .checks{display:grid;gap:10px;margin-top:14px}.check{padding:14px;border-radius:15px;border:1px solid var(--line);background:var(--soft)}.check-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.check-head strong{color:var(--navy)}.pill{padding:4px 9px;border-radius:999px;font-size:12px;font-weight:850}.pill.true{background:#dceef8;color:var(--blue)}.pill.unknown{background:#f8e4bd;color:#8a5a12}.visual{margin-top:10px;padding:10px;border-radius:14px;background:#fff;border:1px solid #e4ebef}svg{display:block;width:100%;height:auto}
+    .rule{margin-top:14px;padding:17px;border-radius:16px;background:var(--unknown);border:1px solid var(--unknown-line);text-align:center}.rule code{display:block;color:#75520f;font-size:17px;font-weight:850}.rule strong{display:block;margin-top:7px;color:var(--amber);font-size:22px}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}
+    .verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}.verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:var(--danger-ink)}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{padding:10px;border-radius:12px;background:rgba(255,255,255,.72)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:15px;font-weight:850}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:var(--danger-ink)}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:500px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--unknown);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}.checks{grid-template-columns:repeat(3,1fr)}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT07</span></div><a class="back" href="../gt06/">← GT06</a></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">不知道，不等于false；也不等于true</p>
+      <h1 id="title">一个必要条件算不出来，AI还能硬给答案吗？</h1>
+      <p class="lead">路线和高度都已验证为true，但限制时段的可信状态尚未确认。GT07让unknown继续传播，而不是偷偷改写成布尔值。</p>
+      <div class="formula">full_conflict_status = unverifiable</div>
+    </section>
+
+    <section class="card" aria-labelledby="checks-title">
+      <h2 id="checks-title">两项已验证，一项不可验证</h2>
+      <p>预设时间区间看起来会重叠，但其来源还未得到确认，因此时间算子不能被当作可靠证据执行。</p>
+      <div class="checks">
+        <div class="check"><div class="check-head"><strong>路线相交</strong><span class="pill true">true</span></div><div class="visual"><svg viewBox="0 0 320 170" role="img" aria-label="路线穿过限制区"><rect x="185" y="35" width="70" height="100" rx="6" fill="rgba(195,55,49,.20)" stroke="#c33731" stroke-width="3"/><line x1="35" y1="85" x2="285" y2="85" stroke="#256fa8" stroke-width="7"/><line x1="185" y1="85" x2="255" y2="85" stroke="#148f62" stroke-width="11"/><text x="160" y="158" text-anchor="middle" fill="#65737d" font-size="13">verified</text></svg></div></div>
+        <div class="check"><div class="check-head"><strong>高度重叠</strong><span class="pill true">true</span></div><div class="visual"><svg viewBox="0 0 320 170" role="img" aria-label="高度区间重叠"><rect x="70" y="45" width="125" height="34" rx="7" fill="rgba(37,111,168,.35)" stroke="#256fa8" stroke-width="3"/><rect x="130" y="91" width="125" height="34" rx="7" fill="rgba(117,99,173,.30)" stroke="#7563ad" stroke-width="3"/><text x="132" y="67" text-anchor="middle" fill="#14344d" font-size="12">100–150m</text><text x="192" y="113" text-anchor="middle" fill="#55478b" font-size="12">120–180m</text><text x="160" y="158" text-anchor="middle" fill="#65737d" font-size="13">verified</text></svg></div></div>
+        <div class="check"><div class="check-head"><strong>时间条件</strong><span class="pill unknown">unknown</span></div><div class="visual"><svg viewBox="0 0 320 170" role="img" aria-label="限制时段证据未确认"><line x1="35" y1="93" x2="285" y2="93" stroke="#aabac3" stroke-width="3" stroke-dasharray="7 6"/><rect x="55" y="55" width="75" height="32" rx="7" fill="rgba(37,111,168,.35)" stroke="#256fa8" stroke-width="3"/><rect x="105" y="103" width="105" height="32" rx="7" fill="rgba(185,120,22,.18)" stroke="#b97816" stroke-width="3" stroke-dasharray="5 4"/><text x="92" y="77" text-anchor="middle" fill="#14344d" font-size="11">08:00–09:00</text><text x="157" y="124" text-anchor="middle" fill="#85570e" font-size="11">08:30–10:00?</text><text x="160" y="158" text-anchor="middle" fill="#b97816" font-size="13">unverifiable</text></svg></div></div>
+      </div>
+      <div class="rule"><code>true ∧ true ∧ unknown</code><strong>最终结论：不可验证</strong></div>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：把完整GT07交给模型</h2>
+      <p>模型必须区分“预设区间在数值上重叠”和“该区间已经成为可验证证据”这两件事。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT07 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT07 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">模型可以回答true、false或unverifiable。返回本页后选择对应候选。</p>
+      <details><summary>查看将被复制的完整 GeoTask</summary><pre id="task-source">geotask:
+  id: "gt07-unverifiable-constraint"
+  name: "GT07 Unverifiable Constraint"
+  schema_version: "1.0"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  route:
+    type: "polyline"
+    coordinates:
+      - [-200, 0]
+      - [400, 0]
+  restricted_zone:
+    type: "rect"
+    bbox: [250, -100, 350, 100]
+  flight_altitude:
+    type: "altitude_interval"
+    min: 100
+    max: 150
+  restricted_altitude:
+    type: "altitude_interval"
+    min: 120
+    max: 180
+  flight_time:
+    type: "time_interval"
+    start: "08:00"
+    end: "09:00"
+  provisional_restricted_time:
+    type: "time_interval"
+    start: "08:30"
+    end: "10:00"
+
+operator_set:
+  - line_intersects_rect
+  - altitude_overlap
+  - time_overlap
+
+tasks:
+  - id: "evaluate_required_conditions"
+    assertions:
+      - id: "route_intersects_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["route", "restricted_zone"]
+      - id: "altitude_conflict"
+        operator: "altitude_overlap"
+        object_refs: ["flight_altitude", "restricted_altitude"]
+      - id: "temporal_conflict"
+        operator: "time_overlap"
+        object_refs: ["flight_time", "provisional_restricted_time"]
+        condition: "restricted_schedule_verified"
+
+execution:
+  mode: "model_then_local_verify"
+
+extensions:
+  decision_rule:
+    id: "full_conflict"
+    logic: "three_valued_and"
+    expression: "route_intersects_zone AND altitude_conflict AND temporal_conflict"
+    unknown_policy: "propagate"
+  evidence_note: "The restricted schedule interval is provisional and has not been verified."
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "route_intersects_zone"
+    - "altitude_conflict"
+    - "temporal_conflict_status"
+    - "full_conflict_status"
+    - "verification_status"
+
+instructions_for_model:
+  - "Do not treat unverified evidence as a verified boolean input."
+  - "If a required condition cannot be verified, preserve it as unverifiable."
+  - "Apply three-valued AND with unknown propagation."
+  - "Do not silently replace unknown with true or false."
+  - "Mark model-produced conclusions as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：本地验证三值结论</h2>
+      <p>请选择模型的最终候选。页面会执行两项确定性算子，并用与Core一致的条件门控保留不可验证状态。</p>
+      <div class="samples" aria-label="模型最终候选"><button class="sample" id="btn-true" type="button">模型回答 true</button><button class="sample" id="btn-false" type="button">模型回答 false</button><button class="sample wide" id="btn-unverifiable" type="button">模型回答 unverifiable</button></div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics"><div class="metric"><small>模型最终候选</small><code id="model-value">—</code></div><div class="metric"><small>本地最终状态</small><code id="local-value">unverifiable</code></div><div class="metric"><small>局部证据</small><code id="local-evidence">T / T / U</code></div><div class="metric"><small>执行状态</small><code>partial</code></div></div>
+        <p class="message" id="verification-message">候选来源：model_generated；本地算子、条件门控和三值组合：local_deterministic。</p>
+      </div>
+      <p class="warning">“不可验证”不是“没有冲突”，也不是“存在冲突”。它表示当前证据不足以支持任何一个布尔结论，需要补充或确认限制时段信息。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>仓库中同时新增了可由GeoTask Core真实执行的unverifiable示例。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt06/">← GT06</a></div></section>
+    <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>本页不会把未知证据强制转换为true或false。</div></footer>
+  </main>
+
+  <script>
+    (()=>{
+      const route=[[-200,0],[400,0]],zone=[250,-100,350,100],flightAltitude=[100,150],restrictedAltitude=[120,180];
+      function pointInRect(point,rect){return rect[0]<=point[0]&&point[0]<=rect[2]&&rect[1]<=point[1]&&point[1]<=rect[3]}
+      function cross(origin,a,b){return(a[0]-origin[0])*(b[1]-origin[1])-(a[1]-origin[1])*(b[0]-origin[0])}
+      function onSegment(p,q,r){return Math.min(p[0],r[0])<=q[0]&&q[0]<=Math.max(p[0],r[0])&&Math.min(p[1],r[1])<=q[1]&&q[1]<=Math.max(p[1],r[1])}
+      function segmentsIntersect(p1,p2,p3,p4){const d1=cross(p3,p4,p1),d2=cross(p3,p4,p2),d3=cross(p1,p2,p3),d4=cross(p1,p2,p4);if(((d1>0&&d2<0)||(d1<0&&d2>0))&&((d3>0&&d4<0)||(d3<0&&d4>0)))return true;if(d1===0&&onSegment(p3,p1,p4))return true;if(d2===0&&onSegment(p3,p2,p4))return true;if(d3===0&&onSegment(p1,p3,p2))return true;if(d4===0&&onSegment(p1,p4,p2))return true;return false}
+      function lineIntersectsRect(points,rect){const[minX,minY,maxX,maxY]=rect,edges=[[[minX,minY],[maxX,minY]],[[maxX,minY],[maxX,maxY]],[[maxX,maxY],[minX,maxY]],[[minX,maxY],[minX,minY]]];for(let i=0;i<points.length-1;i+=1){const p1=points[i],p2=points[i+1];if(pointInRect(p1,rect)||pointInRect(p2,rect))return true;for(const[e1,e2]of edges)if(segmentsIntersect(p1,p2,e1,e2))return true}return false}
+      function altitudeOverlap(a,b){return a[0]<=b[1]&&b[0]<=a[1]}
+      function evaluateEvidenceCondition(condition){if(!condition||!condition.trim())return"execute";const value=condition.trim().toLowerCase();if(value==="true")return"execute";if(value==="false")return"skip";return "unverifiable"}
+      function threeValuedAnd(values){if(values.includes(false))return false;if(values.every(value=>value===true))return true;return "unverifiable"}
+      const routeResult=lineIntersectsRect(route,zone),altitudeResult=altitudeOverlap(flightAltitude,restrictedAltitude),conditionStatus=evaluateEvidenceCondition("restricted_schedule_verified");
+      const temporalResult=conditionStatus==="unverifiable"?{value:null,status:"unverifiable",error:"unverifiable_condition"}:{value:true,status:"verified",error:null};
+      const localDecision = threeValuedAnd([routeResult,altitudeResult,temporalResult.value]);
+      let selectedAnswer=null;
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status"),btnTrue=document.getElementById("btn-true"),btnFalse=document.getElementById("btn-false"),btnUnverifiable=document.getElementById("btn-unverifiable"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status"),card=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelValue=document.getElementById("model-value"),localValue=document.getElementById("local-value"),message=document.getElementById("verification-message");
+      localValue.textContent=String(localDecision);
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到答案后请返回本页验证。":"已复制。可粘贴到任意大模型，得到答案后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAnswer(value){selectedAnswer=value;btnTrue.classList.toggle("active",value==="true");btnFalse.classList.toggle("active",value==="false");btnUnverifiable.classList.toggle("active",value==="unverifiable");verifyStatus.textContent=`已选择模型候选：${value}`}
+      function verifyModelAnswer(){if(selectedAnswer===null){verifyStatus.textContent="请先选择模型候选。";return}const consistent=selectedAnswer===String(localDecision);card.classList.remove("verified","contradicted");card.classList.add(consistent?"verified":"contradicted");badge.textContent=consistent?"verified":"contradicted";modelValue.textContent=selectedAnswer;if(consistent){message.textContent="模型保留了不可验证状态，与本地条件门控和三值AND结果一致。需要补充限制时段证据后才能重算。";verifyStatus.textContent="验证通过：模型没有把unknown强制改写为布尔值。"}else{message.textContent="模型候选与本地状态冲突。必要时间证据尚未验证，当前不能可靠输出true或false。";verifyStatus.textContent="发现冲突：模型在证据不足时给出了确定结论。"}}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnTrue.addEventListener("click",()=>selectAnswer("true"));btnFalse.addEventListener("click",()=>selectAnswer("false"));btnUnverifiable.addEventListener("click",()=>selectAnswer("unverifiable"));verifyButton.addEventListener("click",verifyModelAnswer);
+    })();
+  </script>
+</body>
+</html>

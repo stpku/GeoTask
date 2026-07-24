@@ -97,6 +97,21 @@ def test_time_overlap_same():
     assert time_overlap(["08:00", "10:00"], ["08:00", "10:00"]) is True
 
 
+def test_time_overlap_gt05_separated_windows():
+    """GT05: same space and altitude do not conflict when time windows are separate."""
+    assert time_overlap(["08:00", "09:00"], ["15:00", "17:00"]) is False
+
+
+def test_time_overlap_gt05_boundary_contact():
+    """GT05 boundary rule: touching at one timestamp counts as overlap."""
+    assert time_overlap(["08:00", "09:00"], ["09:00", "10:00"]) is True
+
+
+def test_time_overlap_is_symmetric_for_separated_windows():
+    """Changing object order does not change the no-overlap result."""
+    assert time_overlap(["15:00", "17:00"], ["08:00", "09:00"]) is False
+
+
 # ── altitude_overlap ──────────────────────────────────────────────────
 
 def test_altitude_overlap_true():

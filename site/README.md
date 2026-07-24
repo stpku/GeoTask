@@ -7,12 +7,14 @@ It has no backend, analytics, cookies, account system, model key, or external Ja
 
 - `GT01`: distance between `(0, 0)` and `(3, 4)`; expected result `ab_distance = 5.0 meter`
 - `GT02`: distance between `(0, 0)` and `(120, 80)`; compare a model result with the browser-local deterministic result `144.22 meter`
+- `GT03`: four-point route where only the final segment intersects a rectangular restricted zone; expected result `route_intersects_zone = true`
 - Public repository: <https://github.com/stpku/GeoTask>
 
 Primary experience URLs:
 
 - <https://skyswind.tailf4fad8.ts.net/geotask/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt02/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt03/>
 
 ## GitHub Pages deployment
 
@@ -40,10 +42,11 @@ such as `gt02/index.html` unavailable:
 sudo rsync -a --delete site/ /var/www/geotask-experience/
 test -f /var/www/geotask-experience/index.html
 test -f /var/www/geotask-experience/gt02/index.html
+test -f /var/www/geotask-experience/gt03/index.html
 ```
 
-The repository also includes `site/deploy-nginx.sh`, which performs the recursive sync, checks both
-GT01 and GT02, validates Nginx, and reloads the service.
+The repository also includes `site/deploy-nginx.sh`, which performs the recursive sync, checks
+GT01, GT02 and GT03, validates Nginx, and reloads the service.
 
 Use a static location that serves directory index files and does not rewrite every missing nested
 path back to GT01:

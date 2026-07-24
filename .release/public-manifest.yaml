@@ -19,6 +19,7 @@ include:
   - "tests/test_core_examples_v0_2.py"
   - "tests/test_mobile_experience_page.py"
   - "tests/test_gt02_experience_page.py"
+  - "tests/test_gt03_experience_page.py"
   - "tests/test_operator_registry.py"
   - "tests/test_ops.py"
   - "tests/test_ops_v0_3.py"

@@ -16,6 +16,8 @@ patent-sensitive workflows.
   combined by an explicit public-safe `AND` decision rule.
 - `examples/core/unverifiable_constraint.yaml`: two verified assertions and one
   unverifiable required condition combined with three-valued unknown propagation.
+- `examples/core/evidence_request_plan.yaml`: an unverifiable required condition
+  converted into a structured evidence request with blocked outputs and a resume condition.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

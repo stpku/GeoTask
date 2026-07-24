@@ -1,0 +1,104 @@
+geotask:
+  id: "gt08-evidence-request-plan"
+  name: "GT08 Evidence Request Plan"
+  schema_version: "1.0"
+  goal: "Turn an unverifiable required condition into a structured evidence request."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  route:
+    type: "polyline"
+    coordinates:
+      - [-200, 0]
+      - [400, 0]
+  restricted_zone:
+    type: "rect"
+    bbox: [250, -100, 350, 100]
+  flight_altitude:
+    type: "altitude_interval"
+    min: 100
+    max: 150
+    unit: "meter"
+  restricted_altitude:
+    type: "altitude_interval"
+    min: 120
+    max: 180
+    unit: "meter"
+  flight_time:
+    type: "time_interval"
+    start: "08:00"
+    end: "09:00"
+  provisional_restricted_time:
+    type: "time_interval"
+    start: "08:30"
+    end: "10:00"
+
+operator_set:
+  - line_intersects_rect
+  - altitude_overlap
+  - time_overlap
+
+tasks:
+  - id: "evaluate_required_conditions"
+    family: "spatiotemporal_topology"
+    goal: "Preserve an unverifiable schedule condition and trigger an evidence request."
+    assertions:
+      - id: "route_intersects_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["route", "restricted_zone"]
+        expected_type: "bool"
+      - id: "altitude_conflict"
+        operator: "altitude_overlap"
+        object_refs: ["flight_altitude", "restricted_altitude"]
+        expected_type: "bool"
+      - id: "temporal_conflict"
+        operator: "time_overlap"
+        object_refs: ["flight_time", "provisional_restricted_time"]
+        expected_type: "bool"
+        condition: "restricted_schedule_verified"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_local_checks"
+      executor: "local"
+      assertion_refs:
+        - "route_intersects_zone"
+        - "altitude_conflict"
+        - "temporal_conflict"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  decision_rule:
+    id: "full_conflict"
+    logic: "three_valued_and"
+    expression: "route_intersects_zone AND altitude_conflict AND temporal_conflict"
+    unknown_policy: "propagate"
+    expected_status: "unverifiable"
+  evidence_request:
+    id: "verify-restricted-schedule"
+    trigger: "temporal_conflict"
+    trigger_status: "unverifiable"
+    reason: "restricted_schedule_not_verified"
+    required_fields:
+      - "issuing_authority"
+      - "effective_date"
+      - "start_time"
+      - "end_time"
+      - "document_version"
+      - "source_reference"
+      - "verified_at"
+    blocked_outputs:
+      - "full_conflict"
+      - "automatic_approval"
+    resume_when: "restricted_schedule_verified == true"
+    next_action: "request_evidence"

@@ -18,6 +18,8 @@ patent-sensitive workflows.
   unverifiable required condition combined with three-valued unknown propagation.
 - `examples/core/evidence_request_plan.yaml`: an unverifiable required condition
   converted into a structured evidence request with blocked outputs and a resume condition.
+- `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
+  incompatible results trigger a structured conflict review task.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

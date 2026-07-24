@@ -1,0 +1,138 @@
+geotask:
+  id: "gt09-evidence-conflict-review"
+  name: "GT09 UAV No-Fly Notice Conflict Review"
+  schema_version: "1.0"
+  goal: "Detect incompatible verified temporary no-fly notices for a UAV mission and generate a conflict review task."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  route:
+    type: "polyline"
+    coordinates:
+      - [-200, 0]
+      - [400, 0]
+  restricted_zone:
+    type: "rect"
+    bbox: [250, -100, 350, 100]
+  flight_altitude:
+    type: "altitude_interval"
+    min: 100
+    max: 150
+    unit: "meter"
+  restricted_altitude:
+    type: "altitude_interval"
+    min: 120
+    max: 180
+    unit: "meter"
+  flight_time:
+    type: "time_interval"
+    start: "08:00"
+    end: "09:00"
+  restricted_time_authority_a:
+    type: "time_interval"
+    start: "08:30"
+    end: "10:00"
+  restricted_time_bulletin_b:
+    type: "time_interval"
+    start: "09:30"
+    end: "11:00"
+
+operator_set:
+  - line_intersects_rect
+  - altitude_overlap
+  - time_overlap
+
+tasks:
+  - id: "evaluate_conflicting_evidence"
+    family: "spatiotemporal_topology"
+    goal: "Evaluate two verified schedule sources whose derived temporal conclusions disagree."
+    assertions:
+      - id: "route_intersects_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["route", "restricted_zone"]
+        expected_type: "bool"
+      - id: "altitude_conflict"
+        operator: "altitude_overlap"
+        object_refs: ["flight_altitude", "restricted_altitude"]
+        expected_type: "bool"
+      - id: "temporal_conflict_authority_a"
+        operator: "time_overlap"
+        object_refs: ["flight_time", "restricted_time_authority_a"]
+        expected_type: "bool"
+      - id: "temporal_conflict_bulletin_b"
+        operator: "time_overlap"
+        object_refs: ["flight_time", "restricted_time_bulletin_b"]
+        expected_type: "bool"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_local_checks"
+      executor: "local"
+      assertion_refs:
+        - "route_intersects_zone"
+        - "altitude_conflict"
+        - "temporal_conflict_authority_a"
+        - "temporal_conflict_bulletin_b"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "uav_temporary_no_fly_notice_conflict"
+    vehicle: "uav"
+    planned_flight_window: "08:00-09:00"
+    decision_question: "Can the UAV mission proceed while two verified temporary no-fly notices disagree?"
+  evidence_sources:
+    authority_notice_a:
+      issuing_authority: "Low-Altitude Management Authority A"
+      effective_date: "2026-08-01"
+      start_time: "08:30"
+      end_time: "10:00"
+      document_version: "A-2026-08-v1"
+      source_reference: "authority-notice-a"
+      verified_at: "2026-08-01T07:30:00Z"
+    operations_bulletin_b:
+      issuing_authority: "Flight Operations Support Office B"
+      effective_date: "2026-08-01"
+      start_time: "09:30"
+      end_time: "11:00"
+      document_version: "B-2026-08-v3"
+      source_reference: "operations-bulletin-b"
+      verified_at: "2026-08-01T07:40:00Z"
+  evidence_conflict:
+    id: "resolve-restricted-schedule-conflict"
+    subject: "restricted_schedule"
+    conflict_type: "incompatible_verified_sources"
+    conflicting_assertions:
+      - "temporal_conflict_authority_a"
+      - "temporal_conflict_bulletin_b"
+    source_refs:
+      - "authority_notice_a"
+      - "operations_bulletin_b"
+    compared_fields:
+      - "start_time"
+      - "end_time"
+      - "document_version"
+      - "source_reference"
+    blocked_outputs:
+      - "full_conflict"
+      - "automatic_approval"
+    resolution_required_fields:
+      - "authoritative_source"
+      - "superseded_version"
+      - "effective_schedule"
+      - "resolution_basis"
+      - "resolved_by"
+      - "resolved_at"
+    resume_when: "evidence_conflict_resolved == true"
+    next_action: "request_conflict_review"
+    expected_status: "conflicted"

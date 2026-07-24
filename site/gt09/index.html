@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第09期：两张临时禁飞通知时间不一致时，无人机任务进入证据冲突复核。">
+  <title>GeoTask GT09｜两张临时禁飞通知时间不一样，无人机还能起飞吗</title>
+  <style>
+    :root{color-scheme:light;--navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--amber:#b97816;--purple:#7563ad;--ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;--success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--warm:#fff7e8;--shadow:0 14px 40px rgba(20,52,77,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,780px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.4vw,42px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}.formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:17px;font-weight:750}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}svg{display:block;width:100%;height:auto}.visual{padding:10px;border:1px solid #e4ebef;border-radius:16px;background:#fff}
+    .source-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.source{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.source h3{margin:0;color:var(--navy);font-size:16px}.source .value{margin-top:8px;font:800 15px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.source.a .value{color:var(--blue)}.source.b .value{color:var(--purple)}.result-pill{display:inline-block;margin-top:8px;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:850}.source.a .result-pill{background:#dceef8;color:#1d6698}.source.b .result-pill{background:#eeeafa;color:#6653a0}
+    .review{margin-top:14px;padding:16px;border:1px solid #e4c77f;border-radius:16px;background:var(--warm)}.review h3{margin:0 0 10px;color:#75520f}.tag-list{display:flex;flex-wrap:wrap;gap:7px}.tag{padding:5px 9px;border-radius:999px;background:#fff;color:var(--navy);font:700 12px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;border:1px solid #e2d2ab}.blocked{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.blocked div{padding:10px;border-radius:12px;background:#fff0ef;color:#a33a32;text-align:center;font-weight:800}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}.verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}.verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:#a33a32}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{padding:10px;border-radius:12px;background:rgba(255,255,255,.75)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:14px;font-weight:850}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a33a32}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:520px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT09</span></div><a class="back" href="../gt08/">← GT08</a></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">低空飞行 · 临时禁飞通知冲突</p>
+      <h1 id="title">两张临时禁飞通知时间不一样，无人机还能起飞吗？</h1>
+      <p class="lead">无人机计划在08:00–09:00执行任务。通知A说08:30起禁飞，通告B却说09:30才生效；GT09不擅自选一份相信，而是进入冲突复核。</p>
+      <div class="formula">next_action = request_conflict_review</div>
+    </section>
+
+    <section class="card" aria-labelledby="sources-title">
+      <h2 id="sources-title">两张禁飞通知都已核验，却推导出相反结果</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 260" role="img" aria-label="来源A和来源B对同一限制时段给出不同时间，并推导出相反时间重叠结果">
+          <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#65737d"/></marker></defs>
+          <g font-family="Arial, sans-serif" text-anchor="middle">
+            <rect x="20" y="35" width="210" height="150" rx="18" fill="#eaf3f8" stroke="#256fa8" stroke-width="2"/>
+            <text x="125" y="70" font-size="18" font-weight="700" fill="#14344d">来源 A</text><text x="125" y="105" font-size="18" font-weight="700" fill="#256fa8">08:30–10:00</text><text x="125" y="140" font-size="15" fill="#65737d">时间重叠 true</text><text x="125" y="168" font-size="13" fill="#65737d">verified</text>
+            <rect x="490" y="35" width="210" height="150" rx="18" fill="#f1eefa" stroke="#7563ad" stroke-width="2"/>
+            <text x="595" y="70" font-size="18" font-weight="700" fill="#14344d">来源 B</text><text x="595" y="105" font-size="18" font-weight="700" fill="#7563ad">09:30–11:00</text><text x="595" y="140" font-size="15" fill="#65737d">时间重叠 false</text><text x="595" y="168" font-size="13" fill="#65737d">verified</text>
+            <line x1="230" y1="110" x2="310" y2="110" stroke="#65737d" stroke-width="3" marker-end="url(#arrow)"/><line x1="490" y1="110" x2="410" y2="110" stroke="#65737d" stroke-width="3" marker-end="url(#arrow)"/>
+            <rect x="300" y="65" width="120" height="90" rx="18" fill="#fff0ef" stroke="#c33731" stroke-width="3"/><text x="360" y="102" font-size="17" font-weight="700" fill="#c33731">证据冲突</text><text x="360" y="128" font-size="13" fill="#65737d">T / F</text>
+            <line x1="360" y1="155" x2="360" y2="205" stroke="#65737d" stroke-width="3" marker-end="url(#arrow)"/>
+            <rect x="250" y="205" width="220" height="45" rx="14" fill="#fff7e8" stroke="#b97816" stroke-width="2"/><text x="360" y="233" font-size="16" font-weight="700" fill="#75520f">冲突复核任务</text>
+          </g>
+        </svg>
+      </div>
+      <div class="source-grid">
+        <div class="source a"><h3>来源 A · 低空管理临时禁飞通知</h3><div class="value">08:30–10:00</div><span class="result-pill">时间重叠 true</span></div>
+        <div class="source b"><h3>来源 B · 运行保障通告</h3><div class="value">09:30–11:00</div><span class="result-pill">时间重叠 false</span></div>
+      </div>
+      <p class="warning">两份来源都标记为verified，但verified只表示各自来源已核验，不表示它们彼此一致。</p>
+    </section>
+
+    <section class="card" aria-labelledby="flow-title">
+      <h2 id="flow-title">发现冲突后，系统进入复核闭环</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 170" role="img" aria-label="证据冲突、冲突复核任务、暂停危险输出、解决后恢复的流程">
+          <defs><marker id="arrow2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#65737d"/></marker></defs>
+          <g font-family="Arial, sans-serif" text-anchor="middle">
+            <rect x="20" y="50" width="145" height="70" rx="14" fill="#fff0ef" stroke="#c33731" stroke-width="2"/><text x="92" y="82" font-size="16" font-weight="700" fill="#14344d">证据冲突</text><text x="92" y="104" font-size="12" fill="#65737d">conflicted</text>
+            <line x1="165" y1="85" x2="200" y2="85" stroke="#65737d" stroke-width="3" marker-end="url(#arrow2)"/>
+            <rect x="205" y="50" width="165" height="70" rx="14" fill="#fff7e8" stroke="#b97816" stroke-width="2"/><text x="287" y="82" font-size="16" font-weight="700" fill="#14344d">冲突复核任务</text><text x="287" y="104" font-size="12" fill="#65737d">request_conflict_review</text>
+            <line x1="370" y1="85" x2="405" y2="85" stroke="#65737d" stroke-width="3" marker-end="url(#arrow2)"/>
+            <rect x="410" y="50" width="145" height="70" rx="14" fill="#fff0ef" stroke="#c33731" stroke-width="2"/><text x="482" y="82" font-size="16" font-weight="700" fill="#14344d">暂停危险输出</text><text x="482" y="104" font-size="12" fill="#65737d">block</text>
+            <line x1="555" y1="85" x2="590" y2="85" stroke="#65737d" stroke-width="3" marker-end="url(#arrow2)"/>
+            <rect x="595" y="50" width="105" height="70" rx="14" fill="#e9f7f3" stroke="#148f62" stroke-width="2"/><text x="647" y="82" font-size="15" font-weight="700" fill="#14344d">解决后恢复</text><text x="647" y="104" font-size="12" fill="#65737d">resume</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="review-title">
+      <h2 id="review-title">本地生成的冲突复核任务</h2>
+      <div class="review">
+        <h3>resolve-restricted-schedule-conflict</h3>
+        <p><strong>冲突类型：</strong><code>incompatible_verified_sources</code></p>
+        <p><strong>必须形成：</strong></p>
+        <div class="tag-list" id="resolution-fields"></div>
+        <p><strong>复核期间阻断：</strong></p>
+        <div class="blocked"><div>full_conflict</div><div>automatic_approval</div></div>
+        <p><strong>恢复条件：</strong><code>evidence_conflict_resolved == true</code></p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型选择处理动作</h2>
+      <p>模型可以选择直接相信来源A、直接相信来源B，或者发起冲突复核。没有明确优先级规则时，前两项都属于擅自裁决。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT09 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT09 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">得到模型建议后返回本页，选择对应动作并验证。</p>
+      <details><summary>查看将被复制的完整 GeoTask</summary><pre id="task-source">geotask:
+  id: "gt09-evidence-conflict-review"
+  name: "GT09 UAV No-Fly Notice Conflict Review"
+  schema_version: "1.0"
+
+application_context:
+  scenario: "uav_temporary_no_fly_notice_conflict"
+  planned_flight_window: "08:00-09:00"
+  decision_question: "Can the UAV mission proceed?"
+
+known_results:
+  route_intersects_zone: true
+  altitude_conflict: true
+  temporal_conflict_authority_a:
+    value: true
+    status: "verified"
+    schedule: "08:30-10:00"
+  temporal_conflict_bulletin_b:
+    value: false
+    status: "verified"
+    schedule: "09:30-11:00"
+
+extensions:
+  evidence_conflict:
+    id: "resolve-restricted-schedule-conflict"
+    conflict_type: "incompatible_verified_sources"
+    conflicting_assertions:
+      - "temporal_conflict_authority_a"
+      - "temporal_conflict_bulletin_b"
+    blocked_outputs:
+      - "full_conflict"
+      - "automatic_approval"
+    resolution_required_fields:
+      - "authoritative_source"
+      - "superseded_version"
+      - "effective_schedule"
+      - "resolution_basis"
+      - "resolved_by"
+      - "resolved_at"
+    resume_when: "evidence_conflict_resolved == true"
+    next_action: "request_conflict_review"
+    expected_status: "conflicted"
+
+instructions_for_model:
+  - "Choose the next action from trust_source_a, trust_source_b, or request_conflict_review."
+  - "Do not choose a source unless an explicit authority or precedence policy is provided."
+  - "If conflict review is chosen, preserve blocked outputs, required resolution fields, and resume condition."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：验证模型选择的动作</h2>
+      <div class="samples" aria-label="模型动作候选">
+        <button class="sample" id="btn-source-a" type="button">直接相信来源 A</button>
+        <button class="sample" id="btn-source-b" type="button">直接相信来源 B</button>
+        <button class="sample wide" id="btn-review" type="button">发起冲突复核</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics">
+          <div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div>
+          <div class="metric"><small>本地下一步</small><code id="local-action">request_conflict_review</code></div>
+          <div class="metric"><small>证据状态</small><code>conflicted</code></div>
+          <div class="metric"><small>Core执行状态</small><code>completed</code></div>
+        </div>
+        <p class="message" id="verification-message">候选来源：model_generated；时间区间复算和冲突检测：local_deterministic。</p>
+      </div>
+      <p class="warning">GT09不会自动决定哪个来源更权威。来源优先级、版本替代关系和裁决责任必须由外部制度或人工复核提供。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>仓库中同时新增了可由GeoTask Core真实执行的双来源冲突示例。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt08/">← GT08</a></div></section>
+    <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>证据都是真的，也可能彼此冲突。</div></footer>
+  </main>
+
+  <script>
+    (()=>{
+      const flightTime=["08:00","09:00"],sourceATime=["08:30","10:00"],sourceBTime=["09:30","11:00"];
+      const resolutionFields=["authoritative_source","superseded_version","effective_schedule","resolution_basis","resolved_by","resolved_at"];
+      const blockedOutputs=["full_conflict","automatic_approval"];
+      function timeToMinutes(value){const[hour,minute]=value.split(":").map(Number);return hour*60+minute}
+      function timeOverlap(a,b){const aStart=timeToMinutes(a[0]),aEnd=timeToMinutes(a[1]),bStart=timeToMinutes(b[0]),bEnd=timeToMinutes(b[1]);return aStart<=bEnd&&bStart<=aEnd}
+      function detectEvidenceConflict(values){return values.includes(true) && values.includes(false)}
+      function buildConflictReview(hasConflict){if(!hasConflict)return null;return{id:"resolve-restricted-schedule-conflict",conflict_type:"incompatible_verified_sources",resolution_required_fields:[...resolutionFields],blocked_outputs:[...blockedOutputs],resume_when:"evidence_conflict_resolved == true",next_action:"request_conflict_review",status:"conflicted"}}
+      function determineNextAction(hasConflict){if(hasConflict) return "request_conflict_review";return"continue"}
+      const sourceAResult=timeOverlap(flightTime,sourceATime),sourceBResult=timeOverlap(flightTime,sourceBTime);
+      const hasConflict=detectEvidenceConflict([sourceAResult,sourceBResult]);
+      const localReview=buildConflictReview(hasConflict),localAction=determineNextAction(hasConflict);
+      const localEvidence={source_a:sourceAResult,source_b:sourceBResult,conflict:hasConflict,review:localReview,provenance:"local_deterministic"};
+      let selectedAction=null;
+      document.getElementById("resolution-fields").innerHTML=localReview.resolution_required_fields.map(field=>`<span class="tag">${field}</span>`).join("");
+      document.getElementById("local-action").textContent=localAction;
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status"),btnA=document.getElementById("btn-source-a"),btnB=document.getElementById("btn-source-b"),btnReview=document.getElementById("btn-review"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status"),card=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelAction=document.getElementById("model-action"),message=document.getElementById("verification-message");
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到动作建议后请返回本页验证。":"已复制。可粘贴到任意大模型，得到动作建议后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAction(value){selectedAction=value;btnA.classList.toggle("active",value==="trust_source_a");btnB.classList.toggle("active",value==="trust_source_b");btnReview.classList.toggle("active",value==="request_conflict_review");verifyStatus.textContent=`已选择模型动作：${value}`}
+      function verifyModelAction(){if(selectedAction===null){verifyStatus.textContent="请先选择模型动作。";return}const consistent=selectedAction===localAction;card.classList.remove("verified","contradicted");card.classList.add(consistent?"verified":"contradicted");badge.textContent=consistent?"verified":"contradicted";modelAction.textContent=selectedAction;if(consistent){message.textContent=`模型保留了${localEvidence.review.status}状态，并生成包含6个裁决字段、2个被阻断输出和恢复条件的冲突复核任务。`;verifyStatus.textContent="验证通过：系统没有擅自选择来源，而是发起冲突复核。"}else{message.textContent="两份已核验证据推导出相反结果。在没有来源优先级或版本替代规则时，直接选择任一来源都会越过证据治理边界。";verifyStatus.textContent="发现冲突：模型擅自选择了一个来源。"}}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnA.addEventListener("click",()=>selectAction("trust_source_a"));btnB.addEventListener("click",()=>selectAction("trust_source_b"));btnReview.addEventListener("click",()=>selectAction("request_conflict_review"));verifyButton.addEventListener("click",verifyModelAction);
+    })();
+  </script>
+</body>
+</html>

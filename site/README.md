@@ -10,6 +10,7 @@ It has no backend, analytics, cookies, account system, model key, or external Ja
 - `GT03`: four-point route where only the final segment intersects a rectangular restricted zone; expected result `route_intersects_zone = true`
 - `GT04`: identical 2D footprints with vertically separated altitude ranges `[100, 150]` and `[300, 500]`; expected result `altitude_conflict = false`
 - `GT05`: identical position and altitude but separated time windows `08:00–09:00` and `15:00–17:00`; expected result `temporal_conflict = false`
+- `GT06`: route intersection and altitude overlap are true, time overlap is false; explicit `AND` rule produces `full_conflict = false`
 - Public repository: <https://github.com/stpku/GeoTask>
 
 Primary experience URLs:
@@ -19,6 +20,7 @@ Primary experience URLs:
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt03/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt04/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt05/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt06/>
 
 ## GitHub Pages deployment
 
@@ -49,10 +51,11 @@ test -f /var/www/geotask-experience/gt02/index.html
 test -f /var/www/geotask-experience/gt03/index.html
 test -f /var/www/geotask-experience/gt04/index.html
 test -f /var/www/geotask-experience/gt05/index.html
+test -f /var/www/geotask-experience/gt06/index.html
 ```
 
 The repository also includes `site/deploy-nginx.sh`, which performs the recursive sync, checks
-GT01 through GT05, validates Nginx, and reloads the service.
+GT01 through GT06, validates Nginx, and reloads the service.
 
 Use a static location that serves directory index files and does not rewrite every missing nested
 path back to GT01:
@@ -75,7 +78,7 @@ After deployment:
 ```bash
 sudo nginx -t
 sudo systemctl reload nginx
-curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt05/
+curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt06/
 ```
 
 Each nested response must come from its matching directory index. Do not configure a fallback to

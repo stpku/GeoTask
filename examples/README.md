@@ -12,6 +12,8 @@ patent-sensitive workflows.
   overlap example.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
+- `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions
+  combined by an explicit public-safe `AND` decision rule.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

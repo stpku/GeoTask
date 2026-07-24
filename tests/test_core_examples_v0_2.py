@@ -71,6 +71,7 @@ def test_public_safe_core_examples_validate_and_run():
         CORE_EXAMPLES / "minimal_valid.yaml",
         CORE_EXAMPLES / "time_altitude_overlap.yaml",
         CORE_EXAMPLES / "assertions_expected_results.yaml",
+        CORE_EXAMPLES / "multi_constraint_conflict.yaml",
     ]
 
     for example in expected_examples:
@@ -87,6 +88,7 @@ def test_examples_readme_lists_core_examples():
     assert "examples/core/minimal_valid.yaml" in readme
     assert "examples/core/time_altitude_overlap.yaml" in readme
     assert "examples/core/assertions_expected_results.yaml" in readme
+    assert "examples/core/multi_constraint_conflict.yaml" in readme
     assert "public-safe" in readme
 
 

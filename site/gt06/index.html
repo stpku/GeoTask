@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第06期：三个局部结果如何组合成完整时空冲突结论。">
+  <title>GeoTask GT06｜局部结果如何组合</title>
+  <style>
+    :root {
+      color-scheme:light;
+      --navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--purple:#7563ad;
+      --ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;
+      --success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--danger-ink:#a33a32;
+      --warm:#fff7e8;--shadow:0 14px 40px rgba(20,52,77,.12);
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,760px);margin:0 auto;padding:20px 16px 48px}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}
+    .mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}
+    .eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.5vw,43px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}
+    .formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:17px;font-weight:750}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}
+    h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}
+    .checks{display:grid;gap:10px;margin-top:14px}.check{padding:14px;border-radius:15px;border:1px solid var(--line);background:var(--soft)}
+    .check-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.check-head strong{color:var(--navy)}.pill{padding:4px 9px;border-radius:999px;font-size:12px;font-weight:850}.pill.true{background:#dceef8;color:var(--blue)}.pill.false{background:#d7eee7;color:var(--green)}
+    .visual{margin-top:10px;padding:10px;border-radius:14px;background:#fff;border:1px solid #e4ebef}svg{display:block;width:100%;height:auto}
+    .rule{margin-top:14px;padding:17px;border-radius:16px;background:var(--warm);border:1px solid #e4c77f;text-align:center}.rule code{display:block;color:#75520f;font-size:17px;font-weight:850}.rule strong{display:block;margin-top:7px;color:var(--green);font-size:22px}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}
+    .status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}
+    .verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}
+    .verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:var(--danger-ink)}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{padding:10px;border-radius:12px;background:rgba(255,255,255,.72)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:15px;font-weight:850}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:var(--danger-ink)}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:480px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}
+    .evidence{display:grid;gap:10px;margin-top:14px}.evidence-item{padding:14px;border-radius:14px;background:var(--soft)}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}
+    .link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}.checks,.evidence{grid-template-columns:repeat(3,1fr)}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand">
+      <div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT06</span></div>
+      <a class="back" href="../gt05/">← GT05</a>
+    </div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">三个局部结果都已算出，最终结论还差一步</p>
+      <h1 id="title">路线和高度都冲突，为什么最终结果仍然是false？</h1>
+      <p class="lead">路线穿过限制区，高度区间也重叠，但时间窗口完全错开。GT06把三个Core算子的结果按明确的AND规则组合。</p>
+      <div class="formula">full_conflict = true ∧ true ∧ false = false</div>
+    </section>
+
+    <section class="card" aria-labelledby="checks-title">
+      <h2 id="checks-title">三个局部判断，必须分别留下证据</h2>
+      <p>完整结论不是模型凭感觉汇总，而是由三项确定性检查逐层组成。</p>
+      <div class="checks">
+        <div class="check">
+          <div class="check-head"><strong>路线相交</strong><span class="pill true">true</span></div>
+          <div class="visual">
+            <svg viewBox="0 0 320 180" role="img" aria-label="路线穿过矩形限制区">
+              <rect x="185" y="38" width="70" height="105" rx="6" fill="rgba(195,55,49,.20)" stroke="#c33731" stroke-width="3"/>
+              <line x1="35" y1="91" x2="285" y2="91" stroke="#256fa8" stroke-width="7" stroke-linecap="round"/>
+              <line x1="185" y1="91" x2="255" y2="91" stroke="#148f62" stroke-width="11" stroke-linecap="round"/>
+              <text x="160" y="168" text-anchor="middle" fill="#65737d" font-size="13">line_intersects_rect</text>
+            </svg>
+          </div>
+        </div>
+        <div class="check">
+          <div class="check-head"><strong>高度重叠</strong><span class="pill true">true</span></div>
+          <div class="visual">
+            <svg viewBox="0 0 320 180" role="img" aria-label="两个高度区间部分重叠">
+              <line x1="35" y1="145" x2="285" y2="145" stroke="#aabac3" stroke-width="3"/>
+              <rect x="80" y="58" width="105" height="32" rx="7" fill="rgba(37,111,168,.35)" stroke="#256fa8" stroke-width="3"/>
+              <rect x="130" y="96" width="115" height="32" rx="7" fill="rgba(195,55,49,.28)" stroke="#c33731" stroke-width="3"/>
+              <text x="132" y="78" text-anchor="middle" fill="#14344d" font-size="12" font-weight="700">100–150m</text>
+              <text x="188" y="117" text-anchor="middle" fill="#a33a32" font-size="12" font-weight="700">120–180m</text>
+              <text x="160" y="168" text-anchor="middle" fill="#65737d" font-size="13">altitude_overlap</text>
+            </svg>
+          </div>
+        </div>
+        <div class="check">
+          <div class="check-head"><strong>时间重叠</strong><span class="pill false">false</span></div>
+          <div class="visual">
+            <svg viewBox="0 0 320 180" role="img" aria-label="上午飞行与下午限制时间分离">
+              <line x1="30" y1="120" x2="290" y2="120" stroke="#aabac3" stroke-width="3"/>
+              <rect x="45" y="68" width="55" height="34" rx="7" fill="rgba(37,111,168,.35)" stroke="#256fa8" stroke-width="3"/>
+              <rect x="220" y="68" width="65" height="34" rx="7" fill="rgba(195,55,49,.28)" stroke="#c33731" stroke-width="3"/>
+              <text x="73" y="90" text-anchor="middle" fill="#14344d" font-size="11" font-weight="700">08–09</text>
+              <text x="252" y="90" text-anchor="middle" fill="#a33a32" font-size="11" font-weight="700">15–17</text>
+              <text x="160" y="168" text-anchor="middle" fill="#65737d" font-size="13">time_overlap</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="rule">
+        <code>true ∧ true ∧ false</code>
+        <strong>最终冲突 full_conflict = false</strong>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型执行完整GT06</h2>
+      <p>模型需要分别回答三项局部结果，并按照显式AND规则给出最终full_conflict。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT06 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT06 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">得到模型最终回答true或false后，请返回本页独立验证。</p>
+      <details>
+        <summary>查看将被复制的完整 GeoTask</summary>
+        <pre id="task-source">geotask:
+  id: "gt06-multi-constraint-conflict"
+  name: "GT06 Multi-Constraint Conflict"
+  schema_version: "1.0"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+  time_zone: "Asia/Shanghai"
+
+objects:
+  route:
+    type: "polyline"
+    coordinates:
+      - [-200, 0]
+      - [400, 0]
+  restricted_zone:
+    type: "rect"
+    bbox: [250, -100, 350, 100]
+  flight_altitude:
+    type: "altitude_interval"
+    min: 100
+    max: 150
+    unit: "meter"
+  restricted_altitude:
+    type: "altitude_interval"
+    min: 120
+    max: 180
+    unit: "meter"
+  flight_time:
+    type: "time_interval"
+    start: "08:00"
+    end: "09:00"
+  restricted_time:
+    type: "time_interval"
+    start: "15:00"
+    end: "17:00"
+
+operator_set:
+  - line_intersects_rect
+  - altitude_overlap
+  - time_overlap
+
+tasks:
+  - id: "evaluate_constraints"
+    assertions:
+      - id: "route_intersects_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["route", "restricted_zone"]
+        expected_type: "bool"
+      - id: "altitude_conflict"
+        operator: "altitude_overlap"
+        object_refs: ["flight_altitude", "restricted_altitude"]
+        expected_type: "bool"
+      - id: "temporal_conflict"
+        operator: "time_overlap"
+        object_refs: ["flight_time", "restricted_time"]
+        expected_type: "bool"
+
+execution:
+  mode: "model_then_local_verify"
+
+extensions:
+  decision_rule:
+    id: "full_conflict"
+    expression: "route_intersects_zone AND altitude_conflict AND temporal_conflict"
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "route_intersects_zone"
+    - "altitude_conflict"
+    - "temporal_conflict"
+    - "full_conflict"
+    - "verification_status"
+
+instructions_for_model:
+  - "Execute all three assertions independently."
+  - "Do not infer the final result before all local conditions are available."
+  - "Compute full_conflict using the explicit AND expression."
+  - "Return all four boolean fields."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：本地运行三个算子，再组合</h2>
+      <p>请选择模型给出的最终full_conflict。页面会真实执行路线、高度和时间算法，再按AND规则组合。</p>
+      <div class="samples" aria-label="模型最终答案选择">
+        <button class="sample" type="button" id="btn-true">模型回答 true</button>
+        <button class="sample" type="button" id="btn-false">模型回答 false</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics">
+          <div class="metric"><small>模型最终候选</small><code id="model-value">—</code></div>
+          <div class="metric"><small>本地最终结果</small><code id="local-value">false</code></div>
+          <div class="metric"><small>局部证据</small><code id="local-evidence">T / T / F</code></div>
+          <div class="metric"><small>组合规则</small><code>AND</code></div>
+        </div>
+        <p class="message" id="verification-message">候选来源：model_generated；三项局部复算与组合结果：local_deterministic。</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="evidence-title">
+      <h2 id="evidence-title">最终结论必须能回溯到每一项局部证据</h2>
+      <div class="evidence">
+        <div class="evidence-item"><strong>水平证据</strong><br><code>route_intersects_zone = true</code></div>
+        <div class="evidence-item"><strong>垂直证据</strong><br><code>altitude_conflict = true</code></div>
+        <div class="evidence-item"><strong>时间证据</strong><br><code>temporal_conflict = false</code></div>
+      </div>
+      <p class="warning">GT06的AND规则是当前演示显式声明的组合逻辑，不代表所有行业冲突都采用同一规则。真实业务还需要处理优先级、例外、缓冲阈值、未知值和规则版本。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title">
+      <h2 id="join-title">查看项目与继续体验</h2>
+      <p>仓库中同时新增了可由GeoTask Core真实执行的三断言示例，不只是网页演示。</p>
+      <div class="link-grid">
+        <a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a>
+        <a class="link-btn" href="../gt05/">← GT05</a>
+      </div>
+    </section>
+
+    <footer>
+      <div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div>
+      <div>本页三个算子和组合逻辑均在当前浏览器中执行。</div>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const route = [[-200,0],[400,0]];
+      const zone = [250,-100,350,100];
+      const flightAltitude = [100,150];
+      const restrictedAltitude = [120,180];
+      const flightTime = ["08:00","09:00"];
+      const restrictedTime = ["15:00","17:00"];
+
+      function pointInRect(point, rect) {
+        return rect[0] <= point[0] && point[0] <= rect[2] && rect[1] <= point[1] && point[1] <= rect[3];
+      }
+      function cross(origin, a, b) {
+        return (a[0]-origin[0])*(b[1]-origin[1])-(a[1]-origin[1])*(b[0]-origin[0]);
+      }
+      function onSegment(p, q, r) {
+        return Math.min(p[0],r[0]) <= q[0] && q[0] <= Math.max(p[0],r[0]) && Math.min(p[1],r[1]) <= q[1] && q[1] <= Math.max(p[1],r[1]);
+      }
+      function segmentsIntersect(p1,p2,p3,p4) {
+        const d1=cross(p3,p4,p1),d2=cross(p3,p4,p2),d3=cross(p1,p2,p3),d4=cross(p1,p2,p4);
+        if (((d1>0&&d2<0)||(d1<0&&d2>0))&&((d3>0&&d4<0)||(d3<0&&d4>0))) return true;
+        if (d1===0&&onSegment(p3,p1,p4)) return true;
+        if (d2===0&&onSegment(p3,p2,p4)) return true;
+        if (d3===0&&onSegment(p1,p3,p2)) return true;
+        if (d4===0&&onSegment(p1,p4,p2)) return true;
+        return false;
+      }
+      function lineIntersectsRect(points, rect) {
+        const [minX,minY,maxX,maxY]=rect;
+        const edges=[[[minX,minY],[maxX,minY]],[[maxX,minY],[maxX,maxY]],[[maxX,maxY],[minX,maxY]],[[minX,maxY],[minX,minY]]];
+        for (let i=0;i<points.length-1;i+=1) {
+          const p1=points[i],p2=points[i+1];
+          if (pointInRect(p1,rect)||pointInRect(p2,rect)) return true;
+          for (const [e1,e2] of edges) if (segmentsIntersect(p1,p2,e1,e2)) return true;
+        }
+        return false;
+      }
+      function altitudeOverlap(a,b) { return a[0] <= b[1] && b[0] <= a[1]; }
+      function timeToMinutes(value) { const [h,m]=value.split(":").map(Number); return h*60+m; }
+      function timeOverlap(a,b) {
+        const aStart=timeToMinutes(a[0]),aEnd=timeToMinutes(a[1]),bStart=timeToMinutes(b[0]),bEnd=timeToMinutes(b[1]);
+        return aStart <= bEnd && bStart <= aEnd;
+      }
+      function combineConflict(routeResult, altitudeResult, timeResult) {
+        return routeResult && altitudeResult && timeResult;
+      }
+
+      const routeResult=lineIntersectsRect(route,zone);
+      const altitudeResult=altitudeOverlap(flightAltitude,restrictedAltitude);
+      const timeResult=timeOverlap(flightTime,restrictedTime);
+      const localDeterministic = combineConflict(routeResult, altitudeResult, timeResult);
+      let selectedAnswer=null;
+
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status");
+      const btnTrue=document.getElementById("btn-true"),btnFalse=document.getElementById("btn-false"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status");
+      const verificationCard=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelValueNode=document.getElementById("model-value"),localValueNode=document.getElementById("local-value"),evidenceNode=document.getElementById("local-evidence"),messageNode=document.getElementById("verification-message");
+      localValueNode.textContent=String(localDeterministic);
+      evidenceNode.textContent=`${routeResult?"T":"F"} / ${altitudeResult?"T":"F"} / ${timeResult?"T":"F"}`;
+
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到最终答案后请返回本页验证。":"已复制。可粘贴到任意大模型，得到答案后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAnswer(value){selectedAnswer=value;btnTrue.classList.toggle("active",value===true);btnFalse.classList.toggle("active",value===false);verifyStatus.textContent=`已选择模型最终候选：${value}`}
+      function verifyModelAnswer(){if(selectedAnswer===null){verifyStatus.textContent="请先选择模型回答true或false。";return}const isConsistent=selectedAnswer===localDeterministic;const stateLabel=isConsistent?"verified":"contradicted";verificationCard.classList.remove("verified","contradicted");verificationCard.classList.add(stateLabel);badge.textContent=stateLabel;modelValueNode.textContent=String(selectedAnswer);if(isConsistent){messageNode.textContent="模型最终候选与本地三算子组合结果一致。局部结果为true、true、false，因此AND结果为false。";verifyStatus.textContent="验证通过：模型最终结论与本地组合结果一致。"}else{messageNode.textContent="模型最终候选与本地结果冲突。路线和高度虽冲突，但时间不重叠，AND规则不能得到true。";verifyStatus.textContent="发现冲突：局部证据没有同时为true。"}}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnTrue.addEventListener("click",()=>selectAnswer(true));btnFalse.addEventListener("click",()=>selectAnswer(false));verifyButton.addEventListener("click",verifyModelAnswer);
+    })();
+  </script>
+</body>
+</html>

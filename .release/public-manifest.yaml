@@ -22,6 +22,8 @@ include:
   - "tests/test_gt03_experience_page.py"
   - "tests/test_gt04_experience_page.py"
   - "tests/test_gt05_experience_page.py"
+  - "tests/test_gt06_experience_page.py"
+  - "tests/test_gt06_multi_constraint_case.py"
   - "tests/test_operator_registry.py"
   - "tests/test_ops.py"
   - "tests/test_ops_v0_3.py"

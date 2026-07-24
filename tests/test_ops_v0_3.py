@@ -117,6 +117,21 @@ def test_altitude_overlap_enclosed():
     assert altitude_overlap([100, 500], [200, 300]) is True
 
 
+def test_altitude_overlap_gt04_vertical_separation():
+    """GT04: horizontally coincident objects remain vertically separated."""
+    assert altitude_overlap([100, 150], [300, 500]) is False
+
+
+def test_altitude_overlap_gt04_boundary_contact():
+    """GT04 boundary rule: touching at one altitude counts as overlap."""
+    assert altitude_overlap([100, 150], [150, 300]) is True
+
+
+def test_altitude_overlap_is_symmetric_for_separated_ranges():
+    """Changing object order does not change the no-overlap result."""
+    assert altitude_overlap([300, 500], [100, 150]) is False
+
+
 # ── Input validation (v0.3 requirement) ──────────────────────────────
 
 def test_time_overlap_flexible_format():

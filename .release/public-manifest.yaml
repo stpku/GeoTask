@@ -30,6 +30,8 @@ include:
   - "tests/test_gt08_evidence_request_case.py"
   - "tests/test_gt09_experience_page.py"
   - "tests/test_gt09_evidence_conflict_case.py"
+  - "tests/test_gt10_experience_page.py"
+  - "tests/test_gt10_robot_corridor_case.py"
   - "tests/test_operator_registry.py"
   - "tests/test_ops.py"
   - "tests/test_ops_v0_3.py"

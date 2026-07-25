@@ -75,6 +75,7 @@ def test_public_safe_core_examples_validate_and_run():
         CORE_EXAMPLES / "unverifiable_constraint.yaml",
         CORE_EXAMPLES / "evidence_request_plan.yaml",
         CORE_EXAMPLES / "evidence_conflict_review.yaml",
+        CORE_EXAMPLES / "robot_corridor_coordination.yaml",
     ]
 
     for example in expected_examples:
@@ -95,6 +96,7 @@ def test_examples_readme_lists_core_examples():
     assert "examples/core/unverifiable_constraint.yaml" in readme
     assert "examples/core/evidence_request_plan.yaml" in readme
     assert "examples/core/evidence_conflict_review.yaml" in readme
+    assert "examples/core/robot_corridor_coordination.yaml" in readme
     assert "public-safe" in readme
 
 

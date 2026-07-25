@@ -20,6 +20,8 @@ patent-sensitive workflows.
   converted into a structured evidence request with blocked outputs and a resume condition.
 - `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
   incompatible results trigger a structured conflict review task.
+- `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes
+  and occupancy windows conflict in a single-capacity aisle, resolved by an explicit priority policy.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

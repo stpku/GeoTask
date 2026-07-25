@@ -15,6 +15,7 @@ It has no backend, analytics, cookies, account system, model key, or external Ja
 - `GT08`: an unverifiable schedule condition triggers a structured evidence request, blocks unsafe outputs, and defines a resume condition
 - `GT09`: two verified temporary no-fly notices for the same UAV mission produce incompatible temporal results; a conflict review task blocks unsafe source selection
 - `GT10`: two warehouse robots compete for a single-capacity aisle; route and time conflict plus an explicit priority policy produce `robot_b_wait`
+- `GT11`: a delivery robot is only 50 meters from its target geometrically but must follow a 300-meter accessible network because of stairs, a fence, and a motor-vehicle lane
 - Public repository: <https://github.com/stpku/GeoTask>
 
 Primary experience URLs:
@@ -29,6 +30,7 @@ Primary experience URLs:
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt08/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt09/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt10/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt11/>
 
 ## GitHub Pages deployment
 
@@ -64,10 +66,11 @@ test -f /var/www/geotask-experience/gt07/index.html
 test -f /var/www/geotask-experience/gt08/index.html
 test -f /var/www/geotask-experience/gt09/index.html
 test -f /var/www/geotask-experience/gt10/index.html
+test -f /var/www/geotask-experience/gt11/index.html
 ```
 
 The repository also includes `site/deploy-nginx.sh`, which performs the recursive sync, checks
-GT01 through GT10, validates Nginx, and reloads the service.
+GT01 through GT11, validates Nginx, and reloads the service.
 
 Use a static location that serves directory index files and does not rewrite every missing nested
 path back to GT01:
@@ -90,7 +93,7 @@ After deployment:
 ```bash
 sudo nginx -t
 sudo systemctl reload nginx
-curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt10/
+curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt11/
 ```
 
 Each nested response must come from its matching directory index. Do not configure a fallback to

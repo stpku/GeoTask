@@ -22,6 +22,8 @@ patent-sensitive workflows.
   incompatible results trigger a structured conflict review task.
 - `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes
   and occupancy windows conflict in a single-capacity aisle, resolved by an explicit priority policy.
+- `examples/core/robot_accessible_route.yaml`: a delivery robot with a 50-meter Euclidean
+  distance but a 300-meter accessible route due to mobility and network constraints.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

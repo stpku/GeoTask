@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第12期：无人机电量够到达目标，却无法在绕开禁飞区后保留安全余量，因此任务必须暂停并补充能源或重规划。">
+  <title>GeoTask GT12｜电量够到达，为什么无人机任务仍然不能执行</title>
+  <style>
+    :root{color-scheme:light;--navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--amber:#b97816;--purple:#7563ad;--ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;--success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--warm:#fff7e8;--shadow:0 14px 40px rgba(20,52,77,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,780px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.4vw,42px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}.formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:17px;font-weight:750}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}svg{display:block;width:100%;height:auto}.visual{padding:10px;border:1px solid #e4ebef;border-radius:16px;background:#fff}
+    .route-grid,.budget-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.route-card,.budget-item{min-width:0;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.route-card strong,.budget-item strong{display:block;color:var(--navy)}.route-card .number,.budget-item .number{font:900 27px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}.route-card.direct .number{color:var(--red)}.route-card.detour .number{color:var(--green)}.budget-item.available .number{color:var(--blue)}.budget-item.required .number{color:var(--amber)}.budget-item.shortfall{background:var(--danger);border-color:var(--danger-line)}.budget-item.shortfall .number{color:var(--red)}.equation{margin-top:12px;padding:14px;border-radius:14px;background:var(--warm);color:#75520f;text-align:center;font-weight:850;overflow-wrap:anywhere}
+    .gate{margin-top:14px;padding:16px;border:1px solid var(--danger-line);border-radius:16px;background:var(--danger)}.gate h3{margin:0 0 10px;color:#a33a32}.blocked{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.blocked div{padding:10px;border-radius:12px;background:#fff;color:#a33a32;text-align:center;font-weight:800}.recovery{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}.recovery div{padding:10px;border-radius:12px;background:rgba(255,255,255,.85);color:var(--navy);font-weight:750}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}.verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}.verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:#a33a32}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.75)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:13px;font-weight:850;overflow-wrap:anywhere}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a33a32}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:570px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(max-width:420px){.budget-grid{grid-template-columns:1fr}.blocked{grid-template-columns:1fr}}@media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}.recovery{grid-template-columns:repeat(3,1fr)}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT12</span></div><a class="back" href="../gt11/">← GT11</a></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">无人机物流 · 路线能耗与安全余量</p>
+      <h1 id="title">电量够飞到目的地，为什么任务仍然不能执行？</h1>
+      <p class="lead">直线距离只有8公里，但直线穿过临时禁飞区。合法绕飞需要11公里，完成任务后还必须保留2公里安全余量。</p>
+      <div class="formula">selected_action = request_recharge_or_replan</div>
+    </section>
+
+    <section class="card" aria-labelledby="route-title">
+      <h2 id="route-title">直线能到达，但不能合法飞行</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 410" role="img" aria-label="无人机直线路线穿过禁飞区，合法路线从北侧绕行">
+          <defs><marker id="arrowDirect" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#c33731"/></marker><marker id="arrowDetour" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#148f62"/></marker></defs>
+          <circle cx="75" cy="315" r="28" fill="#256fa8"/><text x="75" y="322" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#fff" text-anchor="middle">U</text><text x="75" y="370" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#256fa8" text-anchor="middle">起飞点</text>
+          <circle cx="645" cy="315" r="28" fill="#b97816"/><text x="645" y="322" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#fff" text-anchor="middle">T</text><text x="645" y="370" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#75520f" text-anchor="middle">配送点</text>
+          <rect x="280" y="225" width="160" height="150" rx="16" fill="#fff0ef" stroke="#c33731" stroke-width="3"/><text x="360" y="285" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#a33a32" text-anchor="middle">临时禁飞区</text><text x="360" y="320" font-family="Arial,sans-serif" font-size="14" fill="#a33a32" text-anchor="middle">direct_route = illegal</text>
+          <line x1="105" y1="315" x2="615" y2="315" stroke="#c33731" stroke-width="6" stroke-dasharray="10 8" marker-end="url(#arrowDirect)"/>
+          <text x="190" y="295" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#a33a32" text-anchor="middle">直线 8 公里</text>
+          <polyline points="75,315 75,100 645,100 645,315" fill="none" stroke="#148f62" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrowDetour)"/>
+          <circle cx="75" cy="100" r="8" fill="#148f62"/><circle cx="645" cy="100" r="8" fill="#148f62"/>
+          <rect x="250" y="125" width="220" height="48" rx="13" fill="#e9f7f3" stroke="#148f62" stroke-width="2"/><text x="360" y="156" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#0f716a" text-anchor="middle">合法绕飞 11 公里</text>
+        </svg>
+      </div>
+      <div class="route-grid">
+        <div class="route-card direct"><strong>几何直线</strong><div class="number" id="direct-distance">8 km</div><p class="muted">穿过禁飞区，不合法</p></div>
+        <div class="route-card detour"><strong>合法绕飞路线</strong><div class="number" id="detour-distance">11 km</div><p class="muted">空间合规，但能耗更高</p></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="budget-title">
+      <h2 id="budget-title">“够到达”与“够安全完成”不是同一个门槛</h2>
+      <div class="budget-grid">
+        <div class="budget-item available"><strong>剩余航程</strong><div class="number" id="available-range">12 km</div></div>
+        <div class="budget-item required"><strong>路线需求</strong><div class="number" id="route-requirement">11 km</div></div>
+        <div class="budget-item required"><strong>安全余量</strong><div class="number" id="reserve-requirement">2 km</div></div>
+        <div class="budget-item required"><strong>总需求</strong><div class="number" id="total-required">13 km</div></div>
+        <div class="budget-item shortfall"><strong>能力缺口</strong><div class="number" id="shortfall">1 km</div></div>
+      </div>
+      <div class="equation">剩余航程 12 公里；路线需求 11 公里；安全余量 2 公里；总需求 13 公里；缺口 1 公里。</div>
+      <div class="gate">
+        <h3>mission_gate = blocked</h3>
+        <p>无人机可以在不保留余量的情况下到达目标，但不能满足任务完成后的安全储备要求。</p>
+        <div class="blocked"><div>launch_clearance</div><div>automatic_dispatch</div></div>
+        <div class="recovery"><div>更换满电电池</div><div>增加中途补能点</div><div>降低路线能耗需求</div></div>
+        <p><strong>恢复条件：</strong><code>available_range_km &gt;= total_required_range_km</code></p>
+      </div>
+      <p class="warning">本案例使用“等效航程公里”表达能量预算。真实无人机能耗还受载荷、风场、温度、爬升、悬停和电池健康状态影响。</p>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型选择任务动作</h2>
+      <p>模型可以选择沿8公里直线直接飞、沿11公里合法路线但不留安全余量，或者暂停任务并补充能源或重规划。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT12 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT12 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">得到模型建议后返回本页，选择对应动作并验证。</p>
+      <details><summary>查看将被复制的完整 GeoTask</summary><pre id="task-source">geotask:
+  id: "gt12-uav-energy-reserve"
+  name: "GT12 UAV Delivery Energy Reserve"
+  schema_version: "1.0"
+
+application_context:
+  scenario: "uav_delivery_energy_reserve"
+  vehicle: "delivery_uav"
+
+battery_state:
+  remaining_range_km: 12
+  required_reserve_km: 2
+  reserve_policy: "reserve_must_remain_after_route_completion"
+
+route_comparison:
+  direct_distance_km: 8
+  direct_route_legal: false
+  compliant_detour_distance_km: 11
+  compliant_detour_legal: true
+
+energy_budget:
+  route_requirement_km: 11
+  reserve_requirement_km: 2
+  total_required_range_km: 13
+  available_range_km: 12
+  shortfall_km: 1
+  arrival_possible_without_reserve: true
+  safe_completion_possible: false
+
+mission_gate:
+  status: "blocked"
+  reason: "insufficient_range_after_required_reserve"
+  blocked_outputs: ["launch_clearance", "automatic_dispatch"]
+  selected_action: "request_recharge_or_replan"
+  alternatives: ["replace_battery", "add_intermediate_charging_stop", "reduce_route_energy_requirement"]
+  resume_when: "available_range_km >= total_required_range_km"
+  next_action: "recover_energy_margin"
+  expected_status: "insufficient_margin"
+
+instructions_for_model:
+  - "Choose one action from fly_direct_route, fly_detour_without_reserve, or request_recharge_or_replan."
+  - "Do not treat geometric reachability as legal route feasibility."
+  - "Do not consume the required safety reserve to make the mission appear feasible."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：验证模型选择的动作</h2>
+      <div class="samples" aria-label="模型动作候选">
+        <button class="sample" id="btn-direct" type="button">沿8公里直线直接飞</button>
+        <button class="sample" id="btn-no-reserve" type="button">绕飞11公里但不留余量</button>
+        <button class="sample wide" id="btn-recover" type="button">暂停并补充能源或重规划</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics">
+          <div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div>
+          <div class="metric"><small>本地任务动作</small><code id="local-action">request_recharge_or_replan</code></div>
+          <div class="metric"><small>合法路线</small><code id="metric-route">11 km</code></div>
+          <div class="metric"><small>能力缺口</small><code id="metric-shortfall">1 km</code></div>
+        </div>
+        <p class="message" id="verification-message">候选来源：model_generated；路线、禁飞区和能量预算：local_deterministic。</p>
+      </div>
+      <p class="warning">GT12只演示给定路线和等效航程预算。真实放飞决策必须使用经过批准的性能模型、实时气象、载荷参数和运营规则。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>仓库中同时新增了可由GeoTask Core真实计算直线、绕飞分段和禁飞区相交关系的公开示例。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt11/">← GT11</a></div></section>
+    <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>能到达，不等于能安全完成。</div></footer>
+  </main>
+
+  <script>
+    (()=>{
+      const start=[0,0],target=[8000,0],detourRoute=[[0,0],[0,1500],[8000,1500],[8000,0]],directRoute=[[0,0],[8000,0]],noFlyZone=[3000,-1000,5000,1000];
+      const remainingRangeKm=12,requiredReserveKm=2;
+      function distance2d(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1])}
+      function sumRouteDistance(route){let total=0;for(let i=0;i<route.length-1;i+=1)total+=distance2d(route[i],route[i+1]);return total}
+      function pointInRect(point,rect){return rect[0]<=point[0]&&point[0]<=rect[2]&&rect[1]<=point[1]&&point[1]<=rect[3]}
+      function cross(origin,a,b){return(a[0]-origin[0])*(b[1]-origin[1])-(a[1]-origin[1])*(b[0]-origin[0])}
+      function onSegment(p,q,r){return Math.min(p[0],r[0])<=q[0]&&q[0]<=Math.max(p[0],r[0])&&Math.min(p[1],r[1])<=q[1]&&q[1]<=Math.max(p[1],r[1])}
+      function segmentsIntersect(p1,p2,p3,p4){const d1=cross(p3,p4,p1),d2=cross(p3,p4,p2),d3=cross(p1,p2,p3),d4=cross(p1,p2,p4);if(((d1>0&&d2<0)||(d1<0&&d2>0))&&((d3>0&&d4<0)||(d3<0&&d4>0)))return true;if(d1===0&&onSegment(p3,p1,p4))return true;if(d2===0&&onSegment(p3,p2,p4))return true;if(d3===0&&onSegment(p1,p3,p2))return true;if(d4===0&&onSegment(p1,p4,p2))return true;return false}
+      function lineIntersectsRect(points,rect){const[minX,minY,maxX,maxY]=rect,edges=[[[minX,minY],[maxX,minY]],[[maxX,minY],[maxX,maxY]],[[maxX,maxY],[minX,maxY]],[[minX,maxY],[minX,minY]]];for(let i=0;i<points.length-1;i+=1){const p1=points[i],p2=points[i+1];if(pointInRect(p1,rect)||pointInRect(p2,rect))return true;for(const[e1,e2]of edges)if(segmentsIntersect(p1,p2,e1,e2))return true}return false}
+      function calculateEnergyBudget(routeKm,availableKm,reserveKm){const totalRequiredRangeKm=routeKm+reserveKm,shortfallKm=Math.max(0,totalRequiredRangeKm-availableKm);return{routeRequirementKm:routeKm,reserveRequirementKm:reserveKm,totalRequiredRangeKm,availableRangeKm:availableKm,shortfallKm,arrivalPossibleWithoutReserve:availableKm>=routeKm,safeCompletionPossible:availableKm>=totalRequiredRangeKm}}
+      const directDistanceKm=distance2d(start,target)/1000,detourDistanceKm=sumRouteDistance(detourRoute)/1000,directIllegal=lineIntersectsRect(directRoute,noFlyZone),detourIllegal=lineIntersectsRect(detourRoute,noFlyZone);
+      const energyBudget=calculateEnergyBudget(detourDistanceKm,remainingRangeKm,requiredReserveKm),totalRequiredRangeKm=energyBudget.totalRequiredRangeKm,shortfallKm=energyBudget.shortfallKm;
+      const localAction=!directIllegal||detourIllegal||energyBudget.safeCompletionPossible?"review_configuration":"request_recharge_or_replan";
+      function evaluateCandidate(action){if(action==="request_recharge_or_replan")return{status:localAction===action?"verified":"contradicted",message:`合法绕飞${detourDistanceKm}公里，加${requiredReserveKm}公里安全余量共需${totalRequiredRangeKm}公里，当前缺口${shortfallKm}公里。`};if(action==="fly_direct_route")return{status:"contradicted",message:"8公里直线路径穿过临时禁飞区。几何上能到达，不代表路线合法。"};if(action==="fly_detour_without_reserve")return{status:"contradicted",message:"12公里剩余航程虽能覆盖11公里绕飞路线，但会侵占必须保留的2公里安全余量。"};return{status:"contradicted",message:"未知候选动作。"}}
+      const localEvidence={direct_distance_km:directDistanceKm,detour_distance_km:detourDistanceKm,direct_route_illegal:directIllegal,detour_route_illegal:detourIllegal,energy_budget:energyBudget,provenance:"local_deterministic"};
+      let selectedAction=null;
+      document.getElementById("direct-distance").textContent=`${directDistanceKm} km`;document.getElementById("detour-distance").textContent=`${detourDistanceKm} km`;document.getElementById("available-range").textContent=`${remainingRangeKm} km`;document.getElementById("route-requirement").textContent=`${detourDistanceKm} km`;document.getElementById("reserve-requirement").textContent=`${requiredReserveKm} km`;document.getElementById("total-required").textContent=`${totalRequiredRangeKm} km`;document.getElementById("shortfall").textContent=`${shortfallKm} km`;document.getElementById("local-action").textContent=localAction;document.getElementById("metric-route").textContent=`${detourDistanceKm} km`;document.getElementById("metric-shortfall").textContent=`${shortfallKm} km`;
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status"),btnDirect=document.getElementById("btn-direct"),btnNoReserve=document.getElementById("btn-no-reserve"),btnRecover=document.getElementById("btn-recover"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status"),card=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelAction=document.getElementById("model-action"),message=document.getElementById("verification-message");
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到任务建议后请返回本页验证。":"已复制。可粘贴到任意大模型，得到任务建议后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAction(value){selectedAction=value;btnDirect.classList.toggle("active",value==="fly_direct_route");btnNoReserve.classList.toggle("active",value==="fly_detour_without_reserve");btnRecover.classList.toggle("active",value==="request_recharge_or_replan");verifyStatus.textContent=`已选择模型动作：${value}`}
+      function verifyModelAction(){if(selectedAction===null){verifyStatus.textContent="请先选择模型动作。";return}const result=evaluateCandidate(selectedAction),consistent=result.status==="verified";card.classList.remove("verified","contradicted");card.classList.add(result.status);badge.textContent=result.status;modelAction.textContent=selectedAction;message.textContent=result.message;verifyStatus.textContent=consistent?"验证通过：模型保留了合法路线和安全余量。":"发现冲突：模型把到达能力误写成安全完成能力。"}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnDirect.addEventListener("click",()=>selectAction("fly_direct_route"));btnNoReserve.addEventListener("click",()=>selectAction("fly_detour_without_reserve"));btnRecover.addEventListener("click",()=>selectAction("request_recharge_or_replan"));verifyButton.addEventListener("click",verifyModelAction);
+    })();
+  </script>
+</body>
+</html>

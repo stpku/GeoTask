@@ -24,6 +24,8 @@ patent-sensitive workflows.
   and occupancy windows conflict in a single-capacity aisle, resolved by an explicit priority policy.
 - `examples/core/robot_accessible_route.yaml`: a delivery robot with a 50-meter Euclidean
   distance but a 300-meter accessible route due to mobility and network constraints.
+- `examples/core/uav_energy_reserve.yaml`: a UAV whose 8-kilometer direct route is illegal
+  and whose 11-kilometer detour plus a 2-kilometer reserve exceeds its remaining range.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

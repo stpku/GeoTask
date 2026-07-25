@@ -1,0 +1,128 @@
+geotask:
+  id: "gt12-uav-energy-reserve"
+  name: "GT12 UAV Delivery Energy Reserve"
+  schema_version: "1.0"
+  goal: "Distinguish geometric reachability from safe mission feasibility when a UAV must detour around a no-fly zone and preserve an explicit energy reserve."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "delivery_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  takeoff_point:
+    type: "point"
+    coordinates: [0, 0]
+  detour_waypoint_1:
+    type: "point"
+    coordinates: [0, 1500]
+  detour_waypoint_2:
+    type: "point"
+    coordinates: [8000, 1500]
+  delivery_target:
+    type: "point"
+    coordinates: [8000, 0]
+  direct_route:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [8000, 0]
+  compliant_detour_route:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [0, 1500]
+      - [8000, 1500]
+      - [8000, 0]
+  temporary_no_fly_zone:
+    type: "rect"
+    bbox: [3000, -1000, 5000, 1000]
+
+operator_set:
+  - distance_2d
+  - line_intersects_rect
+
+tasks:
+  - id: "evaluate_uav_energy_feasibility"
+    family: "spatiotemporal_resource_feasibility"
+    goal: "Verify the legal detour distance and compare it with remaining range plus the required safety reserve."
+    assertions:
+      - id: "direct_distance"
+        operator: "distance_2d"
+        object_refs: ["takeoff_point", "delivery_target"]
+        expected_type: "number"
+      - id: "direct_route_enters_no_fly_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["direct_route", "temporary_no_fly_zone"]
+        expected_type: "bool"
+      - id: "detour_route_enters_no_fly_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["compliant_detour_route", "temporary_no_fly_zone"]
+        expected_type: "bool"
+      - id: "segment_takeoff_to_w1"
+        operator: "distance_2d"
+        object_refs: ["takeoff_point", "detour_waypoint_1"]
+        expected_type: "number"
+      - id: "segment_w1_to_w2"
+        operator: "distance_2d"
+        object_refs: ["detour_waypoint_1", "detour_waypoint_2"]
+        expected_type: "number"
+      - id: "segment_w2_to_target"
+        operator: "distance_2d"
+        object_refs: ["detour_waypoint_2", "delivery_target"]
+        expected_type: "number"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_local_spatial_checks"
+      executor: "local"
+      assertion_refs:
+        - "direct_distance"
+        - "direct_route_enters_no_fly_zone"
+        - "detour_route_enters_no_fly_zone"
+        - "segment_takeoff_to_w1"
+        - "segment_w1_to_w2"
+        - "segment_w2_to_target"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "uav_delivery_energy_reserve"
+    vehicle: "delivery_uav"
+    decision_question: "Can the UAV safely complete the mission when it can reach the target geometrically but cannot preserve the required reserve after the legal detour?"
+  battery_state:
+    remaining_range_km: 12
+    required_reserve_km: 2
+    reserve_policy: "reserve_must_remain_after_route_completion"
+  route_comparison:
+    direct_distance_km: 8
+    direct_route_legal: false
+    compliant_detour_distance_km: 11
+    compliant_detour_legal: true
+  energy_budget:
+    route_requirement_km: 11
+    reserve_requirement_km: 2
+    total_required_range_km: 13
+    available_range_km: 12
+    shortfall_km: 1
+    arrival_possible_without_reserve: true
+    safe_completion_possible: false
+  mission_gate:
+    status: "blocked"
+    reason: "insufficient_range_after_required_reserve"
+    blocked_outputs:
+      - "launch_clearance"
+      - "automatic_dispatch"
+    selected_action: "request_recharge_or_replan"
+    alternatives:
+      - "replace_battery"
+      - "add_intermediate_charging_stop"
+      - "reduce_route_energy_requirement"
+    resume_when: "available_range_km >= total_required_range_km"
+    next_action: "recover_energy_margin"
+    expected_status: "insufficient_margin"

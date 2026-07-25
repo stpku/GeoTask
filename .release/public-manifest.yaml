@@ -34,6 +34,8 @@ include:
   - "tests/test_gt10_robot_corridor_case.py"
   - "tests/test_gt11_experience_page.py"
   - "tests/test_gt11_robot_accessible_route_case.py"
+  - "tests/test_gt12_experience_page.py"
+  - "tests/test_gt12_uav_energy_reserve_case.py"
   - "tests/test_operator_registry.py"
   - "tests/test_ops.py"
   - "tests/test_ops_v0_3.py"

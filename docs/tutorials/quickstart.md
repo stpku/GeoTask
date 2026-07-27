@@ -2,23 +2,41 @@
 
 This tutorial creates, validates, executes, and inspects a first GeoTask document using the current public Core.
 
-## 1. Install
+## 1. Install in a fresh virtual environment
+
+GeoTask Core requires Python 3.10 or later. Create a clean environment:
 
 ```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
-python -m pip install -e .
-python -m pip install pytest jsonschema
+python -m venv .venv
 ```
 
-Check the CLI:
+Activate it on Linux or macOS:
 
 ```bash
+source .venv/bin/activate
+```
+
+Or on Windows PowerShell:
+
+```powershell
+.venv\\Scripts\\Activate.ps1
+```
+
+Install the exact Public Preview release from PyPI and check the CLI:
+
+```bash
+python -m pip install --no-cache-dir geotask-core==0.1.0
 geotask --help
 geotask inspect operators
 ```
 
-The public Core does not require a model key, network service, GIS database, or external geometry library.
+Check the installed distribution version:
+
+```bash
+python -c "from importlib.metadata import version; print(version('geotask-core'))"
+```
+
+The expected version is `0.1.0`. The public Core does not require a model key, network service, GIS database, or external geometry library.
 
 ## 2. Create a Task
 
@@ -228,7 +246,21 @@ natural-language request
 
 Do not let the same model both invent a value and declare that the value has been locally verified.
 
-## 11. Run Tests
+## 11. Contribute to development (source install)
+
+Use an editable source install only when modifying GeoTask, running the full repository checks, or preparing a contribution:
+
+```bash
+git clone https://github.com/stpku/GeoTask.git
+cd GeoTask
+python -m venv .venv
+python -m pip install -e ".[dev]"
+pytest
+```
+
+## 12. Run Tests
+
+In a source development environment:
 
 ```bash
 pytest
@@ -242,7 +274,7 @@ pytest tests/test_core_examples_v0_2.py -q
 pytest tests/test_documentation_system.py -q
 ```
 
-## 12. Continue Learning
+## 13. Continue Learning
 
 - [Implemented Language Specification](../spec/geotask-language-spec-v1.0.md)
 - [Operator Registry](../operator_registry.md)

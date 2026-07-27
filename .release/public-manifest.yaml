@@ -55,6 +55,7 @@ include:
   - "tests/test_normalizer.py"
   - "tests/test_normalizer_v0_2.py"
   - "tests/test_verifier.py"
+  - "tests/test_version_consistency.py"
   - "tests/v1/**"
 
   # CI and release tooling (public)
@@ -92,6 +93,7 @@ include:
   - "docs/cookbook/gt01-gt13.md"
   - "docs/cookbook/gt01-gt13.zh-CN.md"
   - "docs/release_v0_1_0.md"
+  - "docs/release_v0_1_1.md"
   - "docs/architecture.md"
   - "docs/operator-guide.md"
   - "docs/cli_usage.md"
@@ -181,6 +183,7 @@ required:
   - "docs/whitepaper/GeoTask_White_Paper_v0.1.md"
   - "docs/whitepaper/README.md"
   - "docs/release_v0_1_0.md"
+  - "docs/release_v0_1_1.md"
   - "docs/spec/geotask-language-spec-v1.0.md"
   - "schemas/geotask-v1.0.schema.json"
   - "site/index.html"
@@ -189,6 +192,7 @@ required:
   - "site/sitemap.xml"
   - ".github/workflows/pages.yml"
   - "tests/test_project_portal.py"
+  - "tests/test_version_consistency.py"
 
 forbidden_paths:
   - "src/geotask_runtime/"

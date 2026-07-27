@@ -2,6 +2,24 @@
 
 All notable public changes to GeoTask Core are documented here.
 
+## [0.1.1] - 2026-07-27
+
+### Fixed
+
+- Align the Python distribution version and `geotask_core.__version__` through a single version source.
+- Correct the version-reporting mismatch discovered by a clean PyPI installation of 0.1.0.
+
+### Changed
+
+- Pin bilingual Quickstarts to `geotask-core==0.1.1` for reproducible installation checks.
+- Add a version-consistency regression test and a dedicated v0.1.1 release note.
+
+### Verification
+
+- Full source repository: 765 tests passing, 1 skipped.
+- Public export: 337 tests passing.
+- Wheel and source distribution: Twine checks passing.
+
 ## [0.1.0] - 2026-07-27
 
 ### Added
@@ -38,4 +56,5 @@ All notable public changes to GeoTask Core are documented here.
 - Clean-environment PyPI smoke test passing for installation, CLI help, operator inspection, distribution version `0.1.0`, validation, and minimal deterministic execution.
 - Known issue: the published `0.1.0` artifact reports `geotask_core.__version__ == "0.2.0"`; a patch release is required to align the module attribute with distribution metadata.
 
+[0.1.1]: https://github.com/stpku/GeoTask/releases/tag/v0.1.1
 [0.1.0]: https://github.com/stpku/GeoTask/releases/tag/v0.1.0-public-preview

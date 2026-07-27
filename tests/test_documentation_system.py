@@ -416,6 +416,10 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "/.release/ @stpku" in codeowners
     assert workflow["name"] == "Publish geotask-core to PyPI"
     assert "workflow_dispatch" in workflow[True]
+    assert workflow["concurrency"]["group"] == "publish-geotask-core-pypi"
+    assert workflow["concurrency"]["cancel-in-progress"] is False
+    assert workflow["jobs"]["build"]["outputs"]["already_exists"] == "${{ steps.pypi-check.outputs.already_exists }}"
+    assert workflow["jobs"]["publish"]["if"] == "needs.build.outputs.already_exists != 'true'"
     assert workflow["jobs"]["publish"]["permissions"]["id-token"] == "write"
 
 

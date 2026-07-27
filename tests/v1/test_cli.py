@@ -7,6 +7,22 @@ from pathlib import Path
 from tests.v1.conftest import _PROJECT_ROOT, _write_temp_yaml, _run_cli
 
 
+def test_cli_version_flag_reports_package_version() -> None:
+    proc = _run_cli("--version")
+
+    assert proc.returncode == 0
+    assert proc.stdout.strip() == "geotask-core 0.1.1"
+    assert proc.stderr == ""
+
+
+def test_cli_version_command_reports_package_version() -> None:
+    proc = _run_cli("version")
+
+    assert proc.returncode == 0
+    assert proc.stdout.strip() == "geotask-core 0.1.1"
+    assert proc.stderr == ""
+
+
 def test_cli_validate_detects_arity_mismatch() -> None:
     """Run CLI validate on a v1 doc with wrong operator arity — expect non-zero exit."""
     content = """\

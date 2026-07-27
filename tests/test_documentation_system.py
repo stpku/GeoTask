@@ -83,12 +83,21 @@ def _pattern_matches(relative_path: str, pattern: str) -> bool:
     return False
 
 
+def _manifest_pattern_files(pattern: str):
+    if pattern.endswith("/**"):
+        directory = ROOT / pattern[:-3].rstrip("/")
+        if not directory.is_dir():
+            return ()
+        return directory.rglob("*")
+    return ROOT.glob(pattern)
+
+
 def _public_source_paths() -> set[Path]:
     manifest = _manifest()
     included: set[Path] = set()
 
     for pattern in manifest["include"]:
-        for path in ROOT.glob(pattern):
+        for path in _manifest_pattern_files(pattern):
             if path.is_file():
                 included.add(path.resolve())
 
@@ -283,6 +292,10 @@ def test_status_and_evidence_references_keep_core_and_workflow_states_separate()
 
 def test_all_public_markdown_relative_links_resolve_inside_public_export() -> None:
     public_paths = _public_source_paths()
+    public_relative_paths = {
+        path.relative_to(ROOT).as_posix()
+        for path in public_paths
+    }
     public_markdown = sorted(path for path in public_paths if path.suffix.lower() == ".md")
     missing: list[tuple[str, str, str]] = []
 
@@ -295,8 +308,10 @@ def test_all_public_markdown_relative_links_resolve_inside_public_export() -> No
             if not resolved.exists():
                 missing.append((path.relative_to(ROOT).as_posix(), raw_target, "missing"))
                 continue
-            if resolved.is_file() and resolved not in public_paths:
-                missing.append((path.relative_to(ROOT).as_posix(), raw_target, "excluded"))
+            if resolved.is_file():
+                resolved_relative = resolved.relative_to(ROOT).as_posix()
+                if resolved_relative not in public_relative_paths:
+                    missing.append((path.relative_to(ROOT).as_posix(), raw_target, "excluded"))
 
     assert missing == []
 

@@ -1,5 +1,7 @@
 # GeoTask Core v0.1.0 Public Preview
 
+> **Known version-reporting issue:** the installed distribution metadata correctly reports `0.1.0`, while `geotask_core.__version__` in this artifact reports `0.2.0`. CLI installation, validation, and deterministic execution are unaffected; a patch release is required to align the module attribute.
+
 - **Release date:** 2026-07-27
 - **Git tag:** `v0.1.0-public-preview`
 - **Package version:** `0.1.0`
@@ -36,21 +38,20 @@ GeoTask面向AI智能体提供一套可验证时空任务协议：模型负责�
 
 ### 快速开始
 
-```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
-pip install -e ".[dev]"
+优先从[PyPI](https://pypi.org/project/geotask-core/)安装正式发布包：
 
-geotask validate examples/core/v1_minimal_distance.yaml
-geotask run examples/core/v1_minimal_distance.yaml
-pytest -q
+```bash
+python -m pip install geotask-core
+geotask --help
+geotask inspect operators
 ```
+
+参与源码开发时，再按照贡献指南使用`python -m pip install -e ".[dev]"`。
 
 ### 发布资产
 
-GitHub Release提供：
-
-- Python wheel：`geotask_core-0.1.0-py3-none-any.whl`；
+- PyPI项目：[`geotask-core`](https://pypi.org/project/geotask-core/)；
+- GitHub Release中的Python wheel：`geotask_core-0.1.0-py3-none-any.whl`；
 - Source distribution：`geotask_core-0.1.0.tar.gz`；
 - GitHub自动生成的源代码归档；
 - 本发布说明和固定版本Tag。
@@ -61,7 +62,8 @@ GitHub Release提供：
 - Python 3.10—3.13 CI：全部通过；
 - GitHub Pages门户与GT01—GT13：全部上线；
 - Secret Scanning与Push Protection：已启用；
-- 公共导出扫描：未发现密钥、内部路径或二进制泄露。
+- 公共导出扫描：未发现密钥、内部路径或二进制泄露；
+- PyPI隔离环境验证：`geotask-core==0.1.0`安装成功，CLI帮助、算子检查、发行版本、最小案例验证与执行全部通过。
 
 ### 当前定位
 
@@ -98,19 +100,23 @@ GeoTask provides a verifiable spatiotemporal task protocol for AI agents. Models
 
 ### Quickstart
 
-```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
-pip install -e ".[dev]"
+Install the published package from [PyPI](https://pypi.org/project/geotask-core/):
 
-geotask validate examples/core/v1_minimal_distance.yaml
-geotask run examples/core/v1_minimal_distance.yaml
-pytest -q
+```bash
+python -m pip install geotask-core
+geotask --help
+geotask inspect operators
 ```
+
+Use `python -m pip install -e ".[dev]"` only when contributing to source development.
 
 ### Release assets
 
-The GitHub Release includes the Python wheel, source distribution, GitHub source archives, these release notes, and an immutable version tag.
+The package is available as [`geotask-core` on PyPI](https://pypi.org/project/geotask-core/). The GitHub Release also includes the Python wheel, source distribution, GitHub source archives, these release notes, and an immutable version tag.
+
+### Verification
+
+A clean virtual environment successfully installed `geotask-core==0.1.0` without cache. CLI help, operator inspection, distribution-version lookup, validation, and the minimal deterministic execution case all passed.
 
 ### Status
 

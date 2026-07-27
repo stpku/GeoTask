@@ -4,15 +4,11 @@
 
 本教程使用当前公共GeoTask Core，完成安装、验证、执行、查看结果和检查算子五个步骤。公共Core完全离线运行，不调用大模型，也不需要模型密钥。
 
-## 1. 环境要求
+## 1. 在全新虚拟环境中安装
 
-- Python 3.10及以上；
-- Git；
-- 推荐使用独立虚拟环境。
+要求Python 3.10及以上。推荐为首次验证创建独立虚拟环境：
 
 ```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
 python -m venv .venv
 ```
 
@@ -28,49 +24,25 @@ Windows PowerShell：
 .venv\Scripts\Activate.ps1
 ```
 
-安装Core和开发依赖：
+从PyPI安装固定版本，并检查CLI与算子注册表：
 
 ```bash
-pip install -e ".[dev]"
+python -m pip install --no-cache-dir geotask-core==0.1.0
+geotask --help
+geotask inspect operators
 ```
 
-## 2. 运行第一个任务
-
-仓库已经提供一个3-4-5距离案例：
+检查已安装的发行版本：
 
 ```bash
-geotask validate examples/core/v1_minimal_distance.yaml
-geotask run examples/core/v1_minimal_distance.yaml
+python -c "from importlib.metadata import version; print(version('geotask-core'))"
 ```
 
-任务使用两个点：
+预期输出为`0.1.0`。
 
-```yaml
-objects:
-  point_a:
-    type: point
-    coordinates: [0, 0]
-  point_b:
-    type: point
-    coordinates: [3, 4]
-```
+## 2. 检查安装结果
 
-断言把对象与确定性算子显式绑定：
-
-```yaml
-assertions:
-  - id: ab_distance
-    operator: distance_2d
-    object_refs: [point_a, point_b]
-    unit: meter
-```
-
-本地执行结果应包含：
-
-```text
-ab_distance = 5.0 meter
-assurance_level = local_deterministic
-```
+`geotask --help`应列出`validate`、`run`、`inspect`、`normalize`和`eval`等命令；`geotask inspect operators`应列出当前公共Core的六个确定性算子。完成这一步后即可创建并运行自己的GeoTask文件。
 
 ## 3. 自己创建一个任务
 
@@ -186,7 +158,21 @@ verified / contradicted / need_review
 
 详见[GT01—GT13中文案例手册](../cookbook/gt01-gt13.zh-CN.md)。
 
-## 8. 运行测试
+## 8. 参与开发（源码安装）
+
+仅在修改GeoTask源码、运行完整测试或提交贡献时使用可编辑安装：
+
+```bash
+git clone https://github.com/stpku/GeoTask.git
+cd GeoTask
+python -m venv .venv
+python -m pip install -e ".[dev]"
+pytest
+```
+
+## 9. 运行测试
+
+源码开发环境中可运行：
 
 ```bash
 pytest
@@ -198,7 +184,7 @@ pytest
 pytest tests/test_documentation_system.py -q
 ```
 
-## 9. 当前边界
+## 10. 当前边界
 
 公共Core不包含模型API、生产编排、行业Domain Pack、客户数据连接器和自动设备控制。案例中的`blocked`、`conflicted`、`resume_when`等主要是放在`extensions`中的工作流扩展语义，不应被误认为当前Core已经实现的全部基础状态。
 

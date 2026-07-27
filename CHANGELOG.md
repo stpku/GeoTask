@@ -7,6 +7,7 @@ All notable public changes to GeoTask Core are documented here.
 ### Added
 
 - Publish the first GeoTask Core Public Preview.
+- Publish `geotask-core==0.1.0` to [PyPI](https://pypi.org/project/geotask-core/).
 - Add six canonical object types: `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
 - Add six deterministic local operators: `distance_2d`, `line_intersects_rect`, `point_to_line_distance_2d`, `rect_contains_point`, `time_overlap`, and `altitude_overlap`.
 - Add YAML parsing, canonicalization, structural validation, deterministic execution, structured result models, and assurance metadata.
@@ -25,6 +26,7 @@ All notable public changes to GeoTask Core are documented here.
 - Upgrade official GitHub Actions to Node 24-compatible major versions.
 - Restrict Python package discovery to `geotask_core*` so Runtime and Domain Pack source trees cannot enter the public wheel.
 - Adopt PEP 639 project license metadata and publish repository, documentation, issue, changelog, and roadmap URLs in package metadata.
+- Make PyPI installation the primary path in both README files and Quickstarts; move editable source installation to contributor sections.
 
 ### Verification
 
@@ -33,5 +35,7 @@ All notable public changes to GeoTask Core are documented here.
 - GitHub CI: Python 3.10, 3.11, 3.12, and 3.13 passing.
 - GitHub Pages portal and GT01–GT13 routes deployed.
 - Public export verification and sensitive-content scan passing.
+- Clean-environment PyPI smoke test passing for installation, CLI help, operator inspection, distribution version `0.1.0`, validation, and minimal deterministic execution.
+- Known issue: the published `0.1.0` artifact reports `geotask_core.__version__ == "0.2.0"`; a patch release is required to align the module attribute with distribution metadata.
 
 [0.1.0]: https://github.com/stpku/GeoTask/releases/tag/v0.1.0-public-preview

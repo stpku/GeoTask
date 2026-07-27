@@ -9,6 +9,7 @@
 [![CI](https://github.com/stpku/GeoTask/actions/workflows/ci.yml/badge.svg)](https://github.com/stpku/GeoTask/actions/workflows/ci.yml)
 [![Pages](https://github.com/stpku/GeoTask/actions/workflows/pages.yml/badge.svg)](https://stpku.github.io/GeoTask/)
 [![Release](https://img.shields.io/github/v/release/stpku/GeoTask?include_prereleases&label=release)](https://github.com/stpku/GeoTask/releases)
+[![PyPI](https://img.shields.io/pypi/v/geotask-core)](https://pypi.org/project/geotask-core/)
 
 GeoTask turns spatial, temporal, evidential, resource, and action constraints into explicit YAML tasks that both models and programs can read. GeoTask Core then recomputes supported claims with local deterministic operators, so a fluent model response is not mistaken for a verified result.
 
@@ -50,16 +51,12 @@ flowchart LR
 ## Five-minute quickstart
 
 ```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
-pip install -e ".[dev]"
-
-geotask validate examples/core/v1_minimal_distance.yaml
-geotask run examples/core/v1_minimal_distance.yaml
-pytest
+python -m pip install geotask-core
+geotask --help
+geotask inspect operators
 ```
 
-Minimal task:
+Save this minimal task as `my_distance.yaml`:
 
 ```yaml
 geotask:
@@ -81,6 +78,11 @@ tasks:
 ```
 
 The local executor returns `ab = 5.0 meter` with `assurance_level: local_deterministic`.
+
+```bash
+geotask validate my_distance.yaml
+geotask run my_distance.yaml
+```
 
 ## Public application cases
 
@@ -176,6 +178,15 @@ geotask inspect operators
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) or [中文贡献指南](CONTRIBUTING.zh-CN.md). Bug reports, operator proposals, documentation improvements, and new application-case ideas are welcome.
+
+Use an editable source install only when contributing to development:
+
+```bash
+git clone https://github.com/stpku/GeoTask.git
+cd GeoTask
+python -m pip install -e ".[dev]"
+pytest
+```
 
 ## License and boundary
 

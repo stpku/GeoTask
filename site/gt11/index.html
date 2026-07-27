@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第11期：配送机器人与收货点直线距离只有50米，但受台阶、围栏和机动车道约束，必须沿300米可通行网络绕行。">
+  <title>GeoTask GT11｜地图上只有50米，机器人为什么要绕行300米</title>
+  <style>
+    :root{color-scheme:light;--navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--amber:#b97816;--purple:#7563ad;--ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;--success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--warm:#fff7e8;--shadow:0 14px 40px rgba(20,52,77,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,780px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.4vw,42px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}.formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:17px;font-weight:750}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}svg{display:block;width:100%;height:auto}.visual{padding:10px;border:1px solid #e4ebef;border-radius:16px;background:#fff}
+    .distance-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.distance-card{padding:15px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.distance-card strong{display:block;color:var(--navy);font-size:16px}.distance-card .number{font:900 29px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.distance-card.direct .number{color:var(--red)}.distance-card.network .number{color:var(--green)}.ratio{margin-top:10px;padding:11px;border-radius:13px;background:var(--warm);color:#75520f;text-align:center;font-weight:850}
+    .constraint-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.constraint{padding:11px 8px;border-radius:13px;background:var(--danger);color:#a33a32;text-align:center;font-size:13px;font-weight:800}.profile{margin-top:14px;padding:15px;border-radius:16px;background:var(--soft);border:1px solid var(--line)}.profile-row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #e5ecef}.profile-row:last-child{border-bottom:0}.profile-row code{color:var(--red);font-weight:850}
+    .plan{margin-top:14px;padding:16px;border:1px solid var(--success-line);border-radius:16px;background:var(--success)}.plan h3{margin:0 0 10px;color:#0f716a}.segments{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.segment{padding:9px 4px;border-radius:11px;background:rgba(255,255,255,.85);text-align:center}.segment small{display:block;color:var(--muted)}.segment strong{color:var(--navy);font-size:14px}.plan-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.plan-item{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.82)}.plan-item small{display:block;color:var(--muted)}.plan-item code{color:var(--navy);font-size:13px;font-weight:850;overflow-wrap:anywhere;word-break:break-word}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}.verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}.verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:#a33a32}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{padding:10px;border-radius:12px;background:rgba(255,255,255,.75)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:14px;font-weight:850}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a33a32}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:560px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(max-width:420px){.constraint-grid{grid-template-columns:1fr}.segments{grid-template-columns:repeat(3,1fr)}}@media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT11</span></div><a class="back" href="../gt10/">← GT10</a></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">配送机器人 · 几何距离与对象可达性</p>
+      <h1 id="title">地图上只有50米，机器人为什么要绕行300米？</h1>
+      <p class="lead">收货点近在眼前，但直线路径穿过台阶、围栏和机动车道。对轮式配送机器人而言，“离得近”不等于“走得到”。</p>
+      <div class="formula">selected_action = follow_accessible_network</div>
+    </section>
+
+    <section class="card" aria-labelledby="map-title">
+      <h2 id="map-title">直线只有50米，却不是可执行路线</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 430" role="img" aria-label="配送机器人与收货点之间存在台阶、围栏和机动车道，机器人沿可通行网络绕行">
+          <defs><marker id="arrowRoute" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#148f62"/></marker></defs>
+          <rect x="270" y="285" width="170" height="55" rx="10" fill="#d8d8d8" stroke="#8a959c" stroke-width="2"/><text x="355" y="318" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#58666f" text-anchor="middle">台阶</text>
+          <line x1="330" y1="95" x2="330" y2="275" stroke="#c33731" stroke-width="8" stroke-dasharray="12 9"/><text x="350" y="180" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#a33a32">围栏</text>
+          <rect x="470" y="55" width="95" height="310" rx="12" fill="#e5e9ec" stroke="#8a959c" stroke-width="2"/><line x1="500" y1="70" x2="500" y2="350" stroke="#fff" stroke-width="4" stroke-dasharray="18 12"/><line x1="535" y1="70" x2="535" y2="350" stroke="#fff" stroke-width="4" stroke-dasharray="18 12"/><text x="518" y="395" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#58666f" text-anchor="middle">机动车道</text>
+          <circle cx="95" cy="330" r="30" fill="#256fa8"/><text x="95" y="337" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">R</text><text x="95" y="382" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#256fa8" text-anchor="middle">配送机器人</text>
+          <circle cx="205" cy="330" r="25" fill="#b97816"/><text x="205" y="337" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">T</text><text x="205" y="382" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#75520f" text-anchor="middle">收货点</text>
+          <line x1="125" y1="330" x2="180" y2="330" stroke="#c33731" stroke-width="5" stroke-dasharray="8 7"/><text x="150" y="302" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#a33a32" text-anchor="middle">直线距离 50 米</text>
+          <polyline points="95,330 95,55 300,55 430,190 430,330 205,330" fill="none" stroke="#148f62" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrowRoute)"/>
+          <circle cx="95" cy="55" r="8" fill="#148f62"/><circle cx="300" cy="55" r="8" fill="#148f62"/><circle cx="430" cy="190" r="8" fill="#148f62"/><circle cx="430" cy="330" r="8" fill="#148f62"/>
+          <rect x="175" y="118" width="245" height="45" rx="12" fill="#e9f7f3" stroke="#148f62" stroke-width="2"/><text x="297" y="147" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#0f716a" text-anchor="middle">可通行路径 300 米</text>
+        </svg>
+      </div>
+      <div class="distance-grid">
+        <div class="distance-card direct"><strong>几何直线距离</strong><div class="number" id="direct-distance">50 m</div><p class="muted">最短，但不可通行</p></div>
+        <div class="distance-card network"><strong>机器人可通行路径</strong><div class="number" id="accessible-distance">300 m</div><p class="muted">较长，但满足能力约束</p></div>
+      </div>
+      <div class="ratio">绕行系数：<span id="detour-ratio">6 倍</span></div>
+    </section>
+
+    <section class="card" aria-labelledby="profile-title">
+      <h2 id="profile-title">可达性取决于“谁在移动”</h2>
+      <div class="profile">
+        <div class="profile-row"><span>移动方式</span><code>wheeled</code></div>
+        <div class="profile-row"><span>能否走台阶</span><code>false</code></div>
+        <div class="profile-row"><span>能否穿越围栏</span><code>false</code></div>
+        <div class="profile-row"><span>能否进入机动车道</span><code>false</code></div>
+        <div class="profile-row"><span>最大越障高度</span><code>2 cm</code></div>
+      </div>
+      <div class="constraint-grid"><div class="constraint">台阶</div><div class="constraint">围栏</div><div class="constraint">机动车道</div></div>
+      <p class="warning">同一条50米直线，对行人、无人机和轮式机器人可能具有完全不同的可达性。</p>
+    </section>
+
+    <section class="card" aria-labelledby="plan-title">
+      <h2 id="plan-title">Core逐段计算，任务层汇总可通行路径</h2>
+      <div class="plan">
+        <h3>navigate-accessible-route-r1</h3>
+        <div class="segments" id="segments">
+          <div class="segment"><small>第1段</small><strong>100 m</strong></div><div class="segment"><small>第2段</small><strong>75 m</strong></div><div class="segment"><small>第3段</small><strong>50 m</strong></div><div class="segment"><small>第4段</small><strong>25 m</strong></div><div class="segment"><small>第5段</small><strong>50 m</strong></div>
+        </div>
+        <div class="plan-summary">
+          <div class="plan-item"><small>路径总长</small><code id="plan-distance">300 m</code></div>
+          <div class="plan-item"><small>路径状态</small><code>reachable</code></div>
+          <div class="plan-item"><small>选择动作</small><code>follow_accessible_network</code></div>
+          <div class="plan-item"><small>下一步</small><code>navigate_network</code></div>
+        </div>
+      </div>
+      <p class="muted">本案例不新增网络最短路Core算子。Core真实计算直线距离和五段网络边长度，任务层验证边均可通行并汇总为300米。</p>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型选择机器人路线</h2>
+      <p>模型可以选择直线前往、沿可通行网络绕行，或者横穿机动车道。候选路线必须同时满足机器人能力和环境约束。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT11 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT11 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">得到模型建议后返回本页，选择对应路线并验证。</p>
+      <details><summary>查看将被复制的完整 GeoTask</summary><pre id="task-source">geotask:
+  id: "gt11-robot-accessible-route"
+  name: "GT11 Delivery Robot Accessible Route"
+  schema_version: "1.0"
+
+application_context:
+  scenario: "delivery_robot_accessible_route"
+  environment: "campus_delivery"
+
+robot_profile:
+  mobility: "wheeled"
+  can_use_stairs: false
+  can_cross_fence: false
+  can_enter_motor_vehicle_lane: false
+  maximum_step_height_cm: 2
+
+direct_path_constraints:
+  direct_path_distance_m: 50
+  blocked_by: ["stairs", "fence", "motor_vehicle_lane"]
+  direct_path_accessible: false
+
+accessible_network:
+  route_node_refs: ["robot_start", "waypoint_1", "waypoint_2", "waypoint_3", "waypoint_4", "delivery_target"]
+  segment_lengths_m: [100, 75, 50, 25, 50]
+  total_distance_m: 300
+  all_edges_accessible: true
+
+route_comparison:
+  euclidean_distance_m: 50
+  accessible_route_distance_m: 300
+  detour_ratio: 6
+  shortest_geometric_route_accessible: false
+
+navigation_plan:
+  selected_action: "follow_accessible_network"
+  rejected_actions: ["take_direct_line", "cross_motor_vehicle_lane"]
+  planned_distance_m: 300
+  next_action: "navigate_network"
+  expected_status: "reachable"
+
+instructions_for_model:
+  - "Choose one action from take_direct_line, follow_accessible_network, or cross_motor_vehicle_lane."
+  - "Do not equate Euclidean proximity with robot accessibility."
+  - "Preserve robot mobility constraints and route provenance."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：验证模型选择的路线</h2>
+      <div class="samples" aria-label="模型路线候选">
+        <button class="sample" id="btn-direct" type="button">沿50米直线前往</button>
+        <button class="sample" id="btn-network" type="button">沿300米可通行网络</button>
+        <button class="sample wide" id="btn-road" type="button">横穿机动车道抄近路</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics">
+          <div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div>
+          <div class="metric"><small>本地路线动作</small><code id="local-action">follow_accessible_network</code></div>
+          <div class="metric"><small>直线距离</small><code id="metric-direct">50 m</code></div>
+          <div class="metric"><small>可通行距离</small><code id="metric-accessible">300 m</code></div>
+        </div>
+        <p class="message" id="verification-message">候选来源：model_generated；距离、网络边和能力约束：local_deterministic。</p>
+      </div>
+      <p class="warning">GT11只验证给定可通行网络。真实配送还需考虑道路动态占用、坡度、路面、门禁、电梯、天气、行人和实时重规划。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>GT12 已上线：无人机直线8公里可达，但合法绕飞11公里并保留2公里安全余量后，当前航程仍有1公里缺口。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt12/">进入 GT12</a></div></section>
+    <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>离得近，不一定走得到。</div></footer>
+  </main>
+
+  <script>
+    (()=>{
+      const nodes={robot_start:[0,0],waypoint_1:[0,100],waypoint_2:[75,100],waypoint_3:[75,50],waypoint_4:[50,50],delivery_target:[50,0]};
+      const accessibleRoute=["robot_start","waypoint_1","waypoint_2","waypoint_3","waypoint_4","delivery_target"];
+      const allowedEdgePairs=[["robot_start","waypoint_1"],["waypoint_1","waypoint_2"],["waypoint_2","waypoint_3"],["waypoint_3","waypoint_4"],["waypoint_4","delivery_target"]];
+      const profile={mobility:"wheeled",can_use_stairs:false,can_cross_fence:false,can_enter_motor_vehicle_lane:false,provenance:"local_deterministic"};
+      function distance2d(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1])}
+      function sumRouteDistance(route){let total=0;for(let i=0;i<route.length-1;i+=1)total+=distance2d(nodes[route[i]],nodes[route[i+1]]);return total}
+      function edgeKey(a,b){return`${a}->${b}`}
+      const allowedEdges=new Set(allowedEdgePairs.map(([a,b])=>edgeKey(a,b)));
+      function routeUsesOnlyAllowedEdges(route){for(let i=0;i<route.length-1;i+=1){if(!allowedEdges.has(edgeKey(route[i],route[i+1])))return false}return true}
+      const directDistance=distance2d(nodes.robot_start,nodes.delivery_target),accessibleDistance=sumRouteDistance(accessibleRoute),detourRatio=accessibleDistance/directDistance;
+      function evaluateCandidate(action){if(action==="follow_accessible_network"){const valid=routeUsesOnlyAllowedEdges(accessibleRoute)&&accessibleDistance===300;return{status:valid?"verified":"contradicted",message:valid?"五段网络边均在允许列表中，总长300米，满足轮式机器人能力约束。":"网络边或距离与本地计划不一致。"}}if(action==="take_direct_line")return{status:"contradicted",message:"50米直线路径穿过台阶、围栏和机动车道。几何最短不等于轮式机器人可达。"};if(action==="cross_motor_vehicle_lane")return{status:"contradicted",message:"机器人能力明确禁止进入机动车道，不能为了缩短距离越过对象约束。"};return{status:"contradicted",message:"未知候选动作。"}}
+      const localPlan={selected_action:"follow_accessible_network",planned_distance_m:accessibleDistance,next_action:"navigate_network",status:"reachable",provenance:"local_deterministic"};
+      let selectedAction=null;
+      document.getElementById("direct-distance").textContent=`${directDistance} m`;document.getElementById("accessible-distance").textContent=`${accessibleDistance} m`;document.getElementById("detour-ratio").textContent=`${detourRatio} 倍`;document.getElementById("plan-distance").textContent=`${accessibleDistance} m`;document.getElementById("metric-direct").textContent=`${directDistance} m`;document.getElementById("metric-accessible").textContent=`${accessibleDistance} m`;document.getElementById("local-action").textContent=localPlan.selected_action;
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status"),btnDirect=document.getElementById("btn-direct"),btnNetwork=document.getElementById("btn-network"),btnRoad=document.getElementById("btn-road"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status"),card=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelAction=document.getElementById("model-action"),message=document.getElementById("verification-message");
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到路线建议后请返回本页验证。":"已复制。可粘贴到任意大模型，得到路线建议后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAction(value){selectedAction=value;btnDirect.classList.toggle("active",value==="take_direct_line");btnNetwork.classList.toggle("active",value==="follow_accessible_network");btnRoad.classList.toggle("active",value==="cross_motor_vehicle_lane");verifyStatus.textContent=`已选择模型动作：${value}`}
+      function verifyModelAction(){if(selectedAction===null){verifyStatus.textContent="请先选择模型路线。";return}const result=evaluateCandidate(selectedAction),consistent=result.status==="verified";card.classList.remove("verified","contradicted");card.classList.add(result.status);badge.textContent=result.status;modelAction.textContent=selectedAction;message.textContent=result.message;verifyStatus.textContent=consistent?"验证通过：模型区分了几何距离与机器人可达距离。":"发现冲突：模型路线违反了机器人能力或环境约束。"}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnDirect.addEventListener("click",()=>selectAction("take_direct_line"));btnNetwork.addEventListener("click",()=>selectAction("follow_accessible_network"));btnRoad.addEventListener("click",()=>selectAction("cross_motor_vehicle_lane"));verifyButton.addEventListener("click",verifyModelAction);
+    })();
+  </script>
+</body>
+</html>

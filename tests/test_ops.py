@@ -80,3 +80,54 @@ def test_line_intersects_rect_completely_outside_left():
     line = [[-100, 0], [-50, 0]]
     bbox = [250, -100, 350, 100]
     assert line_intersects_rect(line, bbox) == False
+
+
+# ── GT03 multi-segment route tests ────────────────────────────────────
+
+def test_line_intersects_rect_multi_segment_only_last_intersects():
+    """Four-point route: only the final segment (P3→P4) crosses the rect.
+
+    P1→P2: above rect (y=220, rect goes up to y=100)
+    P2→P3: left of rect (x=100, rect starts at x=250)
+    P3→P4: crosses rect (from x=100→400, y=0 which is inside [−100,100])
+    """
+    line = [
+        [-200, 220],
+        [100, 220],
+        [100, 0],
+        [400, 0],
+    ]
+    bbox = [250, -100, 350, 100]
+    assert line_intersects_rect(line, bbox) is True
+
+
+def test_line_intersects_rect_multi_segment_all_miss():
+    """Four-point route where every segment avoids the rect entirely.
+
+    All points have y >= 150, well above the rect (y up to 100).
+    """
+    line = [
+        [-200, 220],
+        [100, 220],
+        [100, 150],
+        [400, 150],
+    ]
+    bbox = [250, -100, 350, 100]
+    assert line_intersects_rect(line, bbox) is False
+
+
+def test_line_intersects_rect_multi_segment_later_segment_touches_boundary():
+    """Later segment (P2→P3) only touches the rect boundary — must still return True.
+
+    P1→P2: above the rect
+    P2→P3: vertical, touches the top boundary of the rect at (250, 100)
+    P3→P4: below the rect
+    """
+    line = [
+        [-200, 220],
+        [250, 220],
+        [250, 100],
+        [400, 0],
+    ]
+    bbox = [250, -100, 350, 100]
+    assert line_intersects_rect(line, bbox) is True

@@ -1,0 +1,117 @@
+geotask:
+  id: "gt10-robot-corridor-coordination"
+  name: "GT10 Warehouse Robot Narrow-Aisle Coordination"
+  schema_version: "1.0"
+  goal: "Detect overlapping use of a single-capacity corridor and generate a deterministic yield action from an explicit priority policy."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "warehouse_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  robot_a_route:
+    type: "polyline"
+    coordinates:
+      - [-50, 0]
+      - [150, 0]
+  robot_b_route:
+    type: "polyline"
+    coordinates:
+      - [150, 0]
+      - [-50, 0]
+  narrow_aisle_c1:
+    type: "rect"
+    bbox: [0, -20, 100, 20]
+  robot_a_corridor_window:
+    type: "time_interval"
+    start: "08:30"
+    end: "08:35"
+  robot_b_corridor_window:
+    type: "time_interval"
+    start: "08:32"
+    end: "08:37"
+
+operator_set:
+  - line_intersects_rect
+  - time_overlap
+
+tasks:
+  - id: "evaluate_corridor_conflict"
+    family: "spatiotemporal_coordination"
+    goal: "Determine whether both robots use the same single-capacity aisle during overlapping time windows."
+    assertions:
+      - id: "robot_a_uses_corridor"
+        operator: "line_intersects_rect"
+        object_refs: ["robot_a_route", "narrow_aisle_c1"]
+        expected_type: "bool"
+      - id: "robot_b_uses_corridor"
+        operator: "line_intersects_rect"
+        object_refs: ["robot_b_route", "narrow_aisle_c1"]
+        expected_type: "bool"
+      - id: "corridor_occupancy_overlap"
+        operator: "time_overlap"
+        object_refs: ["robot_a_corridor_window", "robot_b_corridor_window"]
+        expected_type: "bool"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_local_checks"
+      executor: "local"
+      assertion_refs:
+        - "robot_a_uses_corridor"
+        - "robot_b_uses_corridor"
+        - "corridor_occupancy_overlap"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "warehouse_robot_single_capacity_corridor"
+    facility: "warehouse"
+    resource_id: "narrow_aisle_c1"
+    resource_capacity: 1
+    decision_question: "Which robot should yield when both routes and corridor occupancy windows conflict?"
+  robot_tasks:
+    robot_a:
+      mission: "urgent_outbound_order"
+      task_priority: 90
+      original_corridor_window: ["08:30", "08:35"]
+      holding_point: [-40, 0]
+    robot_b:
+      mission: "empty_return"
+      task_priority: 40
+      original_corridor_window: ["08:32", "08:37"]
+      holding_point: [140, 0]
+  coordination_policy:
+    id: "higher-priority-first-with-clearance-buffer"
+    applies_when:
+      - "robot_a_uses_corridor == true"
+      - "robot_b_uses_corridor == true"
+      - "corridor_occupancy_overlap == true"
+      - "resource_capacity == 1"
+    priority_rule: "higher_task_priority_first"
+    tie_breaker: "request_dispatch_review"
+    clearance_buffer_minutes: 1
+  coordination_plan:
+    id: "coordinate-narrow-aisle-c1"
+    conflict_type: "single_capacity_corridor_overlap"
+    conflict_status: "verified"
+    selected_action: "robot_b_wait"
+    proceed_robot: "robot_a"
+    wait_robot: "robot_b"
+    hold_at: "robot_b.holding_point"
+    original_entry_time: "08:32"
+    revised_entry_time: "08:36"
+    revised_exit_time: "08:41"
+    wait_duration_minutes: 4
+    blocked_actions:
+      - "robot_b_enter_corridor_before_08_36"
+      - "simultaneous_corridor_entry"
+    resume_when: "robot_a_cleared_corridor == true and current_time >= 08:36"
+    next_action: "coordinate_passage"
+    expected_status: "coordinated"

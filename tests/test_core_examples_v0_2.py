@@ -71,6 +71,14 @@ def test_public_safe_core_examples_validate_and_run():
         CORE_EXAMPLES / "minimal_valid.yaml",
         CORE_EXAMPLES / "time_altitude_overlap.yaml",
         CORE_EXAMPLES / "assertions_expected_results.yaml",
+        CORE_EXAMPLES / "multi_constraint_conflict.yaml",
+        CORE_EXAMPLES / "unverifiable_constraint.yaml",
+        CORE_EXAMPLES / "evidence_request_plan.yaml",
+        CORE_EXAMPLES / "evidence_conflict_review.yaml",
+        CORE_EXAMPLES / "robot_corridor_coordination.yaml",
+        CORE_EXAMPLES / "robot_accessible_route.yaml",
+        CORE_EXAMPLES / "uav_energy_reserve.yaml",
+        CORE_EXAMPLES / "vehicle_clearance_envelope.yaml",
     ]
 
     for example in expected_examples:
@@ -87,6 +95,14 @@ def test_examples_readme_lists_core_examples():
     assert "examples/core/minimal_valid.yaml" in readme
     assert "examples/core/time_altitude_overlap.yaml" in readme
     assert "examples/core/assertions_expected_results.yaml" in readme
+    assert "examples/core/multi_constraint_conflict.yaml" in readme
+    assert "examples/core/unverifiable_constraint.yaml" in readme
+    assert "examples/core/evidence_request_plan.yaml" in readme
+    assert "examples/core/evidence_conflict_review.yaml" in readme
+    assert "examples/core/robot_corridor_coordination.yaml" in readme
+    assert "examples/core/robot_accessible_route.yaml" in readme
+    assert "examples/core/uav_energy_reserve.yaml" in readme
+    assert "examples/core/vehicle_clearance_envelope.yaml" in readme
     assert "public-safe" in readme
 
 

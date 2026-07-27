@@ -1,0 +1,373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/stpku/GeoTask/schemas/geotask-v1.0.schema.json",
+  "title": "GeoTask Language and Execution Specification v1.0",
+  "description": "Machine-readable structural schema for the implemented public GeoTask v1.0 profile. Semantic checks such as object-reference resolution and operator compatibility remain the responsibility of GeoTask Core validation.",
+  "type": "object",
+  "required": ["space", "objects", "operator_set", "tasks"],
+  "anyOf": [
+    {"required": ["geotask"]},
+    {"required": ["metadata"]}
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "geotask": {"$ref": "#/$defs/metadata"},
+    "metadata": {"$ref": "#/$defs/metadata"},
+    "space": {"$ref": "#/$defs/space"},
+    "objects": {
+      "type": "object",
+      "propertyNames": {"$ref": "#/$defs/id"},
+      "additionalProperties": {"$ref": "#/$defs/geoObject"}
+    },
+    "operator_set": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/operatorName"},
+      "uniqueItems": true
+    },
+    "operator_contracts": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/operatorContract"}
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/task"}
+    },
+    "execution": {"$ref": "#/$defs/execution"},
+    "verification": {"$ref": "#/$defs/verification"},
+    "output_contract": {"$ref": "#/$defs/outputContract"},
+    "extensions": {
+      "type": "object",
+      "description": "Open application and Domain Pack extension mapping. Extensions must not redefine Core operator semantics.",
+      "additionalProperties": true
+    },
+    "expected_results": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/expectedResult"}
+    },
+    "_source_schema_version": {"type": "string"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+    },
+    "operatorName": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["id", "name", "schema_version"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "goal": {"type": "string"},
+        "schema_version": {"type": "string", "pattern": "^1\\.[0-9]+(?:\\.[0-9]+)?$"},
+        "version": {"type": "string"},
+        "language": {"type": "string"},
+        "domain": {"type": "string"},
+        "created_at": {"type": "string"},
+        "tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "crs": {
+      "oneOf": [
+        {"type": "string", "minLength": 1},
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {"enum": ["local_cartesian", "projected", "geographic", "unknown"]},
+            "identifier": {"type": "string"}
+          }
+        }
+      ]
+    },
+    "space": {
+      "type": "object",
+      "required": ["crs"],
+      "additionalProperties": false,
+      "properties": {
+        "crs": {"$ref": "#/$defs/crs"},
+        "axes": {"type": "object", "additionalProperties": {"type": "string"}},
+        "horizontal_unit": {"type": "string"},
+        "vertical_unit": {"type": "string"},
+        "unit": {"type": "string"},
+        "coordinate_order": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string"}
+        },
+        "precision": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "coordinate": {
+      "type": "array",
+      "prefixItems": [{"type": "number"}, {"type": "number"}],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "coordinateList": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"$ref": "#/$defs/coordinate"}
+    },
+    "bbox": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "number"},
+        {"type": "number"},
+        {"type": "number"},
+        {"type": "number"}
+      ],
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "timeString": {
+      "type": "string",
+      "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+    },
+    "timePair": {
+      "type": "array",
+      "prefixItems": [{"$ref": "#/$defs/timeString"}, {"$ref": "#/$defs/timeString"}],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "numberPair": {
+      "type": "array",
+      "prefixItems": [{"type": "number"}, {"type": "number"}],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "objectData": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "coordinates": {},
+        "xy": {"$ref": "#/$defs/coordinate"},
+        "points": {"$ref": "#/$defs/coordinateList"},
+        "bbox": {"$ref": "#/$defs/bbox"},
+        "start": {"$ref": "#/$defs/timeString"},
+        "end": {"$ref": "#/$defs/timeString"},
+        "interval": {"$ref": "#/$defs/timePair"},
+        "min": {"type": "number"},
+        "max": {"type": "number"},
+        "range": {"$ref": "#/$defs/numberPair"},
+        "unit": {"type": "string"},
+        "datum": {"type": "string"},
+        "feature_type": {"type": "string"},
+        "features": {"type": "array"}
+      }
+    },
+    "geoObject": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {
+          "enum": [
+            "point",
+            "polyline",
+            "rect",
+            "time_interval",
+            "altitude_interval",
+            "feature_collection",
+            "line",
+            "time",
+            "altitude"
+          ]
+        },
+        "data": {"$ref": "#/$defs/objectData"},
+        "coordinates": {},
+        "xy": {"$ref": "#/$defs/coordinate"},
+        "points": {"$ref": "#/$defs/coordinateList"},
+        "bbox": {"$ref": "#/$defs/bbox"},
+        "start": {"$ref": "#/$defs/timeString"},
+        "end": {"$ref": "#/$defs/timeString"},
+        "interval": {"$ref": "#/$defs/timePair"},
+        "min": {"type": "number"},
+        "max": {"type": "number"},
+        "range": {"$ref": "#/$defs/numberPair"},
+        "unit": {"type": "string"},
+        "datum": {"type": "string"},
+        "feature_type": {"type": "string"},
+        "features": {"type": "array"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"type": {"const": "point"}}},
+          "then": {
+            "anyOf": [
+              {"required": ["coordinates"]},
+              {"required": ["xy"]},
+              {"required": ["data"]}
+            ]
+          }
+        },
+        {
+          "if": {"properties": {"type": {"enum": ["polyline", "line"]}}},
+          "then": {
+            "anyOf": [
+              {"required": ["coordinates"]},
+              {"required": ["points"]},
+              {"required": ["data"]}
+            ]
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "rect"}}},
+          "then": {"anyOf": [{"required": ["bbox"]}, {"required": ["data"]}]}
+        },
+        {
+          "if": {"properties": {"type": {"enum": ["time_interval", "time"]}}},
+          "then": {
+            "anyOf": [
+              {"required": ["start", "end"]},
+              {"required": ["interval"]},
+              {"required": ["data"]}
+            ]
+          }
+        },
+        {
+          "if": {"properties": {"type": {"enum": ["altitude_interval", "altitude"]}}},
+          "then": {
+            "anyOf": [
+              {"required": ["min", "max"]},
+              {"required": ["range"]},
+              {"required": ["data"]}
+            ]
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "feature_collection"}}},
+          "then": {"anyOf": [{"required": ["features"]}, {"required": ["data"]}]}
+        }
+      ]
+    },
+    "operatorContract": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "name": {"$ref": "#/$defs/operatorName"},
+        "version": {"type": "string"},
+        "family": {"type": "string"},
+        "description": {"type": "string"},
+        "arity": {"type": "integer", "minimum": 0},
+        "input_types": {"type": "array", "items": {"type": "string"}},
+        "output": {"type": "object"},
+        "deterministic": {"type": "boolean"},
+        "semantics": {"type": "object"},
+        "model_execution": {"type": "object"},
+        "invariants": {"type": "array"},
+        "error_codes": {"type": "array", "items": {"type": "string"}},
+        "examples": {"type": "array"},
+        "implementation": {"type": "string"}
+      }
+    },
+    "assertion": {
+      "type": "object",
+      "required": ["id", "operator", "object_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "operator": {"$ref": "#/$defs/operatorName"},
+        "object_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "parameters": {"type": "object", "additionalProperties": true},
+        "expected_type": {"type": "string"},
+        "unit": {"type": "string"},
+        "tolerance": {"type": "number", "minimum": 0},
+        "depends_on": {"type": "array", "items": {"$ref": "#/$defs/id"}, "uniqueItems": true},
+        "condition": {"type": "string"},
+        "on_error": {"enum": ["stop", "skip", "continue", "need_review", "fallback"]}
+      }
+    },
+    "task": {
+      "type": "object",
+      "required": ["id", "assertions"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "family": {"type": "string"},
+        "goal": {"type": "string"},
+        "inputs": {"type": "array"},
+        "constraints": {"type": "array"},
+        "assertions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assertion"}},
+        "outputs": {"type": "array"}
+      }
+    },
+    "executionStep": {
+      "type": "object",
+      "required": ["id", "executor"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "executor": {"enum": ["model", "local", "connector", "human", "runtime"]},
+        "assertion_refs": {"type": "array", "items": {"$ref": "#/$defs/id"}, "uniqueItems": true},
+        "operation": {"type": "string"},
+        "depends_on": {"type": "array", "items": {"$ref": "#/$defs/id"}, "uniqueItems": true},
+        "on_error": {"enum": ["stop", "skip", "continue", "need_review", "fallback"]},
+        "condition": {"type": "string"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {"enum": ["model_only", "local_only", "hybrid", "shadow_compare"]},
+        "steps": {"type": "array", "items": {"$ref": "#/$defs/executionStep"}},
+        "allowed_modes": {
+          "type": "array",
+          "items": {"enum": ["model_only", "local_only", "hybrid", "shadow_compare"]},
+          "uniqueItems": true
+        },
+        "model_execution_limits": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["none", "model_self_check", "local_deterministic", "model_local_compare", "cross_model_compare", "human_review"]
+        },
+        "required_assurance": {
+          "enum": ["unverified", "model_generated", "model_self_checked", "local_deterministic", "model_local_agreement", "independent_cross_verified", "human_reviewed"]
+        },
+        "compare": {"type": "object", "additionalProperties": true},
+        "failure_policy": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "outputContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {"type": "string"},
+        "required_fields": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "allow_additional_fields": {"type": "boolean"},
+        "allow_model_inference": {"type": "boolean"},
+        "numeric_precision": {"type": "object", "additionalProperties": true},
+        "ordering": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "expectedResult": {
+      "type": "object",
+      "required": ["name", "value"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {"type": "string"},
+        "value": {},
+        "unit": {"type": "string"},
+        "status": {"type": "string"}
+      }
+    }
+  }
+}

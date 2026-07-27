@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第10期：两台仓储机器人同时争用一条单向窄通道时，按显式优先级生成协同避让动作。">
+  <title>GeoTask GT10｜两台机器人通过同一条窄通道，谁先走</title>
+  <style>
+    :root{color-scheme:light;--navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--amber:#b97816;--purple:#7563ad;--ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;--success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--warm:#fff7e8;--shadow:0 14px 40px rgba(20,52,77,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,780px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.4vw,42px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}.formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:17px;font-weight:750}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}svg{display:block;width:100%;height:auto}.visual{padding:10px;border:1px solid #e4ebef;border-radius:16px;background:#fff}
+    .robot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.robot{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.robot h3{margin:0;color:var(--navy);font-size:16px}.robot .priority{font:850 22px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.robot.a .priority{color:var(--blue)}.robot.b .priority{color:var(--purple)}.mission{display:inline-block;margin-top:7px;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:850}.robot.a .mission{background:#dceef8;color:#1d6698}.robot.b .mission{background:#eeeafa;color:#6653a0}
+    .plan{margin-top:14px;padding:16px;border:1px solid #b5ddd2;border-radius:16px;background:var(--success)}.plan h3{margin:0 0 10px;color:#0f716a}.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.plan-item{padding:10px;border-radius:12px;background:rgba(255,255,255,.82)}.plan-item small{display:block;color:var(--muted)}.plan-item code{color:var(--navy);font-size:13px;font-weight:850}.blocked{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.blocked div{padding:10px;border-radius:12px;background:#fff0ef;color:#a33a32;text-align:center;font-weight:800}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}.verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}.verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:#a33a32}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{padding:10px;border-radius:12px;background:rgba(255,255,255,.75)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:14px;font-weight:850}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a33a32}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:540px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT10</span></div><a class="back" href="../gt09/">← GT09</a></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">仓储机器人 · 单容量时空资源协调</p>
+      <h1 id="title">两台机器人都要通过同一条窄通道，谁应该先走？</h1>
+      <p class="lead">机器人A执行紧急出库，机器人B为空载返程。两条路线都进入容量为1的单向窄通道，占用时间也发生重叠。</p>
+      <div class="formula">selected_action = robot_b_wait</div>
+    </section>
+
+    <section class="card" aria-labelledby="map-title">
+      <h2 id="map-title">路线重叠、时间重叠、通道容量不足</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 330" role="img" aria-label="机器人A和机器人B从相反方向进入单向窄通道">
+          <defs><marker id="arrowA" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#256fa8"/></marker><marker id="arrowB" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#7563ad"/></marker></defs>
+          <rect x="235" y="70" width="250" height="150" rx="18" fill="#fff7e8" stroke="#b97816" stroke-width="3"/>
+          <text x="360" y="105" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#14344d" text-anchor="middle">单向窄通道 C1</text>
+          <text x="360" y="135" font-family="Arial,sans-serif" font-size="15" fill="#75520f" text-anchor="middle">容量 = 1</text>
+          <line x1="45" y1="165" x2="625" y2="165" stroke="#256fa8" stroke-width="12" stroke-linecap="round" marker-end="url(#arrowA)"/>
+          <line x1="675" y1="200" x2="95" y2="200" stroke="#7563ad" stroke-width="12" stroke-linecap="round" marker-end="url(#arrowB)"/>
+          <circle cx="70" cy="165" r="25" fill="#256fa8"/><text x="70" y="172" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">A</text>
+          <circle cx="650" cy="200" r="25" fill="#7563ad"/><text x="650" y="207" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">B</text>
+          <rect x="500" y="245" width="160" height="48" rx="13" fill="#eeeafa" stroke="#7563ad" stroke-width="2"/><text x="580" y="275" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#6653a0" text-anchor="middle">B 安全等待点</text>
+          <text x="135" y="45" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#256fa8" text-anchor="middle">机器人 A · 紧急出库</text>
+          <text x="585" y="45" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#7563ad" text-anchor="middle">机器人 B · 空载返程</text>
+        </svg>
+      </div>
+      <div class="robot-grid">
+        <div class="robot a"><h3>机器人 A</h3><span class="mission">紧急出库</span><div class="priority">优先级 90</div><p class="muted">通道窗口：08:30–08:35</p></div>
+        <div class="robot b"><h3>机器人 B</h3><span class="mission">空载返程</span><div class="priority">优先级 40</div><p class="muted">通道窗口：08:32–08:37</p></div>
+      </div>
+      <p class="warning">两条路线都经过单向窄通道，时间窗口08:32–08:35发生重叠，而通道容量只有1。</p>
+    </section>
+
+    <section class="card" aria-labelledby="time-title">
+      <h2 id="time-title">显式规则把冲突转换成协同动作</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 235" role="img" aria-label="机器人A先行，机器人B等待到08点36分后进入">
+          <line x1="75" y1="95" x2="665" y2="95" stroke="#9ba9b1" stroke-width="4"/>
+          <g font-family="Arial,sans-serif" font-size="13" fill="#65737d" text-anchor="middle">
+            <text x="75" y="125">08:30</text><text x="270" y="125">08:32</text><text x="465" y="125">08:35</text><text x="530" y="125">08:36</text><text x="665" y="125">08:41</text>
+          </g>
+          <rect x="75" y="35" width="390" height="42" rx="12" fill="#dceef8" stroke="#256fa8" stroke-width="2"/><text x="270" y="62" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#1d6698" text-anchor="middle">A 先行：08:30–08:35</text>
+          <rect x="270" y="145" width="260" height="38" rx="12" fill="#fff0ef" stroke="#c33731" stroke-width="2"/><text x="400" y="170" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#a33a32" text-anchor="middle">B 等待 4 分钟</text>
+          <rect x="530" y="145" width="135" height="38" rx="12" fill="#eeeafa" stroke="#7563ad" stroke-width="2"/><text x="597" y="170" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#6653a0" text-anchor="middle">B 08:36进入</text>
+          <text x="500" y="215" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#75520f" text-anchor="middle">A驶出后保留1分钟清空缓冲</text>
+        </svg>
+      </div>
+      <div class="plan" id="plan-card">
+        <h3>coordinate-narrow-aisle-c1</h3>
+        <div class="plan-grid">
+          <div class="plan-item"><small>先行机器人</small><code id="proceed-robot">robot_a</code></div>
+          <div class="plan-item"><small>等待机器人</small><code id="wait-robot">robot_b</code></div>
+          <div class="plan-item"><small>等待时长</small><code id="wait-duration">4 minutes</code></div>
+          <div class="plan-item"><small>新通道窗口</small><code id="revised-window">08:36–08:41</code></div>
+        </div>
+        <p><strong>动作：</strong>B 等待至 08:36，在安全等待点保持静止。</p>
+        <div class="blocked"><div>B提前进入</div><div>同时进入通道</div></div>
+        <p><strong>恢复条件：</strong><code>robot_a_cleared_corridor == true and current_time &gt;= 08:36</code></p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型选择协同动作</h2>
+      <p>模型可选择让A等待、让B等待或重新规划B的路线。本案例已经提供明确优先级、安全等待点和清空缓冲规则。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT10 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT10 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">得到模型建议后返回本页，选择对应动作并验证。</p>
+      <details><summary>查看将被复制的完整 GeoTask</summary><pre id="task-source">geotask:
+  id: "gt10-robot-corridor-coordination"
+  name: "GT10 Warehouse Robot Narrow-Aisle Coordination"
+  schema_version: "1.0"
+
+application_context:
+  scenario: "warehouse_robot_single_capacity_corridor"
+  resource_id: "narrow_aisle_c1"
+  resource_capacity: 1
+
+known_results:
+  robot_a_uses_corridor: true
+  robot_b_uses_corridor: true
+  corridor_occupancy_overlap: true
+
+robot_tasks:
+  robot_a:
+    mission: "urgent_outbound_order"
+    task_priority: 90
+    original_corridor_window: ["08:30", "08:35"]
+  robot_b:
+    mission: "empty_return"
+    task_priority: 40
+    original_corridor_window: ["08:32", "08:37"]
+    holding_point: [140, 0]
+
+coordination_policy:
+  priority_rule: "higher_task_priority_first"
+  tie_breaker: "request_dispatch_review"
+  clearance_buffer_minutes: 1
+
+coordination_plan:
+  selected_action: "robot_b_wait"
+  proceed_robot: "robot_a"
+  wait_robot: "robot_b"
+  revised_entry_time: "08:36"
+  revised_exit_time: "08:41"
+  wait_duration_minutes: 4
+  resume_when: "robot_a_cleared_corridor == true and current_time >= 08:36"
+  next_action: "coordinate_passage"
+  expected_status: "coordinated"
+
+instructions_for_model:
+  - "Choose one action from robot_a_wait, robot_b_wait, or replan_robot_b."
+  - "Apply the explicit priority rule before proposing a more expensive route change."
+  - "Preserve the holding point, clearance buffer, revised time window, and resume condition."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：验证模型选择的动作</h2>
+      <div class="samples" aria-label="模型动作候选">
+        <button class="sample" id="btn-a-wait" type="button">让机器人 A 等待</button>
+        <button class="sample" id="btn-b-wait" type="button">让机器人 B 等待</button>
+        <button class="sample wide" id="btn-replan" type="button">重新规划机器人 B 路线</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics">
+          <div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div>
+          <div class="metric"><small>本地协调动作</small><code id="local-action">robot_b_wait</code></div>
+          <div class="metric"><small>时空冲突</small><code>verified</code></div>
+          <div class="metric"><small>协调状态</small><code>coordinated</code></div>
+        </div>
+        <p class="message" id="verification-message">候选来源：model_generated；路线、时间、优先级和等待窗口：local_deterministic。</p>
+      </div>
+      <p class="warning">GT10的“高优先级先行”是本案例明确给定的局部规则。真实仓储系统还需考虑制动距离、载荷、通道方向、等待点容量和全局死锁。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>GT11 已上线：配送机器人与收货点直线距离只有50米，但受台阶、围栏和机动车道约束，需要沿300米可通行网络绕行。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt11/">进入 GT11</a></div></section>
+    <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>冲突确定之后，还要生成可执行的协同动作。</div></footer>
+  </main>
+
+  <script>
+    (()=>{
+      const routeA=[[-50,0],[150,0]],routeB=[[150,0],[-50,0]],corridor=[0,-20,100,20];
+      const windowA=["08:30","08:35"],windowB=["08:32","08:37"],resourceCapacity=1;
+      const priorityA=90,priorityB=40,clearanceBufferMinutes=1;
+      function pointInRect(point,rect){return rect[0]<=point[0]&&point[0]<=rect[2]&&rect[1]<=point[1]&&point[1]<=rect[3]}
+      function cross(origin,a,b){return(a[0]-origin[0])*(b[1]-origin[1])-(a[1]-origin[1])*(b[0]-origin[0])}
+      function onSegment(p,q,r){return Math.min(p[0],r[0])<=q[0]&&q[0]<=Math.max(p[0],r[0])&&Math.min(p[1],r[1])<=q[1]&&q[1]<=Math.max(p[1],r[1])}
+      function segmentsIntersect(p1,p2,p3,p4){const d1=cross(p3,p4,p1),d2=cross(p3,p4,p2),d3=cross(p1,p2,p3),d4=cross(p1,p2,p4);if(((d1>0&&d2<0)||(d1<0&&d2>0))&&((d3>0&&d4<0)||(d3<0&&d4>0)))return true;if(d1===0&&onSegment(p3,p1,p4))return true;if(d2===0&&onSegment(p3,p2,p4))return true;if(d3===0&&onSegment(p1,p3,p2))return true;if(d4===0&&onSegment(p1,p4,p2))return true;return false}
+      function lineIntersectsRect(points,rect){const[minX,minY,maxX,maxY]=rect,edges=[[[minX,minY],[maxX,minY]],[[maxX,minY],[maxX,maxY]],[[maxX,maxY],[minX,maxY]],[[minX,maxY],[minX,minY]]];for(let i=0;i<points.length-1;i+=1){const p1=points[i],p2=points[i+1];if(pointInRect(p1,rect)||pointInRect(p2,rect))return true;for(const[e1,e2]of edges)if(segmentsIntersect(p1,p2,e1,e2))return true}return false}
+      function timeToMinutes(value){const[hour,minute]=value.split(":").map(Number);return hour*60+minute}
+      function minutesToTime(value){const hour=Math.floor(value/60),minute=value%60;return`${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")}`}
+      function timeOverlap(a,b){return timeToMinutes(a[0])<=timeToMinutes(b[1])&&timeToMinutes(b[0])<=timeToMinutes(a[1])}
+      function detectCorridorConflict(aUses,bUses,overlap,capacity){return aUses&&bUses&&overlap&&capacity===1}
+      function selectYieldAction(hasConflict,aPriority,bPriority){if(!hasConflict)return"continue";if(aPriority===bPriority)return"request_dispatch_review";if(aPriority>bPriority)return "robot_b_wait";return"robot_a_wait"}
+      function buildCoordinationPlan(action){if(action!=="robot_b_wait")return null;const originalEntry=timeToMinutes(windowB[0]),duration=timeToMinutes(windowB[1])-originalEntry,revisedEntry=timeToMinutes(windowA[1])+clearanceBufferMinutes;return{id:"coordinate-narrow-aisle-c1",selected_action:action,proceed_robot:"robot_a",wait_robot:"robot_b",hold_at:"robot_b.holding_point",wait_duration_minutes:revisedEntry-originalEntry,revised_entry_time:minutesToTime(revisedEntry),revised_exit_time:minutesToTime(revisedEntry+duration),blocked_actions:["robot_b_enter_corridor_before_08_36","simultaneous_corridor_entry"],resume_when:"robot_a_cleared_corridor == true and current_time >= 08:36",next_action:"coordinate_passage",status:"coordinated"}}
+      const aUses=lineIntersectsRect(routeA,corridor),bUses=lineIntersectsRect(routeB,corridor),occupancyOverlap=timeOverlap(windowA,windowB);
+      const hasConflict=detectCorridorConflict(aUses,bUses,occupancyOverlap,resourceCapacity),localAction=selectYieldAction(hasConflict,priorityA,priorityB),localPlan=buildCoordinationPlan(localAction);
+      const localEvidence={a_uses_corridor:aUses,b_uses_corridor:bUses,occupancy_overlap:occupancyOverlap,resource_capacity:resourceCapacity,plan:localPlan,provenance:"local_deterministic"};
+      let selectedAction=null;
+      document.getElementById("proceed-robot").textContent=localPlan.proceed_robot;document.getElementById("wait-robot").textContent=localPlan.wait_robot;document.getElementById("wait-duration").textContent=`${localPlan.wait_duration_minutes} minutes`;document.getElementById("revised-window").textContent=`${localPlan.revised_entry_time}–${localPlan.revised_exit_time}`;document.getElementById("local-action").textContent=localAction;
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status"),btnAWait=document.getElementById("btn-a-wait"),btnBWait=document.getElementById("btn-b-wait"),btnReplan=document.getElementById("btn-replan"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status"),card=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelAction=document.getElementById("model-action"),message=document.getElementById("verification-message");
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到动作建议后请返回本页验证。":"已复制。可粘贴到任意大模型，得到动作建议后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAction(value){selectedAction=value;btnAWait.classList.toggle("active",value==="robot_a_wait");btnBWait.classList.toggle("active",value==="robot_b_wait");btnReplan.classList.toggle("active",value==="replan_robot_b");verifyStatus.textContent=`已选择模型动作：${value}`}
+      function verifyModelAction(){if(selectedAction===null){verifyStatus.textContent="请先选择模型动作。";return}const consistent=selectedAction===localAction;card.classList.remove("verified","contradicted");card.classList.add(consistent?"verified":"contradicted");badge.textContent=consistent?"verified":"contradicted";modelAction.textContent=selectedAction;if(consistent){message.textContent=`模型遵循显式优先级，让${localEvidence.plan.wait_robot}等待${localEvidence.plan.wait_duration_minutes}分钟，并在${localEvidence.plan.revised_entry_time}恢复进入通道。`;verifyStatus.textContent="验证通过：时空冲突已转换为可执行协同动作。"}else if(selectedAction==="robot_a_wait"){message.textContent="机器人A承担紧急出库任务且优先级更高。让A等待违反本案例明确的higher_task_priority_first规则。";verifyStatus.textContent="发现冲突：模型让高优先级任务错误让行。"}else{message.textContent="当前已存在安全等待点，等待4分钟即可解除冲突。直接重规划路线绕过了显式局部策略，也增加了不必要的路径变更。";verifyStatus.textContent="发现冲突：模型跳过了成本更低的确定性协调动作。"}}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnAWait.addEventListener("click",()=>selectAction("robot_a_wait"));btnBWait.addEventListener("click",()=>selectAction("robot_b_wait"));btnReplan.addEventListener("click",()=>selectAction("replan_robot_b"));verifyButton.addEventListener("click",verifyModelAction);
+    })();
+  </script>
+</body>
+</html>

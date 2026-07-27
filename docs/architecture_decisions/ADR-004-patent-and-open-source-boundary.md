@@ -12,7 +12,7 @@ GeoTask Core is released under the MIT License. The GeoTask patent portfolio cov
 
 We must define how the MIT license on Core interacts with patent rights, and establish clear guidelines for contributors and users.
 
-See [`patent_boundary.md`](../patent_boundary.md) for the existing patent boundary documentation.
+This ADR is the public patent/open-source boundary document; private filing material remains outside the public repository.
 
 ---
 
@@ -131,7 +131,7 @@ Before submitting a pull request to Core, contributors should verify:
 
 ### Mitigations
 
-- `patent_boundary.md` and this ADR provide clear documentation
+- This ADR and the public boundary documents provide clear documentation without publishing private filing material
 - Code review policy includes patent-sensitivity check
 - Contributor guidelines are explicit about prohibited content
 - Legal FAQ will be added to documentation as community questions arise
@@ -140,7 +140,7 @@ Before submitting a pull request to Core, contributors should verify:
 
 ## References
 
-- [`docs/patent_boundary.md`](../patent_boundary.md)
+- [Target Specification Status](../spec/target-specification-status.md)
 - [`docs/open_source_boundary.md`](../open_source_boundary.md)
 - [`docs/open_core_commercial_runtime_boundary.md`](../open_core_commercial_runtime_boundary.md)
 - [ADR-001: Three-Layer Architecture](ADR-001-core-runtime-domain-pack.md)

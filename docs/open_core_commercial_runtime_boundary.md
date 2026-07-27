@@ -75,7 +75,7 @@ The boundary supports:
 ## Relationship to Existing Docs
 
 - [`open_source_boundary.md`](open_source_boundary.md) — Defines what is open source in the current repository
-- [`patent_boundary.md`](patent_boundary.md) — Defines how patents interact with open source licensing
+- [ADR-004: Patent and Open Source Boundary](architecture_decisions/ADR-004-patent-and-open-source-boundary.md) — Defines the public patent/open-source boundary without publishing private filing material
 - [`design_principles.md`](design_principles.md) — Principle 1 ("Core Must Be Light") is the foundation of this boundary
 - [`product_architecture_v0_1.md`](product_architecture_v0_1.md) — Full product architecture with layer definitions
 

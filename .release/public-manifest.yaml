@@ -6,6 +6,9 @@ include:
   # CI and git
   - ".github/workflows/ci.yml"
   - ".github/workflows/pages.yml"
+  - ".github/ISSUE_TEMPLATE/**"
+  - ".github/PULL_REQUEST_TEMPLATE.md"
+  - ".github/dependabot.yml"
   - ".gitignore"
   - ".gitattributes"
 
@@ -74,14 +77,17 @@ include:
 
   # Public docs
   - "docs/README.md"
+  - "docs/README.en.md"
   - "docs/whitepaper/GeoTask_White_Paper_v0.1.md"
   - "docs/whitepaper/README.md"
   - "docs/spec/geotask-language-spec-v1.0.md"
   - "docs/spec/target-specification-status.md"
   - "docs/tutorials/quickstart.md"
+  - "docs/tutorials/quickstart.zh-CN.md"
   - "docs/reference/status-model.md"
   - "docs/reference/evidence-and-recovery.md"
   - "docs/cookbook/gt01-gt13.md"
+  - "docs/cookbook/gt01-gt13.zh-CN.md"
   - "docs/architecture.md"
   - "docs/operator-guide.md"
   - "docs/cli_usage.md"
@@ -91,7 +97,6 @@ include:
   - "docs/open_source_boundary.md"
   - "docs/open_core_commercial_runtime_boundary.md"
   - "docs/operator_registry.md"
-  - "docs/patent_boundary.md"
   - "docs/product_architecture_v0_1.md"
   - "docs/normalizer_v0_2_design.md"
   - "docs/eval_spec.md"
@@ -102,12 +107,15 @@ include:
 
   # Root docs
   - "README.md"
+  - "README.en.md"
   - "LICENSE"
   - "CHANGELOG.md"
   - "MIGRATION.md"
   - "pyproject.toml"
   - "requirements.txt"
   - "CONTRIBUTING.md"
+  - "CONTRIBUTING.zh-CN.md"
+  - "CODE_OF_CONDUCT.md"
   - "SECURITY.md"
 
 exclude:
@@ -145,6 +153,15 @@ exclude:
 
 required:
   - "README.md"
+  - "README.en.md"
+  - "docs/README.md"
+  - "docs/README.en.md"
+  - "docs/tutorials/quickstart.zh-CN.md"
+  - "docs/cookbook/gt01-gt13.zh-CN.md"
+  - "CONTRIBUTING.zh-CN.md"
+  - "CODE_OF_CONDUCT.md"
+  - ".github/ISSUE_TEMPLATE/bug_report.yml"
+  - ".github/PULL_REQUEST_TEMPLATE.md"
   - "LICENSE"
   - "pyproject.toml"
   - "src/geotask_core/__init__.py"

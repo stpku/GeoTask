@@ -14,6 +14,8 @@
 - Add the implemented GeoTask Language and Execution Specification v1.0.
 - Add a Draft 2020-12 JSON Schema, Quickstart, status/evidence references, and GT01–GT13 Cookbook.
 - Add documentation conformance tests and public-export requirements for the specification set.
+- Restore a Chinese-first GitHub entry point with a full English mirror, localized Quickstart/Cookbook, bilingual contribution guidance, and community templates.
+- Extend public-export checks to require localized entry points, reject obsolete repository URLs, and validate every public Markdown relative link.
 
 ## 0.1.0
 

@@ -2,7 +2,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-GT01_PAGE = ROOT / "site" / "index.html"
+GT01_PAGE = ROOT / "site" / "gt01" / "index.html"
 GT02_PAGE = ROOT / "site" / "gt02" / "index.html"
 README = ROOT / "site" / "README.md"
 DEPLOY_SCRIPT = ROOT / "site" / "deploy-nginx.sh"
@@ -63,7 +63,7 @@ def test_gt01_and_readme_link_to_gt02() -> None:
     gt01_html = GT01_PAGE.read_text(encoding="utf-8")
     readme = README.read_text(encoding="utf-8")
 
-    assert 'href="gt02/"' in gt01_html
+    assert 'href="../gt02/"' in gt01_html
     assert "GT02" in readme
     assert "https://skyswind.tailf4fad8.ts.net/geotask/gt02/" in readme
 

@@ -171,6 +171,11 @@ required:
   - "docs/whitepaper/README.md"
   - "docs/spec/geotask-language-spec-v1.0.md"
   - "schemas/geotask-v1.0.schema.json"
+  - "site/index.html"
+  - "site/gt01/index.html"
+  - "site/robots.txt"
+  - "site/sitemap.xml"
+  - ".github/workflows/pages.yml"
 
 forbidden_paths:
   - "src/geotask_runtime/"

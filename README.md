@@ -26,7 +26,7 @@ GeoTask把自然语言中的空间、时间、证据、资源和行动约束转�
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [GT01—GT13中文案例手册](docs/cookbook/gt01-gt13.zh-CN.md)
 - [当前实现语言与执行规范v1.0](docs/spec/geotask-language-spec-v1.0.md)
-- [v0.1.0 Public Preview发布说明](docs/release_v0_1_0.md)
+- [v0.1.1 PyPI修正版发布说明](docs/release_v0_1_1.md)
 - [公共路线图](ROADMAP.md)
 - [中文文档导航](docs/README.md)
 
@@ -197,7 +197,7 @@ geotask inspect operators
 
 | 名称 | 当前版本 | 含义 |
 |---|---:|---|
-| GeoTask Core包 | `0.1.0` | Python实现版本 |
+| GeoTask Core包 | `0.1.1` | Python实现版本 |
 | GeoTask文档Schema | `1.0` | YAML/JSON任务格式版本 |
 | 语言与执行规范 | `1.0` | 当前公共实现规范 |
 | 白皮书 | `0.1` | 公开概念草案 |

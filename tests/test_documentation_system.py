@@ -30,7 +30,8 @@ CONTRIBUTING_ZH = ROOT / "CONTRIBUTING.zh-CN.md"
 CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
 CITATION = ROOT / "CITATION.cff"
 ROADMAP = ROOT / "ROADMAP.md"
-RELEASE_NOTES = ROOT / "docs" / "release_v0_1_0.md"
+RELEASE_NOTES_010 = ROOT / "docs" / "release_v0_1_0.md"
+RELEASE_NOTES = ROOT / "docs" / "release_v0_1_1.md"
 CODEOWNERS = ROOT / ".github" / "CODEOWNERS"
 PYPI_WORKFLOW = ROOT / ".github" / "workflows" / "publish-pypi.yml"
 
@@ -54,6 +55,7 @@ DOCUMENTS = (
     CONTRIBUTING_ZH,
     CODE_OF_CONDUCT,
     ROADMAP,
+    RELEASE_NOTES_010,
     RELEASE_NOTES,
     SCHEMA_PATH,
 )
@@ -277,7 +279,7 @@ def test_root_readmes_match_current_capabilities() -> None:
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
     for path in (QUICKSTART_EN, QUICKSTART_ZH):
         text = path.read_text(encoding="utf-8")
-        assert "python -m pip install --no-cache-dir geotask-core==0.1.0" in text
+        assert "python -m pip install --no-cache-dir geotask-core==0.1.1" in text
         assert "from importlib.metadata import version" in text
         assert "geotask --help" in text
         assert "geotask inspect operators" in text
@@ -394,7 +396,7 @@ def test_public_preview_release_assets_are_consistent() -> None:
     workflow = yaml.safe_load(PYPI_WORKFLOW.read_text(encoding="utf-8"))
 
     assert citation["cff-version"] == "1.2.0"
-    assert citation["version"] == "0.1.0"
+    assert citation["version"] == "0.1.1"
     assert citation["repository-code"] == "https://github.com/stpku/GeoTask"
     assert citation["url"] == "https://stpku.github.io/GeoTask/"
     assert citation["license"] == "MIT"
@@ -404,11 +406,11 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "v0.3：Runtime接口与模型适配" in roadmap
     assert "v0.4：Domain Pack规范与生态" in roadmap
 
-    assert "GeoTask Core v0.1.0 Public Preview" in release
-    assert "v0.1.0-public-preview" in release
-    assert "336项通过" in release
-    assert "Python 3.10—3.13" in release
-    assert "geotask_core-0.1.0-py3-none-any.whl" in release
+    assert "GeoTask Core v0.1.1 PyPI Hotfix" in release
+    assert "v0.1.1" in release
+    assert "geotask-core==0.1.1" in release
+    assert "geotask_core.__version__" in release
+    assert "Both lines should print `0.1.1`" in release
 
     assert "/src/geotask_core/ @stpku" in codeowners
     assert "/.release/ @stpku" in codeowners
@@ -447,6 +449,7 @@ def test_public_manifest_requires_release_governance_files() -> None:
         "ROADMAP.md",
         "CITATION.cff",
         "docs/release_v0_1_0.md",
+        "docs/release_v0_1_1.md",
         ".github/CODEOWNERS",
         ".github/workflows/publish-pypi.yml",
         "MANIFEST.in",

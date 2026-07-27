@@ -1,6 +1,6 @@
 # GeoTask Core v0.1.0 Public Preview
 
-> **Known version-reporting issue:** the installed distribution metadata correctly reports `0.1.0`, while `geotask_core.__version__` in this artifact reports `0.2.0`. CLI installation, validation, and deterministic execution are unaffected; a patch release is required to align the module attribute.
+> **Superseded by v0.1.1.** The 0.1.0 distribution metadata was correct, but `geotask_core.__version__` incorrectly reported `0.2.0`. CLI installation, validation, and deterministic execution were unaffected. Install `geotask-core>=0.1.1` for consistent version reporting.
 
 - **Release date:** 2026-07-27
 - **Git tag:** `v0.1.0-public-preview`

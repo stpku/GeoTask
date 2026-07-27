@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e .
-      - run: pip install pytest
+      - run: pip install pytest jsonschema
       - run: pytest -q
 
   build:

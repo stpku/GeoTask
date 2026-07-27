@@ -12,15 +12,31 @@ GeoTask Core lets you describe spatial objects, operations, and tasks in a YAML 
 ## Quickstart
 
 ```bash
-git clone https://github.com/GeoTask/geotask-core.git
-cd geotask-core
+git clone https://github.com/stpku/GeoTask.git
+cd GeoTask
 pip install -e .
-pip install pytest
+pip install pytest jsonschema
 
 geotask validate examples/core/v1_minimal_distance.yaml
 geotask run examples/core/v1_minimal_distance.yaml
 pytest
 ```
+
+## Documentation
+
+- [Documentation index](docs/README.md)
+- [GeoTask White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
+- [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
+- [Quickstart tutorial](docs/tutorials/quickstart.md)
+- [GT01–GT13 Cookbook](docs/cookbook/gt01-gt13.md)
+- [Status and Assurance Model](docs/reference/status-model.md)
+- [Evidence, Conflict, Blocking, and Recovery](docs/reference/evidence-and-recovery.md)
+- [Machine-readable JSON Schema](schemas/geotask-v1.0.schema.json)
+
+The implemented specification describes what the current public Core can parse,
+validate, and execute. [Target specification status](docs/spec/target-specification-status.md)
+explains how future Runtime, model execution, Domain Pack, and governance designs
+relate to the public profile without presenting them as completed capabilities.
 
 ## Minimal Example
 

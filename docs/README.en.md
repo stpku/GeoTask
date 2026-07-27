@@ -10,6 +10,7 @@ GeoTask documentation is organized by purpose. Start with the white paper for th
 - [GeoTask Language and Execution Specification v1.0](spec/geotask-language-spec-v1.0.md) — the normative profile implemented by the current public Core.
 - [Quickstart](tutorials/quickstart.md) — install, validate, execute, inspect, and extend a first task.
 - [GT01–GT13 Cookbook](cookbook/gt01-gt13.md) — progressive examples from distance calculation to evidence governance and object-specific feasibility.
+- [v0.1.1 PyPI hotfix release notes](release_v0_1_1.md) — fixes package/runtime version consistency and records clean-environment installation verification.
 - [v0.1.0 Public Preview release notes](release_v0_1_0.md) — fixed-version capabilities, assets, and verification status.
 - [Public roadmap](../ROADMAP.md) — planned protocol, Core, tooling, and ecosystem directions.
 - [中文快速入门](tutorials/quickstart.zh-CN.md) and [中文案例手册](cookbook/gt01-gt13.zh-CN.md).

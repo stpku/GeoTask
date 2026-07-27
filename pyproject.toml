@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "geotask-core"
-version = "0.1.0"
+dynamic = ["version"]
 description = "GeoTask Core: deterministic verification for verifiable spatiotemporal AI-agent tasks"
 readme = "README.en.md"
 license = "MIT"
@@ -58,6 +58,9 @@ dev = [
 [project.scripts]
 geotask = "geotask_core.cli:main"
 stir = "geotask_core.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "geotask_core._version.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]

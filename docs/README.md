@@ -11,6 +11,7 @@ GeoTask文档按照“理解项目、开始使用、查阅规范、扩展开发�
 - [中文快速入门](tutorials/quickstart.zh-CN.md)：安装、验证、执行和检查第一个任务。
 - [GT01—GT13中文案例手册](cookbook/gt01-gt13.zh-CN.md)：从距离计算逐步进入证据治理、机器人协同和对象相关可行性。
 - [当前实现语言与执行规范v1.0](spec/geotask-language-spec-v1.0.md)：当前公共Core真正实现的规范性文本。
+- [v0.1.1 PyPI修正版发布说明](release_v0_1_1.md)：修正发行元数据与模块版本不一致，并完成PyPI安装验证。
 - [v0.1.0 Public Preview发布说明](release_v0_1_0.md)：首个固定版本的能力、资产和验证状态。
 - [公共路线图](../ROADMAP.md)：面向协议、Core、工具和生态的后续方向。
 - [英文Quickstart](tutorials/quickstart.md)与[英文Cookbook](cookbook/gt01-gt13.md)。

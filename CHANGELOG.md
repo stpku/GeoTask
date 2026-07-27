@@ -10,6 +10,11 @@
 - Add result_schema.py with status constants and builder functions.
 - Add docs: normalizer_v0_2_design.md, patent_normalizer_disclosure.md.
 
+- Add GeoTask White Paper v0.1 and a public documentation index.
+- Add the implemented GeoTask Language and Execution Specification v1.0.
+- Add a Draft 2020-12 JSON Schema, Quickstart, status/evidence references, and GT01–GT13 Cookbook.
+- Add documentation conformance tests and public-export requirements for the specification set.
+
 ## 0.1.0
 
 - Rename project from STIR to GeoTask.

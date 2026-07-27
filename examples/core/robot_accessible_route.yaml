@@ -1,0 +1,140 @@
+geotask:
+  id: "gt11-robot-accessible-route"
+  name: "GT11 Delivery Robot Accessible Route"
+  schema_version: "1.0"
+  goal: "Distinguish straight-line distance from robot-accessible network distance under explicit mobility constraints."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "campus_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  robot_start:
+    type: "point"
+    coordinates: [0, 0]
+  waypoint_1:
+    type: "point"
+    coordinates: [0, 100]
+  waypoint_2:
+    type: "point"
+    coordinates: [75, 100]
+  waypoint_3:
+    type: "point"
+    coordinates: [75, 50]
+  waypoint_4:
+    type: "point"
+    coordinates: [50, 50]
+  delivery_target:
+    type: "point"
+    coordinates: [50, 0]
+
+operator_set:
+  - distance_2d
+
+tasks:
+  - id: "evaluate_robot_accessible_route"
+    family: "spatial_accessibility"
+    goal: "Compare direct Euclidean distance with an explicit robot-accessible network route."
+    assertions:
+      - id: "direct_distance"
+        operator: "distance_2d"
+        object_refs: ["robot_start", "delivery_target"]
+        expected_type: "number"
+      - id: "segment_start_to_w1"
+        operator: "distance_2d"
+        object_refs: ["robot_start", "waypoint_1"]
+        expected_type: "number"
+      - id: "segment_w1_to_w2"
+        operator: "distance_2d"
+        object_refs: ["waypoint_1", "waypoint_2"]
+        expected_type: "number"
+      - id: "segment_w2_to_w3"
+        operator: "distance_2d"
+        object_refs: ["waypoint_2", "waypoint_3"]
+        expected_type: "number"
+      - id: "segment_w3_to_w4"
+        operator: "distance_2d"
+        object_refs: ["waypoint_3", "waypoint_4"]
+        expected_type: "number"
+      - id: "segment_w4_to_target"
+        operator: "distance_2d"
+        object_refs: ["waypoint_4", "delivery_target"]
+        expected_type: "number"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_local_distance_checks"
+      executor: "local"
+      assertion_refs:
+        - "direct_distance"
+        - "segment_start_to_w1"
+        - "segment_w1_to_w2"
+        - "segment_w2_to_w3"
+        - "segment_w3_to_w4"
+        - "segment_w4_to_target"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "delivery_robot_accessible_route"
+    environment: "campus_delivery"
+    decision_question: "Why must the robot travel 300 meters when the target is only 50 meters away in a straight line?"
+  robot_profile:
+    robot_id: "delivery_robot_r1"
+    mobility: "wheeled"
+    can_use_stairs: false
+    can_cross_fence: false
+    can_enter_motor_vehicle_lane: false
+    maximum_step_height_cm: 2
+  direct_path_constraints:
+    direct_path_distance_m: 50
+    blocked_by:
+      - "stairs"
+      - "fence"
+      - "motor_vehicle_lane"
+    direct_path_accessible: false
+  accessible_network:
+    route_node_refs:
+      - "robot_start"
+      - "waypoint_1"
+      - "waypoint_2"
+      - "waypoint_3"
+      - "waypoint_4"
+      - "delivery_target"
+    allowed_edges:
+      - ["robot_start", "waypoint_1"]
+      - ["waypoint_1", "waypoint_2"]
+      - ["waypoint_2", "waypoint_3"]
+      - ["waypoint_3", "waypoint_4"]
+      - ["waypoint_4", "delivery_target"]
+    segment_lengths_m: [100, 75, 50, 25, 50]
+    total_distance_m: 300
+    all_edges_accessible: true
+  route_comparison:
+    euclidean_distance_m: 50
+    accessible_route_distance_m: 300
+    detour_ratio: 6
+    shortest_geometric_route_accessible: false
+    selected_route: "accessible_network"
+  navigation_plan:
+    id: "navigate-accessible-route-r1"
+    selected_action: "follow_accessible_network"
+    rejected_actions:
+      - "take_direct_line"
+      - "cross_motor_vehicle_lane"
+    route_node_refs:
+      - "robot_start"
+      - "waypoint_1"
+      - "waypoint_2"
+      - "waypoint_3"
+      - "waypoint_4"
+      - "delivery_target"
+    planned_distance_m: 300
+    next_action: "navigate_network"
+    expected_status: "reachable"

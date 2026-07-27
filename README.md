@@ -1,101 +1,42 @@
 # GeoTask Core
 
-[![CI](https://github.com/stpku/GeoTask/actions/workflows/ci.yml/badge.svg)](https://github.com/stpku/GeoTask/actions/workflows/ci.yml)
+**Lightweight spatial task representation for LLMs with deterministic verification.**
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+GeoTask Core lets you describe spatial objects, operations, and tasks in a YAML format that LLMs can read and reason about. It then verifies every computed result using local deterministic operators. No network calls, no model dependencies, no ambiguity. If an LLM claims a distance is 144.22 meters, GeoTask Core computes it locally and confirms or contradicts the claim.
 
-**Explicit inputs, deterministic execution, and inspectable results.**
+**Why agents need GeoTask.** LLMs are fluent but unreliable with spatial reasoning. They can hallucinate distances, flip coordinates, or misinterpret geometric relationships. GeoTask Core gives agent frameworks a verifiable spatial layer: define the objects, state the assertions, run the operators, and inspect the assurance level. Every result carries a provenance chain from object references through operator contracts to deterministic computation.
 
-## What It Does
-
-GeoTask is an open-source project for describing spatial objects and operations in a
-YAML format that LLMs can read and reason about. The GeoTask Core Python package
-(`geotask-core`) then verifies every computed result using local deterministic
-operators. No network calls, no model dependencies. If an LLM claims a distance is
-144.22 meters, GeoTask Core computes it locally and confirms or contradicts the claim.
-
-Every result carries an assurance level and a provenance chain, from object
-references through operator contracts to deterministic computation. Agent frameworks
-can use this as a verifiable spatial reasoning layer.
-
-## 30-Second Demo
+## Quickstart
 
 ```bash
 git clone https://github.com/stpku/GeoTask.git
 cd GeoTask
 pip install -e .
+pip install pytest jsonschema
+
+geotask validate examples/core/v1_minimal_distance.yaml
 geotask run examples/core/v1_minimal_distance.yaml
+pytest
 ```
 
-Output:
+## Documentation
 
-```yaml
-[run] examples/core/v1_minimal_distance.yaml
-measurements:
-- name: ab_distance
-  value: 5.0
-  unit: meter
-  object_refs:
-  - point_a
-  - point_b
-  verified_by: distance_2d
-  status: verified
-conclusion:
-  summary: ab_distance=5.0 meter
-  external_data_used: false
-verified_by:
-- operation: distance_2d
-  result: '5.00'
-```
+- [Documentation index](docs/README.md)
+- [GeoTask White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
+- [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
+- [Quickstart tutorial](docs/tutorials/quickstart.md)
+- [GT01–GT13 Cookbook](docs/cookbook/gt01-gt13.md)
+- [Status and Assurance Model](docs/reference/status-model.md)
+- [Evidence, Conflict, Blocking, and Recovery](docs/reference/evidence-and-recovery.md)
+- [Machine-readable JSON Schema](schemas/geotask-v1.0.schema.json)
 
-Two points at (0,0) and (3,4). GeoTask Core computes the Euclidean distance (5.0 m),
-marks it verified, and records the exact operator used. Nothing to configure. Nothing
-to call.
-
-## Why GeoTask
-
-LLMs are fluent but unreliable with spatial reasoning. They hallucinate distances,
-flip coordinates, and misinterpret geometric relationships. GeoTask Core gives agent
-pipelines a deterministic check: define the objects, state the assertions, run the
-operators, and inspect the output. If a result carries `status: verified`, it was
-computed locally by a known operator with a known formula.
-
-## How It Works
-
-```mermaid
-flowchart LR
-    A[YAML Input] --> B[Parser]
-    B --> C[Canonical IR]
-    C --> D[Validator]
-    D --> E[Operator Registry]
-    E --> F[Executor]
-    F --> G[GeotaskResult]
-    G --> H[Assurance]
-```
-
-1. **Parser** reads the YAML document and builds a structured representation.
-2. **Canonical IR** normalizes every document into a versioned intermediate form that
-   all downstream stages share.
-3. **Validator** checks schema conformance and produces structured diagnostics.
-4. **Operator Registry** maps operator names to deterministic implementations.
-5. **Execution** dispatches assertions through the registry and collects results.
-6. **GeotaskResult** aggregates all measurements, statuses, units, and provenance.
-7. **Assurance** assigns a level (`unverified` through `local_deterministic`) so
-   callers can decide when to trust a result.
-
-## Install
-
-GeoTask Core is currently installed from source. PyPI distribution is planned for a later release.
-
-```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
-pip install -e .
-```
-
-Requires Python 3.10+ and PyYAML. Zero GIS dependencies.
+The implemented specification describes what the current public Core can parse,
+validate, and execute. [Target specification status](docs/spec/target-specification-status.md)
+explains how future Runtime, model execution, Domain Pack, and governance designs
+relate to the public profile without presenting them as completed capabilities.
 
 ## Minimal Example
 
@@ -118,23 +59,29 @@ tasks:
         object_refs: ["a", "b"]
 ```
 
-## CLI
+This produces a verified result: `ab = 5.0 meter` with `assurance_level: local_deterministic`.
 
-```bash
-geotask validate <file.yaml>       # schema and structure checks
-geotask run <file.yaml>            # validate then execute
-geotask normalize <output.txt>     # extract structured results from LLM output
-geotask eval <file.yaml> <txt>     # compare LLM output against ground truth
-geotask explain <file.yaml>        # show how operators resolve
-geotask report <file.yaml>         # generate JSON or Markdown report
-geotask inspect operators          # list available operators
+## Core Concepts
+
+```
+objects => assertions => execution => result => assurance
 ```
 
-The `stir` command is a deprecated compatibility alias. Use `geotask` instead.
+1. **Objects.** Declare spatial primitives: `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`.
+2. **Assertions.** Bind objects to operators with explicit references. `{operator: "distance_2d", object_refs: ["a", "b"]}`.
+3. **Execution.** Dispatch assertions through the local executor. Each assertion becomes a `CheckResult` with a value, unit, and status.
+4. **Result.** A `GeotaskResult` aggregates all checks, summary counts, and derivation metadata.
+5. **Assurance.** Every result carries an `AssuranceLevel` from `unverified` (0) to `local_deterministic` (3) and beyond, letting callers decide when a result is trustworthy.
 
-## Objects and Operators
+## Main Chain
 
-**Object types** (6): `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`, `feature_collection`.
+```
+parse YAML => canonicalize (v1 IR) => validate => execute => GeotaskResult
+```
+
+The canonical IR (`CanonicalDocument`) is the single source of truth between all stages. Validation produces structured diagnostics. Execution dispatches assertions through the operator registry and collects results with assurance metadata.
+
+## Current Capabilities
 
 **Operators** (6, all deterministic):
 
@@ -147,42 +94,31 @@ The `stir` command is a deprecated compatibility alias. Use `geotask` instead.
 | `time_overlap` | time_interval, time_interval | boolean |
 | `altitude_overlap` | altitude_interval, altitude_interval | boolean |
 
-## Use Cases
+**Object types** (5): `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`.
 
-- **LLM agent pipelines.** Ground spatial claims before acting on them.
-- **Benchmark evaluation.** Compare model outputs against deterministic ground truth
-  with `geotask eval`.
-- **Task encoding.** Describe spatial problems in a machine-readable format that
-  both humans and models can inspect.
-- **Verification middleware.** Insert GeoTask Core between an LLM and downstream
-  systems to catch spatial hallucinations.
+**Dependencies:** Python 3.10+ and PyYAML. Zero GIS libraries.
 
-## Scope
+## What's Not Here
 
-GeoTask Core is the open-source deterministic execution layer. It provides spatial verification. Orchestration and domain-specific extensions are outside this repository.
+- **No model executor.** GeoTask Core only runs local deterministic operators. It does not call any LLM.
+- **No orchestrator.** Task routing, model selection, and pipeline orchestration live in the private GeoTask Runtime.
+- **No domain packs.** Industry-specific rules, data connectors, and scoring logic are separate.
+- **No benchmarks.** Encoding benchmarks and evaluation suites are internal tooling.
+- **No network I/O.** Core is entirely offline and deterministic.
 
-For the full boundary, see [docs/open_source_boundary.md](docs/open_source_boundary.md).
+## CLI
 
-## Docs
-
-- [Architecture](docs/architecture.md)
-- [Operator Guide](docs/operator-guide.md)
-- [CLI Usage](docs/cli_usage.md)
-- [YAML Schema Reference](docs/geotask_yaml_schema.md)
-- [Open Source Boundary](docs/open_source_boundary.md)
-- [Migration Guide](MIGRATION.md)
-- [Changelog](CHANGELOG.md)
-
-## Contributing
-
-Bug reports and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md)
-for dev setup, code style, and the PR process.
-
-## Security
-
-GeoTask Core contains no secrets, keys, or credentials. It is safe to clone, audit,
-and redistribute. For reporting vulnerabilities, see [SECURITY.md](SECURITY.md).
+```bash
+geotask validate <file.yaml>     # check document structure
+geotask run <file.yaml>          # validate + execute
+geotask normalize <output.txt>   # extract structured results from LLM output
+geotask eval <file.yaml> <txt>   # compare LLM output against ground truth
+```
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup, code style, and PR process. Architecture details are in [docs/architecture.md](docs/architecture.md). Operator extension guide is in [docs/operator-guide.md](docs/operator-guide.md).

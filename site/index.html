@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第01期：复制空间任务并在 DeepSeek 中直接执行。">
+  <title>GeoTask GT01｜两点距离体验</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #14344d;
+      --blue: #256fa8;
+      --teal: #16867f;
+      --ink: #17242d;
+      --muted: #65737d;
+      --line: #d8e2e8;
+      --paper: #ffffff;
+      --soft: #f3f7fa;
+      --success: #e9f7f3;
+      --warm: #fff7e8;
+      --shadow: 0 14px 40px rgba(20, 52, 77, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(37,111,168,.15), transparent 38%),
+        linear-gradient(180deg, #edf4f8 0, #f8fafb 36%, #ffffff 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .shell { width: min(100%, 760px); margin: 0 auto; padding: 20px 16px 48px; }
+    .brand { display: flex; align-items: center; gap: 10px; margin: 2px 2px 16px; color: var(--navy); font-weight: 700; }
+    .mark {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: var(--navy); color: white; font-size: 14px; letter-spacing: .5px;
+    }
+
+    .hero {
+      padding: 28px 22px 24px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #14344d, #1b5274);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+    .eyebrow { margin: 0 0 8px; color: #9bdbd7; font-size: 14px; font-weight: 700; }
+    h1 { margin: 0; font-size: clamp(28px, 8vw, 44px); line-height: 1.22; letter-spacing: -.5px; }
+    .lead { margin: 16px 0 0; color: #d8e7ef; font-size: 16px; }
+    .formula {
+      margin-top: 20px; padding: 14px 16px; border: 1px solid rgba(255,255,255,.22);
+      border-radius: 16px; background: rgba(255,255,255,.08); text-align: center;
+      font-size: 20px; font-weight: 750;
+    }
+
+    .card {
+      margin-top: 16px; padding: 22px 18px;
+      border: 1px solid var(--line); border-radius: 20px;
+      background: rgba(255,255,255,.96); box-shadow: 0 9px 28px rgba(20,52,77,.06);
+    }
+    h2 { margin: 0 0 12px; color: var(--navy); font-size: 21px; line-height: 1.35; }
+    p { margin: 8px 0; }
+    .steps { display: grid; gap: 10px; margin: 14px 0 18px; }
+    .step { display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 14px; background: var(--soft); }
+    .num {
+      flex: 0 0 28px; height: 28px; border-radius: 9px;
+      display: grid; place-items: center; background: var(--teal); color: white; font-weight: 800;
+    }
+    .step strong { display: block; color: var(--navy); }
+    .step span { color: var(--muted); font-size: 14px; }
+
+    .primary, .secondary {
+      width: 100%; min-height: 54px; border-radius: 15px;
+      border: 0; cursor: pointer; font: inherit; font-weight: 800;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .primary { background: var(--teal); color: white; box-shadow: 0 8px 22px rgba(22,134,127,.23); }
+    .secondary { margin-top: 10px; background: #eaf2f7; color: var(--navy); }
+    .primary:active, .secondary:active { transform: scale(.985); }
+    .primary:disabled { opacity: .7; cursor: wait; }
+
+    .status {
+      min-height: 28px; margin: 10px 2px 0; color: var(--teal);
+      font-size: 14px; font-weight: 700; text-align: center;
+    }
+    .tip { margin-top: 6px; color: var(--muted); font-size: 13px; text-align: center; }
+
+    .result {
+      margin-top: 14px; padding: 16px; border-radius: 16px;
+      background: var(--success); border: 1px solid #b9ded5;
+    }
+    .result small { display: block; color: var(--muted); }
+    .result code { display: block; margin-top: 4px; color: var(--teal); font-size: 20px; font-weight: 800; }
+
+    details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
+    summary { cursor: pointer; color: var(--blue); font-weight: 750; }
+    pre {
+      margin: 12px 0 0; padding: 14px; overflow: auto; max-height: 420px;
+      border-radius: 14px; background: #111c24; color: #deebf2;
+      font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+
+    .why { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .why div { padding: 14px; border-radius: 14px; background: var(--soft); }
+    .why strong { color: var(--navy); }
+    .warning { margin-top: 12px; padding: 13px 14px; border-radius: 14px; background: var(--warm); color: #74520f; font-size: 14px; }
+
+    .links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .link {
+      display: flex; justify-content: center; align-items: center; min-height: 46px;
+      border: 1px solid var(--line); border-radius: 13px; color: var(--navy);
+      text-decoration: none; font-weight: 750; background: white;
+    }
+    footer { padding: 28px 8px 0; text-align: center; color: var(--muted); font-size: 12px; }
+
+    @media (min-width: 620px) {
+      .shell { padding-top: 34px; }
+      .hero { padding: 38px 36px 32px; }
+      .card { padding: 28px 26px; }
+      .why { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><span class="mark">GT</span><span>GeoTask 每周一例 · GT01</span></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">不用安装代码，先亲手完成一个空间任务</p>
+      <h1 id="title">把 GeoTask 发给 DeepSeek，回车得到 5 米</h1>
+      <p class="lead">任务：计算二维点 (0, 0) 与 (3, 4) 之间的距离。</p>
+      <div class="formula" aria-label="预期结果">ab_distance = 5.0 meter</div>
+    </section>
+
+    <section class="card" aria-labelledby="try-title">
+      <h2 id="try-title">两步完成体验</h2>
+      <div class="steps">
+        <div class="step"><span class="num">1</span><div><strong>点击下面的主按钮</strong><span>页面会复制完整 GeoTask，并尝试打开 DeepSeek 网页。</span></div></div>
+        <div class="step"><span class="num">2</span><div><strong>在输入框中粘贴并发送</strong><span>长按输入框选择“粘贴”，然后回车。</span></div></div>
+      </div>
+
+      <button class="primary" id="copy-open" type="button">复制任务并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GeoTask</button>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+      <p class="tip">微信内无法打开时，请点右上角“···”，选择“在浏览器打开”。</p>
+
+      <div class="result">
+        <small>DeepSeek 的表述可能略有不同，核心结果应为：</small>
+        <code>ab_distance = 5.0 meter</code>
+      </div>
+
+      <details>
+        <summary>查看将被复制的完整 GeoTask</summary>
+        <pre id="task-source">geotask:
+  id: "minimal-distance-v1"
+  name: "Minimal v1.0 Distance"
+  schema_version: "1.0"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+
+objects:
+  point_a:
+    type: "point"
+    coordinates: [0, 0]
+  point_b:
+    type: "point"
+    coordinates: [3, 4]
+
+operator_set:
+  - distance_2d
+
+tasks:
+  - id: "compute_distance"
+    family: "measurement"
+    goal: "Calculate the Euclidean distance between point_a and point_b."
+    assertions:
+      - id: "ab_distance"
+        operator: "distance_2d"
+        object_refs: ["point_a", "point_b"]
+        unit: "meter"
+
+execution:
+  mode: "local_only"
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "ab_distance"</pre>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="value-title">
+      <h2 id="value-title">这不是普通提示词</h2>
+      <div class="why">
+        <div><strong>对象明确</strong><br>两个 point 的坐标和顺序已经写清楚。</div>
+        <div><strong>算子明确</strong><br>指定 distance_2d，不让模型自行猜算法。</div>
+        <div><strong>绑定明确</strong><br>object_refs 指定本次计算使用哪两个对象。</div>
+      </div>
+      <p class="warning">DeepSeek 返回的是模型生成结果。GeoTask Core 还能在本地用确定性算子重新计算同一任务，并标记 <strong>local_deterministic</strong> 可信等级。</p>
+    </section>
+
+    <section class="card" aria-labelledby="next-title">
+      <h2 id="next-title">继续第02期：答对，不等于已经验证</h2>
+      <p>把模型给出的 144.22 米交给另一条确定性计算链复算，也可以故意输入 150 米，观察 GeoTask 如何标记冲突。</p>
+      <a class="link" href="gt02/" style="margin-top:14px">进入 GT02 独立验证体验</a>
+    </section>
+
+    <section class="card" aria-labelledby="join-title">
+      <h2 id="join-title">查看项目与参与</h2>
+      <p>GeoTask Core 已在 GitHub 开源。欢迎运行案例、提交问题，或提供下一期希望尝试的空间任务。</p>
+      <div class="links">
+        <a class="link" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a>
+        <a class="link" href="https://github.com/stpku/GeoTask/issues" target="_blank" rel="noopener">提交 Issue</a>
+      </div>
+    </section>
+
+    <footer>
+      <div>GeoTask Core · MIT License · 无统计脚本、无账号、无模型密钥</div>
+      <div>本页只负责复制任务并跳转，模型输出由所访问的平台生成。</div>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const deepseekUrl = "https://chat.deepseek.com/";
+      const source = document.getElementById("task-source");
+      const copyOpen = document.getElementById("copy-open");
+      const copyOnly = document.getElementById("copy-only");
+      const status = document.getElementById("status");
+
+      function taskText() {
+        return source.textContent.trim() + "\n";
+      }
+
+      function fallbackCopy(text) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        area.setSelectionRange(0, text.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(area);
+        return ok;
+      }
+
+      async function copyTask() {
+        const text = taskText();
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (_) {
+          // Fall through to the compatibility path.
+        }
+        return fallbackCopy(text);
+      }
+
+      async function handleCopy(openDeepSeek) {
+        copyOpen.disabled = true;
+        status.textContent = "正在复制…";
+        const copied = await copyTask();
+        copyOpen.disabled = false;
+
+        if (!copied) {
+          status.textContent = "自动复制失败，请展开下方任务并长按复制。";
+          return;
+        }
+
+        status.textContent = openDeepSeek
+          ? "已复制，即将打开 DeepSeek。进入后长按输入框粘贴。"
+          : "已复制。现在可以打开任意大模型并粘贴发送。";
+
+        if (openDeepSeek) {
+          window.setTimeout(() => window.location.assign(deepseekUrl), 550);
+        }
+      }
+
+      copyOpen.addEventListener("click", () => handleCopy(true));
+      copyOnly.addEventListener("click", () => handleCopy(false));
+    })();
+  </script>
+</body>
+</html>

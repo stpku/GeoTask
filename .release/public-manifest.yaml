@@ -5,15 +5,9 @@ project: "geotask-core"
 include:
   # CI and git
   - ".github/workflows/ci.yml"
-  - ".github/dependabot.yml"
-  - ".github/ISSUE_TEMPLATE/*.yml"
-  - ".github/PULL_REQUEST_TEMPLATE.md"
+  - ".github/workflows/pages.yml"
   - ".gitignore"
   - ".gitattributes"
-
-  # Community
-  - "CODE_OF_CONDUCT.md"
-  - "README.zh-CN.md"
 
   # Public Core source
   - "src/geotask_core/**"
@@ -23,6 +17,28 @@ include:
   - "tests/test_cli_foundation_commands.py"
   - "tests/test_cli_inspect.py"
   - "tests/test_core_examples_v0_2.py"
+  - "tests/test_mobile_experience_page.py"
+  - "tests/test_gt02_experience_page.py"
+  - "tests/test_gt03_experience_page.py"
+  - "tests/test_gt04_experience_page.py"
+  - "tests/test_gt05_experience_page.py"
+  - "tests/test_gt06_experience_page.py"
+  - "tests/test_gt06_multi_constraint_case.py"
+  - "tests/test_gt07_experience_page.py"
+  - "tests/test_gt07_unverifiable_case.py"
+  - "tests/test_gt08_experience_page.py"
+  - "tests/test_gt08_evidence_request_case.py"
+  - "tests/test_gt09_experience_page.py"
+  - "tests/test_gt09_evidence_conflict_case.py"
+  - "tests/test_gt10_experience_page.py"
+  - "tests/test_gt10_robot_corridor_case.py"
+  - "tests/test_gt11_experience_page.py"
+  - "tests/test_gt11_robot_accessible_route_case.py"
+  - "tests/test_gt12_experience_page.py"
+  - "tests/test_gt12_uav_energy_reserve_case.py"
+  - "tests/test_gt13_experience_page.py"
+  - "tests/test_gt13_vehicle_clearance_case.py"
+  - "tests/test_documentation_system.py"
   - "tests/test_operator_registry.py"
   - "tests/test_ops.py"
   - "tests/test_ops_v0_3.py"
@@ -53,7 +69,19 @@ include:
   - "examples/model_outputs/**"
   - "examples/README.md"
 
+  # Public mobile experience page
+  - "site/**"
+
   # Public docs
+  - "docs/README.md"
+  - "docs/whitepaper/GeoTask_White_Paper_v0.1.md"
+  - "docs/whitepaper/README.md"
+  - "docs/spec/geotask-language-spec-v1.0.md"
+  - "docs/spec/target-specification-status.md"
+  - "docs/tutorials/quickstart.md"
+  - "docs/reference/status-model.md"
+  - "docs/reference/evidence-and-recovery.md"
+  - "docs/cookbook/gt01-gt13.md"
   - "docs/architecture.md"
   - "docs/operator-guide.md"
   - "docs/cli_usage.md"
@@ -68,6 +96,9 @@ include:
   - "docs/normalizer_v0_2_design.md"
   - "docs/eval_spec.md"
   - "docs/architecture_decisions/**"
+
+  # Public machine-readable specification
+  - "schemas/geotask-v1.0.schema.json"
 
   # Root docs
   - "README.md"
@@ -114,15 +145,15 @@ exclude:
 
 required:
   - "README.md"
-  - "README.zh-CN.md"
   - "LICENSE"
-  - "CONTRIBUTING.md"
-  - "SECURITY.md"
-  - "CODE_OF_CONDUCT.md"
   - "pyproject.toml"
   - "src/geotask_core/__init__.py"
   - ".github/workflows/ci.yml"
   - ".gitignore"
+  - "docs/whitepaper/GeoTask_White_Paper_v0.1.md"
+  - "docs/whitepaper/README.md"
+  - "docs/spec/geotask-language-spec-v1.0.md"
+  - "schemas/geotask-v1.0.schema.json"
 
 forbidden_paths:
   - "src/geotask_runtime/"
@@ -160,6 +191,7 @@ boundary_rules:
     - "geotask_runtime.domain_pack"
     - "geotask_runtime.result_governance"
   allowed_core_imports:
+    - "geotask_runtime.contracts"
     - "geotask_core"
     - "geotask_core.v1"
 
@@ -186,6 +218,10 @@ binary_extensions:
 
 # Exception model — each scanner has its own independent exception list
 exact_exceptions:
+  allowed_forbidden_imports:
+    - from_pattern: "geotask_runtime.contracts"
+      in_file: "tests/**"
+      reason: "Runtime contracts are public interface definitions"
   allowed_secret_findings: []
   allowed_internal_paths: []
   allowed_binary_files: []

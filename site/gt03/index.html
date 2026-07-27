@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第03期：多段路线与限制区相交判断，用本地确定性算子验证模型答案。">
+  <title>GeoTask GT03｜多段路线相交验证</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #14344d;
+      --blue: #256fa8;
+      --teal: #16867f;
+      --ink: #17242d;
+      --muted: #65737d;
+      --line: #d8e2e8;
+      --paper: #ffffff;
+      --soft: #f3f7fa;
+      --success: #e9f7f3;
+      --success-line: #acd8ce;
+      --danger: #fff0ef;
+      --danger-line: #e5b5b0;
+      --danger-ink: #a33a32;
+      --warm: #fff7e8;
+      --shadow: 0 14px 40px rgba(20, 52, 77, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top right, rgba(37,111,168,.15), transparent 38%),
+        linear-gradient(180deg, #edf4f8 0, #f8fafb 36%, #ffffff 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    button, a, input { -webkit-tap-highlight-color: transparent; }
+    .shell { width: min(100%, 760px); margin: 0 auto; padding: 20px 16px 48px; }
+    .brand { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 2px 2px 16px; }
+    .brand-name { display: flex; align-items: center; gap: 10px; color: var(--navy); font-weight: 700; }
+    .mark {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: var(--navy); color: white; font-size: 14px; letter-spacing: .5px;
+    }
+    .back { color: var(--blue); text-decoration: none; font-size: 14px; font-weight: 750; }
+
+    .hero {
+      padding: 28px 22px 24px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #14344d, #1b5274);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+    .eyebrow { margin: 0 0 8px; color: #9bdbd7; font-size: 14px; font-weight: 700; }
+    h1 { margin: 0; font-size: clamp(27px, 7.6vw, 43px); line-height: 1.22; letter-spacing: -.5px; }
+    .lead { margin: 16px 0 0; color: #d8e7ef; font-size: 16px; }
+
+    .card {
+      margin-top: 16px; padding: 22px 18px;
+      border: 1px solid var(--line); border-radius: 20px;
+      background: rgba(255,255,255,.96); box-shadow: 0 9px 28px rgba(20,52,77,.06);
+    }
+    h2 { margin: 0 0 12px; color: var(--navy); font-size: 21px; line-height: 1.35; }
+    h3 { margin: 18px 0 8px; color: var(--navy); font-size: 17px; }
+    p { margin: 8px 0; }
+    .muted { color: var(--muted); font-size: 14px; }
+
+    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+    .fact { padding: 13px; border-radius: 14px; background: var(--soft); overflow-wrap: break-word; word-break: break-word; }
+    .fact small { display: block; color: var(--muted); }
+    .fact strong { display: block; margin-top: 2px; color: var(--navy); font-size: 17px; }
+
+    .steps { display: grid; gap: 10px; margin: 14px 0 18px; }
+    .step { display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 14px; background: var(--soft); }
+    .num {
+      flex: 0 0 28px; height: 28px; border-radius: 9px;
+      display: grid; place-items: center; background: var(--teal); color: white; font-weight: 800;
+    }
+    .step strong { display: block; color: var(--navy); }
+    .step span { color: var(--muted); font-size: 14px; }
+
+    .primary, .secondary, .sample {
+      border: 0; cursor: pointer; font: inherit; font-weight: 800;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .primary, .secondary { width: 100%; min-height: 54px; border-radius: 15px; }
+    .primary { background: var(--teal); color: white; box-shadow: 0 8px 22px rgba(22,134,127,.23); }
+    .secondary { margin-top: 10px; background: #eaf2f7; color: var(--navy); }
+    .primary:active, .secondary:active, .sample:active { transform: scale(.985); }
+    .primary:disabled { opacity: .7; cursor: wait; }
+
+    .status {
+      min-height: 28px; margin: 10px 2px 0; color: var(--teal);
+      font-size: 14px; font-weight: 700; text-align: center;
+    }
+    .tip { margin-top: 6px; color: var(--muted); font-size: 13px; text-align: center; }
+
+    .samples { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .sample { padding: 10px 16px; border-radius: 999px; background: var(--soft); color: var(--blue); font-size: 14px; }
+    .sample.active { background: var(--teal); color: white; }
+
+    .verification {
+      margin-top: 16px; padding: 17px; border-radius: 17px; border: 1px solid var(--line); background: var(--soft);
+    }
+    .verification.verified { background: var(--success); border-color: var(--success-line); }
+    .verification.contradicted { background: var(--danger); border-color: var(--danger-line); }
+    .verification-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .verification-head strong { color: var(--navy); }
+    .badge { padding: 5px 10px; border-radius: 999px; background: #dfe9ef; color: var(--navy); font-size: 12px; font-weight: 850; }
+    .verified .badge { background: #ccebe3; color: #0f716a; }
+    .contradicted .badge { background: #f2d0cd; color: var(--danger-ink); }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+    .metric { padding: 10px; border-radius: 12px; background: rgba(255,255,255,.72); }
+    .metric small { display: block; color: var(--muted); }
+    .metric code { color: var(--navy); font-size: 15px; font-weight: 850; }
+    .message { margin-top: 12px; color: var(--muted); font-size: 14px; }
+    .contradicted .message { color: var(--danger-ink); }
+
+    .paths { display: grid; gap: 10px; }
+    .path { padding: 14px; border-radius: 14px; background: var(--soft); }
+    .path strong { color: var(--navy); }
+    .path code { color: var(--teal); font-weight: 800; }
+    .warning { margin-top: 12px; padding: 13px 14px; border-radius: 14px; background: var(--warm); color: #74520f; font-size: 14px; }
+
+    details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
+    summary { cursor: pointer; color: var(--blue); font-weight: 750; }
+    pre {
+      margin: 12px 0 0; padding: 14px; overflow: auto; max-height: 430px;
+      border-radius: 14px; background: #111c24; color: #deebf2;
+      font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+    }
+
+    .link { display: grid; gap: 10px; margin-top: 14px; }
+    .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .link-btn {
+      display: flex; justify-content: center; align-items: center; min-height: 46px;
+      border: 1px solid var(--line); border-radius: 13px; color: var(--navy);
+      text-decoration: none; font-weight: 750; background: white;
+    }
+    footer { padding: 28px 8px 0; text-align: center; color: var(--muted); font-size: 12px; }
+
+    .svg-wrap {
+      width: 100%; overflow-x: auto; margin: 14px 0 6px;
+    }
+    .svg-wrap svg {
+      width: 100%; max-width: 100%; height: auto; display: block;
+    }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 13px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; color: var(--muted); }
+    .legend-swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; }
+    .legend-swatch.blue { background: #256fa8; }
+    .legend-swatch.red { background: rgba(195, 55, 49, .35); border: 1.5px solid #c33731; }
+    .legend-swatch.green { background: #148f62; }
+
+    @media (min-width: 620px) {
+      .shell { padding-top: 34px; }
+      .hero { padding: 38px 36px 32px; }
+      .card { padding: 28px 26px; }
+      .paths { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand">
+      <div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT03</span></div>
+      <a class="back" href="../gt02/">← GT02</a>
+    </div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">前两段都绕开，最后一段才穿过</p>
+      <h1 id="title">一条路线有四个点，AI会检查每一段吗？</h1>
+      <p class="lead">前两段都绕开，最后一段才穿过限制区。用本地确定性算子逐段验证模型的相交判断。</p>
+    </section>
+
+    <section class="card" aria-labelledby="viz-title">
+      <h2 id="viz-title">任务可视化</h2>
+      <p>蓝色路线由四个点依次连接。红色矩形为限制区。前两段完全避开，第三段水平穿过。</p>
+      <div class="svg-wrap">
+        <svg viewBox="-320 -130 780 400" xmlns="http://www.w3.org/2000/svg" aria-label="GT03 路线与限制区示意图" role="img">
+          <defs>
+            <marker id="arrow-x" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#65737d"/>
+            </marker>
+            <marker id="arrow-y" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#65737d"/>
+            </marker>
+          </defs>
+
+          <!-- Grid lines -->
+          <g stroke="#d8e2e8" stroke-width="0.6" stroke-dasharray="4,4">
+            <!-- Vertical grid -->
+            <line x1="-300" y1="-120" x2="-300" y2="280"/>
+            <line x1="-200" y1="-120" x2="-200" y2="280"/>
+            <line x1="-100" y1="-120" x2="-100" y2="280"/>
+            <line x1="100" y1="-120" x2="100" y2="280"/>
+            <line x1="200" y1="-120" x2="200" y2="280"/>
+            <line x1="300" y1="-120" x2="300" y2="280"/>
+            <line x1="400" y1="-120" x2="400" y2="280"/>
+            <!-- Horizontal grid -->
+            <line x1="-310" y1="-100" x2="455" y2="-100"/>
+            <line x1="-310" y1="0" x2="455" y2="0"/>
+            <line x1="-310" y1="100" x2="455" y2="100"/>
+            <line x1="-310" y1="200" x2="455" y2="200"/>
+          </g>
+
+          <!-- Axes -->
+          <line x1="-310" y1="0" x2="455" y2="0" stroke="#65737d" stroke-width="1.4" marker-end="url(#arrow-x)"/>
+          <line x1="0" y1="-120" x2="0" y2="275" stroke="#65737d" stroke-width="1.4" marker-end="url(#arrow-y)"/>
+
+          <!-- Axis labels -->
+          <text x="448" y="12" fill="#65737d" font-size="12" font-weight="700">x</text>
+          <text x="-12" y="-112" fill="#65737d" font-size="12" font-weight="700">y</text>
+
+          <!-- Tick labels -->
+          <g fill="#65737d" font-size="10" text-anchor="middle">
+            <text x="-300" y="14">-300</text>
+            <text x="-200" y="14">-200</text>
+            <text x="-100" y="14">-100</text>
+            <text x="100" y="14">100</text>
+            <text x="200" y="14">200</text>
+            <text x="300" y="14">300</text>
+            <text x="400" y="14">400</text>
+          </g>
+          <g fill="#65737d" font-size="10" text-anchor="end">
+            <text x="-6" y="-104">-100</text>
+            <text x="-6" y="4">0</text>
+            <text x="-6" y="104">100</text>
+            <text x="-6" y="204">200</text>
+          </g>
+
+          <!-- Zero label -->
+          <text x="-12" y="14" fill="#65737d" font-size="10" text-anchor="end">0</text>
+
+          <!-- Zone: red rectangle [250, -100] to [350, 100] -->
+          <rect x="250" y="-100" width="100" height="200" fill="rgba(195,55,49,0.15)" stroke="#c33731" stroke-width="2" rx="2"/>
+
+          <!-- Zone label -->
+          <text x="300" y="110" fill="#c33731" font-size="11" font-weight="700" text-anchor="middle">限制区</text>
+
+          <!-- Route polyline: P1→P2→P3→P4 -->
+          <polyline points="-200,220 100,220 100,0 400,0" fill="none" stroke="#256fa8" stroke-width="2.5" stroke-linejoin="round"/>
+
+          <!-- Intersection highlight: segment P3→P4 within zone [250,350] at y=0 -->
+          <line x1="250" y1="0" x2="350" y2="0" stroke="#148f62" stroke-width="4" stroke-linecap="round"/>
+
+          <!-- Point markers -->
+          <g fill="#256fa8">
+            <circle cx="-200" cy="220" r="5"/>
+            <circle cx="100" cy="220" r="5"/>
+            <circle cx="100" cy="0" r="5"/>
+            <circle cx="400" cy="0" r="5"/>
+          </g>
+
+          <!-- Point labels -->
+          <g fill="#14344d" font-size="13" font-weight="700">
+            <text x="-215" y="235">P1 (−200,&#8202;220)</text>
+            <text x="108" y="235">P2 (100,&#8202;220)</text>
+            <text x="108" y="-8">P3 (100,&#8202;0)</text>
+            <text x="408" y="-8">P4 (400,&#8202;0)</text>
+          </g>
+
+          <!-- Segment annotation labels -->
+          <g fill="#256fa8" font-size="12" font-weight="750" text-anchor="middle">
+            <!-- Segment 1: P1→P2, above the line -->
+            <text x="-50" y="198">第1段</text>
+            <text x="-50" y="212" fill="#c33731" font-size="11">不相交</text>
+
+            <!-- Segment 2: P2→P3, left of the line -->
+            <text x="55" y="128" text-anchor="end">第2段</text>
+            <text x="55" y="142" fill="#c33731" font-size="11" text-anchor="end">不相交</text>
+
+            <!-- Segment 3: P3→P4, near the intersection -->
+            <text x="300" y="-18">第3段</text>
+            <text x="300" y="-4" fill="#148f62" font-size="11">相交</text>
+          </g>
+
+          <!-- Visual hint: dashed lines for segment 3 intersection boundaries -->
+          <line x1="250" y1="0" x2="250" y2="15" stroke="#148f62" stroke-width="1" stroke-dasharray="2,2"/>
+          <line x1="350" y1="0" x2="350" y2="15" stroke="#148f62" stroke-width="1" stroke-dasharray="2,2"/>
+
+          <!-- Bracket hints for intersection zone -->
+          <text x="250" y="28" fill="#148f62" font-size="9" text-anchor="start">x=250</text>
+          <text x="350" y="28" fill="#148f62" font-size="9" text-anchor="end">x=350</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch blue"></span> 路线 polyline</span>
+        <span class="legend-item"><span class="legend-swatch red"></span> 限制区 rect</span>
+        <span class="legend-item"><span class="legend-swatch green"></span> 相交部分（第3段）</span>
+      </div>
+      <p class="muted">第1段 P1→P2 和第2段 P2→P3 均未进入限制区；第3段 P3→P4 在 x∈[250,350] 区间穿过限制区。</p>
+    </section>
+
+    <section class="card" aria-labelledby="task-title">
+      <h2 id="task-title">本期任务</h2>
+      <p>判断一条四点多段路线是否与矩形限制区相交。路线逐段检查，边界接触算作相交。</p>
+      <div class="facts">
+        <div class="fact"><small>路线 route</small><strong>4 个点, 3 段</strong></div>
+        <div class="fact"><small>限制区 zone</small><strong>[250,&minus;100]→[350,100]</strong></div>
+        <div class="fact"><small>指定算子</small><strong>line_intersects_rect</strong></div>
+        <div class="fact"><small>确定性结果</small><strong>true（第3段相交）</strong></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型执行任务</h2>
+      <div class="steps">
+        <div class="step"><span class="num">1</span><div><strong>复制完整 GT03 任务</strong><span>主按钮会复制任务并尝试打开 DeepSeek。</span></div></div>
+        <div class="step"><span class="num">2</span><div><strong>粘贴、发送并记下答案</strong><span>模型应返回 true 或 false，并逐段说明判断依据。</span></div></div>
+      </div>
+      <button class="primary" id="copy-open" type="button">复制 GT03 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT03 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">微信内无法打开时，请点右上角"···"，选择"在浏览器打开"。</p>
+
+      <details>
+        <summary>查看将被复制的完整 GeoTask</summary>
+<pre id="task-source">geotask:
+  id: "gt03-multisegment-route-zone-intersection"
+  name: "GT03 Multi-segment Route Zone Intersection"
+  schema_version: "1.0"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+
+objects:
+  route:
+    type: "line"
+    points:
+      - [-200, 220]
+      - [100, 220]
+      - [100, 0]
+      - [400, 0]
+
+  zone:
+    type: "rect"
+    bbox: [250, -100, 350, 100]
+
+operator_set:
+  - line_intersects_rect
+
+tasks:
+  - id: "verify_route_zone_intersection"
+    family: "topology"
+    goal: "Determine whether any segment of route crosses or touches zone."
+    assertions:
+      - id: "route_intersects_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["route", "zone"]
+        expected_type: "bool"
+
+execution:
+  mode: "model_then_local_verify"
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "route_intersects_zone"
+    - "assurance_level"
+    - "verification_status"
+
+instructions_for_model:
+  - "Check every consecutive pair of route points."
+  - "Boundary contact counts as intersection."
+  - "Return route_intersects_zone as true or false."
+  - "Mark the model-produced result as model_generated."
+  - "Do not claim local_deterministic verification unless a separate deterministic executor has run."</pre>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：用本地确定性算子独立验证</h2>
+      <p>选择模型给出的答案，然后点击"本地验证"。页面会在浏览器中执行固定的相交判断逻辑，不调用任何后台。</p>
+
+      <div class="samples" aria-label="模型答案选择">
+        <button class="sample" type="button" data-answer="true" id="btn-true">模型回答 true</button>
+        <button class="sample" type="button" data-answer="false" id="btn-false">模型回答 false</button>
+      </div>
+
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head">
+          <strong>验证结果</strong>
+          <span class="badge" id="verification-badge">等待选择</span>
+        </div>
+        <div class="metrics">
+          <div class="metric"><small>模型候选结果</small><code id="model-value">—</code></div>
+          <div class="metric"><small>本地确定性结果</small><code id="local-value">true</code></div>
+          <div class="metric"><small>检查段数</small><code id="segments-checked">3</code></div>
+          <div class="metric"><small>相交规则</small><code>边界接触算作相交</code></div>
+        </div>
+        <p class="message" id="verification-message">请先选择上方模型答案，再点击"本地验证"。候选结果来源：model_generated；复算证据：local_deterministic。</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="meaning-title">
+      <h2 id="meaning-title">这里演示的不是"让 AI 再判断一次"</h2>
+      <div class="paths">
+        <div class="path"><strong>模型路径</strong><br><code>model_generated</code><br><span class="muted">模型理解任务、逐段推理并生成候选结果。</span></div>
+        <div class="path"><strong>确定性路径</strong><br><code>local_deterministic</code><br><span class="muted">固定算法逐段检查线段与矩形边的相交关系，相同输入得到相同输出。</span></div>
+      </div>
+      <p class="warning">本页用浏览器 JavaScript 演示独立验证；GeoTask Core 的正式确定性执行由本地 Python 算子完成。页面 JS 用于移动端体验演示，不替代 Core 的正式运算。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title">
+      <h2 id="join-title">查看项目与继续体验</h2>
+      <p>GT04 已上线：两个对象在二维地图上完全重叠，高度上却相隔 150 米，看看模型会不会把二维重叠误判成三维冲突。</p>
+      <div class="link-grid">
+        <a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a>
+        <a class="link-btn" href="../gt04/">进入 GT04</a>
+      </div>
+    </section>
+
+    <footer>
+      <div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div>
+      <div>本页的相交判断完全发生在当前浏览器中。</div>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      /* ── Geometry primitives ── */
+      const routePoints = [[-200, 220], [100, 220], [100, 0], [400, 0]];
+      const zoneBbox = [250, -100, 350, 100];
+
+      function pointInRect(p, bbox) {
+        const [x, y] = p;
+        const [x1, y1, x2, y2] = bbox;
+        return x >= Math.min(x1, x2) && x <= Math.max(x1, x2) && y >= Math.min(y1, y2) && y <= Math.max(y1, y2);
+      }
+
+      function cross(o, a, b) {
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+      }
+
+      function onSegment(p, q, r) {
+        return q[0] <= Math.max(p[0], r[0]) && q[0] >= Math.min(p[0], r[0]) &&
+               q[1] <= Math.max(p[1], r[1]) && q[1] >= Math.min(p[1], r[1]);
+      }
+
+      function segmentsIntersect(p1, p2, p3, p4) {
+        const d1 = cross(p3, p4, p1);
+        const d2 = cross(p3, p4, p2);
+        const d3 = cross(p1, p2, p3);
+        const d4 = cross(p1, p2, p4);
+
+        if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) &&
+            ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
+          return true;
+        }
+
+        if (d1 === 0 && onSegment(p3, p1, p4)) return true;
+        if (d2 === 0 && onSegment(p3, p2, p4)) return true;
+        if (d3 === 0 && onSegment(p1, p3, p2)) return true;
+        if (d4 === 0 && onSegment(p1, p4, p2)) return true;
+
+        return false;
+      }
+
+      function lineIntersectsRect(points, bbox) {
+        const [x1, y1, x2, y2] = bbox;
+        const edges = [
+          [[x1, y1], [x2, y1]],
+          [[x2, y1], [x2, y2]],
+          [[x2, y2], [x1, y2]],
+          [[x1, y2], [x1, y1]]
+        ];
+
+        for (let i = 0; i < points.length - 1; i += 1) {
+          const p1 = points[i];
+          const p2 = points[i + 1];
+
+          if (pointInRect(p1, bbox) || pointInRect(p2, bbox)) {
+            return true;
+          }
+
+          for (let j = 0; j < edges.length; j += 1) {
+            if (segmentsIntersect(p1, p2, edges[j][0], edges[j][1])) {
+              return true;
+            }
+          }
+        }
+
+        return false;
+      }
+
+      /* ── Deterministic result ── */
+      const localDeterministic = lineIntersectsRect(routePoints, zoneBbox);
+      const segmentCount = routePoints.length - 1;
+
+      /* ── DOM refs ── */
+      const source = document.getElementById("task-source");
+      const copyOpen = document.getElementById("copy-open");
+      const copyOnly = document.getElementById("copy-only");
+      const copyStatus = document.getElementById("copy-status");
+      const btnTrue = document.getElementById("btn-true");
+      const btnFalse = document.getElementById("btn-false");
+      const verifyButton = document.getElementById("verify");
+      const verifyStatus = document.getElementById("verify-status");
+      const verificationCard = document.getElementById("verification-card");
+      const badge = document.getElementById("verification-badge");
+      const modelValueNode = document.getElementById("model-value");
+      const localValueNode = document.getElementById("local-value");
+      const segmentsCheckedNode = document.getElementById("segments-checked");
+      const messageNode = document.getElementById("verification-message");
+
+      /* ── State ── */
+      let selectedAnswer = null;
+
+      /* ── Copy ── */
+      function taskText() {
+        return source.textContent.trim() + "\n";
+      }
+
+      function fallbackCopy(text) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        area.setSelectionRange(0, text.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(area);
+        return ok;
+      }
+
+      async function copyTask() {
+        const text = taskText();
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (_) {
+          /* fall through */
+        }
+        return fallbackCopy(text);
+      }
+
+      async function handleCopy(openDeepSeek) {
+        copyOpen.disabled = true;
+        copyStatus.textContent = "正在复制…";
+        const copied = await copyTask();
+        copyOpen.disabled = false;
+
+        if (!copied) {
+          copyStatus.textContent = "自动复制失败，请展开任务并长按复制。";
+          return;
+        }
+
+        copyStatus.textContent = openDeepSeek
+          ? "已复制，即将打开 DeepSeek。得到答案后请返回本页验证。"
+          : "已复制。可粘贴到任意大模型，得到答案后返回本页验证。";
+
+        if (openDeepSeek) {
+          window.setTimeout(() => window.location.assign("https://chat.deepseek.com/"), 600);
+        }
+      }
+
+      /* ── Model answer selection ── */
+      function selectAnswer(value) {
+        selectedAnswer = value;
+        btnTrue.classList.toggle("active", value === true);
+        btnFalse.classList.toggle("active", value === false);
+      }
+
+      /* ── Verification ── */
+      function verifyModelAnswer() {
+        if (selectedAnswer === null) {
+          verifyStatus.textContent = '请先点击上方「模型回答 true」或「模型回答 false」选择一个答案。';
+          return;
+        }
+
+        const isConsistent = selectedAnswer === localDeterministic;
+        const stateLabel = isConsistent ? "verified" : "contradicted";
+
+        verificationCard.classList.remove("verified", "contradicted");
+        verificationCard.classList.add(isConsistent ? "verified" : "contradicted");
+        badge.textContent = stateLabel;
+        modelValueNode.textContent = String(selectedAnswer);
+        localValueNode.textContent = String(localDeterministic);
+        segmentsCheckedNode.textContent = String(segmentCount);
+
+        if (isConsistent) {
+          messageNode.textContent = "模型候选结果与本地确定性结果一致。候选结果来源：model_generated；复算证据：local_deterministic。";
+          verifyStatus.textContent = "验证通过：模型判断与本地确定性结果一致（均为 true）。";
+        } else {
+          messageNode.textContent = "模型候选结果与本地确定性结果矛盾，不能将候选答案标记为已验证。候选结果来源：model_generated；复算证据：local_deterministic。";
+          verifyStatus.textContent = "发现冲突：请不要直接使用该候选结果。";
+        }
+      }
+
+      /* ── Event bindings ── */
+      copyOpen.addEventListener("click", () => handleCopy(true));
+      copyOnly.addEventListener("click", () => handleCopy(false));
+      btnTrue.addEventListener("click", () => selectAnswer(true));
+      btnFalse.addEventListener("click", () => selectAnswer(false));
+      verifyButton.addEventListener("click", verifyModelAnswer);
+    })();
+  </script>
+</body>
+</html>

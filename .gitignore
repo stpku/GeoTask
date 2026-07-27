@@ -21,6 +21,7 @@ Thumbs.db
 
 # OpenCode / AI agent
 .omx/
+.ai-bridge/
 
 # Virtual env
 .venv/

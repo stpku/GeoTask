@@ -1,0 +1,107 @@
+geotask:
+  id: "gt13-vehicle-clearance-envelope"
+  name: "GT13 Autonomous Vehicle Clearance Envelope"
+  schema_version: "1.0"
+  goal: "Distinguish an open road state from object-specific passability when roadworks narrow the available corridor below the vehicle safety envelope."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "roadwork_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  vehicle_route:
+    type: "polyline"
+    coordinates:
+      - [-50, 0]
+      - [50, 0]
+  roadwork_zone:
+    type: "rect"
+    bbox: [-10, -3, 10, 3]
+  passage_left_boundary:
+    type: "point"
+    coordinates: [0, -1.2]
+  passage_right_boundary:
+    type: "point"
+    coordinates: [0, 1.2]
+  vehicle_body_left:
+    type: "point"
+    coordinates: [0, -1.05]
+  vehicle_body_right:
+    type: "point"
+    coordinates: [0, 1.05]
+
+operator_set:
+  - distance_2d
+  - line_intersects_rect
+
+tasks:
+  - id: "evaluate_vehicle_clearance"
+    family: "object_specific_passability"
+    goal: "Verify the narrowed passage width and compare it with the autonomous vehicle safety envelope."
+    assertions:
+      - id: "route_enters_roadwork_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["vehicle_route", "roadwork_zone"]
+        expected_type: "bool"
+      - id: "available_passage_width"
+        operator: "distance_2d"
+        object_refs: ["passage_left_boundary", "passage_right_boundary"]
+        expected_type: "number"
+      - id: "vehicle_body_width"
+        operator: "distance_2d"
+        object_refs: ["vehicle_body_left", "vehicle_body_right"]
+        expected_type: "number"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_local_clearance_checks"
+      executor: "local"
+      assertion_refs:
+        - "route_enters_roadwork_zone"
+        - "available_passage_width"
+        - "vehicle_body_width"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "autonomous_vehicle_roadwork_clearance"
+    vehicle: "autonomous_shuttle"
+    decision_question: "Why must the vehicle stop when the road is open but the narrowed passage is smaller than its safety envelope?"
+  road_state:
+    road_open: true
+    temporary_roadwork_active: true
+    narrowed_passage_width_m: 2.4
+  vehicle_profile:
+    vehicle_body_width_m: 2.1
+    left_safety_buffer_m: 0.3
+    right_safety_buffer_m: 0.3
+    required_envelope_width_m: 2.7
+  clearance_budget:
+    available_width_m: 2.4
+    required_width_m: 2.7
+    clearance_shortfall_m: 0.3
+    road_state_allows_entry: true
+    object_specific_passability: false
+  passage_gate:
+    status: "blocked"
+    reason: "insufficient_lateral_clearance"
+    blocked_outputs:
+      - "autonomous_passage"
+      - "full_speed_entry"
+    selected_action: "request_alternate_route_or_controlled_passage"
+    alternatives:
+      - "use_alternate_route"
+      - "request_manual_traffic_control"
+      - "wait_for_workzone_clearance"
+    rejected_actions:
+      - "proceed_because_road_open"
+      - "shrink_safety_buffer_to_fit"
+    resume_when: "available_width_m >= required_envelope_width_m or controlled_passage_authorized == true"
+    next_action: "recover_clearance_margin"
+    expected_status: "insufficient_clearance"

@@ -1,0 +1,50 @@
+name: "错误报告 / Bug report"
+description: "报告可复现的Core、CLI、Schema或体验页问题 / Report a reproducible issue"
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请勿提交模型密钥、客户数据或未公开材料。
+        Thanks for helping GeoTask. Do not include credentials, customer data, or unpublished materials.
+  - type: textarea
+    id: problem
+    attributes:
+      label: "问题描述 / Problem"
+      description: "发生了什么？预期是什么？ / What happened and what did you expect?"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: "复现步骤 / Reproduction"
+      description: "请给出最小任务、命令和步骤 / Provide the smallest task, command, and steps"
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: "实际输出 / Actual output"
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: "版本或提交 / Version or commit"
+      placeholder: "0.1.0 / commit hash"
+  - type: dropdown
+    id: area
+    attributes:
+      label: "影响范围 / Area"
+      options:
+        - Parser / Canonicalizer
+        - Validator / Schema
+        - Operator / Executor
+        - Result / Assurance
+        - CLI
+        - Documentation
+        - GT experience page
+        - Other
+    validations:
+      required: true

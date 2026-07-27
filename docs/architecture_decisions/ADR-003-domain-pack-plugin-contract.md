@@ -49,7 +49,7 @@ Core contract methods:
 | `get_report_templates()` | `list[dict[str, Any]]` | Output format templates |
 | `get_human_review_rules()` | `list[dict[str, Any]]` | Review escalation rules |
 
-See [`domain_pack_architecture.md`](../domain_pack_architecture.md) for the full Protocol definition.
+The full commercial Domain Pack protocol remains outside the public repository; see [Target Specification Status](../spec/target-specification-status.md) for the public-facing scope.
 
 ---
 
@@ -184,7 +184,7 @@ def validate_pack(pack: object) -> bool:
 
 ## References
 
-- [`docs/domain_pack_architecture.md`](../domain_pack_architecture.md)
+- [Target Specification Status](../spec/target-specification-status.md)
 - [`docs/product_architecture_v0_1.md`](../product_architecture_v0_1.md)
 - [ADR-001: Three-Layer Architecture](ADR-001-core-runtime-domain-pack.md)
 - [ADR-002: Private Runtime Boundary](ADR-002-private-runtime-boundary.md)

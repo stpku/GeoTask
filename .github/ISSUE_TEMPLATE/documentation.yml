@@ -1,0 +1,33 @@
+name: "文档问题 / Documentation"
+description: "报告断链、过时说明、中英文不一致或理解障碍 / Report broken, stale, or unclear documentation"
+title: "[Docs] "
+labels: ["documentation"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: "文档位置 / Location"
+      placeholder: "README.md, docs/tutorials/quickstart.zh-CN.md, URL..."
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: "问题 / Problem"
+      description: "哪里不准确、断链或难以理解？ / What is inaccurate, broken, or unclear?"
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: "建议修改 / Suggested change"
+  - type: dropdown
+    id: language
+    attributes:
+      label: "语言 / Language"
+      options:
+        - 简体中文
+        - English
+        - Both / 双语
+    validations:
+      required: true

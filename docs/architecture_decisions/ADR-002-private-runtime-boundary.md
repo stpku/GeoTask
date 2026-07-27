@@ -101,7 +101,7 @@ Keeping Runtime private preserves clean patent prosecution paths.
 
 ## References
 
-- [`docs/patent_boundary.md`](../patent_boundary.md)
+- [ADR-004: Patent and Open Source Boundary](ADR-004-patent-and-open-source-boundary.md)
 - [`docs/open_core_commercial_runtime_boundary.md`](../open_core_commercial_runtime_boundary.md)
 - [`docs/product_architecture_v0_1.md`](../product_architecture_v0_1.md)
 - [ADR-001: Three-Layer Architecture](ADR-001-core-runtime-domain-pack.md)

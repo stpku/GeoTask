@@ -1,0 +1,40 @@
+name: "应用案例建议 / Weekly case proposal"
+description: "建议新的机器人、无人机、车辆或城市时空任务案例 / Propose a new application case"
+title: "[Case] "
+labels: ["case-proposal"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: "案例问题 / Case question"
+      description: "请用一句具体问题描述案例 / State the case as one concrete question"
+      placeholder: "例如：离事故点最近的救援队，为什么不一定最快到达？"
+    validations:
+      required: true
+  - type: textarea
+    id: objects
+    attributes:
+      label: "对象和约束 / Objects and constraints"
+      description: "空间、时间、资源、对象能力和规则 / Space, time, resources, capabilities, and rules"
+    validations:
+      required: true
+  - type: textarea
+    id: actions
+    attributes:
+      label: "候选动作 / Candidate actions"
+      description: "建议至少给出三个有明显差异的动作 / Provide at least three differentiated actions"
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: "可验证部分 / Deterministic verification"
+      description: "哪些结论可复用当前Core算子？哪些属于extensions？"
+    validations:
+      required: true
+  - type: textarea
+    id: limits
+    attributes:
+      label: "真实应用边界 / Real-world limitations"
+    validations:
+      required: true

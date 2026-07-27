@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "安全问题 / Security vulnerability"
+    url: "https://github.com/stpku/GeoTask/security/policy"
+    about: "请勿公开披露安全漏洞 / Do not disclose security vulnerabilities publicly"
+  - name: "GeoTask体验页 / Experience site"
+    url: "https://stpku.github.io/GeoTask/"
+    about: "先体验GT01—GT13公开案例 / Try the public GT01–GT13 cases"

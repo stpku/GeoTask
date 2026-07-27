@@ -16,6 +16,8 @@
 - Add documentation conformance tests and public-export requirements for the specification set.
 - Restore a Chinese-first GitHub entry point with a full English mirror, localized Quickstart/Cookbook, bilingual contribution guidance, and community templates.
 - Extend public-export checks to require localized entry points, reject obsolete repository URLs, and validate every public Markdown relative link.
+- Replace the former GT01 root page with a Chinese project portal covering architecture, GT01–GT13, documentation, public boundaries, and contribution entry points.
+- Move GT01 to `site/gt01/`, add project-home navigation to every case, and publish canonical metadata, `robots.txt`, and `sitemap.xml`.
 
 ## 0.1.0
 

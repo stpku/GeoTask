@@ -1,28 +1,62 @@
-# GeoTask mobile experience page
+# GeoTask项目门户与案例体验站
 
-This directory contains the static mobile page used by the `GeoTask 每周一例` series.
-It has no backend, analytics, cookies, account system, model key, or external JavaScript dependency.
+`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT13互动案例、`robots.txt`和`sitemap.xml`。
 
-## Current cases
+站点没有后台、统计脚本、Cookie、账号系统、模型密钥或外部JavaScript依赖。案例页只在浏览器中复制任务、执行局部确定性复算，并跳转到用户选择的大模型平台。
 
-- `GT01`: distance between `(0, 0)` and `(3, 4)`; expected result `ab_distance = 5.0 meter`
-- `GT02`: distance between `(0, 0)` and `(120, 80)`; compare a model result with the browser-local deterministic result `144.22 meter`
-- `GT03`: four-point route where only the final segment intersects a rectangular restricted zone; expected result `route_intersects_zone = true`
-- `GT04`: identical 2D footprints with vertically separated altitude ranges `[100, 150]` and `[300, 500]`; expected result `altitude_conflict = false`
-- `GT05`: identical position and altitude but separated time windows `08:00–09:00` and `15:00–17:00`; expected result `temporal_conflict = false`
-- `GT06`: route intersection and altitude overlap are true, time overlap is false; explicit `AND` rule produces `full_conflict = false`
-- `GT07`: route and altitude checks are true, but the required schedule condition is unverifiable; three-valued `AND` propagates `unknown`
-- `GT08`: an unverifiable schedule condition triggers a structured evidence request, blocks unsafe outputs, and defines a resume condition
-- `GT09`: two verified temporary no-fly notices for the same UAV mission produce incompatible temporal results; a conflict review task blocks unsafe source selection
-- `GT10`: two warehouse robots compete for a single-capacity aisle; route and time conflict plus an explicit priority policy produce `robot_b_wait`
-- `GT11`: a delivery robot is only 50 meters from its target geometrically but must follow a 300-meter accessible network because of stairs, a fence, and a motor-vehicle lane
-- `GT12`: a delivery UAV can reach the target geometrically, but an 11-kilometer legal detour plus a 2-kilometer safety reserve exceeds its remaining 12-kilometer range
-- `GT13`: an open road is narrowed to 2.4 meters by roadworks, while an autonomous vehicle requires a 2.7-meter object-specific safety envelope
-- Public repository: <https://github.com/stpku/GeoTask>
+## 信息架构
 
-Primary experience URLs:
+```text
+site/index.html          GeoTask项目总门户
+site/gt01/index.html     GT01两点距离体验
+site/gt02/index.html     GT02独立验证体验
+...
+site/gt13/index.html     GT13车辆安全包络体验
+site/robots.txt          搜索引擎规则
+site/sitemap.xml         门户与GT01—GT13索引
+```
+
+根地址始终代表GeoTask项目本身，不再代表某一个案例。每个案例使用独立稳定地址，并提供返回项目首页的入口。
+
+## 当前案例
+
+- `GT01`：计算`(0,0)`与`(3,4)`之间的距离，结果为`ab_distance = 5.0 meter`
+- `GT02`：比较模型结果与浏览器本地确定性结果`144.22 meter`
+- `GT03`：四点折线的最后一段进入矩形限制区，结果为`route_intersects_zone = true`
+- `GT04`：二维投影相同但高度区间分离，结果为`altitude_conflict = false`
+- `GT05`：空间和高度相同但时间分离，结果为`temporal_conflict = false`
+- `GT06`：路线和高度条件为true、时间条件为false，显式AND得到`full_conflict = false`
+- `GT07`：时间条件无法核验，三值逻辑传播`unknown`
+- `GT08`：不可核验条件触发结构化证据请求、阻断输出和恢复条件
+- `GT09`：两份已核验临时禁飞通知产生冲突，进入证据冲突复核
+- `GT10`：两台机器人争用单容量窄通道，根据显式优先级生成`robot_b_wait`
+- `GT11`：目标直线距离50米，但轮式机器人可达网络路线为300米
+- `GT12`：合法绕飞路线加安全余量超过无人机剩余航程
+- `GT13`：道路开放但施工通道2.4米，小于车辆2.7米安全包络
+
+## 公共访问地址
+
+GitHub Pages是公共Canonical入口：
+
+- <https://stpku.github.io/GeoTask/>
+- <https://stpku.github.io/GeoTask/gt01/>
+- <https://stpku.github.io/GeoTask/gt02/>
+- <https://stpku.github.io/GeoTask/gt03/>
+- <https://stpku.github.io/GeoTask/gt04/>
+- <https://stpku.github.io/GeoTask/gt05/>
+- <https://stpku.github.io/GeoTask/gt06/>
+- <https://stpku.github.io/GeoTask/gt07/>
+- <https://stpku.github.io/GeoTask/gt08/>
+- <https://stpku.github.io/GeoTask/gt09/>
+- <https://stpku.github.io/GeoTask/gt10/>
+- <https://stpku.github.io/GeoTask/gt11/>
+- <https://stpku.github.io/GeoTask/gt12/>
+- <https://stpku.github.io/GeoTask/gt13/>
+
+当前开发镜像：
 
 - <https://skyswind.tailf4fad8.ts.net/geotask/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt01/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt02/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt03/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt04/>
@@ -36,50 +70,37 @@ Primary experience URLs:
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt12/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt13/>
 
-## GitHub Pages deployment
+公共仓库：<https://github.com/stpku/GeoTask>
 
-The workflow `.github/workflows/pages.yml` publishes this directory after a push to `main`.
-After the first workflow run, open repository **Settings > Pages** and confirm that the source is
-**GitHub Actions**. The expected project-page address is:
+## GitHub Pages部署
+
+`.github/workflows/pages.yml`在公共仓`main`分支更新后发布完整`site/`目录。仓库Settings > Pages的Source应设置为GitHub Actions。
+
+工作流上传路径必须保持：
 
 ```text
-https://stpku.github.io/GeoTask/
+site
 ```
 
-The site uses only relative assets, so the project subpath does not require a base-path rewrite.
+站点使用相对链接，可以直接部署在`/GeoTask/`项目子路径下。
 
-## [redacted-internal-identifier] Cloud deployment
+## Nginx部署
 
-The same directory can be uploaded unchanged to either:
-
-1. an OBS bucket configured for static website hosting and a custom HTTPS domain; or
-2. an existing Nginx static directory behind a custom HTTPS domain.
-
-For Nginx, deploy the complete `site/` tree. Copying only the root `index.html` leaves nested cases
-such as `gt02/index.html` unavailable:
+必须同步完整目录，而不是只处理根页：
 
 ```bash
 sudo rsync -a --delete site/ /var/www/geotask-experience/
 test -f /var/www/geotask-experience/index.html
+test -f /var/www/geotask-experience/gt01/index.html
 test -f /var/www/geotask-experience/gt02/index.html
-test -f /var/www/geotask-experience/gt03/index.html
-test -f /var/www/geotask-experience/gt04/index.html
-test -f /var/www/geotask-experience/gt05/index.html
-test -f /var/www/geotask-experience/gt06/index.html
-test -f /var/www/geotask-experience/gt07/index.html
-test -f /var/www/geotask-experience/gt08/index.html
-test -f /var/www/geotask-experience/gt09/index.html
-test -f /var/www/geotask-experience/gt10/index.html
-test -f /var/www/geotask-experience/gt11/index.html
-test -f /var/www/geotask-experience/gt12/index.html
 test -f /var/www/geotask-experience/gt13/index.html
+test -f /var/www/geotask-experience/robots.txt
+test -f /var/www/geotask-experience/sitemap.xml
 ```
 
-The repository also includes `site/deploy-nginx.sh`, which performs the recursive sync, checks
-GT01 through GT13, validates Nginx, and reloads the service.
+仓库中的`site/deploy-nginx.sh`会执行递归同步，检查项目门户、GT01—GT13、robots和sitemap，再验证并重载Nginx。
 
-Use a static location that serves directory index files and does not rewrite every missing nested
-path back to GT01:
+推荐配置：
 
 ```nginx
 location = /geotask {
@@ -94,23 +115,22 @@ location /geotask/ {
 }
 ```
 
-After deployment:
+不要配置把所有缺失路径回退到`/geotask/index.html`的规则，否则会用项目门户掩盖丢失的案例文件。
+
+部署后：
 
 ```bash
 sudo nginx -t
 sudo systemctl reload nginx
+curl -I https://skyswind.tailf4fad8.ts.net/geotask/
+curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt01/
 curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt13/
 ```
 
-Each nested response must come from its matching directory index. Do not configure a fallback to
-`/geotask/index.html`, because that masks missing nested files by showing GT01.
+## 发布原则
 
-Clipboard access is most reliable on HTTPS. Do not put model API keys or other secrets into this
-static directory.
-
-## Publishing recommendation
-
-- Use GitHub Pages first for immediate validation and as a permanent backup.
-- Use a [redacted-internal-identifier] Cloud custom HTTPS domain as the primary WeChat entry after the domain and filing
-  requirements are ready.
-- Point the WeChat keyword reply `GT01` and the article's `阅读原文` to the primary experience URL.
+- GitHub Pages作为公共Canonical入口和长期备份；
+- 开发镜像用于内部验收和国内访问测试；
+- 微信文章的“阅读原文”直接链接对应GT案例，不再把根地址当作GT01；
+- 新增案例时同时更新项目门户、sitemap、部署检查、README和自动化测试；
+- 任何静态文件中都不得写入模型密钥、客户数据或内部路径。

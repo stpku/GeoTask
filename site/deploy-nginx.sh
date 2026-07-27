@@ -5,7 +5,17 @@ SOURCE="${1:-site}"
 TARGET="${2:-/var/www/geotask-experience}"
 
 if [[ ! -f "$SOURCE/index.html" ]]; then
-  echo "Missing GT01 page: $SOURCE/index.html" >&2
+  echo "Missing GeoTask project portal: $SOURCE/index.html" >&2
+  exit 1
+fi
+
+if [[ ! -f "$SOURCE/gt01/index.html" ]]; then
+  echo "Missing GT01 page: $SOURCE/gt01/index.html" >&2
+  exit 1
+fi
+
+if [[ ! -f "$SOURCE/robots.txt" || ! -f "$SOURCE/sitemap.xml" ]]; then
+  echo "Missing robots.txt or sitemap.xml in $SOURCE" >&2
   exit 1
 fi
 
@@ -73,6 +83,9 @@ sudo install -d -m 0755 "$TARGET"
 sudo rsync -a --delete "$SOURCE/" "$TARGET/"
 
 test -f "$TARGET/index.html"
+test -f "$TARGET/gt01/index.html"
+test -f "$TARGET/robots.txt"
+test -f "$TARGET/sitemap.xml"
 test -f "$TARGET/gt02/index.html"
 test -f "$TARGET/gt03/index.html"
 test -f "$TARGET/gt04/index.html"
@@ -90,7 +103,8 @@ sudo nginx -t
 sudo systemctl reload nginx
 
 echo "GeoTask static site deployed:"
-echo "  GT01: $TARGET/index.html"
+echo "  Portal: $TARGET/index.html"
+echo "  GT01: $TARGET/gt01/index.html"
 echo "  GT02: $TARGET/gt02/index.html"
 echo "  GT03: $TARGET/gt03/index.html"
 echo "  GT04: $TARGET/gt04/index.html"
@@ -106,6 +120,7 @@ echo "  GT13: $TARGET/gt13/index.html"
 echo
 echo "Verify externally:"
 echo "  https://skyswind.tailf4fad8.ts.net/geotask/"
+echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt01/"
 echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt02/"
 echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt03/"
 echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt04/"

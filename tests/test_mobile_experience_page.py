@@ -4,7 +4,7 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE = ROOT / "site" / "index.html"
+PAGE = ROOT / "site" / "gt01" / "index.html"
 WORKFLOW = ROOT / ".github" / "workflows" / "pages.yml"
 MANIFEST = ROOT / ".release" / "public-manifest.yaml"
 

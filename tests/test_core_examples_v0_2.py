@@ -78,6 +78,7 @@ def test_public_safe_core_examples_validate_and_run():
         CORE_EXAMPLES / "robot_corridor_coordination.yaml",
         CORE_EXAMPLES / "robot_accessible_route.yaml",
         CORE_EXAMPLES / "uav_energy_reserve.yaml",
+        CORE_EXAMPLES / "vehicle_clearance_envelope.yaml",
     ]
 
     for example in expected_examples:
@@ -101,6 +102,7 @@ def test_examples_readme_lists_core_examples():
     assert "examples/core/robot_corridor_coordination.yaml" in readme
     assert "examples/core/robot_accessible_route.yaml" in readme
     assert "examples/core/uav_energy_reserve.yaml" in readme
+    assert "examples/core/vehicle_clearance_envelope.yaml" in readme
     assert "public-safe" in readme
 
 

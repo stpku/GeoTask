@@ -17,6 +17,7 @@ It has no backend, analytics, cookies, account system, model key, or external Ja
 - `GT10`: two warehouse robots compete for a single-capacity aisle; route and time conflict plus an explicit priority policy produce `robot_b_wait`
 - `GT11`: a delivery robot is only 50 meters from its target geometrically but must follow a 300-meter accessible network because of stairs, a fence, and a motor-vehicle lane
 - `GT12`: a delivery UAV can reach the target geometrically, but an 11-kilometer legal detour plus a 2-kilometer safety reserve exceeds its remaining 12-kilometer range
+- `GT13`: an open road is narrowed to 2.4 meters by roadworks, while an autonomous vehicle requires a 2.7-meter object-specific safety envelope
 - Public repository: <https://github.com/stpku/GeoTask>
 
 Primary experience URLs:
@@ -33,6 +34,7 @@ Primary experience URLs:
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt10/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt11/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt12/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt13/>
 
 ## GitHub Pages deployment
 
@@ -70,10 +72,11 @@ test -f /var/www/geotask-experience/gt09/index.html
 test -f /var/www/geotask-experience/gt10/index.html
 test -f /var/www/geotask-experience/gt11/index.html
 test -f /var/www/geotask-experience/gt12/index.html
+test -f /var/www/geotask-experience/gt13/index.html
 ```
 
 The repository also includes `site/deploy-nginx.sh`, which performs the recursive sync, checks
-GT01 through GT12, validates Nginx, and reloads the service.
+GT01 through GT13, validates Nginx, and reloads the service.
 
 Use a static location that serves directory index files and does not rewrite every missing nested
 path back to GT01:
@@ -96,7 +99,7 @@ After deployment:
 ```bash
 sudo nginx -t
 sudo systemctl reload nginx
-curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt12/
+curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt13/
 ```
 
 Each nested response must come from its matching directory index. Do not configure a fallback to

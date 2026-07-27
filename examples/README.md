@@ -26,6 +26,8 @@ patent-sensitive workflows.
   distance but a 300-meter accessible route due to mobility and network constraints.
 - `examples/core/uav_energy_reserve.yaml`: a UAV whose 8-kilometer direct route is illegal
   and whose 11-kilometer detour plus a 2-kilometer reserve exceeds its remaining range.
+- `examples/core/vehicle_clearance_envelope.yaml`: an open road narrowed to 2.4 meters
+  where an autonomous vehicle requires a 2.7-meter object-specific safety envelope.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

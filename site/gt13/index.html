@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第13期：道路开放但施工通道只有2.4米，自动驾驶车辆安全包络需要2.7米，因此必须改道或申请受控通行。">
+  <title>GeoTask GT13｜道路没有封闭，车辆为什么还是过不去</title>
+  <style>
+    :root{color-scheme:light;--navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--amber:#b97816;--ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;--success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--warm:#fff7e8;--shadow:0 14px 40px rgba(20,52,77,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,780px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.4vw,42px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}.formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:16px;font-weight:750;overflow-wrap:anywhere}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}svg{display:block;width:100%;height:auto}.visual{padding:10px;border:1px solid #e4ebef;border-radius:16px;background:#fff}
+    .state-grid,.width-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.state,.width-item{min-width:0;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.state strong,.width-item strong{display:block;color:var(--navy)}.state .value,.width-item .value{font:900 26px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}.state.open .value{color:var(--green)}.state.blocked .value{color:var(--red)}.width-item.available .value{color:var(--blue)}.width-item.required .value{color:var(--amber)}.width-item.shortfall{background:var(--danger);border-color:var(--danger-line)}.width-item.shortfall .value{color:var(--red)}.equation{margin-top:12px;padding:14px;border-radius:14px;background:var(--warm);color:#75520f;text-align:center;font-weight:850;overflow-wrap:anywhere}
+    .gate{margin-top:14px;padding:16px;border:1px solid var(--danger-line);border-radius:16px;background:var(--danger)}.gate h3{margin:0 0 10px;color:#a33a32}.blocked{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.blocked div{padding:10px;border-radius:12px;background:#fff;color:#a33a32;text-align:center;font-weight:800}.recovery{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}.recovery div{padding:10px;border-radius:12px;background:rgba(255,255,255,.85);color:var(--navy);font-weight:750}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}.verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}.verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:#a33a32}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.75)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:13px;font-weight:850;overflow-wrap:anywhere}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a33a32}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:570px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(max-width:420px){.width-grid,.blocked{grid-template-columns:1fr}}@media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}.recovery{grid-template-columns:repeat(3,1fr)}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT13</span></div><a class="back" href="../gt12/">← GT12</a></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">自动驾驶 · 对象相关空间包络</p>
+      <h1 id="title">道路没有封闭，车辆为什么还是过不去？</h1>
+      <p class="lead">临时施工只留下2.4米通道。车辆本体宽2.1米，左右各需0.3米安全缓冲，所需空间包络达到2.7米。</p>
+      <div class="formula">selected_action = request_alternate_route_or_controlled_passage</div>
+    </section>
+
+    <section class="card" aria-labelledby="scene-title">
+      <h2 id="scene-title">道路开放，只说明路段没有关闭</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 430" role="img" aria-label="自动驾驶车辆进入临时施工区域，可用宽度小于车辆安全包络">
+          <rect x="70" y="70" width="580" height="290" rx="20" fill="#eef2f4" stroke="#8c999f" stroke-width="3"/>
+          <text x="360" y="105" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#148f62" text-anchor="middle">道路开放</text>
+          <rect x="275" y="125" width="170" height="210" rx="18" fill="#fff0ef" stroke="#c33731" stroke-width="3"/>
+          <text x="360" y="155" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#a33a32" text-anchor="middle">临时施工</text>
+          <line x1="315" y1="175" x2="315" y2="315" stroke="#b97816" stroke-width="8" stroke-dasharray="12 9"/>
+          <line x1="405" y1="175" x2="405" y2="315" stroke="#b97816" stroke-width="8" stroke-dasharray="12 9"/>
+          <line x1="315" y1="195" x2="405" y2="195" stroke="#256fa8" stroke-width="4"/>
+          <text x="360" y="187" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#256fa8" text-anchor="middle">可用宽度 2.4 米</text>
+          <rect x="325" y="215" width="70" height="92" rx="12" fill="#14344d"/>
+          <text x="360" y="255" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">自动驾驶</text>
+          <text x="360" y="276" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">车辆</text>
+          <line x1="325" y1="325" x2="395" y2="325" stroke="#14344d" stroke-width="4"/>
+          <text x="360" y="348" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#14344d" text-anchor="middle">车身宽度 2.1 米</text>
+          <rect x="310" y="200" width="100" height="122" rx="16" fill="none" stroke="#c33731" stroke-width="4" stroke-dasharray="8 7"/>
+          <text x="520" y="245" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#a33a32">安全包络 2.7 米</text>
+          <text x="520" y="280" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#a33a32">净缺口 0.3 米</text>
+        </svg>
+      </div>
+      <div class="state-grid">
+        <div class="state open"><strong>道路状态</strong><div class="value">open</div><p class="muted">路段未关闭</p></div>
+        <div class="state blocked"><strong>对象可通行性</strong><div class="value">false</div><p class="muted">车辆包络无法通过</p></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="width-title">
+      <h2 id="width-title">车辆需要的不只是车身宽度</h2>
+      <div class="width-grid">
+        <div class="width-item available"><strong>可用宽度</strong><div class="value" id="available-width">2.4 m</div></div>
+        <div class="width-item"><strong>车身宽度</strong><div class="value" id="body-width">2.1 m</div></div>
+        <div class="width-item required"><strong>左右安全缓冲</strong><div class="value">0.3 + 0.3 m</div></div>
+        <div class="width-item required"><strong>所需安全包络</strong><div class="value" id="required-width">2.7 m</div></div>
+        <div class="width-item shortfall"><strong>净缺口</strong><div class="value" id="shortfall">0.3 m</div></div>
+      </div>
+      <div class="equation">2.1 m 车身 + 0.3 m 左缓冲 + 0.3 m 右缓冲 = 2.7 m &gt; 2.4 m</div>
+      <div class="gate">
+        <h3>passage_gate = blocked</h3>
+        <p>道路开放并不等于所有车辆都能安全通过。当前横向净空不足，自动通行必须暂停。</p>
+        <div class="blocked"><div>autonomous_passage</div><div>full_speed_entry</div></div>
+        <div class="recovery"><div>使用替代路线</div><div>申请人工交通管制</div><div>等待施工区恢复宽度</div></div>
+        <p><strong>恢复条件：</strong><code>available_width_m &gt;= required_envelope_width_m</code>，或取得受控通行授权。</p>
+      </div>
+      <p class="warning">安全缓冲不能为了让车辆“看起来能过”而临时缩小。真实缓冲应由车型、速度、定位误差和运行规则共同确定。</p>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型选择通行动作</h2>
+      <p>模型可以选择因为道路开放就直接通过、缩小安全缓冲硬挤过去，或者改道并申请受控通行。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT13 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT13 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">得到模型建议后返回本页，选择对应动作并验证。</p>
+      <details><summary>查看将被复制的完整 GeoTask</summary><pre id="task-source">geotask:
+  id: "gt13-vehicle-clearance-envelope"
+  name: "GT13 Autonomous Vehicle Clearance Envelope"
+  schema_version: "1.0"
+
+application_context:
+  scenario: "autonomous_vehicle_roadwork_clearance"
+  vehicle: "autonomous_shuttle"
+
+road_state:
+  road_open: true
+  temporary_roadwork_active: true
+  narrowed_passage_width_m: 2.4
+
+vehicle_profile:
+  vehicle_body_width_m: 2.1
+  left_safety_buffer_m: 0.3
+  right_safety_buffer_m: 0.3
+  required_envelope_width_m: 2.7
+
+clearance_budget:
+  available_width_m: 2.4
+  required_width_m: 2.7
+  clearance_shortfall_m: 0.3
+  road_state_allows_entry: true
+  object_specific_passability: false
+
+passage_gate:
+  status: "blocked"
+  reason: "insufficient_lateral_clearance"
+  blocked_outputs: ["autonomous_passage", "full_speed_entry"]
+  selected_action: "request_alternate_route_or_controlled_passage"
+  rejected_actions: ["proceed_because_road_open", "shrink_safety_buffer_to_fit"]
+  resume_when: "available_width_m >= required_envelope_width_m or controlled_passage_authorized == true"
+  next_action: "recover_clearance_margin"
+  expected_status: "insufficient_clearance"
+
+instructions_for_model:
+  - "Choose one action from proceed_because_road_open, shrink_safety_buffer_to_fit, or request_alternate_route_or_controlled_passage."
+  - "Do not equate an open road state with object-specific passability."
+  - "Do not shrink an explicit safety buffer to make the route appear feasible."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：验证模型选择的动作</h2>
+      <div class="samples" aria-label="模型动作候选">
+        <button class="sample" id="btn-proceed" type="button">道路开放，直接通过</button>
+        <button class="sample" id="btn-shrink" type="button">缩小安全缓冲硬挤过去</button>
+        <button class="sample wide" id="btn-recover" type="button">改道或申请受控通行</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics">
+          <div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div>
+          <div class="metric"><small>本地任务动作</small><code id="local-action">request_alternate_route_or_controlled_passage</code></div>
+          <div class="metric"><small>可用宽度</small><code id="metric-available">2.4 m</code></div>
+          <div class="metric"><small>安全包络</small><code id="metric-required">2.7 m</code></div>
+        </div>
+        <p class="message" id="verification-message">候选来源：model_generated；施工区、宽度和安全包络：local_deterministic。</p>
+      </div>
+      <p class="warning">GT13只演示横向净空。真实自动驾驶通行还需考虑高度、转弯包络、动态障碍、路缘、速度、定位误差和现场交通组织。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>仓库中同时新增了可由GeoTask Core真实计算施工通道宽度、车身宽度和路线进入施工区关系的公开示例。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt12/">← GT12</a></div></section>
+    <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>道路开放，不等于这辆车可通过。</div></footer>
+  </main>
+
+  <script>
+    (()=>{
+      const vehicleRoute=[[-50,0],[50,0]],roadworkZone=[-10,-3,10,3],leftBoundary=[0,-1.2],rightBoundary=[0,1.2],bodyLeft=[0,-1.05],bodyRight=[0,1.05];
+      const leftSafetyBufferM=.3,rightSafetyBufferM=.3;
+      function distance2d(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1])}
+      function pointInRect(point,rect){return rect[0]<=point[0]&&point[0]<=rect[2]&&rect[1]<=point[1]&&point[1]<=rect[3]}
+      function cross(origin,a,b){return(a[0]-origin[0])*(b[1]-origin[1])-(a[1]-origin[1])*(b[0]-origin[0])}
+      function onSegment(p,q,r){return Math.min(p[0],r[0])<=q[0]&&q[0]<=Math.max(p[0],r[0])&&Math.min(p[1],r[1])<=q[1]&&q[1]<=Math.max(p[1],r[1])}
+      function segmentsIntersect(p1,p2,p3,p4){const d1=cross(p3,p4,p1),d2=cross(p3,p4,p2),d3=cross(p1,p2,p3),d4=cross(p1,p2,p4);if(((d1>0&&d2<0)||(d1<0&&d2>0))&&((d3>0&&d4<0)||(d3<0&&d4>0)))return true;if(d1===0&&onSegment(p3,p1,p4))return true;if(d2===0&&onSegment(p3,p2,p4))return true;if(d3===0&&onSegment(p1,p3,p2))return true;if(d4===0&&onSegment(p1,p4,p2))return true;return false}
+      function lineIntersectsRect(points,rect){const[minX,minY,maxX,maxY]=rect,edges=[[[minX,minY],[maxX,minY]],[[maxX,minY],[maxX,maxY]],[[maxX,maxY],[minX,maxY]],[[minX,maxY],[minX,minY]]];for(let i=0;i<points.length-1;i+=1){const p1=points[i],p2=points[i+1];if(pointInRect(p1,rect)||pointInRect(p2,rect))return true;for(const[e1,e2]of edges)if(segmentsIntersect(p1,p2,e1,e2))return true}return false}
+      function calculateEnvelope(bodyWidth,leftBuffer,rightBuffer,availableWidth){const requiredEnvelopeWidthM=Math.round((bodyWidth+leftBuffer+rightBuffer)*10)/10,clearanceShortfallM=Math.max(0,Math.round((requiredEnvelopeWidthM-availableWidth)*10)/10);return{requiredEnvelopeWidthM,availableWidthM:availableWidth,clearanceShortfallM,passable:availableWidth>=requiredEnvelopeWidthM}}
+      const availableWidthM=distance2d(leftBoundary,rightBoundary),vehicleBodyWidthM=distance2d(bodyLeft,bodyRight),envelope=calculateEnvelope(vehicleBodyWidthM,leftSafetyBufferM,rightSafetyBufferM,availableWidthM),requiredEnvelopeWidthM=envelope.requiredEnvelopeWidthM,clearanceShortfallM=Math.round(envelope.clearanceShortfallM*10)/10,routeEntersRoadwork=lineIntersectsRect(vehicleRoute,roadworkZone);
+      const localAction=routeEntersRoadwork&&!envelope.passable?"request_alternate_route_or_controlled_passage":"review_configuration";
+      function evaluateCandidate(action){if(action==="request_alternate_route_or_controlled_passage")return{status:localAction===action?"verified":"contradicted",message:`可用宽度${availableWidthM}米，小于${requiredEnvelopeWidthM}米安全包络，净缺口${clearanceShortfallM}米。`};if(action==="proceed_because_road_open")return{status:"contradicted",message:"道路开放只表示路段未关闭，不能覆盖对象相关的横向净空约束。"};if(action==="shrink_safety_buffer_to_fit")return{status:"contradicted",message:"左右安全缓冲是显式约束，不能为了让车辆通过而临时缩小。"};return{status:"contradicted",message:"未知候选动作。"}}
+      const localEvidence={available_width_m:availableWidthM,vehicle_body_width_m:vehicleBodyWidthM,required_envelope_width_m:requiredEnvelopeWidthM,clearance_shortfall_m:clearanceShortfallM,route_enters_roadwork_zone:routeEntersRoadwork,provenance:"local_deterministic"};
+      let selectedAction=null;
+      document.getElementById("available-width").textContent=`${availableWidthM} m`;document.getElementById("body-width").textContent=`${vehicleBodyWidthM} m`;document.getElementById("required-width").textContent=`${requiredEnvelopeWidthM} m`;document.getElementById("shortfall").textContent=`${clearanceShortfallM} m`;document.getElementById("local-action").textContent=localAction;document.getElementById("metric-available").textContent=`${availableWidthM} m`;document.getElementById("metric-required").textContent=`${requiredEnvelopeWidthM} m`;
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status"),btnProceed=document.getElementById("btn-proceed"),btnShrink=document.getElementById("btn-shrink"),btnRecover=document.getElementById("btn-recover"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status"),card=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelAction=document.getElementById("model-action"),message=document.getElementById("verification-message");
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到通行建议后请返回本页验证。":"已复制。可粘贴到任意大模型，得到通行建议后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAction(value){selectedAction=value;btnProceed.classList.toggle("active",value==="proceed_because_road_open");btnShrink.classList.toggle("active",value==="shrink_safety_buffer_to_fit");btnRecover.classList.toggle("active",value==="request_alternate_route_or_controlled_passage");verifyStatus.textContent=`已选择模型动作：${value}`}
+      function verifyModelAction(){if(selectedAction===null){verifyStatus.textContent="请先选择模型动作。";return}const result=evaluateCandidate(selectedAction),consistent=result.status==="verified";card.classList.remove("verified","contradicted");card.classList.add(result.status);badge.textContent=result.status;modelAction.textContent=selectedAction;message.textContent=result.message;verifyStatus.textContent=consistent?"验证通过：模型区分了道路状态与对象可通行性。":"发现冲突：模型忽略了车辆安全包络或主动缩小了安全缓冲。"}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnProceed.addEventListener("click",()=>selectAction("proceed_because_road_open"));btnShrink.addEventListener("click",()=>selectAction("shrink_safety_buffer_to_fit"));btnRecover.addEventListener("click",()=>selectAction("request_alternate_route_or_controlled_passage"));verifyButton.addEventListener("click",verifyModelAction);
+    })();
+  </script>
+</body>
+</html>

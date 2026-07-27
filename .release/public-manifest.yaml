@@ -21,6 +21,7 @@ include:
   - "tests/test_cli_inspect.py"
   - "tests/test_core_examples_v0_2.py"
   - "tests/test_mobile_experience_page.py"
+  - "tests/test_project_portal.py"
   - "tests/test_gt02_experience_page.py"
   - "tests/test_gt03_experience_page.py"
   - "tests/test_gt04_experience_page.py"
@@ -176,6 +177,7 @@ required:
   - "site/robots.txt"
   - "site/sitemap.xml"
   - ".github/workflows/pages.yml"
+  - "tests/test_project_portal.py"
 
 forbidden_paths:
   - "src/geotask_runtime/"

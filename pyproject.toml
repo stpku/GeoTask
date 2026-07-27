@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=77.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,21 +7,31 @@ name = "geotask-core"
 version = "0.1.0"
 description = "GeoTask Core: deterministic verification for verifiable spatiotemporal AI-agent tasks"
 readme = "README.en.md"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 authors = [
     { name = "GeoTask Contributors" },
 ]
-keywords = ["spatial", "llm", "task-representation", "geospatial", "ai", "geotask"]
+keywords = [
+    "ai-agents",
+    "spatiotemporal",
+    "spatial-reasoning",
+    "deterministic-verification",
+    "geospatial",
+    "robotics",
+    "uav",
+    "geotask",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: GIS",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
@@ -29,6 +39,14 @@ classifiers = [
 dependencies = [
     "pyyaml>=6.0",
 ]
+
+[project.urls]
+Homepage = "https://stpku.github.io/GeoTask/"
+Documentation = "https://stpku.github.io/GeoTask/"
+Repository = "https://github.com/stpku/GeoTask"
+Issues = "https://github.com/stpku/GeoTask/issues"
+Changelog = "https://github.com/stpku/GeoTask/blob/main/CHANGELOG.md"
+Roadmap = "https://github.com/stpku/GeoTask/blob/main/ROADMAP.md"
 
 [project.optional-dependencies]
 dev = [

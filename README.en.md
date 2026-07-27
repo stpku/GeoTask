@@ -6,6 +6,9 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![CI](https://github.com/stpku/GeoTask/actions/workflows/ci.yml/badge.svg)](https://github.com/stpku/GeoTask/actions/workflows/ci.yml)
+[![Pages](https://github.com/stpku/GeoTask/actions/workflows/pages.yml/badge.svg)](https://stpku.github.io/GeoTask/)
+[![Release](https://img.shields.io/github/v/release/stpku/GeoTask?include_prereleases&label=release)](https://github.com/stpku/GeoTask/releases)
 
 GeoTask turns spatial, temporal, evidential, resource, and action constraints into explicit YAML tasks that both models and programs can read. GeoTask Core then recomputes supported claims with local deterministic operators, so a fluent model response is not mistaken for a verified result.
 
@@ -22,6 +25,8 @@ GeoTask turns spatial, temporal, evidential, resource, and action constraints in
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
 - [GT01–GT13 Cookbook](docs/cookbook/gt01-gt13.md)
+- [v0.1.0 Public Preview release notes](docs/release_v0_1_0.md)
+- [Public roadmap](ROADMAP.md)
 - [Documentation index](docs/README.en.md)
 
 ## Why GeoTask

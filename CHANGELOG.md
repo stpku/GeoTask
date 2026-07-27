@@ -1,36 +1,37 @@
 # Changelog
 
-## 0.2.0-dev
+All notable public changes to GeoTask Core are documented here.
 
-- Add GeoTask Normalizer v0.2 with enhanced extraction (CN/EN/YAML/Markdown).
-- Add local Verifier for normalized model outputs.
-- Add verified / contradicted / need_review statuses.
-- Add CLI --geotask flag for normalize command.
-- Add model output examples (DeepSeek CN, GPT YAML-like, Markdown, error cases).
-- Add result_schema.py with status constants and builder functions.
-- Add docs: normalizer_v0_2_design.md, patent_normalizer_disclosure.md.
+## [0.1.0] - 2026-07-27
 
-- Add GeoTask White Paper v0.1 and a public documentation index.
-- Add the implemented GeoTask Language and Execution Specification v1.0.
-- Add a Draft 2020-12 JSON Schema, Quickstart, status/evidence references, and GT01–GT13 Cookbook.
-- Add documentation conformance tests and public-export requirements for the specification set.
-- Restore a Chinese-first GitHub entry point with a full English mirror, localized Quickstart/Cookbook, bilingual contribution guidance, and community templates.
-- Extend public-export checks to require localized entry points, reject obsolete repository URLs, and validate every public Markdown relative link.
-- Replace the former GT01 root page with a Chinese project portal covering architecture, GT01–GT13, documentation, public boundaries, and contribution entry points.
-- Move GT01 to `site/gt01/`, add project-home navigation to every case, and publish canonical metadata, `robots.txt`, and `sitemap.xml`.
-- Make public-manifest documentation checks consistent across Python 3.10–3.13 and upgrade official GitHub Actions to their Node 24 major versions.
-- Preserve GitHub-side Markdown formatting improvements in the development source so future public exports do not overwrite them.
+### Added
 
-## 0.1.0
+- Publish the first GeoTask Core Public Preview.
+- Add six canonical object types: `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
+- Add six deterministic local operators: `distance_2d`, `line_intersects_rect`, `point_to_line_distance_2d`, `rect_contains_point`, `time_overlap`, and `altitude_overlap`.
+- Add YAML parsing, canonicalization, structural validation, deterministic execution, structured result models, and assurance metadata.
+- Add model-output normalization, local verification, evaluator support, and CLI commands for validation, execution, inspection, normalization, and evaluation.
+- Add GT01–GT13 progressive public cases covering spatial relations, spatiotemporal composition, evidence governance, robot coordination, UAV energy reserve, and vehicle clearance envelopes.
+- Add the GeoTask White Paper v0.1, implemented Language and Execution Specification v1.0, Draft 2020-12 JSON Schema, Quickstart, status/evidence references, and bilingual Cookbook.
+- Add a Chinese-first GitHub entry point with a full English mirror, bilingual contribution guidance, community templates, and a public project portal.
+- Add GitHub Pages deployment, canonical metadata, `robots.txt`, `sitemap.xml`, and stable routes for GT01–GT13.
+- Add `CITATION.cff`, a public roadmap, bilingual release notes, CODEOWNERS, and a Trusted Publishing workflow for PyPI.
+- Add Python 3.10–3.13 CI, package build checks, public-export allowlisting, secret scanning, architecture-boundary checks, and documentation conformance tests.
 
-- Rename project from STIR to GeoTask.
-- Rename Python package from `stir_core` to `geotask_core`.
-- Rename primary CLI from `stir` to `geotask`.
-- Rename top-level YAML field from `stir:` to `geotask:`.
-- Add deprecated compatibility for old `stir` YAML top-level field.
-- Add deprecated compatibility for old `stir` CLI command.
-- Add deprecated compatibility aliases for old Python function names.
-- Add migration guide (MIGRATION.md).
-- Add repository migration documentation (docs/repository_migration.md).
-- Add remote migration helper script (scripts/migrate_remote_to_geotask.sh).
-- Update all docs, examples, tests, and configs to GeoTask branding.
+### Changed
+
+- Rename the project from STIR to GeoTask while retaining selected deprecated compatibility aliases for migration.
+- Make documentation and public-manifest checks consistent across Python 3.10–3.13.
+- Upgrade official GitHub Actions to Node 24-compatible major versions.
+- Restrict Python package discovery to `geotask_core*` so Runtime and Domain Pack source trees cannot enter the public wheel.
+- Adopt PEP 639 project license metadata and publish repository, documentation, issue, changelog, and roadmap URLs in package metadata.
+
+### Verification
+
+- Public repository test suite: 336 tests passing.
+- Full source test suite: 764 tests passing, 1 skipped.
+- GitHub CI: Python 3.10, 3.11, 3.12, and 3.13 passing.
+- GitHub Pages portal and GT01–GT13 routes deployed.
+- Public export verification and sensitive-content scan passing.
+
+[0.1.0]: https://github.com/stpku/GeoTask/releases/tag/v0.1.0-public-preview

@@ -1,0 +1,13 @@
+# Default reviewer for the public repository
+* @stpku
+
+# Core protocol and implementation
+/src/geotask_core/ @stpku
+/schemas/ @stpku
+/docs/spec/ @stpku
+
+# Release, CI, and public-export boundaries
+/.release/ @stpku
+/.github/workflows/ @stpku
+/pyproject.toml @stpku
+/CITATION.cff @stpku

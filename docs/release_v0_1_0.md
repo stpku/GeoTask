@@ -1,66 +1,117 @@
-# GeoTask Core v0.1.0 Release Notes
+# GeoTask Core v0.1.0 Public Preview
 
-## Version Statement
+- **Release date:** 2026-07-27
+- **Git tag:** `v0.1.0-public-preview`
+- **Package version:** `0.1.0`
+- **Document Schema:** `1.0`
 
-GeoTask Core v0.1.0 demonstrates that LLMs can read a lightweight spatial task
-representation, perform basic spatial measurement and topology judgment, and
-that local deterministic operators can verify these results.
+[中文说明](#中文发布说明) | [English notes](#english-release-notes)
 
-> GeoTask Core v0.1.0 证明了：大模型可以读取轻量空间任务表达，完成基础空间量算与
-> 拓扑判断；本地确定性算子可以验证结果；Normalizer 可以处理模型输出格式不稳定的问题。
+## 中文发布说明
 
----
+GeoTask Core v0.1.0 Public Preview是GeoTask首个可引用、可下载、可运行的公共预览版本。
 
-## Included
+GeoTask面向AI智能体提供一套可验证时空任务协议：模型负责理解任务并提出候选对象、断言和动作；GeoTask Core负责解析、规范化、验证引用，并通过本地确定性算子复算结果。模型生成的答案不会被直接当作已经验证的结论。
 
-| Component               | Description                                              |
-|-------------------------|----------------------------------------------------------|
-| Format spec             | YAML schema with `geotask`, `space`, `objects`, `ops`, `task` |
-| Object types            | `point`, `line` (segment), `rect` (axis-aligned)         |
-| Operators               | `distance_2d`, `line_intersects_rect`                    |
-| Parser                  | YAML loader + validator with backward compat for `stir:` |
-| Runner                  | Auto-detection for takeoff-school distance and route-zone intersection |
-| Normalizer (lite)       | Extract distance, intersection, operator mentions from LLM text |
-| Evaluator (lite)        | 100-point scoring rubric comparing Core vs LLM output    |
-| CLI                     | `geotask validate/run/normalize/eval`                    |
-| Examples                | 5 example files including main and edge cases            |
-| Tests                   | 57 tests covering parser, ops, runner, normalizer, evaluator |
-| Docs                    | Design principles, format spec, open source boundary, patent boundary, migration |
-| Migration tools         | MIGRATION.md, repository_migration.md, migrate_remote script |
+### 本次发布包含
 
-## Not Included
+- 六类Canonical对象：`point`、`polyline`、`rect`、`time_interval`、`altitude_interval`、`feature_collection`；
+- 六个本地确定性算子：
+  - `distance_2d`
+  - `line_intersects_rect`
+  - `point_to_line_distance_2d`
+  - `rect_contains_point`
+  - `time_overlap`
+  - `altitude_overlap`
+- YAML任务解析、Canonical IR、结构验证和确定性执行；
+- 结构化结果、ClaimStatus、来源与Assurance元数据；
+- 模型输出Normalizer与本地Verifier；
+- `geotask validate`、`geotask run`、`geotask inspect`等CLI能力；
+- GeoTask Language and Execution Specification 1.0；
+- Draft 2020-12 JSON Schema；
+- GT01—GT13渐进式应用案例，覆盖空间关系、时空组合、证据治理、机器人协同、无人机能源余量和车辆安全包络；
+- 中文项目门户、白皮书、Quickstart、Cookbook、贡献指南和社区模板；
+- Python 3.10、3.11、3.12和3.13持续集成；
+- 公共导出白名单、敏感信息扫描和架构边界检查。
 
-| Component                   | Reason                                          |
-|-----------------------------|-------------------------------------------------|
-| GeoTask UAV complex rules   | Domain-specific; belongs in rule pack           |
-| source_refs / provenance    | Heavy audit; belongs in GeoTask Audit            |
-| audit workflow              | Not a Core concern                              |
-| PostGIS / Shapely / GDAL    | Heavy dependencies; Core must stay lightweight  |
-| Real map / airspace data    | Not open source                                 |
-| Business workflow           | Platform-level concern                          |
-| 3D coordinates / polygons   | Planned for future versions                     |
-| Multi-segment polylines     | Planned for future versions                     |
-| Task chaining               | Planned for future versions                     |
-| Unit conversion             | Planned for future versions                     |
+### 快速开始
 
-## Migration from STIR
+```bash
+git clone https://github.com/stpku/GeoTask.git
+cd GeoTask
+pip install -e ".[dev]"
 
-This release represents the rename from STIR to GeoTask:
+geotask validate examples/core/v1_minimal_distance.yaml
+geotask run examples/core/v1_minimal_distance.yaml
+pytest -q
+```
 
-- Package: `stir_core` → `geotask_core`
-- CLI: `stir` → `geotask` (old alias preserved)
-- YAML field: `stir:` → `geotask:` (old field accepted)
-- Repository: `gitee.com/stpku/stir` → `gitee.com/stpku/GeoTask`
+### 发布资产
 
-See [MIGRATION.md](../MIGRATION.md) for detailed migration guidance.
+GitHub Release提供：
 
-## Dependencies
+- Python wheel：`geotask_core-0.1.0-py3-none-any.whl`；
+- Source distribution：`geotask_core-0.1.0.tar.gz`；
+- GitHub自动生成的源代码归档；
+- 本发布说明和固定版本Tag。
 
-- Python >= 3.10
-- PyYAML >= 6.0
-- pytest >= 7.0 (dev only)
+### 验证状态
 
-## License
+- 公共仓库测试：336项通过；
+- Python 3.10—3.13 CI：全部通过；
+- GitHub Pages门户与GT01—GT13：全部上线；
+- Secret Scanning与Push Protection：已启用；
+- 公共导出扫描：未发现密钥、内部路径或二进制泄露。
 
-MIT License. Patent rights retained separately for the underlying system and method.
-See [docs/patent_boundary.md](patent_boundary.md).
+### 当前定位
+
+本版本是Public Preview，而不是稳定的1.0产品版本。当前重点是验证协议表达、确定性执行、模型结果比较、公开案例和开发者体验。未来路线见[`ROADMAP.md`](../ROADMAP.md)。
+
+### 兼容性
+
+项目早期名称为STIR。为降低迁移成本，本版本仍保留部分`stir`字段、CLI和函数兼容入口，但新项目应统一使用GeoTask命名。详见[`MIGRATION.md`](../MIGRATION.md)。
+
+### 引用
+
+研究论文、技术报告和软件项目可使用仓库根目录的[`CITATION.cff`](../CITATION.cff)生成推荐引用格式。
+
+## English Release Notes
+
+GeoTask Core v0.1.0 Public Preview is the first citable, downloadable, and runnable public preview of GeoTask.
+
+GeoTask provides a verifiable spatiotemporal task protocol for AI agents. Models propose objects, assertions, explanations, and candidate actions. GeoTask Core parses and canonicalizes the task, validates references and operator contracts, and recomputes supported claims with deterministic local operators.
+
+### Included in this release
+
+- six canonical object types: `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`;
+- six deterministic local operators: `distance_2d`, `line_intersects_rect`, `point_to_line_distance_2d`, `rect_contains_point`, `time_overlap`, and `altitude_overlap`;
+- YAML parsing, Canonical IR, structural validation, and deterministic execution;
+- structured results, claim status, source, and assurance metadata;
+- model-output normalization and local verification;
+- CLI commands including `geotask validate`, `geotask run`, and `geotask inspect`;
+- GeoTask Language and Execution Specification 1.0;
+- a Draft 2020-12 JSON Schema;
+- GT01–GT13 progressive cases covering spatial relations, spatiotemporal composition, evidence governance, robot coordination, UAV energy reserve, and vehicle clearance envelopes;
+- a project portal, white paper, Quickstart, Cookbook, contributor guides, and community templates;
+- CI on Python 3.10 through 3.13;
+- public-export allowlisting, secret scanning, and architecture-boundary checks.
+
+### Quickstart
+
+```bash
+git clone https://github.com/stpku/GeoTask.git
+cd GeoTask
+pip install -e ".[dev]"
+
+geotask validate examples/core/v1_minimal_distance.yaml
+geotask run examples/core/v1_minimal_distance.yaml
+pytest -q
+```
+
+### Release assets
+
+The GitHub Release includes the Python wheel, source distribution, GitHub source archives, these release notes, and an immutable version tag.
+
+### Status
+
+This is a Public Preview rather than a stable 1.0 product release. The current focus is protocol representation, deterministic execution, model-result comparison, public application cases, and developer experience. See [`ROADMAP.md`](../ROADMAP.md) for planned public directions.

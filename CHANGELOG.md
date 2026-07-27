@@ -18,6 +18,8 @@
 - Extend public-export checks to require localized entry points, reject obsolete repository URLs, and validate every public Markdown relative link.
 - Replace the former GT01 root page with a Chinese project portal covering architecture, GT01–GT13, documentation, public boundaries, and contribution entry points.
 - Move GT01 to `site/gt01/`, add project-home navigation to every case, and publish canonical metadata, `robots.txt`, and `sitemap.xml`.
+- Make public-manifest documentation checks consistent across Python 3.10–3.13 and upgrade official GitHub Actions to their Node 24 major versions.
+- Preserve GitHub-side Markdown formatting improvements in the development source so future public exports do not overwrite them.
 
 ## 0.1.0
 

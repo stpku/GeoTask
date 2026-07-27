@@ -54,9 +54,13 @@ def _write_temp_yaml(content: str) -> str:
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess:
     """Run ``python -m geotask_core.cli`` with *args* and return the process."""
+    env = os.environ.copy()
+    source_path = str(_PROJECT_ROOT / "src")
+    env["PYTHONPATH"] = source_path + os.pathsep + env.get("PYTHONPATH", "")
     return subprocess.run(
         [sys.executable, "-m", "geotask_core.cli", *args],
         capture_output=True,
         text=True,
         cwd=str(_PROJECT_ROOT),
+        env=env,
     )

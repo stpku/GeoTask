@@ -2,6 +2,17 @@
 
 All notable public changes to GeoTask Core are documented here.
 
+## [Unreleased]
+
+### Added
+
+- Add `geotask --version`, `geotask -V`, and `geotask version` for direct CLI version inspection.
+
+### Changed
+
+- Serialize PyPI publishing workflows and skip the publish job when the package version already exists, preventing duplicate manual dispatches from ending as failed releases.
+- Ensure subprocess-based CLI tests execute the current source tree rather than an older installed package.
+
 ## [0.1.1] - 2026-07-27
 
 ### Fixed

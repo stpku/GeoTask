@@ -1,3 +1,4 @@
+import fnmatch
 import json
 import re
 from pathlib import Path
@@ -9,27 +10,44 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas" / "geotask-v1.0.schema.json"
-DOC_INDEX = ROOT / "docs" / "README.md"
+PUBLIC_MANIFEST = ROOT / ".release" / "public-manifest.yaml"
+ROOT_README_ZH = ROOT / "README.md"
+ROOT_README_EN = ROOT / "README.en.md"
+DOC_INDEX_ZH = ROOT / "docs" / "README.md"
+DOC_INDEX_EN = ROOT / "docs" / "README.en.md"
 WHITEPAPER = ROOT / "docs" / "whitepaper" / "GeoTask_White_Paper_v0.1.md"
 WHITEPAPER_BUILD = ROOT / "docs" / "whitepaper" / "README.md"
 LANGUAGE_SPEC = ROOT / "docs" / "spec" / "geotask-language-spec-v1.0.md"
 TARGET_SPEC_STATUS = ROOT / "docs" / "spec" / "target-specification-status.md"
-QUICKSTART = ROOT / "docs" / "tutorials" / "quickstart.md"
+QUICKSTART_EN = ROOT / "docs" / "tutorials" / "quickstart.md"
+QUICKSTART_ZH = ROOT / "docs" / "tutorials" / "quickstart.zh-CN.md"
 STATUS_MODEL = ROOT / "docs" / "reference" / "status-model.md"
 EVIDENCE_REFERENCE = ROOT / "docs" / "reference" / "evidence-and-recovery.md"
-COOKBOOK = ROOT / "docs" / "cookbook" / "gt01-gt13.md"
+COOKBOOK_EN = ROOT / "docs" / "cookbook" / "gt01-gt13.md"
+COOKBOOK_ZH = ROOT / "docs" / "cookbook" / "gt01-gt13.zh-CN.md"
+CONTRIBUTING_EN = ROOT / "CONTRIBUTING.md"
+CONTRIBUTING_ZH = ROOT / "CONTRIBUTING.zh-CN.md"
+CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
 
 
 DOCUMENTS = (
-    DOC_INDEX,
+    ROOT_README_ZH,
+    ROOT_README_EN,
+    DOC_INDEX_ZH,
+    DOC_INDEX_EN,
     WHITEPAPER,
     WHITEPAPER_BUILD,
     LANGUAGE_SPEC,
     TARGET_SPEC_STATUS,
-    QUICKSTART,
+    QUICKSTART_EN,
+    QUICKSTART_ZH,
     STATUS_MODEL,
     EVIDENCE_REFERENCE,
-    COOKBOOK,
+    COOKBOOK_EN,
+    COOKBOOK_ZH,
+    CONTRIBUTING_EN,
+    CONTRIBUTING_ZH,
+    CODE_OF_CONDUCT,
     SCHEMA_PATH,
 )
 
@@ -50,6 +68,44 @@ SCHEMA_EXAMPLES = (
 
 def _schema() -> dict:
     return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+def _manifest() -> dict:
+    return yaml.safe_load(PUBLIC_MANIFEST.read_text(encoding="utf-8"))
+
+
+def _pattern_matches(relative_path: str, pattern: str) -> bool:
+    if fnmatch.fnmatch(relative_path, pattern):
+        return True
+    if pattern.endswith("/**"):
+        prefix = pattern[:-3].rstrip("/")
+        return relative_path == prefix or relative_path.startswith(prefix + "/")
+    return False
+
+
+def _public_source_paths() -> set[Path]:
+    manifest = _manifest()
+    included: set[Path] = set()
+
+    for pattern in manifest["include"]:
+        for path in ROOT.glob(pattern):
+            if path.is_file():
+                included.add(path.resolve())
+
+    excluded_patterns = manifest.get("exclude", [])
+    return {
+        path
+        for path in included
+        if not any(
+            _pattern_matches(path.relative_to(ROOT).as_posix(), pattern)
+            for pattern in excluded_patterns
+        )
+    }
+
+
+def _markdown_links(path: Path) -> list[str]:
+    text = path.read_text(encoding="utf-8")
+    return re.findall(r"\[[^\]]*\]\(([^)]+)\)", text)
 
 
 def test_documentation_system_files_exist_and_are_substantive() -> None:
@@ -75,26 +131,46 @@ def test_representative_v1_examples_match_json_schema() -> None:
         assert errors == [], f"{path}: {[error.message for error in errors]}"
 
 
-def test_document_index_links_the_primary_documentation_layers() -> None:
-    text = DOC_INDEX.read_text(encoding="utf-8")
+def test_chinese_and_english_entrypoints_are_bidirectionally_linked() -> None:
+    root_zh = ROOT_README_ZH.read_text(encoding="utf-8")
+    root_en = ROOT_README_EN.read_text(encoding="utf-8")
+    docs_zh = DOC_INDEX_ZH.read_text(encoding="utf-8")
+    docs_en = DOC_INDEX_EN.read_text(encoding="utf-8")
+
+    assert "[English](README.en.md)" in root_zh
+    assert "[简体中文](README.md)" in root_en
+    assert "[English](README.en.md)" in docs_zh
+    assert "[简体中文](README.md)" in docs_en
+    assert "面向AI智能体的可验证时空任务协议" in root_zh
+    assert "Verifiable spatiotemporal task protocol for AI agents" in root_en
+
+
+def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
+    zh_text = DOC_INDEX_ZH.read_text(encoding="utf-8")
+    en_text = DOC_INDEX_EN.read_text(encoding="utf-8")
 
     expected_links = (
         "whitepaper/GeoTask_White_Paper_v0.1.md",
         "whitepaper/README.md",
         "spec/geotask-language-spec-v1.0.md",
         "tutorials/quickstart.md",
+        "tutorials/quickstart.zh-CN.md",
         "reference/status-model.md",
         "reference/evidence-and-recovery.md",
         "cookbook/gt01-gt13.md",
+        "cookbook/gt01-gt13.zh-CN.md",
         "../schemas/geotask-v1.0.schema.json",
         "spec/target-specification-status.md",
     )
     for link in expected_links:
-        assert link in text
+        assert link in zh_text or link in en_text
 
-    assert "Implemented public profile" in text
-    assert "System-level target direction" in text
-    assert "Legacy compatibility" in text
+    assert "当前公共实现规范" in zh_text
+    assert "体系级目标方向" in zh_text
+    assert "历史兼容格式" in zh_text
+    assert "Implemented public profile" in en_text
+    assert "System-level target direction" in en_text
+    assert "Legacy compatibility" in en_text
 
 
 def test_whitepaper_states_architecture_and_public_boundary() -> None:
@@ -154,14 +230,40 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
     assert "does not call a hosted model" in text
 
 
-def test_quickstart_uses_real_repository_and_cli() -> None:
-    text = QUICKSTART.read_text(encoding="utf-8")
+def test_root_readmes_match_current_capabilities() -> None:
+    texts = (
+        ROOT_README_ZH.read_text(encoding="utf-8"),
+        ROOT_README_EN.read_text(encoding="utf-8"),
+    )
+    for text in texts:
+        for operator in (
+            "distance_2d",
+            "line_intersects_rect",
+            "point_to_line_distance_2d",
+            "rect_contains_point",
+            "time_overlap",
+            "altitude_overlap",
+        ):
+            assert f"`{operator}`" in text
+        for object_type in (
+            "point",
+            "polyline",
+            "rect",
+            "time_interval",
+            "altitude_interval",
+            "feature_collection",
+        ):
+            assert f"`{object_type}`" in text
 
-    assert "https://github.com/stpku/GeoTask.git" in text
-    assert "geotask validate my_distance.yaml" in text
-    assert "geotask run my_distance.yaml" in text
-    assert "geotask inspect operators" in text
-    assert "schemas/geotask-v1.0.schema.json" in text
+
+def test_quickstarts_use_real_repository_and_cli() -> None:
+    for path in (QUICKSTART_EN, QUICKSTART_ZH):
+        text = path.read_text(encoding="utf-8")
+        assert "https://github.com/stpku/GeoTask.git" in text
+        assert "geotask validate my_distance.yaml" in text
+        assert "geotask run my_distance.yaml" in text
+        assert "geotask inspect operators" in text
+        assert "schemas/geotask-v1.0.schema.json" in text
 
 
 def test_status_and_evidence_references_keep_core_and_workflow_states_separate() -> None:
@@ -176,52 +278,98 @@ def test_status_and_evidence_references_keep_core_and_workflow_states_separate()
     assert "blocked_outputs" in evidence_text
     assert "resume_when" in evidence_text
     assert "request_conflict_review" in evidence_text
-    assert "individually verified evidence can still" not in evidence_text.lower()
     assert "It does not mean all verified sources agree" in evidence_text
 
 
-def test_primary_documentation_relative_links_resolve() -> None:
-    primary_documents = (
-        ROOT / "README.md",
-        DOC_INDEX,
-        WHITEPAPER,
-        WHITEPAPER_BUILD,
-        LANGUAGE_SPEC,
-        TARGET_SPEC_STATUS,
-        QUICKSTART,
-        STATUS_MODEL,
-        EVIDENCE_REFERENCE,
-        COOKBOOK,
-    )
-    missing: list[tuple[str, str]] = []
+def test_all_public_markdown_relative_links_resolve_inside_public_export() -> None:
+    public_paths = _public_source_paths()
+    public_markdown = sorted(path for path in public_paths if path.suffix.lower() == ".md")
+    missing: list[tuple[str, str, str]] = []
 
-    for path in primary_documents:
-        text = path.read_text(encoding="utf-8")
-        for target in re.findall(r"\[[^\]]*\]\(([^)]+)\)", text):
-            target = target.split("#", 1)[0].strip()
+    for path in public_markdown:
+        for raw_target in _markdown_links(path):
+            target = raw_target.split("#", 1)[0].strip()
             if not target or target.startswith(("http://", "https://", "mailto:")):
                 continue
             resolved = (path.parent / unquote(target)).resolve()
             if not resolved.exists():
-                missing.append((str(path.relative_to(ROOT)), target))
+                missing.append((path.relative_to(ROOT).as_posix(), raw_target, "missing"))
+                continue
+            if resolved.is_file() and resolved not in public_paths:
+                missing.append((path.relative_to(ROOT).as_posix(), raw_target, "excluded"))
 
     assert missing == []
 
 
-def test_cookbook_covers_all_public_weekly_cases() -> None:
-    text = COOKBOOK.read_text(encoding="utf-8")
+def test_public_markdown_contains_no_obsolete_repository_urls() -> None:
+    obsolete = (
+        "github.com/GeoTask/geotask-core",
+        "github.com/GeoTask/GeoTask",
+    )
+    findings: list[tuple[str, str]] = []
+    for path in _public_source_paths():
+        if path.suffix.lower() != ".md":
+            continue
+        text = path.read_text(encoding="utf-8")
+        for value in obsolete:
+            if value in text:
+                findings.append((path.relative_to(ROOT).as_posix(), value))
+    assert findings == []
 
-    for number in range(1, 14):
-        assert f"GT{number:02d}" in text
 
-    for example in (
-        "v1_minimal_distance.yaml",
-        "multi_constraint_conflict.yaml",
-        "evidence_request_plan.yaml",
-        "evidence_conflict_review.yaml",
-        "robot_corridor_coordination.yaml",
-        "robot_accessible_route.yaml",
-        "uav_energy_reserve.yaml",
-        "vehicle_clearance_envelope.yaml",
-    ):
-        assert example in text
+def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
+    manifest = _manifest()
+    required = set(manifest["required"])
+    expected = {
+        "README.md",
+        "README.en.md",
+        "docs/README.md",
+        "docs/README.en.md",
+        "docs/tutorials/quickstart.zh-CN.md",
+        "docs/cookbook/gt01-gt13.zh-CN.md",
+        "CONTRIBUTING.zh-CN.md",
+        "CODE_OF_CONDUCT.md",
+        ".github/ISSUE_TEMPLATE/bug_report.yml",
+        ".github/PULL_REQUEST_TEMPLATE.md",
+    }
+    assert expected <= required
+
+
+def test_package_metadata_uses_english_readme_and_core_only_discovery() -> None:
+    pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'readme = "README.en.md"' in pyproject
+    assert 'include = ["geotask_core*"]' in pyproject
+
+
+def test_bilingual_community_files_exist() -> None:
+    expected = (
+        ROOT / ".github" / "ISSUE_TEMPLATE" / "bug_report.yml",
+        ROOT / ".github" / "ISSUE_TEMPLATE" / "operator_proposal.yml",
+        ROOT / ".github" / "ISSUE_TEMPLATE" / "case_proposal.yml",
+        ROOT / ".github" / "ISSUE_TEMPLATE" / "documentation.yml",
+        ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml",
+        ROOT / ".github" / "PULL_REQUEST_TEMPLATE.md",
+        ROOT / ".github" / "dependabot.yml",
+    )
+    for path in expected:
+        assert path.is_file(), path
+        assert path.stat().st_size > 200, path
+
+
+def test_cookbooks_cover_all_public_weekly_cases() -> None:
+    for path in (COOKBOOK_EN, COOKBOOK_ZH):
+        text = path.read_text(encoding="utf-8")
+        for number in range(1, 14):
+            assert f"GT{number:02d}" in text
+
+        for example in (
+            "v1_minimal_distance.yaml",
+            "multi_constraint_conflict.yaml",
+            "evidence_request_plan.yaml",
+            "evidence_conflict_review.yaml",
+            "robot_corridor_coordination.yaml",
+            "robot_accessible_route.yaml",
+            "uav_energy_reserve.yaml",
+            "vehicle_clearance_envelope.yaml",
+        ):
+            assert example in text

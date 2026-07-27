@@ -1,73 +1,101 @@
 # Contributing to GeoTask Core
 
-Thanks for your interest. GeoTask Core is a focused library and we keep the scope tight: lightweight spatial task representation with deterministic verification. No heavy dependencies, no platform features.
+**English** | [简体中文](CONTRIBUTING.zh-CN.md)
 
-## Dev Setup
+Thanks for your interest. GeoTask Core is a focused library for verifiable spatiotemporal task representation and deterministic verification. Keep the public Core lightweight, reproducible, and free of customer data, model credentials, private Runtime logic, and patent-sensitive implementation details.
+
+## Dev setup
 
 ```bash
-git clone https://github.com/GeoTask/geotask-core.git
-cd geotask-core
+git clone https://github.com/stpku/GeoTask.git
+cd GeoTask
 python -m venv .venv
 source .venv/bin/activate   # or .venv\Scripts\activate on Windows
 pip install -e ".[dev]"
 ```
 
-That installs the package in editable mode plus `pytest` and `matplotlib` for development.
+The development extra installs `pytest`, `jsonschema`, and `matplotlib`. Python 3.10 is the minimum. The only runtime dependency is PyYAML.
 
-Python 3.10 is the minimum. The only runtime dependency is PyYAML.
-
-## Running Tests
+## Running tests
 
 ```bash
-pytest                          # all tests
-pytest tests/ -v                # verbose
-pytest tests/ -x                # stop on first failure
-pytest tests/ --cov=geotask_core  # with coverage (install pytest-cov)
+pytest
+pytest tests/ -v
+pytest tests/ -x
+pytest tests/test_documentation_system.py -q
 ```
 
-Tests live in `tests/`. Try to keep test files under 500 lines. Split large test suites into focused files in subdirectories.
+Tests live in `tests/`. New operators must cover normal cases, edge cases, invalid input, and incompatible object types.
 
-## Code Style
+## Welcome contributions
 
-- No dependencies beyond stdlib and PyYAML. Period.
-- Pure functions preferred. Avoid class state unless it is a registry or dispatcher.
+- Parser, validation, execution, and result-assembly fixes
+- Better structured diagnostics and error messages
+- General-purpose deterministic operator proposals
+- English or Chinese documentation improvements
+- New robotics, UAV, autonomous-driving, GIS, or urban-governance cases
+- JSON Schema and conformance-test improvements
+- Mobile experience and accessibility fixes
+
+## Code style
+
+- No heavy runtime dependencies beyond PyYAML.
+- Pure functions are preferred. Avoid class state unless it is a registry or dispatcher.
 - Use dataclasses for data containers. `v1/ir.py` is the canonical example.
-- Enum members, not raw strings. Convert to strings only at serialization boundaries (`to_dict()`, CLI output).
-- Type hints on public functions. Python 3.10+ syntax (`list[str]`, `dict[str, int]`, `X | None`).
-- Docstrings are concise. Describe what, not how. Skip redundant summaries that paraphrase the function name.
-- No visual separator lines (`# ====`), no "defence in depth" or "hardened" language in comments.
-- Function-internal imports are acceptable only for lazy loading to avoid import cycles. Prefer module-level imports.
+- Use enum members internally and convert to strings at serialization boundaries.
+- Add type hints to public functions using Python 3.10+ syntax.
+- Keep docstrings concise and factual.
+- Do not add customer data, real credentials, API keys, or patent evidence.
 
-## Architecture Constraints
+## Architecture constraints
 
-These are enforced by review. Do not violate them.
+1. `ir.py` and `enums.py` are pure leaves.
+2. `ops.py` is a pure math module with no I/O.
+3. Core must not import private Runtime or Domain Pack implementation.
+4. Validation must be deterministic.
+5. Operators must return the same result for the same inputs.
+6. Operator contracts must define compatible input types, output type, units, and boundary semantics.
 
-1. **`ir.py` and `enums.py` import nothing from Core.** They are pure leaves.
-2. **`ops.py` is a pure math module.** No imports from `geotask_core` at all.
-3. **Core must not import from Runtime.** `geotask_core` never imports `geotask_runtime`.
-4. **No circular dependencies.** The dependency graph flows inward from runner/cli to parser/canonicalizer/validator/executor to ir/enums/ops.
-5. **Validation is deterministic.** The validator produces the same diagnostics for the same input every time.
-6. **Operators are deterministic.** Every operator implementation must return the same result for the same inputs, with no I/O, no randomness, no external state.
+## Pull request process
 
-## Pull Request Process
+1. Open an issue first for substantial features or new operators.
+2. Fork the repository and create a focused branch.
+3. Write or update tests and documentation.
+4. Run `pytest` and confirm that all tests pass.
+5. Open a pull request against `main` with the problem, approach, test results, and boundary impact.
 
-1. Open an issue first. Describe the problem or feature before writing code.
-2. Fork and branch. Keep changes focused on one thing.
-3. Write or update tests. New operators must have tests covering normal cases, edge cases, and error conditions.
-4. Run `pytest` and confirm all tests pass.
-5. Open a PR against `main`. Include a clear description and reference the issue.
-6. Wait for review. A maintainer will check architecture constraints, test coverage, and code style.
+Small, coherent PRs are easier to review. A documentation translation, schema update, or complete weekly case may legitimately touch several files; keep one clear purpose rather than optimizing for an arbitrary file count.
 
-Small PRs are reviewed faster. If your change touches more than 3 files, consider whether it can be split.
+## What belongs in Core
 
-## What Belongs, What Doesn't
+- Task format and Canonical IR
+- Parsing and compatibility handling
+- Structural and reference validation
+- Deterministic operators
+- Results, statuses, and assurance metadata
+- CLI, JSON Schema, examples, and public conformance tests
 
-**Core scope:** format parsing, canonical IR, validation, deterministic operators, result assembly, CLI.
+## What does not belong in public Core
 
-**Not Core:** LLM calling, model routing, task orchestration, domain-specific rules, data connectors, governance policies, benchmarks, audit trails. These belong in the Runtime layer or separate packages.
+- Hosted model execution and API keys
+- Production orchestration, model routing, and cost governance
+- Industry-specific Domain Packs and customer thresholds
+- Private data connectors and approval workflows
+- Automatic control of real devices
+- Unpublished patent-sensitive implementation details
 
-When in doubt: if it requires a network call or a heavy dependency, it probably does not belong in Core.
+When in doubt, open an issue describing the problem, general-purpose value, expected contract, and proposed boundary.
 
-## Questions?
+## New operator proposals
 
-Open an issue on GitHub. We respond to questions about architecture, operator design, and contribution scope.
+A Core operator should be cross-domain, deterministic, offline, type-safe, unit-aware, and backed by normal, boundary, and error tests. Do not add an operator only to make one demonstration convenient.
+
+## New weekly cases
+
+A public GT case should include a concrete application question, explicit objects and constraints, reusable Core assertions where available, differentiated candidate actions, a local verification path, a safe blocked or recovery state when needed, tests, and a real-world limitation statement.
+
+See the [GT01–GT13 Cookbook](docs/cookbook/gt01-gt13.md) or [中文案例手册](docs/cookbook/gt01-gt13.zh-CN.md).
+
+## Conduct and security
+
+Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md). Do not report security vulnerabilities in a public issue; follow [SECURITY.md](SECURITY.md).

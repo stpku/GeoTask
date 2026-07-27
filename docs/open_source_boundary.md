@@ -83,4 +83,4 @@ Attribution is appreciated but not required by the MIT License.
 
 - [`open_core_commercial_runtime_boundary.md`](open_core_commercial_runtime_boundary.md) — Detailed Core/Runtime/Domain Pack boundary with open vs. private classification
 - [`product_architecture_v0_1.md`](product_architecture_v0_1.md) — Full product architecture with Mermaid diagrams
-- [`patent_boundary.md`](patent_boundary.md) — Patent rights and open source interaction
+- [ADR-004: Patent and Open Source Boundary](architecture_decisions/ADR-004-patent-and-open-source-boundary.md) — Public explanation of patent rights and open-source interaction

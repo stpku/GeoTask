@@ -244,7 +244,7 @@ A typical request flows through the stack as follows:
 | Task orchestration for spatial reasoning | Runtime |
 | Industry-specific spatial task workflow | Domain Pack |
 
-Open-sourcing Core under MIT does **not** waive patent rights on the underlying methods. See [`patent_boundary.md`](patent_boundary.md).
+Open-sourcing Core under MIT does **not** waive patent rights on methods outside the licensed code. See [ADR-004](architecture_decisions/ADR-004-patent-and-open-source-boundary.md) for the public boundary statement.
 
 ---
 

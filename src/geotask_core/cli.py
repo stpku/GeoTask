@@ -17,6 +17,7 @@ import sys
 import json
 from pathlib import Path
 
+from geotask_core._version import __version__
 from geotask_core.parser import (
     load_geotask,
     validate_document,
@@ -396,14 +397,18 @@ def main():
     if cmd_name == "stir":
         print("Warning: 'stir' command is deprecated. Please use 'geotask' instead.", file=sys.stderr)
 
+    if len(sys.argv) >= 2 and sys.argv[1] in ("--version", "-V", "version"):
+        print(f"geotask-core {__version__}")
+        sys.exit(0)
+
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, explain, inspect, report, normalize, eval")
+        print("Commands: validate, run, explain, inspect, report, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, explain, inspect, report, normalize, eval")
+        print("Commands: validate, run, explain, inspect, report, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -465,7 +470,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, explain, inspect, report, normalize, eval")
+        print(f"Available commands: validate, run, explain, inspect, report, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

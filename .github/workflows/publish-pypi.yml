@@ -6,9 +6,16 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: publish-geotask-core-pypi
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.package-version.outputs.version }}
+      already_exists: ${{ steps.pypi-check.outputs.already_exists }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
@@ -17,6 +24,36 @@ jobs:
       - run: python -m pip install --upgrade build twine
       - run: python -m build
       - run: python -m twine check dist/*
+      - id: package-version
+        name: Read package version
+        shell: bash
+        run: echo "version=$(python -c \"import runpy; print(runpy.run_path('src/geotask_core/_version.py')['__version__'])\")" >> "$GITHUB_OUTPUT"
+      - id: pypi-check
+        name: Check whether version already exists on PyPI
+        shell: bash
+        env:
+          PACKAGE_VERSION: ${{ steps.package-version.outputs.version }}
+        run: |
+          python - <<'PY'
+          import os
+          import urllib.error
+          import urllib.request
+
+          version = os.environ["PACKAGE_VERSION"]
+          url = f"https://pypi.org/pypi/geotask-core/{version}/json"
+          try:
+              urllib.request.urlopen(url, timeout=30)
+          except urllib.error.HTTPError as exc:
+              if exc.code != 404:
+                  raise
+              exists = "false"
+          else:
+              exists = "true"
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"already_exists={exists}\n")
+          print(f"geotask-core {version} already exists on PyPI: {exists}")
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: python-package-distributions
@@ -24,6 +61,7 @@ jobs:
 
   publish:
     needs: build
+    if: needs.build.outputs.already_exists != 'true'
     runs-on: ubuntu-latest
     environment:
       name: pypi

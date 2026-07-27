@@ -18,7 +18,7 @@ python -c "from importlib.metadata import version; import geotask_core; print(ve
 
 两行都应输出`0.1.1`。
 
-验证结果：完整源仓`765 passed, 1 skipped`，公共导出仓`337 passed`，Wheel与sdist均通过Twine检查。
+验证结果：完整源仓`766 passed, 1 skipped`，公共导出仓`338 passed`；公共发布流水线的导出、验证、敏感扫描、哈希生成与哈希校验全部通过；Wheel与sdist均通过Twine检查；全新环境安装本地Wheel后，发行元数据与模块版本均为`0.1.1`，CLI和最小确定性案例通过。
 
 ## English release notes
 
@@ -33,4 +33,4 @@ python -c "from importlib.metadata import version; import geotask_core; print(ve
 
 Both lines should print `0.1.1`.
 
-Verification: `765 passed, 1 skipped` in the full source repository, `337 passed` in the public export, and both wheel and sdist passed Twine checks.
+Verification: `766 passed, 1 skipped` in the full source repository and `338 passed` in the public export. Export, verification, sensitive scanning, hash generation, and hash verification all passed. Both wheel and sdist passed Twine checks. A clean local-wheel installation reported `0.1.1` from both distribution metadata and `geotask_core.__version__`; CLI and minimal deterministic execution also passed.

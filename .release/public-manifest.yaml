@@ -56,11 +56,14 @@ include:
   - "tests/test_normalizer_v0_2.py"
   - "tests/test_verifier.py"
   - "tests/test_version_consistency.py"
+  - "tests/test_release_pipeline_regression.py"
   - "tests/v1/**"
 
   # CI and release tooling (public)
   - ".github/workflows/ci.yml"
   - ".release/public-manifest.yaml"
+  - ".release/export_public.py"
+  - ".release/release_public.py"
   - ".release/verify_public_export.py"
   - ".release/scan_public_export.py"
   - ".release/hash_public_export.py"
@@ -179,6 +182,8 @@ required:
   - "MANIFEST.in"
   - "src/geotask_core/__init__.py"
   - ".github/workflows/ci.yml"
+  - ".release/export_public.py"
+  - ".release/release_public.py"
   - ".gitignore"
   - "docs/whitepaper/GeoTask_White_Paper_v0.1.md"
   - "docs/whitepaper/README.md"
@@ -193,6 +198,7 @@ required:
   - ".github/workflows/pages.yml"
   - "tests/test_project_portal.py"
   - "tests/test_version_consistency.py"
+  - "tests/test_release_pipeline_regression.py"
 
 forbidden_paths:
   - "src/geotask_runtime/"

@@ -16,9 +16,11 @@ All notable public changes to GeoTask Core are documented here.
 
 ### Verification
 
-- Full source repository: 765 tests passing, 1 skipped.
-- Public export: 337 tests passing.
+- Full source repository: 766 tests passing, 1 skipped.
+- Public export: 338 tests passing.
+- Public release pipeline: export, verification, sensitive scan, hash generation, and hash verification passing.
 - Wheel and source distribution: Twine checks passing.
+- Clean local-wheel installation: distribution metadata and `geotask_core.__version__` both report `0.1.1`; CLI and minimal deterministic execution pass.
 
 ## [0.1.0] - 2026-07-27
 

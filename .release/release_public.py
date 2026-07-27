@@ -116,16 +116,13 @@ def main() -> None:
 
     forbidden_paths = manifest.get("forbidden_paths", [])
     # The export already checks forbidden paths; this is a pre-check here
-    import os
-    boundary_ok = True
-    for root, dirs, files in os.walk(PROJECT_ROOT):
-        for fp in forbidden_paths:
-            fp_norm = fp.rstrip("/")
-            fp_path = PROJECT_ROOT / fp_norm
-            if fp_path.exists():
-                print(f"  [WARN] Forbidden path exists in source: {fp_norm}")
-                # Don't fail — these exist but are excluded during export
-            print(f"  [OK] Boundary check complete — forbidden paths handled by export exclude")
+    for fp in forbidden_paths:
+        fp_norm = fp.rstrip("/")
+        fp_path = PROJECT_ROOT / fp_norm
+        if fp_path.exists():
+            print(f"  [WARN] Forbidden path exists in source: {fp_norm}")
+            # Don't fail — these exist but are excluded during export.
+    print("  [OK] Boundary check complete — forbidden paths handled by export exclude")
 
     # Stage 2: Export
     export_args = [export_script, str(output_dir)]

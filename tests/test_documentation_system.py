@@ -28,6 +28,11 @@ COOKBOOK_ZH = ROOT / "docs" / "cookbook" / "gt01-gt13.zh-CN.md"
 CONTRIBUTING_EN = ROOT / "CONTRIBUTING.md"
 CONTRIBUTING_ZH = ROOT / "CONTRIBUTING.zh-CN.md"
 CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
+CITATION = ROOT / "CITATION.cff"
+ROADMAP = ROOT / "ROADMAP.md"
+RELEASE_NOTES = ROOT / "docs" / "release_v0_1_0.md"
+CODEOWNERS = ROOT / ".github" / "CODEOWNERS"
+PYPI_WORKFLOW = ROOT / ".github" / "workflows" / "publish-pypi.yml"
 
 
 DOCUMENTS = (
@@ -48,6 +53,8 @@ DOCUMENTS = (
     CONTRIBUTING_EN,
     CONTRIBUTING_ZH,
     CODE_OF_CONDUCT,
+    ROADMAP,
+    RELEASE_NOTES,
     SCHEMA_PATH,
 )
 
@@ -168,6 +175,8 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "reference/evidence-and-recovery.md",
         "cookbook/gt01-gt13.md",
         "cookbook/gt01-gt13.zh-CN.md",
+        "release_v0_1_0.md",
+        "../ROADMAP.md",
         "../schemas/geotask-v1.0.schema.json",
         "spec/target-specification-status.md",
     )
@@ -365,10 +374,80 @@ def test_bilingual_community_files_exist() -> None:
         ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml",
         ROOT / ".github" / "PULL_REQUEST_TEMPLATE.md",
         ROOT / ".github" / "dependabot.yml",
+        CODEOWNERS,
+        PYPI_WORKFLOW,
     )
     for path in expected:
         assert path.is_file(), path
         assert path.stat().st_size > 200, path
+
+
+def test_public_preview_release_assets_are_consistent() -> None:
+    citation = yaml.safe_load(CITATION.read_text(encoding="utf-8"))
+    roadmap = ROADMAP.read_text(encoding="utf-8")
+    release = RELEASE_NOTES.read_text(encoding="utf-8")
+    codeowners = CODEOWNERS.read_text(encoding="utf-8")
+    workflow = yaml.safe_load(PYPI_WORKFLOW.read_text(encoding="utf-8"))
+
+    assert citation["cff-version"] == "1.2.0"
+    assert citation["version"] == "0.1.0"
+    assert citation["repository-code"] == "https://github.com/stpku/GeoTask"
+    assert citation["url"] == "https://stpku.github.io/GeoTask/"
+    assert citation["license"] == "MIT"
+
+    assert "v0.1：公共预览" in roadmap
+    assert "v0.2：扩展空间对象与开发体验" in roadmap
+    assert "v0.3：Runtime接口与模型适配" in roadmap
+    assert "v0.4：Domain Pack规范与生态" in roadmap
+
+    assert "GeoTask Core v0.1.0 Public Preview" in release
+    assert "v0.1.0-public-preview" in release
+    assert "336项通过" in release
+    assert "Python 3.10—3.13" in release
+    assert "geotask_core-0.1.0-py3-none-any.whl" in release
+
+    assert "/src/geotask_core/ @stpku" in codeowners
+    assert "/.release/ @stpku" in codeowners
+    assert workflow["name"] == "Publish geotask-core to PyPI"
+    assert "workflow_dispatch" in workflow[True]
+    assert workflow["jobs"]["publish"]["permissions"]["id-token"] == "write"
+
+
+def test_package_metadata_exposes_public_project_urls() -> None:
+    pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
+    required = (
+        'license = "MIT"',
+        'license-files = ["LICENSE"]',
+        '"Programming Language :: Python :: 3.13"',
+        'Homepage = "https://stpku.github.io/GeoTask/"',
+        'Repository = "https://github.com/stpku/GeoTask"',
+        'Roadmap = "https://github.com/stpku/GeoTask/blob/main/ROADMAP.md"',
+    )
+    for fragment in required:
+        assert fragment in pyproject
+
+    for private_or_dev_path in (
+        "prune tests",
+        "prune benchmarks",
+        "prune patent_evidence",
+        "prune src/geotask_domain_packs",
+        "prune src/geotask_runtime",
+    ):
+        assert private_or_dev_path in manifest
+
+
+def test_public_manifest_requires_release_governance_files() -> None:
+    required = set(_manifest()["required"])
+    expected = {
+        "ROADMAP.md",
+        "CITATION.cff",
+        "docs/release_v0_1_0.md",
+        ".github/CODEOWNERS",
+        ".github/workflows/publish-pypi.yml",
+        "MANIFEST.in",
+    }
+    assert expected <= required
 
 
 def test_cookbooks_cover_all_public_weekly_cases() -> None:

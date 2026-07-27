@@ -274,13 +274,17 @@ def test_root_readmes_match_current_capabilities() -> None:
             assert f"`{object_type}`" in text
 
 
-def test_quickstarts_use_real_repository_and_cli() -> None:
+def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
     for path in (QUICKSTART_EN, QUICKSTART_ZH):
         text = path.read_text(encoding="utf-8")
+        assert "python -m pip install --no-cache-dir geotask-core==0.1.0" in text
+        assert "from importlib.metadata import version" in text
+        assert "geotask --help" in text
+        assert "geotask inspect operators" in text
         assert "https://github.com/stpku/GeoTask.git" in text
+        assert 'python -m pip install -e ".[dev]"' in text
         assert "geotask validate my_distance.yaml" in text
         assert "geotask run my_distance.yaml" in text
-        assert "geotask inspect operators" in text
         assert "schemas/geotask-v1.0.schema.json" in text
 
 

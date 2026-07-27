@@ -9,6 +9,7 @@
 [![CI](https://github.com/stpku/GeoTask/actions/workflows/ci.yml/badge.svg)](https://github.com/stpku/GeoTask/actions/workflows/ci.yml)
 [![Pages](https://github.com/stpku/GeoTask/actions/workflows/pages.yml/badge.svg)](https://stpku.github.io/GeoTask/)
 [![Release](https://img.shields.io/github/v/release/stpku/GeoTask?include_prereleases&label=release)](https://github.com/stpku/GeoTask/releases)
+[![PyPI](https://img.shields.io/pypi/v/geotask-core)](https://pypi.org/project/geotask-core/)
 
 GeoTask把自然语言中的空间、时间、证据、资源和行动约束转换为结构化任务，并通过本地确定性计算验证模型结果。
 
@@ -57,16 +58,12 @@ flowchart LR
 ## 5分钟运行
 
 ```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
-pip install -e ".[dev]"
-
-geotask validate examples/core/v1_minimal_distance.yaml
-geotask run examples/core/v1_minimal_distance.yaml
-pytest
+python -m pip install geotask-core
+geotask --help
+geotask inspect operators
 ```
 
-最小任务：
+将下面的最小任务保存为`my_distance.yaml`：
 
 ```yaml
 geotask:
@@ -92,6 +89,11 @@ tasks:
 ```text
 ab = 5.0 meter
 assurance_level = local_deterministic
+```
+
+```bash
+geotask validate my_distance.yaml
+geotask run my_distance.yaml
 ```
 
 ## 13个公开应用案例
@@ -225,6 +227,15 @@ geotask inspect operators
 - 对状态、证据和恢复语义的讨论。
 
 请阅读[中文贡献指南](CONTRIBUTING.zh-CN.md)或[English Contributing Guide](CONTRIBUTING.md)。
+
+参与开发时再使用源码安装：
+
+```bash
+git clone https://github.com/stpku/GeoTask.git
+cd GeoTask
+python -m pip install -e ".[dev]"
+pytest
+```
 
 ## 开源许可与边界
 

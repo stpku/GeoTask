@@ -23,7 +23,11 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert "面向AI智能体的" in html
     assert "可验证时空任务协议" in html
     assert "模型会回答，系统还要验证" in html
-    assert "开放Core，保护商业运行层" in html
+    assert "开放Core，连接时空智能生态" in html
+    assert "当前已开放" in html
+    assert "持续建设" in html
+    assert "保护商业运行层" not in html
+    assert "商业边界" not in html
     assert "GT01—GT13渐进式案例" in html
     assert 'id="cases"' in html
     assert 'id="architecture"' in html

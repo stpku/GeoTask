@@ -21,11 +21,11 @@ GeoTask turns spatial, temporal, evidential, resource, and action constraints in
 
 ## Start here
 
-- [Try the GT01–GT16 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT17 experience](https://stpku.github.io/GeoTask/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
-- [GT01–GT16 Cookbook](docs/cookbook/gt01-gt16.md)
+- [GT01–GT17 Cookbook](docs/cookbook/gt01-gt17.md)
 - [v0.1.1 PyPI hotfix release notes](docs/release_v0_1_1.md)
 - [Public roadmap](ROADMAP.md)
 - [Documentation index](docs/README.en.md)
@@ -91,7 +91,7 @@ geotask run my_distance.yaml
 | Geometry | GT01–GT03 | What spatial relationship is actually true? |
 | Space-time composition | GT04–GT06 | Do horizontal, vertical, and temporal conditions all hold? |
 | Uncertainty and evidence | GT07–GT09 | What happens when evidence is missing or conflicting? |
-| Action and feasibility | GT10–GT16 | What executable action follows from verified spatial, resource, response, live-environment, and multi-UAV conflict constraints? |
+| Action and feasibility | GT10–GT17 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, and city-event deduplication constraints? |
 
 Selected examples:
 
@@ -104,8 +104,9 @@ Selected examples:
 - **GT14:** the nearest rescue team may not have the earliest verified arrival or meet the response deadline.
 - **GT15:** a structurally passable map corridor may still be occupied by a live obstacle.
 - **GT16:** crossing routes and overlapping altitudes do not prove collision when crossing-zone occupancy times are separated.
+- **GT17:** ten reports of one incident should create one dispatch task while preserving all ten evidence sources.
 
-See the [Cookbook](docs/cookbook/gt01-gt16.md) for all cases and source files.
+See the [Cookbook](docs/cookbook/gt01-gt17.md) for all cases and source files.
 
 ## Implemented public Core
 

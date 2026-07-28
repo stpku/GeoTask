@@ -23,8 +23,8 @@ QUICKSTART_EN = ROOT / "docs" / "tutorials" / "quickstart.md"
 QUICKSTART_ZH = ROOT / "docs" / "tutorials" / "quickstart.zh-CN.md"
 STATUS_MODEL = ROOT / "docs" / "reference" / "status-model.md"
 EVIDENCE_REFERENCE = ROOT / "docs" / "reference" / "evidence-and-recovery.md"
-COOKBOOK_EN = ROOT / "docs" / "cookbook" / "gt01-gt19.md"
-COOKBOOK_ZH = ROOT / "docs" / "cookbook" / "gt01-gt19.zh-CN.md"
+COOKBOOK_EN = ROOT / "docs" / "cookbook" / "gt01-gt20.md"
+COOKBOOK_ZH = ROOT / "docs" / "cookbook" / "gt01-gt20.zh-CN.md"
 CONTRIBUTING_EN = ROOT / "CONTRIBUTING.md"
 CONTRIBUTING_ZH = ROOT / "CONTRIBUTING.zh-CN.md"
 CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
@@ -78,6 +78,7 @@ SCHEMA_EXAMPLES = (
     ROOT / "examples" / "core" / "city_event_report_deduplication.yaml",
     ROOT / "examples" / "core" / "rescue_robot_shortest_route_hazard.yaml",
     ROOT / "examples" / "core" / "uav_arrival_ground_clearance_release.yaml",
+    ROOT / "examples" / "core" / "vehicle_green_light_downstream_blockage.yaml",
 )
 
 
@@ -181,8 +182,8 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "tutorials/quickstart.zh-CN.md",
         "reference/status-model.md",
         "reference/evidence-and-recovery.md",
-        "cookbook/gt01-gt19.md",
-        "cookbook/gt01-gt19.zh-CN.md",
+        "cookbook/gt01-gt20.md",
+        "cookbook/gt01-gt20.zh-CN.md",
         "release_v0_1_0.md",
         "../ROADMAP.md",
         "../schemas/geotask-v1.0.schema.json",
@@ -207,7 +208,7 @@ def test_whitepaper_states_architecture_and_public_boundary() -> None:
         "对象、算子和命题显式绑定",
         "生成与验证分离",
         "证据冲突",
-        "GT01–GT19",
+        "GT01–GT20",
         "开源边界与知识产权",
         "让模型负责理解与生成",
     )
@@ -362,7 +363,7 @@ def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
         "docs/README.md",
         "docs/README.en.md",
         "docs/tutorials/quickstart.zh-CN.md",
-        "docs/cookbook/gt01-gt19.zh-CN.md",
+        "docs/cookbook/gt01-gt20.zh-CN.md",
         "CONTRIBUTING.zh-CN.md",
         "CODE_OF_CONDUCT.md",
         ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -470,7 +471,7 @@ def test_public_manifest_requires_release_governance_files() -> None:
 def test_cookbooks_cover_all_public_weekly_cases() -> None:
     for path in (COOKBOOK_EN, COOKBOOK_ZH):
         text = path.read_text(encoding="utf-8")
-        for number in range(1, 20):
+        for number in range(1, 21):
             assert f"GT{number:02d}" in text
 
         for example in (
@@ -488,5 +489,6 @@ def test_cookbooks_cover_all_public_weekly_cases() -> None:
             "city_event_report_deduplication.yaml",
             "rescue_robot_shortest_route_hazard.yaml",
             "uav_arrival_ground_clearance_release.yaml",
+            "vehicle_green_light_downstream_blockage.yaml",
         ):
             assert example in text

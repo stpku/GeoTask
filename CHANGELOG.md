@@ -19,6 +19,8 @@ All notable public changes to GeoTask Core are documented here.
 - Add the GT18 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 - Add GT19, an emergency-supply UAV release-gate case that separates target-overhead arrival from live ground-clearance authorization.
 - Add the GT19 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
+- Add GT20, a vehicle intersection-entry case that separates green-signal permission from downstream storage and junction-clearance feasibility.
+- Add the GT20 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 
 ### Changed
 

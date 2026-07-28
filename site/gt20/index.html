@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#163d52">
+  <meta name="description" content="GeoTask第20期：车辆获得绿灯，但下游排队回溢，出口仅剩4米，低于车辆及安全缓冲所需6.8米，必须在停止线前等待。">
+  <title>GeoTask GT20｜车辆已经获得绿灯，为什么仍然不能进入路口</title>
+  <style>
+    :root{color-scheme:light;--navy:#163d52;--blue:#2779ad;--teal:#16877d;--green:#18845d;--red:#c5483f;--amber:#ad7316;--ink:#17252e;--muted:#64747d;--line:#d8e3e9;--soft:#f2f7f9;--good:#e9f7f2;--bad:#fff0ee;--warm:#fff6e5;--shadow:0 14px 38px rgba(22,61,82,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(39,121,173,.14),transparent 34%),linear-gradient(180deg,#edf5f8,#fff 65%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}.shell{width:min(100%,780px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:800}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:white;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:800}.hero{padding:29px 22px 25px;border-radius:24px;background:linear-gradient(145deg,#163d52,#1c627b);color:white;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bddd5;font-size:14px;font-weight:800}h1{margin:0;font-size:clamp(27px,7.4vw,42px);line-height:1.2}.lead{margin:16px 0 0;color:#dceaf0}.formula{margin-top:20px;padding:14px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-weight:850}.card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.97);box-shadow:0 9px 28px rgba(22,61,82,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px}p{margin:8px 0}.visual{padding:10px;border:1px solid #e3eaee;border-radius:16px;background:white}svg{display:block;width:100%;height:auto}.state-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.state{padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--soft)}.state strong{display:block;color:var(--navy);font-size:13px}.value{font:900 20px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.true .value{color:var(--green)}.false .value{color:var(--red)}.logic{margin-top:12px;padding:14px;border-radius:14px;background:var(--warm);color:#73500d;text-align:center;font-weight:850}.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.box{padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.box.good{background:var(--good);border-color:#add9cb}.box.bad{background:var(--bad);border-color:#e7b7b1}.box h3{margin:0 0 8px;color:var(--navy)}.box strong{font-size:26px;color:var(--navy)}.primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:white}.secondary{margin-top:10px;background:#e8f1f5;color:var(--navy)}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:750;text-align:center}.tip{color:var(--muted);font-size:13px;text-align:center}.samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:60px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(39,121,173,.18);background:#e4f0f6}.verification{margin-top:16px;padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--soft)}.verification.verified{background:var(--good);border-color:#add9cb}.verification.contradicted{background:var(--bad);border-color:#e7b7b1}.verification-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#cdebe1;color:#0f7167}.contradicted .badge{background:#f1d0cc;color:#a23b34}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{padding:10px;border-radius:12px;background:rgba(255,255,255,.75)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:13px;font-weight:850;overflow-wrap:anywhere}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a23b34}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#73500d;font-size:14px}details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:800}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:620px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid var(--line);border-radius:13px;background:white;color:var(--navy);text-decoration:none;font-weight:800}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}@media(max-width:520px){.state-grid,.compare,.samples{grid-template-columns:1fr}.sample.wide{grid-column:auto}}@media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}}
+  </style>
+</head>
+<body>
+  <a href="../" aria-label="返回GeoTask项目首页" style="position:fixed;right:12px;bottom:12px;z-index:50;padding:9px 13px;border-radius:13px;background:rgba(255,255,255,.95);color:#163d52;text-decoration:none;font:700 13px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;box-shadow:0 6px 20px rgba(22,61,82,.16)">项目首页</a>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT20</span></div><a class="back" href="../gt19/">← GT19</a></div>
+    <section class="hero"><p class="eyebrow">智能驾驶 · 路口入口门控</p><h1>车辆已经获得绿灯，为什么仍然不能进入路口？</h1><p class="lead">信号许可有效，但下游排队已经回溢。出口到队尾只剩4米，车辆连同安全缓冲需要6.8米。</p><div class="formula">green signal permission ≠ downstream exit clearance ≠ intersection entry authorization</div></section>
+
+    <section class="card"><h2>绿灯成立，下游驶离条件不成立</h2><div class="visual"><svg viewBox="0 0 720 430" role="img" aria-label="绿灯路口下游排队回溢，车辆停在停止线前"><rect x="35" y="170" width="650" height="100" rx="16" fill="#e7edf1"/><rect x="280" y="65" width="150" height="300" rx="12" fill="#edf3f5"/><rect x="280" y="170" width="150" height="100" fill="#d8e3e9"/><line x1="260" y1="155" x2="260" y2="285" stroke="#fff" stroke-width="7"/><text x="255" y="315" text-anchor="middle" font-size="14" font-weight="850" fill="#163d52">停止线</text><rect x="140" y="190" width="95" height="58" rx="14" fill="#16877d"/><text x="187" y="225" text-anchor="middle" font-size="15" font-weight="850" fill="#fff">本车等待</text><circle cx="232" cy="112" r="25" fill="#18845d"/><text x="232" y="118" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">绿</text><rect x="470" y="190" width="92" height="58" rx="13" fill="#c5483f"/><rect x="570" y="190" width="92" height="58" rx="13" fill="#c5483f"/><text x="565" y="158" text-anchor="middle" font-size="15" font-weight="850" fill="#a23b34">下游排队回溢</text><line x1="430" y1="290" x2="470" y2="290" stroke="#ad7316" stroke-width="4"/><path d="M430 290l10-7v14zm40 0l-10-7v14z" fill="#ad7316"/><text x="450" y="320" text-anchor="middle" font-size="15" font-weight="850" fill="#73500d">仅4米</text><text x="450" y="350" text-anchor="middle" font-size="14" font-weight="850" fill="#a23b34">需要6.8米才能完整驶离</text></svg></div><div class="state-grid"><div class="state true"><strong>绿灯许可有效</strong><div class="value">true</div></div><div class="state false"><strong>下游出口净空</strong><div class="value">false</div></div><div class="state false"><strong>入口授权</strong><div class="value">false</div></div></div><div class="logic">true AND false AND (4.0 ≥ 6.8) → intersection_entry_authorized = false</div></section>
+
+    <section class="card"><h2>等待必须发生在停止线之前</h2><div class="compare"><div class="box bad"><h3>驶入后等待</h3><strong>禁止</strong><p>车辆会占用冲突区，阻断横向交通，并可能在相位切换后滞留路口。</p><code>intersection_entry_command = blocked</code></div><div class="box good"><h3>线前等待</h3><strong>可恢复</strong><p>持续核验绿灯、下游净空和3秒内的新鲜排队证据，条件恢复后再进入。</p><code>resume_when = signal AND exit_clear AND storage</code></div></div><p class="warning">绿灯给出的是信号层通行许可，不承诺下游道路能够容纳整车。车辆必须先证明可以完整驶离冲突区。</p></section>
+
+    <section class="card"><h2>第一步：让模型选择行动</h2><button class="primary" id="copy-open" type="button">复制 GT20 并打开 DeepSeek</button><button class="secondary" id="copy-only" type="button">只复制 GT20 任务</button><div class="status" id="copy-status" role="status"></div><p class="tip">得到模型建议后返回本页，选择对应动作并验证。</p><details><summary>查看完整 GeoTask 摘要</summary><pre id="task-source">geotask:
+  id: "gt20-vehicle-green-light-downstream-blockage"
+  schema_version: "1.0"
+
+signal_evidence:
+  signal_aspect: "green"
+  signal_permission_valid: true
+  evidence_status: "verified"
+
+core_checks:
+  green_phase_matches_entry_window: true
+  path_intersects_downstream_queue: true
+  available_downstream_storage_m: 4.0
+
+vehicle_envelope:
+  vehicle_length_m: 4.8
+  minimum_exit_buffer_m: 2.0
+  required_storage_m: 6.8
+
+downstream_state:
+  queue_spillback_present: true
+  downstream_exit_clear: false
+  freshness_limit_seconds: 3
+
+entry_rule:
+  expression: "signal_permission_valid AND downstream_exit_clear AND available_storage_m >= required_storage_m"
+  storage_sufficient: false
+  intersection_entry_authorized: false
+
+task_gate:
+  status: "blocked_pending_downstream_clearance"
+  selected_action: "wait_before_stop_line_and_recheck_downstream"
+  rejected_actions:
+    - "enter_intersection_because_green"
+    - "enter_intersection_and_wait_inside"
+  blocked_outputs:
+    - "intersection_entry_command"
+    - "follow_green_without_exit_check"
+  resume_when: "signal_permission_valid == true AND downstream_exit_clear == true AND available_storage_m >= 6.8 AND downstream_evidence_age_seconds <= 3"
+  next_action: "recheck_signal_and_downstream_clearance"
+  expected_status: "verified_intersection_hold"
+
+instructions_for_model:
+  - "Choose one action from enter_intersection_because_green, enter_intersection_and_wait_inside, or wait_before_stop_line_and_recheck_downstream."
+  - "Check signal permission and downstream clearance independently."
+  - "Do not infer exit storage from a green signal."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details></section>
+
+    <section class="card"><h2>第二步：验证模型动作</h2><div class="samples"><button class="sample" id="btn-enter" type="button">绿灯已亮，直接进入</button><button class="sample" id="btn-inside" type="button">先进入路口，再等下游腾空</button><button class="sample wide" id="btn-wait" type="button">停止线前等待并重新核验</button></div><button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button><div class="status" id="verify-status" role="status"></div><div class="verification" id="verification-card"><div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div><div class="metrics"><div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div><div class="metric"><small>本地任务动作</small><code>wait_before_stop_line_and_recheck_downstream</code></div><div class="metric"><small>当前下游空间</small><code>4.0 m</code></div><div class="metric"><small>整车所需空间</small><code>6.8 m</code></div></div><p class="message" id="verification-message">候选来源：model_generated；时间、路径相交和距离：local_deterministic；信号与排队状态：application_verified。</p></div><p class="warning">GT20演示单车直行和静态队尾。真实路口还需核验转向冲突、行人和非机动车、前车运动趋势、黄灯切换、盲区、路权规则和紧急车辆优先。</p></section>
+
+    <section class="card"><h2>查看项目与继续体验</h2><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt19/">← GT19</a></div></section>
+    <footer>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</footer>
+  </main>
+  <script>
+    (()=>{const green=[495,496],entry=[495,496],path=[[0,0],[20,0],[40,0]],queue=[24,-2,40,2],exit=[20,0],tail=[24,0],required=6.8;function overlap(a,b){return Math.max(a[0],b[0])<=Math.min(a[1],b[1])}function distance(a,b){return Math.hypot(a[0]-b[0],a[1]-b[1])}function pointInRect(p,r){return p[0]>=r[0]&&p[0]<=r[2]&&p[1]>=r[1]&&p[1]<=r[3]}function orient(a,b,c){return(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])}function segmentsIntersect(a,b,c,d){const o1=orient(a,b,c),o2=orient(a,b,d),o3=orient(c,d,a),o4=orient(c,d,b);return(o1===0||o2===0||o1*o2<0)&&(o3===0||o4===0||o3*o4<0)}function lineIntersectsRect(line,r){const e=[[[r[0],r[1]],[r[2],r[1]]],[[r[2],r[1]],[r[2],r[3]]],[[r[2],r[3]],[r[0],r[3]]],[[r[0],r[3]],[r[0],r[1]]]];for(let i=0;i<line.length-1;i++){if(pointInRect(line[i],r)||pointInRect(line[i+1],r)||e.some(x=>segmentsIntersect(line[i],line[i+1],x[0],x[1])))return true}return false}const greenValid=overlap(green,entry),pathBlocked=lineIntersectsRect(path,queue),available=distance(exit,tail),exitClear=!pathBlocked&&available>=required,authorized=greenValid&&exitClear&&available>=required,localAction=authorized?"enter_intersection_because_green":"wait_before_stop_line_and_recheck_downstream";let selected=null;const el=id=>document.getElementById(id),card=el("verification-card"),badge=el("verification-badge"),message=el("verification-message"),status=el("verify-status"),model=el("model-action");function evaluate(action){if(action===localAction)return{status:"verified",message:`绿灯有效，但下游仅有${available.toFixed(1)}米，低于${required.toFixed(1)}米；在停止线前等待并重新核验是可恢复动作。`};if(action==="enter_intersection_because_green")return{status:"contradicted",message:"绿灯只证明信号许可，不能证明下游出口净空或整车能够驶离路口。"};return{status:"contradicted",message:"驶入路口内部等待会占用冲突区。等待位置必须保持在停止线之前。"}}function choose(v,b){selected=v;document.querySelectorAll(".sample").forEach(x=>x.classList.remove("active"));b.classList.add("active");status.textContent=`已选择：${v}`}el("btn-enter").onclick=()=>choose("enter_intersection_because_green",el("btn-enter"));el("btn-inside").onclick=()=>choose("enter_intersection_and_wait_inside",el("btn-inside"));el("btn-wait").onclick=()=>choose("wait_before_stop_line_and_recheck_downstream",el("btn-wait"));el("verify").onclick=()=>{if(!selected){status.textContent="请先选择模型动作。";return}const r=evaluate(selected);card.className=`verification ${r.status}`;badge.textContent=r.status;model.textContent=selected;message.textContent=r.message;status.textContent=r.status==="verified"?"验证通过：阻断入口并生成可恢复的下游复核任务。":"发现冲突：模型混淆了信号许可与路口可清空能力。"};async function copy(open){const text=el("task-source").textContent.trim()+"\n";let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch(_){ }if(!ok){const a=document.createElement("textarea");a.value=text;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();ok=document.execCommand("copy");a.remove()}el("copy-status").textContent=ok?(open?"已复制，即将打开 DeepSeek。":"已复制，可粘贴到任意大模型。") : "复制失败，请展开任务手动复制。";if(ok&&open)setTimeout(()=>location.assign("https://chat.deepseek.com/"),600)}el("copy-open").onclick=()=>copy(true);el("copy-only").onclick=()=>copy(false)})();
+  </script>
+</body>
+</html>

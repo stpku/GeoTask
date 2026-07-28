@@ -13,7 +13,7 @@
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="GeoTask">
   <meta property="og:title" content="GeoTask｜面向AI智能体的可验证时空任务协议">
-  <meta property="og:description" content="让模型负责理解与生成，让本地确定性路径负责验证。体验GT01—GT17机器人、无人机、自动驾驶、应急救援和实时环境状态案例。">
+  <meta property="og:description" content="让模型负责理解与生成，让本地确定性路径负责验证。体验GT01—GT18机器人、无人机、自动驾驶、应急救援和实时环境状态案例。">
   <meta property="og:url" content="https://stpku.github.io/GeoTask/">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="GeoTask｜可验证时空任务协议">
@@ -177,7 +177,7 @@
           <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读中文白皮书</a>
         </div>
         <div class="trust-strip" aria-label="项目概览">
-          <div class="trust-item"><strong>17</strong><span>公开应用案例</span></div>
+          <div class="trust-item"><strong>18</strong><span>公开应用案例</span></div>
           <div class="trust-item"><strong>6</strong><span>本地确定性算子</span></div>
           <div class="trust-item"><strong>1.0</strong><span>文档Schema</span></div>
           <div class="trust-item"><strong>MIT</strong><span>GeoTask Core许可</span></div>
@@ -201,8 +201,8 @@
     <section class="block" id="cases">
       <div class="shell">
         <div class="section-head">
-          <div><h2>GT01—GT17渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、机器人协同、对象可行性、应急救援调度、实时环境状态和城市事件去重。</p></div>
-          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/cookbook/gt01-gt17.zh-CN.md">查看中文案例手册 →</a>
+          <div><h2>GT01—GT18渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、机器人协同、对象可行性、应急救援调度、城市事件去重和设备能力约束。</p></div>
+          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/cookbook/gt01-gt18.zh-CN.md">查看中文案例手册 →</a>
         </div>
         <div class="stage">
           <h3 class="stage-heading"><span class="stage-num">1</span>空间关系：对象、算子与边界语义</h3>
@@ -239,6 +239,7 @@
             <a class="case" href="gt15/"><span class="case-id">GT15</span><h3>地图说可以通行，机器人为什么停下来了？</h3><p>静态地图描述结构可通行性，实时感知决定当前路线是否被障碍占据。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt16/"><span class="case-id">GT16</span><h3>两架无人机路线相交，就一定会相撞吗？</h3><p>路线相交和高度重叠仍不足以证明碰撞，还必须核验交叉区占用时间。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt17/"><span class="case-id">GT17</span><h3>同一个事件被上报十次，系统应该生成十个任务吗？</h3><p>空间、时间和事件语义一致时，应合并处置任务并保留全部来源证据。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt18/"><span class="case-id">GT18</span><h3>最短路线已经找到，为什么救援机器人仍然不能进入？</h3><p>路线能够到达目标仍不足以执行，还必须核验危险区和具体设备耐受能力。</p><span class="go">进入体验 →</span></a>
           </div>
         </div>
       </div>
@@ -273,7 +274,7 @@
       <div class="shell">
         <div class="section-head"><div><h2>当前能力与演进方向</h2><p>项目首页展示已经开放的能力，以及下一阶段面向社区持续建设的方向。</p></div></div>
         <div class="capability-grid">
-          <article class="capability-card open"><h3>当前已开放</h3><ul><li>六类Canonical对象</li><li>六个本地确定性算子</li><li>解析、规范化、结构验证和执行</li><li>结果、状态和Assurance元数据</li><li>CLI、JSON Schema、GT01—GT17与一致性测试</li></ul></article>
+          <article class="capability-card open"><h3>当前已开放</h3><ul><li>六类Canonical对象</li><li>六个本地确定性算子</li><li>解析、规范化、结构验证和执行</li><li>结果、状态和Assurance元数据</li><li>CLI、JSON Schema、GT01—GT18与一致性测试</li></ul></article>
           <article class="capability-card roadmap"><h3>持续建设</h3><ul><li>更多时空对象与确定性算子</li><li>Runtime接口与模型适配示例</li><li>可复用的行业Domain Pack规范</li><li>数据连接器与证据治理工具</li><li>更完整的评测基准和开发者工具</li></ul></article>
         </div>
       </div>

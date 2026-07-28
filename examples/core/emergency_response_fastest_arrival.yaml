@@ -1,0 +1,107 @@
+geotask:
+  id: "gt14-emergency-response-fastest-arrival"
+  name: "GT14 Emergency Response Fastest Arrival"
+  schema_version: "1.0"
+  goal: "Distinguish the nearest rescue team from the team with the earliest verified arrival time under route, readiness, freshness, and response-window constraints."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "industrial_park_xy_km"
+  horizontal_unit: "kilometer"
+
+objects:
+  incident_site:
+    type: "point"
+    coordinates: [0, 0]
+  rescue_team_a_base:
+    type: "point"
+    coordinates: [2.4, 0]
+  rescue_team_b_base:
+    type: "point"
+    coordinates: [0, 5.6]
+
+operator_set:
+  - distance_2d
+
+tasks:
+  - id: "compare_rescue_team_proximity"
+    family: "emergency_response_dispatch"
+    goal: "Verify the straight-line proximity of each candidate team before applying route and time constraints."
+    assertions:
+      - id: "team_a_straight_distance"
+        operator: "distance_2d"
+        object_refs: ["incident_site", "rescue_team_a_base"]
+        expected_type: "number"
+      - id: "team_b_straight_distance"
+        operator: "distance_2d"
+        object_refs: ["incident_site", "rescue_team_b_base"]
+        expected_type: "number"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_local_proximity_checks"
+      executor: "local"
+      assertion_refs:
+        - "team_a_straight_distance"
+        - "team_b_straight_distance"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "emergency_response_fastest_arrival"
+    incident: "industrial_park_accident"
+    decision_question: "Why should the farther rescue team be dispatched when it has the earliest verified arrival time?"
+  response_window:
+    incident_time: "09:00"
+    arrival_deadline: "09:12"
+    maximum_response_time_min: 12
+  route_time_evidence:
+    status: "current"
+    verified_at: "08:59"
+    freshness_limit_min: 5
+    source: "verified_traffic_and_dispatch_system"
+  candidates:
+    team_a:
+      straight_distance_km: 2.4
+      route_distance_km: 7.8
+      readiness_time_min: 4
+      route_travel_time_min: 10
+      access_delay_min: 0
+      estimated_arrival_min: 14
+      meets_deadline: false
+    team_b:
+      straight_distance_km: 5.6
+      route_distance_km: 6.3
+      readiness_time_min: 1
+      route_travel_time_min: 7
+      access_delay_min: 0
+      estimated_arrival_min: 8
+      meets_deadline: true
+  arrival_comparison:
+    nearest_team: "team_a"
+    fastest_verified_team: "team_b"
+    nearest_is_fastest: false
+    team_a_eta_min: 14
+    team_b_eta_min: 8
+    arrival_advantage_min: 6
+  dispatch_gate:
+    status: "ready"
+    reason: "team_b_has_earliest_verified_arrival_and_meets_deadline"
+    selected_action: "dispatch_team_b"
+    alternatives:
+      - "dispatch_team_a_because_nearest"
+      - "request_route_refresh"
+    rejected_actions:
+      - "dispatch_team_a_because_nearest"
+      - "request_route_refresh_with_current_evidence"
+    blocked_outputs:
+      - "distance_only_dispatch"
+      - "primary_dispatch_team_a"
+    next_action: "dispatch_team_b"
+    expected_status: "verified_dispatch"
+    recalculate_when: "route_time_evidence.status != current or candidate_state_changed == true"

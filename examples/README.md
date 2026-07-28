@@ -28,6 +28,8 @@ patent-sensitive workflows.
   and whose 11-kilometer detour plus a 2-kilometer reserve exceeds its remaining range.
 - `examples/core/vehicle_clearance_envelope.yaml`: an open road narrowed to 2.4 meters
   where an autonomous vehicle requires a 2.7-meter object-specific safety envelope.
+- `examples/core/emergency_response_fastest_arrival.yaml`: two rescue teams where the
+  nearest team arrives in 14 minutes while the farther team arrives in 8 minutes and meets the response deadline.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

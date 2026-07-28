@@ -7,6 +7,8 @@ All notable public changes to GeoTask Core are documented here.
 ### Added
 
 - Add `geotask --version`, `geotask -V`, and `geotask version` for direct CLI version inspection.
+- Add GT14, an emergency-response dispatch case that distinguishes nearest distance from earliest verified arrival using readiness, route time, response deadlines, and evidence freshness.
+- Add the GT14 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 
 ### Changed
 

@@ -28,7 +28,7 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert "持续建设" in html
     assert "保护商业运行层" not in html
     assert "商业边界" not in html
-    assert "GT01—GT18渐进式案例" in html
+    assert "GT01—GT19渐进式案例" in html
     assert 'id="cases"' in html
     assert 'id="architecture"' in html
     assert 'id="docs"' in html
@@ -41,7 +41,7 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
 def test_portal_links_all_public_cases() -> None:
     html = PORTAL.read_text(encoding="utf-8")
 
-    for number in range(1, 19):
+    for number in range(1, 20):
         case = f"gt{number:02d}/"
         assert f'href="{case}"' in html
         assert f"GT{number:02d}" in html
@@ -55,7 +55,7 @@ def test_portal_links_primary_public_resources() -> None:
         "docs/whitepaper/GeoTask_White_Paper_v0.1.md",
         "docs/spec/geotask-language-spec-v1.0.md",
         "docs/tutorials/quickstart.zh-CN.md",
-        "docs/cookbook/gt01-gt18.zh-CN.md",
+        "docs/cookbook/gt01-gt19.zh-CN.md",
         "schemas/geotask-v1.0.schema.json",
     )
     for fragment in required:
@@ -106,7 +106,7 @@ def test_gt01_moved_to_stable_nested_route() -> None:
 
 
 def test_all_case_pages_link_back_to_project_portal() -> None:
-    for number in range(1, 19):
+    for number in range(1, 20):
         path = SITE / f"gt{number:02d}" / "index.html"
         assert path.is_file(), path
         html = path.read_text(encoding="utf-8")
@@ -145,7 +145,7 @@ def test_robots_and_sitemap_cover_portal_and_all_cases() -> None:
     expected = {"https://stpku.github.io/GeoTask/"}
     expected.update(
         f"https://stpku.github.io/GeoTask/gt{number:02d}/"
-        for number in range(1, 19)
+        for number in range(1, 20)
     )
     assert urls == expected
 
@@ -162,6 +162,7 @@ def test_deployment_checks_portal_gt01_and_search_files() -> None:
     assert 'test -f "$TARGET/gt16/index.html"' in script
     assert 'test -f "$TARGET/gt17/index.html"' in script
     assert 'test -f "$TARGET/gt18/index.html"' in script
+    assert 'test -f "$TARGET/gt19/index.html"' in script
     assert 'test -f "$TARGET/robots.txt"' in script
     assert 'test -f "$TARGET/sitemap.xml"' in script
     assert "Portal: $TARGET/index.html" in script
@@ -184,6 +185,7 @@ def test_public_manifest_requires_portal_routes_and_search_files() -> None:
         "site/gt16/index.html",
         "site/gt17/index.html",
         "site/gt18/index.html",
+        "site/gt19/index.html",
         "site/robots.txt",
         "site/sitemap.xml",
         ".github/workflows/pages.yml",

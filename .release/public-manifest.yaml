@@ -17,6 +17,10 @@ include:
   # Public Core source
   - "src/geotask_core/**"
 
+  # Public case catalog and generator
+  - "cases/catalog.yaml"
+  - "tools/generate_case_catalog.py"
+
   # Public tests — explicit whitelist (NOT tests/**)
   - "tests/test_architecture_boundaries.py"
   - "tests/test_cli_foundation_commands.py"
@@ -24,6 +28,7 @@ include:
   - "tests/test_core_examples_v0_2.py"
   - "tests/test_mobile_experience_page.py"
   - "tests/test_project_portal.py"
+  - "tests/test_case_catalog.py"
   - "tests/test_gt02_experience_page.py"
   - "tests/test_gt03_experience_page.py"
   - "tests/test_gt04_experience_page.py"
@@ -216,8 +221,13 @@ required:
   - "site/gt20/index.html"
   - "site/robots.txt"
   - "site/sitemap.xml"
+  - "site/cases.txt"
+  - "site/cases.json"
+  - "cases/catalog.yaml"
+  - "tools/generate_case_catalog.py"
   - ".github/workflows/pages.yml"
   - "tests/test_project_portal.py"
+  - "tests/test_case_catalog.py"
   - "tests/test_version_consistency.py"
   - "tests/test_release_pipeline_regression.py"
 

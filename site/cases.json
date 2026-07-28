@@ -1,0 +1,146 @@
+{
+  "catalog_version": "1.0",
+  "case_count": 20,
+  "cases": [
+    {
+      "id": "GT01",
+      "slug": "gt01",
+      "title_zh": "模型得到5米，为什么还要本地复算？",
+      "previous": null,
+      "next": "gt02"
+    },
+    {
+      "id": "GT02",
+      "slug": "gt02",
+      "title_zh": "答对，不等于已经验证",
+      "previous": "gt01",
+      "next": "gt03"
+    },
+    {
+      "id": "GT03",
+      "slug": "gt03",
+      "title_zh": "最后一段进入限制区，整条路线算相交吗？",
+      "previous": "gt02",
+      "next": "gt04"
+    },
+    {
+      "id": "GT04",
+      "slug": "gt04",
+      "title_zh": "水平相交但高度分离，算冲突吗？",
+      "previous": "gt03",
+      "next": "gt05"
+    },
+    {
+      "id": "GT05",
+      "slug": "gt05",
+      "title_zh": "位置高度相同，但时间不同，算冲突吗？",
+      "previous": "gt04",
+      "next": "gt06"
+    },
+    {
+      "id": "GT06",
+      "slug": "gt06",
+      "title_zh": "多项条件怎样组合成最终结论？",
+      "previous": "gt05",
+      "next": "gt07"
+    },
+    {
+      "id": "GT07",
+      "slug": "gt07",
+      "title_zh": "时间条件无法核验，AI能强行判断吗？",
+      "previous": "gt06",
+      "next": "gt08"
+    },
+    {
+      "id": "GT08",
+      "slug": "gt08",
+      "title_zh": "AI知道自己不知道以后，下一步做什么？",
+      "previous": "gt07",
+      "next": "gt09"
+    },
+    {
+      "id": "GT09",
+      "slug": "gt09",
+      "title_zh": "两份禁飞通知互相矛盾，信哪一份？",
+      "previous": "gt08",
+      "next": "gt10"
+    },
+    {
+      "id": "GT10",
+      "slug": "gt10",
+      "title_zh": "两台机器人抢同一条窄通道，谁先走？",
+      "previous": "gt09",
+      "next": "gt11"
+    },
+    {
+      "id": "GT11",
+      "slug": "gt11",
+      "title_zh": "目标只有50米，机器人为什么绕行300米？",
+      "previous": "gt10",
+      "next": "gt12"
+    },
+    {
+      "id": "GT12",
+      "slug": "gt12",
+      "title_zh": "电量够到达，无人机为什么仍不能起飞？",
+      "previous": "gt11",
+      "next": "gt13"
+    },
+    {
+      "id": "GT13",
+      "slug": "gt13",
+      "title_zh": "道路开放，车辆为什么还是过不去？",
+      "previous": "gt12",
+      "next": "gt14"
+    },
+    {
+      "id": "GT14",
+      "slug": "gt14",
+      "title_zh": "最近的救援队，为什么不一定最快到达？",
+      "previous": "gt13",
+      "next": "gt15"
+    },
+    {
+      "id": "GT15",
+      "slug": "gt15",
+      "title_zh": "地图说可以通行，机器人为什么停下来了？",
+      "previous": "gt14",
+      "next": "gt16"
+    },
+    {
+      "id": "GT16",
+      "slug": "gt16",
+      "title_zh": "两架无人机路线相交，就一定会相撞吗？",
+      "previous": "gt15",
+      "next": "gt17"
+    },
+    {
+      "id": "GT17",
+      "slug": "gt17",
+      "title_zh": "同一个事件被上报十次，系统应该生成十个任务吗？",
+      "previous": "gt16",
+      "next": "gt18"
+    },
+    {
+      "id": "GT18",
+      "slug": "gt18",
+      "title_zh": "最短路线已经找到，为什么救援机器人仍然不能进入？",
+      "previous": "gt17",
+      "next": "gt19"
+    },
+    {
+      "id": "GT19",
+      "slug": "gt19",
+      "title_zh": "无人机已经到达目标上空，为什么仍然不能投放物资？",
+      "previous": "gt18",
+      "next": "gt20"
+    },
+    {
+      "id": "GT20",
+      "slug": "gt20",
+      "title_zh": "车辆已经获得绿灯，为什么仍然不能进入路口？",
+      "previous": "gt19",
+      "next": null
+    }
+  ]
+}

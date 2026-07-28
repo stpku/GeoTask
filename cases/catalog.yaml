@@ -1,0 +1,179 @@
+catalog_version: "1.0"
+base_url: https://stpku.github.io/GeoTask/
+portal_lastmod: "2026-07-28"
+
+stages:
+  - id: spatial_relations
+    number: 1
+    title_zh: 空间关系：对象、算子与边界语义
+  - id: spatiotemporal_composition
+    number: 2
+    title_zh: 时空组合：二维、高度与时间
+  - id: evidence_governance
+    number: 3
+    title_zh: 不确定性与证据：不知道以后怎么办
+  - id: action_feasibility
+    number: 4
+    title_zh: 行动与可行性：从判断走向执行
+
+cases:
+  - id: GT01
+    slug: gt01
+    stage: spatial_relations
+    title_zh: 模型得到5米，为什么还要本地复算？
+    summary_zh: 用两个点和distance_2d建立第一条模型—确定性验证路径。
+    page: site/gt01/index.html
+    example: examples/geotask_core_lite.yaml
+    lastmod: "2026-07-27"
+  - id: GT02
+    slug: gt02
+    stage: spatial_relations
+    title_zh: 答对，不等于已经验证
+    summary_zh: 比较模型给出的144.22米与浏览器本地确定性结果。
+    page: site/gt02/index.html
+    example: examples/core/assertions_expected_results.yaml
+    lastmod: "2026-07-27"
+  - id: GT03
+    slug: gt03
+    stage: spatial_relations
+    title_zh: 最后一段进入限制区，整条路线算相交吗？
+    summary_zh: 逐段检查折线，而不是只看起点与终点。
+    page: site/gt03/index.html
+    example: examples/route_zone_intersection.yaml
+    lastmod: "2026-07-27"
+  - id: GT04
+    slug: gt04
+    stage: spatiotemporal_composition
+    title_zh: 水平相交但高度分离，算冲突吗？
+    summary_zh: 二维投影重叠不等于三维空间冲突。
+    page: site/gt04/index.html
+    example: examples/core/time_altitude_overlap.yaml
+    lastmod: "2026-07-27"
+  - id: GT05
+    slug: gt05
+    stage: spatiotemporal_composition
+    title_zh: 位置高度相同，但时间不同，算冲突吗？
+    summary_zh: 显式核验时间区间，而不是只看空间关系。
+    page: site/gt05/index.html
+    example: examples/core/time_altitude_overlap.yaml
+    lastmod: "2026-07-27"
+  - id: GT06
+    slug: gt06
+    stage: spatiotemporal_composition
+    title_zh: 多项条件怎样组合成最终结论？
+    summary_zh: 路线相交、高度重叠、时间不重叠，通过显式AND得到false。
+    page: site/gt06/index.html
+    example: examples/core/multi_constraint_conflict.yaml
+    lastmod: "2026-07-27"
+  - id: GT07
+    slug: gt07
+    stage: evidence_governance
+    title_zh: 时间条件无法核验，AI能强行判断吗？
+    summary_zh: true AND true AND unknown仍然是unknown。
+    page: site/gt07/index.html
+    example: examples/core/unverifiable_constraint.yaml
+    lastmod: "2026-07-27"
+  - id: GT08
+    slug: gt08
+    stage: evidence_governance
+    title_zh: AI知道自己不知道以后，下一步做什么？
+    summary_zh: 生成结构化补证据任务、阻断输出和恢复条件。
+    page: site/gt08/index.html
+    example: examples/core/evidence_request_plan.yaml
+    lastmod: "2026-07-27"
+  - id: GT09
+    slug: gt09
+    stage: evidence_governance
+    title_zh: 两份禁飞通知互相矛盾，信哪一份？
+    summary_zh: 单份证据已核验，不代表多份证据彼此一致。
+    page: site/gt09/index.html
+    example: examples/core/evidence_conflict_review.yaml
+    lastmod: "2026-07-27"
+  - id: GT10
+    slug: gt10
+    stage: action_feasibility
+    title_zh: 两台机器人抢同一条窄通道，谁先走？
+    summary_zh: 把容量、占用时间和优先级转化为可执行协调计划。
+    page: site/gt10/index.html
+    example: examples/core/robot_corridor_coordination.yaml
+    lastmod: "2026-07-27"
+  - id: GT11
+    slug: gt11
+    stage: action_feasibility
+    title_zh: 目标只有50米，机器人为什么绕行300米？
+    summary_zh: 几何距离不等于对象在真实网络中的可达路线。
+    page: site/gt11/index.html
+    example: examples/core/robot_accessible_route.yaml
+    lastmod: "2026-07-27"
+  - id: GT12
+    slug: gt12
+    stage: action_feasibility
+    title_zh: 电量够到达，无人机为什么仍不能起飞？
+    summary_zh: 能到达目标不等于能保留安全余量完成任务。
+    page: site/gt12/index.html
+    example: examples/core/uav_energy_reserve.yaml
+    lastmod: "2026-07-27"
+  - id: GT13
+    slug: gt13
+    stage: action_feasibility
+    title_zh: 道路开放，车辆为什么还是过不去？
+    summary_zh: 道路状态与具体车辆的安全空间包络必须分别判断。
+    page: site/gt13/index.html
+    example: examples/core/vehicle_clearance_envelope.yaml
+    lastmod: "2026-07-27"
+  - id: GT14
+    slug: gt14
+    stage: action_feasibility
+    title_zh: 最近的救援队，为什么不一定最快到达？
+    summary_zh: 直线距离只是空间事实，派遣动作必须验证真实路线、准备时间和响应窗口。
+    page: site/gt14/index.html
+    example: examples/core/emergency_response_fastest_arrival.yaml
+    lastmod: "2026-07-28"
+  - id: GT15
+    slug: gt15
+    stage: action_feasibility
+    title_zh: 地图说可以通行，机器人为什么停下来了？
+    summary_zh: 静态地图描述结构可通行性，实时感知决定当前路线是否被障碍占据。
+    page: site/gt15/index.html
+    example: examples/core/robot_live_obstacle_stop.yaml
+    lastmod: "2026-07-28"
+  - id: GT16
+    slug: gt16
+    stage: action_feasibility
+    title_zh: 两架无人机路线相交，就一定会相撞吗？
+    summary_zh: 路线相交和高度重叠仍不足以证明碰撞，还必须核验交叉区占用时间。
+    page: site/gt16/index.html
+    example: examples/core/uav_route_crossing_temporal_separation.yaml
+    lastmod: "2026-07-28"
+  - id: GT17
+    slug: gt17
+    stage: action_feasibility
+    title_zh: 同一个事件被上报十次，系统应该生成十个任务吗？
+    summary_zh: 空间、时间和事件语义一致时，应合并处置任务并保留全部来源证据。
+    page: site/gt17/index.html
+    example: examples/core/city_event_report_deduplication.yaml
+    lastmod: "2026-07-28"
+  - id: GT18
+    slug: gt18
+    stage: action_feasibility
+    title_zh: 最短路线已经找到，为什么救援机器人仍然不能进入？
+    summary_zh: 路线能够到达目标仍不足以执行，还必须核验危险区和具体设备耐受能力。
+    page: site/gt18/index.html
+    example: examples/core/rescue_robot_shortest_route_hazard.yaml
+    lastmod: "2026-07-28"
+  - id: GT19
+    slug: gt19
+    stage: action_feasibility
+    title_zh: 无人机已经到达目标上空，为什么仍然不能投放物资？
+    summary_zh: 导航到达、高度和时间合规仍不足以释放载荷，还必须取得新鲜的地面净空证据。
+    page: site/gt19/index.html
+    example: examples/core/uav_arrival_ground_clearance_release.yaml
+    lastmod: "2026-07-28"
+  - id: GT20
+    slug: gt20
+    stage: action_feasibility
+    title_zh: 车辆已经获得绿灯，为什么仍然不能进入路口？
+    summary_zh: 信号许可仍不足以进入冲突区，还必须证明下游出口净空并能容纳完整车辆。
+    page: site/gt20/index.html
+    example: examples/core/vehicle_green_light_downstream_blockage.yaml
+    lastmod: "2026-07-28"

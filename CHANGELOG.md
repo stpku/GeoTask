@@ -22,10 +22,12 @@ All notable public changes to GeoTask Core are documented here.
 - Add GT20, a vehicle intersection-entry case that separates green-signal permission from downstream storage and junction-clearance feasibility.
 - Add the GT20 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 - Add a versioned case catalog, generator, deployment slug list, JSON navigation index, and catalog conformance tests for GT01—GT20.
+- Add shared case navigation CSS and JavaScript that consume the generated same-origin case index on every public case page.
 
 ### Changed
 
 - Make `cases/catalog.yaml` the single source of truth for portal case cards, Sitemap entries, deployment case discovery, and cross-case navigation metadata.
+- Generate shared asset references on every case page while preserving existing hand-authored links as an offline fallback.
 - Replace 20 hand-written deployment checks and output lines with a generated case slug list and one validation loop.
 - Make `OperatorContract` the single source of truth for public operator metadata, eliminating the separate hand-maintained registry table.
 - Enforce operator output types, assertion `expected_type`, and executable basic invariants before granting deterministic assurance.

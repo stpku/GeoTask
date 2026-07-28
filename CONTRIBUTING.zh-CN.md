@@ -122,7 +122,7 @@ python tools/generate_case_catalog.py --write
 python tools/generate_case_catalog.py --check
 ```
 
-生成器会更新门户案例卡片、Sitemap、部署案例列表和前后导航索引。不要手工修改生成区域，也不要再把每个案例路径重复写入部署脚本。
+生成器会更新门户案例卡片、Sitemap、部署案例列表、前后导航索引，并为每个案例页注入共享导航资源。不要手工修改生成区域、重复添加导航脚本，也不要再把每个案例路径写入部署脚本。案例特有的验证逻辑可以继续内联，跨案例导航统一维护在`site/assets/`。
 
 ## 行为规范与安全问题
 

@@ -1,0 +1,89 @@
+:root {
+  --gt-nav-ink: #173246;
+  --gt-nav-muted: #667681;
+  --gt-nav-line: #d8e3e9;
+  --gt-nav-surface: #ffffff;
+  --gt-nav-soft: #f3f7f9;
+  --gt-nav-accent: #1f6f9f;
+}
+
+.gt-case-navigation {
+  width: min(1120px, calc(100% - 32px));
+  margin: 28px auto 18px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 10px;
+  border: 1px solid var(--gt-nav-line);
+  border-radius: 16px;
+  background: var(--gt-nav-surface);
+  box-shadow: 0 10px 30px rgba(20, 52, 77, 0.08);
+  color: var(--gt-nav-ink);
+}
+
+.gt-case-navigation__link,
+.gt-case-navigation__disabled {
+  min-height: 46px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  border-radius: 11px;
+  font: inherit;
+  line-height: 1.35;
+}
+
+.gt-case-navigation__link {
+  border: 1px solid var(--gt-nav-line);
+  background: var(--gt-nav-soft);
+  color: var(--gt-nav-accent);
+  text-decoration: none;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.gt-case-navigation__link:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--gt-nav-accent) 45%, var(--gt-nav-line));
+  background: var(--gt-nav-surface);
+}
+
+.gt-case-navigation__link:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--gt-nav-accent) 28%, transparent);
+  outline-offset: 2px;
+}
+
+.gt-case-navigation__link--previous {
+  justify-content: flex-start;
+}
+
+.gt-case-navigation__link--index {
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.gt-case-navigation__link--next {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.gt-case-navigation__disabled {
+  color: var(--gt-nav-muted);
+  background: transparent;
+  border: 1px dashed var(--gt-nav-line);
+}
+
+.gt-case-navigation__disabled:last-child {
+  justify-content: flex-end;
+}
+
+@media (max-width: 680px) {
+  .gt-case-navigation {
+    width: min(100% - 20px, 1120px);
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .gt-case-navigation__link--index {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

@@ -19,6 +19,7 @@
     details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:590px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
     @media(max-width:420px){.team-grid,.metric-grid,.blocked{grid-template-columns:1fr}}@media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
   </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
 </head>
 <body>
   <a href="../" aria-label="返回GeoTask项目首页" style="position:fixed;right:12px;bottom:12px;z-index:50;padding:9px 13px;border-radius:13px;background:rgba(255,255,255,.95);color:#14344d;text-decoration:none;font:700 13px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;box-shadow:0 6px 20px rgba(20,52,77,.16)">项目首页</a>
@@ -196,5 +197,6 @@ instructions_for_model:
       copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnNearest.addEventListener("click",()=>selectAction("dispatch_team_a_because_nearest"));btnFastest.addEventListener("click",()=>selectAction("dispatch_team_b"));btnRefresh.addEventListener("click",()=>selectAction("request_route_refresh"));verifyButton.addEventListener("click",verifyModelAction);
     })();
   </script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
 </body>
 </html>

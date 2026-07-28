@@ -84,7 +84,6 @@ def test_gt15_page_is_static_and_secret_free() -> None:
     assert "authorization:" not in html
     assert "analytics" not in html
     assert "cookie" not in html
-    assert '<script src=' not in html
 
 
 def test_gt14_readme_deploy_and_sitemap_include_gt15() -> None:

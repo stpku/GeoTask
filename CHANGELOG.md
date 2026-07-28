@@ -11,6 +11,8 @@ All notable public changes to GeoTask Core are documented here.
 - Add the GT14 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 - Add GT15, a robot live-obstacle case that separates static structural map passability from current route occupancy and verifies a safe stop-and-replan action.
 - Add the GT15 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
+- Add GT16, a multi-UAV crossing case that combines shared crossing location, altitude overlap, and non-overlapping crossing windows to verify temporal separation.
+- Add the GT16 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 
 ### Changed
 

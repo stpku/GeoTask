@@ -1,0 +1,127 @@
+geotask:
+  id: "gt16-uav-route-crossing-temporal-separation"
+  name: "GT16 UAV Route Crossing With Temporal Separation"
+  schema_version: "1.0"
+  goal: "Distinguish geometric route crossing from an actual collision by verifying crossing location, altitude overlap, and crossing-zone occupancy time."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "low_altitude_crossing_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  route_a:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [1000, 1000]
+  route_b:
+    type: "polyline"
+    coordinates:
+      - [0, 1000]
+      - [1000, 0]
+  crossing_point:
+    type: "point"
+    coordinates: [500, 500]
+  altitude_a:
+    type: "altitude_interval"
+    min: 100
+    max: 120
+    unit: "meter"
+  altitude_b:
+    type: "altitude_interval"
+    min: 110
+    max: 130
+    unit: "meter"
+  crossing_time_a:
+    type: "time_interval"
+    start: "09:00"
+    end: "09:01"
+  crossing_time_b:
+    type: "time_interval"
+    start: "09:03"
+    end: "09:04"
+
+operator_set:
+  - point_to_line_distance_2d
+  - altitude_overlap
+  - time_overlap
+
+tasks:
+  - id: "verify_crossing_collision_conditions"
+    family: "low_altitude_trajectory_conflict"
+    goal: "Verify whether both routes pass the same crossing point, whether altitude intervals overlap, and whether the crossing-zone occupancy windows overlap."
+    assertions:
+      - id: "route_a_crossing_distance"
+        operator: "point_to_line_distance_2d"
+        object_refs: ["crossing_point", "route_a"]
+        expected_type: "number"
+        unit: "meter"
+      - id: "route_b_crossing_distance"
+        operator: "point_to_line_distance_2d"
+        object_refs: ["crossing_point", "route_b"]
+        expected_type: "number"
+        unit: "meter"
+      - id: "altitude_conflict"
+        operator: "altitude_overlap"
+        object_refs: ["altitude_a", "altitude_b"]
+        expected_type: "bool"
+      - id: "temporal_conflict"
+        operator: "time_overlap"
+        object_refs: ["crossing_time_a", "crossing_time_b"]
+        expected_type: "bool"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_crossing_checks"
+      executor: "local"
+      assertion_refs:
+        - "route_a_crossing_distance"
+        - "route_b_crossing_distance"
+        - "altitude_conflict"
+        - "temporal_conflict"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "two_uav_routes_cross_with_time_separation"
+    decision_question: "Do two UAVs collide merely because their routes cross and their altitude intervals overlap?"
+  crossing_state:
+    route_a_passes_crossing: true
+    route_b_passes_crossing: true
+    horizontal_crossing: true
+    altitude_overlap: true
+    temporal_overlap: false
+  temporal_separation:
+    uav_a_crossing_window: "09:00-09:01"
+    uav_b_crossing_window: "09:03-09:04"
+    actual_separation_minutes: 2
+    minimum_separation_minutes: 1
+    separation_requirement_met: true
+    schedule_evidence_status: "current_and_verified"
+  collision_rule:
+    expression: "horizontal_crossing AND altitude_overlap AND temporal_overlap"
+    collision_conflict: false
+    reason: "crossing_zone_occupancy_windows_do_not_overlap"
+  flight_gate:
+    status: "open_with_verified_separation"
+    selected_action: "maintain_planned_time_separation"
+    required_controls:
+      - "preserve_crossing_windows"
+      - "monitor_arrival_deviation"
+      - "recalculate_if_delay_exceeds_margin"
+    rejected_actions:
+      - "declare_collision_from_route_crossing_only"
+      - "declare_collision_from_altitude_overlap_only"
+    blocked_outputs:
+      - "claim_collision_is_verified"
+      - "force_emergency_stop_without_temporal_conflict"
+    resume_when: "not_applicable_current_plan_verified"
+    next_action: "maintain_planned_time_separation"
+    expected_status: "verified_separation"

@@ -255,4 +255,4 @@ Missing evidence is not equivalent to a verified false result.
 - [Language and Execution Specification](../spec/geotask-language-spec-v1.0.md)
 - [Evidence and Recovery](evidence-and-recovery.md)
 - [White Paper](../whitepaper/GeoTask_White_Paper_v0.1.md)
-- [GT01–GT13 Cookbook](../cookbook/gt01-gt13.md)
+- [GT01–GT14 Cookbook](../cookbook/gt01-gt14.md)

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第14期：救援队A距离更近但预计14分钟到达，救援队B预计8分钟到达并满足12分钟响应时限。">
+  <title>GeoTask GT14｜最近的救援队，为什么不一定最快到达</title>
+  <style>
+    :root{color-scheme:light;--navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--amber:#b97816;--ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;--success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--warm:#fff7e8;--shadow:0 14px 40px rgba(20,52,77,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,780px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.4vw,42px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}.formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:16px;font-weight:750;overflow-wrap:anywhere}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}svg{display:block;width:100%;height:auto}.visual{padding:10px;border:1px solid #e4ebef;border-radius:16px;background:#fff}
+    .team-grid,.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.team,.metric-box{min-width:0;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.team strong,.metric-box strong{display:block;color:var(--navy)}.team .value,.metric-box .value{font:900 25px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}.team.nearest .value{color:var(--amber)}.team.fastest{background:var(--success);border-color:var(--success-line)}.team.fastest .value{color:var(--green)}.metric-box.fail{background:var(--danger);border-color:var(--danger-line)}.metric-box.fail .value{color:var(--red)}.metric-box.pass .value{color:var(--green)}.equation{margin-top:12px;padding:14px;border-radius:14px;background:var(--warm);color:#75520f;text-align:center;font-weight:850;overflow-wrap:anywhere}
+    .gate{margin-top:14px;padding:16px;border:1px solid var(--success-line);border-radius:16px;background:var(--success)}.gate h3{margin:0 0 10px;color:#0f716a}.blocked{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.blocked div{padding:10px;border-radius:12px;background:#fff;color:#a33a32;text-align:center;font-weight:800}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}.verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}.verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:#a33a32}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.75)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:13px;font-weight:850;overflow-wrap:anywhere}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a33a32}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:590px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(max-width:420px){.team-grid,.metric-grid,.blocked{grid-template-columns:1fr}}@media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <a href="../" aria-label="返回GeoTask项目首页" style="position:fixed;right:12px;bottom:12px;z-index:50;padding:9px 13px;border-radius:13px;background:rgba(255,255,255,.95);color:#14344d;text-decoration:none;font:700 13px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;box-shadow:0 6px 20px rgba(20,52,77,.16)">项目首页</a>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT14</span></div><a class="back" href="../gt13/">← GT13</a></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">应急救援 · 网络时间距离与响应窗口</p>
+      <h1 id="title">最近的救援队，为什么不一定最快到达？</h1>
+      <p class="lead">A队直线距离只有2.4公里，却因绕行和准备需要14分钟；B队距离5.6公里，但8分钟即可到场并满足12分钟响应时限。</p>
+      <div class="formula">selected_action = dispatch_team_b</div>
+    </section>
+
+    <section class="card" aria-labelledby="scene-title">
+      <h2 id="scene-title">空间上更近，不代表任务上更快</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 440" role="img" aria-label="救援队A距离事故现场更近但路线绕行，救援队B距离更远却更早到达">
+          <rect x="20" y="20" width="680" height="400" rx="24" fill="#f7fafb" stroke="#d8e2e8" stroke-width="3"/>
+          <circle cx="360" cy="215" r="42" fill="#c33731"/>
+          <text x="360" y="210" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#fff" text-anchor="middle">事故</text>
+          <text x="360" y="232" font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#fff" text-anchor="middle">现场</text>
+          <circle cx="170" cy="145" r="38" fill="#b97816"/>
+          <text x="170" y="151" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">A队</text>
+          <circle cx="575" cy="330" r="38" fill="#148f62"/>
+          <text x="575" y="336" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">B队</text>
+          <line x1="205" y1="158" x2="320" y2="200" stroke="#b97816" stroke-width="3" stroke-dasharray="7 7"/>
+          <text x="245" y="150" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#8a5b11">直线 2.4 km</text>
+          <path d="M170 185 C115 250,215 350,330 250" fill="none" stroke="#c33731" stroke-width="7" stroke-linecap="round"/>
+          <text x="125" y="300" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#a33a32">绕行 7.8 km</text>
+          <line x1="540" y1="310" x2="400" y2="240" stroke="#148f62" stroke-width="7" stroke-linecap="round"/>
+          <text x="485" y="265" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#0f716a">路线 6.3 km</text>
+          <rect x="75" y="65" width="190" height="48" rx="13" fill="#fff7e8" stroke="#e4c180"/>
+          <text x="170" y="86" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#75520f" text-anchor="middle">A队：4分钟准备 + 10分钟行驶</text>
+          <text x="170" y="105" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="#c33731" text-anchor="middle">ETA 14分钟</text>
+          <rect x="480" y="55" width="190" height="48" rx="13" fill="#e9f7f3" stroke="#acd8ce"/>
+          <text x="575" y="76" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#0f716a" text-anchor="middle">B队：1分钟准备 + 7分钟行驶</text>
+          <text x="575" y="95" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="#148f62" text-anchor="middle">ETA 8分钟</text>
+          <line x1="305" y1="385" x2="415" y2="385" stroke="#256fa8" stroke-width="4"/>
+          <text x="360" y="375" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#256fa8" text-anchor="middle">响应时限 12分钟</text>
+        </svg>
+      </div>
+      <div class="team-grid">
+        <div class="team nearest"><strong>距离最近</strong><div class="value">team_a</div><p class="muted">直线距离2.4公里</p></div>
+        <div class="team fastest"><strong>最早到达</strong><div class="value">team_b</div><p class="muted">预计8分钟到场</p></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="eta-title">
+      <h2 id="eta-title">到达时间必须把准备与真实路线算进去</h2>
+      <div class="metric-grid">
+        <div class="metric-box fail"><strong>A队预计到达</strong><div class="value" id="team-a-eta">14 min</div><p class="muted">超过12分钟时限</p></div>
+        <div class="metric-box pass"><strong>B队预计到达</strong><div class="value" id="team-b-eta">8 min</div><p class="muted">提前4分钟到场</p></div>
+        <div class="metric-box"><strong>到达优势</strong><div class="value" id="arrival-advantage">6 min</div><p class="muted">B队比A队早到</p></div>
+        <div class="metric-box"><strong>路线证据</strong><div class="value">current</div><p class="muted">08:59已核验</p></div>
+      </div>
+      <div class="equation">ETA = readiness_time + route_travel_time + access_delay</div>
+      <div class="gate">
+        <h3>dispatch_gate = ready</h3>
+        <p>B队具有最早的已验证到达时间，并满足12分钟响应时限，因此可以形成可执行派遣动作。</p>
+        <div class="blocked"><div>distance_only_dispatch</div><div>primary_dispatch_team_a</div></div>
+        <p><strong>重新计算条件：</strong>路线时间证据不再是current，或任一候选队伍状态发生变化。</p>
+      </div>
+      <p class="warning">最快到达不自动等于最终派遣。真实系统还需核验队伍专业能力、装备、风险等级和多队协同要求。</p>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型选择派遣动作</h2>
+      <p>模型可以选择因为距离最近就派A、根据已验证ETA派B，或者在证据仍然有效时要求重复刷新路线。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT14 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT14 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">得到模型建议后返回本页，选择对应动作并验证。</p>
+      <details><summary>查看将被复制的完整 GeoTask</summary><pre id="task-source">geotask:
+  id: "gt14-emergency-response-fastest-arrival"
+  name: "GT14 Emergency Response Fastest Arrival"
+  schema_version: "1.0"
+
+application_context:
+  scenario: "emergency_response_fastest_arrival"
+  incident: "industrial_park_accident"
+
+response_window:
+  incident_time: "09:00"
+  arrival_deadline: "09:12"
+  maximum_response_time_min: 12
+
+route_time_evidence:
+  status: "current"
+  verified_at: "08:59"
+  freshness_limit_min: 5
+
+candidates:
+  team_a:
+    straight_distance_km: 2.4
+    route_distance_km: 7.8
+    readiness_time_min: 4
+    route_travel_time_min: 10
+    estimated_arrival_min: 14
+    meets_deadline: false
+  team_b:
+    straight_distance_km: 5.6
+    route_distance_km: 6.3
+    readiness_time_min: 1
+    route_travel_time_min: 7
+    estimated_arrival_min: 8
+    meets_deadline: true
+
+arrival_comparison:
+  nearest_team: "team_a"
+  fastest_verified_team: "team_b"
+  nearest_is_fastest: false
+  arrival_advantage_min: 6
+
+dispatch_gate:
+  status: "ready"
+  selected_action: "dispatch_team_b"
+  blocked_outputs: ["distance_only_dispatch", "primary_dispatch_team_a"]
+  next_action: "dispatch_team_b"
+  expected_status: "verified_dispatch"
+  recalculate_when: "route_time_evidence.status != current or candidate_state_changed == true"
+
+instructions_for_model:
+  - "Choose one action from dispatch_team_a_because_nearest, dispatch_team_b, or request_route_refresh."
+  - "Do not equate straight-line proximity with earliest arrival."
+  - "Use readiness time, route travel time, response deadline, and evidence freshness."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：验证模型选择的动作</h2>
+      <div class="samples" aria-label="模型动作候选">
+        <button class="sample" id="btn-nearest" type="button">A队最近，直接派A</button>
+        <button class="sample" id="btn-refresh" type="button">路线已核验，仍要求刷新</button>
+        <button class="sample wide" id="btn-fastest" type="button">按已验证ETA派B</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics">
+          <div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div>
+          <div class="metric"><small>本地任务动作</small><code id="local-action">dispatch_team_b</code></div>
+          <div class="metric"><small>A队ETA</small><code id="metric-team-a">14 min</code></div>
+          <div class="metric"><small>B队ETA</small><code id="metric-team-b">8 min</code></div>
+        </div>
+        <p class="message" id="verification-message">候选来源：model_generated；距离、时间预算和响应窗口：local_deterministic。</p>
+      </div>
+      <p class="warning">GT14只演示单次主力队伍的到达时间排序。真实应急调度还需考虑专业能力、装备匹配、现场风险、多队协同和动态重调度。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>仓库中同时新增了可由GeoTask Core真实计算两支队伍直线距离，并由应用规则验证到达时间与响应窗口的公开示例。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt13/">← GT13</a></div></section>
+    <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>距离最近是空间事实，最早到达才是调度结论。</div></footer>
+  </main>
+
+  <script>
+    (()=>{
+      const incident=[0,0],teamA=[2.4,0],teamB=[0,5.6],deadlineMin=12;
+      const candidates={team_a:{readinessTimeMin:4,routeTravelTimeMin:10,accessDelayMin:0},team_b:{readinessTimeMin:1,routeTravelTimeMin:7,accessDelayMin:0}};
+      function distance2d(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1])}
+      function calculateEta(readinessTimeMin,routeTravelTimeMin,accessDelayMin){return readinessTimeMin+routeTravelTimeMin+accessDelayMin}
+      const teamAStraightDistanceKm=distance2d(incident,teamA),teamBStraightDistanceKm=distance2d(incident,teamB),teamAEtaMin=calculateEta(candidates.team_a.readinessTimeMin,candidates.team_a.routeTravelTimeMin,candidates.team_a.accessDelayMin),teamBEtaMin=calculateEta(candidates.team_b.readinessTimeMin,candidates.team_b.routeTravelTimeMin,candidates.team_b.accessDelayMin),arrivalAdvantageMin=teamAEtaMin-teamBEtaMin,routeTimeEvidenceStatus="current";
+      const localAction=teamBEtaMin<teamAEtaMin&&teamBEtaMin<=deadlineMin&&routeTimeEvidenceStatus==="current"?"dispatch_team_b":"request_dispatch_review";
+      function evaluateCandidate(action){if(action==="dispatch_team_b")return{status:localAction===action?"verified":"contradicted",message:`B队预计${teamBEtaMin}分钟到达，比A队早${arrivalAdvantageMin}分钟，并满足${deadlineMin}分钟响应时限。`};if(action==="dispatch_team_a_because_nearest")return{status:"contradicted",message:`A队虽然直线距离只有${teamAStraightDistanceKm}公里，但预计${teamAEtaMin}分钟到达，已经超过响应时限。`};if(action==="request_route_refresh")return{status:"contradicted",message:"路线时间证据在08:59完成核验且仍处于current状态，当前无需用重复刷新替代可执行派遣。"};return{status:"contradicted",message:"未知候选动作。"}}
+      const localEvidence={team_a_straight_distance_km:teamAStraightDistanceKm,team_b_straight_distance_km:teamBStraightDistanceKm,team_a_eta_min:teamAEtaMin,team_b_eta_min:teamBEtaMin,response_deadline_min:deadlineMin,route_time_evidence_status:routeTimeEvidenceStatus,provenance:"local_deterministic"};
+      let selectedAction=null;
+      document.getElementById("team-a-eta").textContent=`${teamAEtaMin} min`;document.getElementById("team-b-eta").textContent=`${teamBEtaMin} min`;document.getElementById("arrival-advantage").textContent=`${arrivalAdvantageMin} min`;document.getElementById("local-action").textContent=localAction;document.getElementById("metric-team-a").textContent=`${teamAEtaMin} min`;document.getElementById("metric-team-b").textContent=`${teamBEtaMin} min`;
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status"),btnNearest=document.getElementById("btn-nearest"),btnFastest=document.getElementById("btn-fastest"),btnRefresh=document.getElementById("btn-refresh"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status"),card=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelAction=document.getElementById("model-action"),message=document.getElementById("verification-message");
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到派遣建议后请返回本页验证。":"已复制。可粘贴到任意大模型，得到派遣建议后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAction(value){selectedAction=value;btnNearest.classList.toggle("active",value==="dispatch_team_a_because_nearest");btnFastest.classList.toggle("active",value==="dispatch_team_b");btnRefresh.classList.toggle("active",value==="request_route_refresh");verifyStatus.textContent=`已选择模型动作：${value}`}
+      function verifyModelAction(){if(selectedAction===null){verifyStatus.textContent="请先选择模型动作。";return}const result=evaluateCandidate(selectedAction),consistent=result.status==="verified";card.classList.remove("verified","contradicted");card.classList.add(result.status);badge.textContent=result.status;modelAction.textContent=selectedAction;message.textContent=result.message;verifyStatus.textContent=consistent?"验证通过：模型选择了最早满足响应时限的救援队。":"发现冲突：模型把直线距离当成到达时间，或忽略了当前证据状态。"}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnNearest.addEventListener("click",()=>selectAction("dispatch_team_a_because_nearest"));btnFastest.addEventListener("click",()=>selectAction("dispatch_team_b"));btnRefresh.addEventListener("click",()=>selectAction("request_route_refresh"));verifyButton.addEventListener("click",verifyModelAction);
+    })();
+  </script>
+</body>
+</html>

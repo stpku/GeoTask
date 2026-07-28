@@ -38,6 +38,8 @@ patent-sensitive workflows.
   spatial, and temporal signature are merged into one dispatch task while all source evidence is retained.
 - `examples/core/rescue_robot_shortest_route_hazard.yaml`: a 120-meter shortest route crosses
   a 120°C hazard beyond the robot's 80°C limit, while a 260-meter detour remains executable.
+- `examples/core/uav_arrival_ground_clearance_release.yaml`: a UAV reaches the authorized drop
+  zone and altitude, but a responder only 10 meters from the impact point blocks payload release.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

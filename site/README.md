@@ -1,6 +1,6 @@
 # GeoTask项目门户与案例体验站
 
-`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT18互动案例、`robots.txt`和`sitemap.xml`。
+`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT19互动案例、`robots.txt`和`sitemap.xml`。
 
 站点没有后台、统计脚本、Cookie、账号系统、模型密钥或外部JavaScript依赖。案例页只在浏览器中复制任务、执行局部确定性复算，并跳转到用户选择的大模型平台。
 
@@ -17,8 +17,9 @@ site/gt15/index.html     GT15巡检机器人实时障碍体验
 site/gt16/index.html     GT16无人机路线交叉时间分离体验
 site/gt17/index.html     GT17城市事件多源上报去重体验
 site/gt18/index.html     GT18救援机器人安全路线体验
+site/gt19/index.html     GT19无人机地面净空投放体验
 site/robots.txt          搜索引擎规则
-site/sitemap.xml         门户与GT01—GT18索引
+site/sitemap.xml         门户与GT01—GT19索引
 ```
 
 根地址始终代表GeoTask项目本身，不再代表某一个案例。每个案例使用独立稳定地址，并提供返回项目首页的入口。
@@ -43,6 +44,7 @@ site/sitemap.xml         门户与GT01—GT18索引
 - `GT16`：两架无人机路线相交且高度重叠，但交叉区时间窗不重叠，因此不构成碰撞
 - `GT17`：同一积水事件被十个来源连续上报，系统合并为一个处置任务并保留十份来源证据
 - `GT18`：120米最短路线穿过120℃高温区，超过救援机器人80℃耐受上限，需改走260米安全路线
+- `GT19`：无人机已到达目标上空，但落点人员净空只有10米，低于30米最低投放要求，需悬停并请求清场
 
 ## 公共访问地址
 
@@ -67,6 +69,7 @@ GitHub Pages是公共Canonical入口：
 - <https://stpku.github.io/GeoTask/gt16/>
 - <https://stpku.github.io/GeoTask/gt17/>
 - <https://stpku.github.io/GeoTask/gt18/>
+- <https://stpku.github.io/GeoTask/gt19/>
 
 当前开发镜像：
 
@@ -89,6 +92,7 @@ GitHub Pages是公共Canonical入口：
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt16/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt17/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt18/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt19/>
 
 公共仓库：<https://github.com/stpku/GeoTask>
 
@@ -119,11 +123,12 @@ test -f /var/www/geotask-experience/gt15/index.html
 test -f /var/www/geotask-experience/gt16/index.html
 test -f /var/www/geotask-experience/gt17/index.html
 test -f /var/www/geotask-experience/gt18/index.html
+test -f /var/www/geotask-experience/gt19/index.html
 test -f /var/www/geotask-experience/robots.txt
 test -f /var/www/geotask-experience/sitemap.xml
 ```
 
-仓库中的`site/deploy-nginx.sh`会执行递归同步，检查项目门户、GT01—GT18、robots和sitemap，再验证并重载Nginx。
+仓库中的`site/deploy-nginx.sh`会执行递归同步，检查项目门户、GT01—GT19、robots和sitemap，再验证并重载Nginx。
 
 推荐配置：
 

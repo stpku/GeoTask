@@ -17,6 +17,8 @@ All notable public changes to GeoTask Core are documented here.
 - Add the GT17 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 - Add GT18, a rescue-robot route-feasibility case that separates geometric shortest path from hazard avoidance and equipment temperature capability.
 - Add the GT18 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
+- Add GT19, an emergency-supply UAV release-gate case that separates target-overhead arrival from live ground-clearance authorization.
+- Add the GT19 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 
 ### Changed
 

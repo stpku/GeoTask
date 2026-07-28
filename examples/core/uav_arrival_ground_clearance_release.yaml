@@ -1,0 +1,134 @@
+geotask:
+  id: "gt19-uav-arrival-ground-clearance-release"
+  name: "GT19 UAV Arrival Ground Clearance Release"
+  schema_version: "1.0"
+  goal: "Verify whether an emergency-supply UAV may release cargo after arriving above the target when the ground drop zone is not yet clear."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "emergency_drop_zone_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  drop_zone:
+    type: "rect"
+    bbox: [-20, -20, 20, 20]
+  uav_ground_projection:
+    type: "point"
+    coordinates: [0, 0]
+  planned_impact_point:
+    type: "point"
+    coordinates: [0, 0]
+  ground_responder_location:
+    type: "point"
+    coordinates: [8, 6]
+  uav_release_altitude:
+    type: "altitude_interval"
+    min: 45
+    max: 55
+    unit: "meter"
+  authorized_release_altitude:
+    type: "altitude_interval"
+    min: 40
+    max: 60
+    unit: "meter"
+  authorized_release_window:
+    type: "time_interval"
+    start: "10:00"
+    end: "10:10"
+  current_release_window:
+    type: "time_interval"
+    start: "10:04"
+    end: "10:05"
+
+operator_set:
+  - rect_contains_point
+  - altitude_overlap
+  - time_overlap
+  - distance_2d
+
+tasks:
+  - id: "verify_uav_release_gate"
+    family: "uav_emergency_supply_release"
+    goal: "Verify target-zone arrival, release altitude, release time, and live ground clearance before authorizing cargo release."
+    assertions:
+      - id: "projection_inside_drop_zone"
+        operator: "rect_contains_point"
+        object_refs: ["drop_zone", "uav_ground_projection"]
+        expected_type: "bool"
+      - id: "release_altitude_authorized"
+        operator: "altitude_overlap"
+        object_refs: ["uav_release_altitude", "authorized_release_altitude"]
+        expected_type: "bool"
+      - id: "release_time_authorized"
+        operator: "time_overlap"
+        object_refs: ["authorized_release_window", "current_release_window"]
+        expected_type: "bool"
+      - id: "ground_responder_clearance"
+        operator: "distance_2d"
+        object_refs: ["planned_impact_point", "ground_responder_location"]
+        expected_type: "number"
+        unit: "meter"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_release_gate_checks"
+      executor: "local"
+      assertion_refs:
+        - "projection_inside_drop_zone"
+        - "release_altitude_authorized"
+        - "release_time_authorized"
+        - "ground_responder_clearance"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "emergency_supply_drop_with_live_ground_occupancy"
+    decision_question: "May the UAV release supplies immediately after reaching the target overhead?"
+  arrival_state:
+    projection_inside_drop_zone: true
+    release_altitude_authorized: true
+    release_time_authorized: true
+    target_overhead_reached: true
+  ground_clearance_evidence:
+    planned_impact_point_clearance_m: 10
+    minimum_release_clearance_m: 30
+    ground_responder_inside_safety_radius: true
+    ground_zone_clear: false
+    evidence_source: "downward_camera_and_ground_team_beacon"
+    evidence_status: "verified"
+    verified_at: "10:04"
+    freshness_limit_seconds: 15
+  payload_state:
+    payload_id: "medical_supply_package_m3"
+    release_system_ready: true
+    release_mode: "controlled_parachute_drop"
+  release_rule:
+    expression: "projection_inside_drop_zone AND release_altitude_authorized AND release_time_authorized AND ground_zone_clear AND release_system_ready"
+    arrival_conditions_verified: true
+    release_conditions_verified: false
+    immediate_release_authorized: false
+  task_gate:
+    status: "blocked_pending_ground_clearance"
+    selected_action: "hold_position_and_request_ground_clearance"
+    rejected_actions:
+      - "release_cargo_because_over_target"
+      - "abort_delivery_mission"
+    blocked_outputs:
+      - "payload_release_command"
+      - "automatic_drop_authorization"
+    required_controls:
+      - "retain_live_ground_clearance_evidence"
+      - "notify_ground_team_to_clear_drop_zone"
+      - "maintain_safe_hover_position"
+      - "reverify_clearance_before_release"
+      - "abort_or_divert_if_hover_margin_expires"
+    resume_when: "ground_zone_clear == true AND clearance_evidence_age_seconds <= 15"
+    next_action: "request_ground_clearance_and_reverify"
+    expected_status: "verified_release_hold"

@@ -127,11 +127,15 @@ def execute_canonical(doc: CanonicalDocument) -> GeotaskResult:
             _finalize(result)
             return result
 
+        if doc.execution.mode != ExecutionMode.local_only.value:
+            _execute_unsupported(doc, result)
+            _finalize(result)
+            return result
+
         # -- Route by execution steps ─────────────────────────────────────
         if doc.execution.steps:
             if _has_unsupported_executors(doc.execution.steps):
                 _execute_unsupported(doc, result)
-                _enforce_output_contract(result, doc)
                 _finalize(result)
                 return result
             _execute_steps(doc, dispatcher, result)
@@ -439,45 +443,88 @@ def _execute_steps(
 
 
 def _has_unsupported_executors(steps: list[ExecutionStep]) -> bool:
-    """Return ``True`` if any step uses a non-``local``/``runtime`` executor."""
-    for step in steps:
-        if step.executor not in (
-            ExecutorType.local.value,
-            ExecutorType.runtime.value,
-        ):
-            return True
-    return False
+    """Return ``True`` if any step cannot be executed by public Core."""
+    return any(step.executor != ExecutorType.local.value for step in steps)
 
 
 def _execute_unsupported(
     doc: CanonicalDocument, result: GeotaskResult
 ) -> None:
-    """Create skeleton result when steps reference unsupported executors."""
-    unsupported = sorted(
+    """Create truthful unverifiable results for unsupported execution paths."""
+    unsupported_mode = (
+        doc.execution.mode
+        if doc.execution.mode != ExecutionMode.local_only.value
+        else ""
+    )
+    unsupported_executors = sorted(
         {
             step.executor
             for step in doc.execution.steps
-            if step.executor
-            not in (ExecutorType.local.value, ExecutorType.runtime.value)
+            if step.executor != ExecutorType.local.value
         }
     )
 
     result.execution.status = ExecutionStatus.pending.value
-    result.warnings.append(
-        f"Execution steps reference unsupported executors: {unsupported}. "
-        f"Skeleton result returned."
-    )
+    if unsupported_mode:
+        result.warnings.append(
+            f"Execution mode '{unsupported_mode}' is declared but not implemented "
+            "by public Core; no local execution was performed."
+        )
+    if unsupported_executors:
+        result.warnings.append(
+            f"Execution steps reference unsupported executors: "
+            f"{unsupported_executors}; no local execution was substituted."
+        )
 
-    for step in doc.execution.steps:
-        for assertion_id in step.assertion_refs:
-            result.checks.append(
-                CheckResult(
-                    assertion_id=assertion_id,
-                    operator="",
-                    object_refs=[],
-                    executor=step.executor,
-                    status=ClaimStatus.proposed.value,
-                )
+    assertion_map = {
+        assertion.id: assertion
+        for task in doc.tasks
+        for assertion in task.assertions
+    }
+    emitted: set[str] = set()
+
+    def append_unverifiable(assertion_id: str, executor: str) -> None:
+        if assertion_id in emitted:
+            return
+        emitted.add(assertion_id)
+        assertion = assertion_map.get(assertion_id)
+        if unsupported_mode:
+            error_code = "unsupported_execution_mode"
+            message = (
+                f"Execution mode '{unsupported_mode}' is not implemented by "
+                "public Core."
+            )
+        elif executor != ExecutorType.local.value:
+            error_code = "unsupported_executor"
+            message = f"Executor '{executor}' is not implemented by public Core."
+        else:
+            error_code = "unsupported_execution_plan"
+            message = (
+                "This local step was not executed because the same plan contains "
+                "unsupported executors; public Core does not partially substitute "
+                "a mixed execution plan."
+            )
+        result.checks.append(
+            CheckResult(
+                assertion_id=assertion_id,
+                operator=assertion.operator if assertion else "",
+                object_refs=list(assertion.object_refs) if assertion else [],
+                executor=executor,
+                status=ClaimStatus.unverifiable.value,
+                assurance_level=AssuranceLevel.unverified.name,
+                error={"code": error_code, "message": message},
+            )
+        )
+
+    if doc.execution.steps:
+        for step in doc.execution.steps:
+            for assertion_id in step.assertion_refs:
+                append_unverifiable(assertion_id, step.executor)
+    else:
+        for assertion_id in assertion_map:
+            append_unverifiable(
+                assertion_id,
+                unsupported_mode or "unsupported",
             )
 
 
@@ -674,6 +721,20 @@ def _execute_single_assertion(
     # -- 6. dispatch ──────────────────────────────────────────────────────
     try:
         value = dispatcher.dispatch(assertion, doc.objects)
+        output_error = _validate_operator_output(value, assertion, contract)
+        if output_error is not None:
+            return CheckResult(
+                assertion_id=assertion.id,
+                operator=assertion.operator,
+                object_refs=list(assertion.object_refs),
+                executor=executor_str,
+                value=value,
+                unit=_resolve_unit(assertion, contract, doc),
+                status=output_error["status"],
+                assurance_level=AssuranceLevel.unverified.name,
+                deterministic=contract.deterministic,
+                error=output_error["error"],
+            )
         return CheckResult(
             assertion_id=assertion.id,
             operator=assertion.operator,
@@ -705,6 +766,133 @@ def _execute_single_assertion(
                 "type": type(exc).__name__,
             },
         )
+
+
+# -- Operator Output Contract Validation
+
+
+_OUTPUT_TYPE_ALIASES = {
+    "number": "number",
+    "float": "number",
+    "integer": "number",
+    "int": "number",
+    "boolean": "boolean",
+    "bool": "boolean",
+    "string": "string",
+    "str": "string",
+    "object": "object",
+    "dict": "object",
+    "array": "array",
+    "list": "array",
+}
+
+
+def _normalize_output_type(type_name: str) -> str | None:
+    """Normalize public type aliases to canonical output kinds."""
+    if not type_name:
+        return None
+    return _OUTPUT_TYPE_ALIASES.get(type_name.strip().lower())
+
+
+def _value_matches_output_type(value: Any, output_type: str) -> bool:
+    """Return whether a Python value satisfies a canonical output kind."""
+    if output_type == "number":
+        return isinstance(value, (int, float)) and not isinstance(value, bool)
+    if output_type == "boolean":
+        return isinstance(value, bool)
+    if output_type == "string":
+        return isinstance(value, str)
+    if output_type == "object":
+        return isinstance(value, dict)
+    if output_type == "array":
+        return isinstance(value, list)
+    return False
+
+
+def _validate_operator_output(
+    value: Any,
+    assertion: Assertion,
+    contract: OperatorContract,
+) -> dict | None:
+    """Enforce executable output-type and basic invariant contract fields."""
+    declared_raw = str(contract.output.get("type", ""))
+    declared = _normalize_output_type(declared_raw)
+    if declared is None and declared_raw:
+        return {
+            "status": ClaimStatus.execution_error.value,
+            "error": {
+                "code": "unsupported_contract_output_type",
+                "message": (
+                    f"Operator '{contract.name}' declares unsupported output "
+                    f"type '{declared_raw}'."
+                ),
+            },
+        }
+    if declared and not _value_matches_output_type(value, declared):
+        return {
+            "status": ClaimStatus.execution_error.value,
+            "error": {
+                "code": "operator_output_type_mismatch",
+                "message": (
+                    f"Operator '{contract.name}' declared output type "
+                    f"'{declared_raw}' but returned '{type(value).__name__}'."
+                ),
+                "expected": declared,
+                "actual": type(value).__name__,
+            },
+        }
+
+    if assertion.expected_type:
+        expected = _normalize_output_type(assertion.expected_type)
+        if expected is None:
+            return {
+                "status": ClaimStatus.invalid_input.value,
+                "error": {
+                    "code": "unsupported_expected_type",
+                    "message": (
+                        f"Assertion '{assertion.id}' declares unsupported "
+                        f"expected_type '{assertion.expected_type}'."
+                    ),
+                },
+            }
+        if not _value_matches_output_type(value, expected):
+            return {
+                "status": ClaimStatus.invalid_input.value,
+                "error": {
+                    "code": "expected_type_mismatch",
+                    "message": (
+                        f"Assertion '{assertion.id}' expected '{expected}' but "
+                        f"operator returned '{type(value).__name__}'."
+                    ),
+                    "expected": expected,
+                    "actual": type(value).__name__,
+                },
+            }
+
+    for invariant in contract.invariants:
+        invariant_id = invariant.get("id") if isinstance(invariant, dict) else ""
+        violated = (
+            invariant_id == "non_negative"
+            and isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and value < 0
+        ) or (
+            invariant_id == "bool_output" and not isinstance(value, bool)
+        )
+        if violated:
+            return {
+                "status": ClaimStatus.execution_error.value,
+                "error": {
+                    "code": "contract_invariant_violation",
+                    "message": (
+                        f"Operator '{contract.name}' violated invariant "
+                        f"'{invariant_id}'."
+                    ),
+                    "invariant": invariant_id,
+                },
+            }
+
+    return None
 
 
 # -- On-Error Handling

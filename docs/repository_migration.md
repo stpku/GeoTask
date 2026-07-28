@@ -54,7 +54,7 @@ git push origin rename/geotask
 # git push origin main
 ```
 
-See `scripts/migrate_remote_to_geotask.sh` for an interactive helper script.
+For public checkouts, update the remote directly with `git remote set-url origin https://gitee.com/stpku/GeoTask.git` and verify it with `git remote -v`.
 
 ## Dependency Changes
 

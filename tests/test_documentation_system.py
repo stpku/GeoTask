@@ -255,6 +255,22 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
 
     assert "current public Core" in text
     assert "does not call a hosted model" in text
+    assert "unsupported_execution_mode" in text
+    assert "unsupported_executor" in text
+    assert "MUST NOT substitute local execution" in text
+
+
+def test_legacy_compatibility_docs_match_distributed_package() -> None:
+    init_text = (ROOT / "src" / "geotask_core" / "__init__.py").read_text(
+        encoding="utf-8"
+    )
+    migration_text = (ROOT / "MIGRATION.md").read_text(encoding="utf-8")
+
+    assert "Old import paths (stir_core.*) are still supported" not in init_text
+    assert "old ``stir_core`` Python package path is not" in init_text
+    assert "old `stir_core` Python package path is not distributed" in migration_text
+    assert "scripts/migrate_remote_to_geotask.sh" not in migration_text
+    assert "git remote set-url origin" in migration_text
 
 
 def test_root_readmes_match_current_capabilities() -> None:

@@ -1,7 +1,9 @@
 """GeoTask Core: Lightweight spatial task representation for LLMs.
 
 STIR was the original prototype name. The project has been renamed to GeoTask.
-Old import paths (stir_core.*) are still supported as deprecated aliases.
+Selected old function names, the ``stir`` CLI, and the ``stir:`` YAML key
+remain deprecated aliases. The old ``stir_core`` Python package path is not
+distributed; imports must use ``geotask_core``.
 
 v1.0 modules are available under geotask_core.v1.*
 """

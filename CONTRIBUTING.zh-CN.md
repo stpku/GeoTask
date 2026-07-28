@@ -115,7 +115,19 @@ pytest tests/test_documentation_system.py -q
 
 可参考[GT01—GT20中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)。
 
-跨案例元数据统一维护在`cases/catalog.yaml`。新增或修改案例条目后运行：
+新增案例先使用脚手架命令。命令默认只预览，会列出即将创建或修改的4个作者输入：
+
+```bash
+python tools/scaffold_case.py \
+  --stage action_feasibility \
+  --case-key uav-weather-diversion \
+  --title-zh "天气恶化后，无人机为什么不能继续直飞？" \
+  --summary-zh "核验天气证据变化后，原飞行动作是否仍然可执行。"
+```
+
+确认路径后追加`--write`重新执行。脚手架会创建1个示例YAML、1个体验页、1个合并的业务/页面测试，并向`cases/catalog.yaml`增加1个条目，随后自动运行案例生成器。生成内容会明确标记为可运行的`starter`；提交前必须把其中的3-4-5距离对象、断言、候选动作、页面文案和测试替换为真实案例。
+
+跨案例元数据统一维护在`cases/catalog.yaml`。后续单独修改目录元数据时运行：
 
 ```bash
 python tools/generate_case_catalog.py --write

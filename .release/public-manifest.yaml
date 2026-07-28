@@ -17,9 +17,10 @@ include:
   # Public Core source
   - "src/geotask_core/**"
 
-  # Public case catalog and generator
+  # Public case catalog, generator, and scaffold
   - "cases/catalog.yaml"
   - "tools/generate_case_catalog.py"
+  - "tools/scaffold_case.py"
 
   # Public tests — explicit whitelist (NOT tests/**)
   - "tests/test_architecture_boundaries.py"
@@ -29,6 +30,7 @@ include:
   - "tests/test_mobile_experience_page.py"
   - "tests/test_project_portal.py"
   - "tests/test_case_catalog.py"
+  - "tests/test_case_scaffold.py"
   - "tests/test_gt02_experience_page.py"
   - "tests/test_gt03_experience_page.py"
   - "tests/test_gt04_experience_page.py"
@@ -227,9 +229,11 @@ required:
   - "site/assets/case-navigation.js"
   - "cases/catalog.yaml"
   - "tools/generate_case_catalog.py"
+  - "tools/scaffold_case.py"
   - ".github/workflows/pages.yml"
   - "tests/test_project_portal.py"
   - "tests/test_case_catalog.py"
+  - "tests/test_case_scaffold.py"
   - "tests/test_version_consistency.py"
   - "tests/test_release_pipeline_regression.py"
 

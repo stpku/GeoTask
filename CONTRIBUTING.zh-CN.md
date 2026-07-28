@@ -115,6 +115,15 @@ pytest tests/test_documentation_system.py -q
 
 可参考[GT01—GT20中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)。
 
+跨案例元数据统一维护在`cases/catalog.yaml`。新增或修改案例条目后运行：
+
+```bash
+python tools/generate_case_catalog.py --write
+python tools/generate_case_catalog.py --check
+```
+
+生成器会更新门户案例卡片、Sitemap、部署案例列表和前后导航索引。不要手工修改生成区域，也不要再把每个案例路径重复写入部署脚本。
+
 ## 行为规范与安全问题
 
 参与项目即表示同意遵守[社区行为准则](CODE_OF_CONDUCT.md)。安全漏洞不要公开提交普通Issue，请按照[SECURITY.md](SECURITY.md)中的方式处理。

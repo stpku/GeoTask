@@ -154,20 +154,18 @@ def test_deployment_checks_portal_gt01_and_search_files() -> None:
     script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
     readme = README.read_text(encoding="utf-8")
 
-    assert "Missing GeoTask project portal" in script
-    assert 'test -f "$TARGET/index.html"' in script
-    assert 'test -f "$TARGET/gt01/index.html"' in script
-    assert 'test -f "$TARGET/gt14/index.html"' in script
-    assert 'test -f "$TARGET/gt15/index.html"' in script
-    assert 'test -f "$TARGET/gt16/index.html"' in script
-    assert 'test -f "$TARGET/gt17/index.html"' in script
-    assert 'test -f "$TARGET/gt18/index.html"' in script
-    assert 'test -f "$TARGET/gt19/index.html"' in script
-    assert 'test -f "$TARGET/gt20/index.html"' in script
-    assert 'test -f "$TARGET/robots.txt"' in script
-    assert 'test -f "$TARGET/sitemap.xml"' in script
+    case_slugs = (SITE / "cases.txt").read_text(encoding="utf-8").splitlines()
+
+    assert 'CASE_LIST="$SOURCE/cases.txt"' in script
+    assert 'mapfile -t CASE_SLUGS' in script
+    assert 'require_file "$SOURCE/$slug/index.html"' in script
+    assert 'require_file "$TARGET/$slug/index.html"' in script
+    assert 'require_file "$TARGET/index.html"' in script
+    assert 'require_file "$TARGET/robots.txt"' in script
+    assert 'require_file "$TARGET/sitemap.xml"' in script
     assert "Portal: $TARGET/index.html" in script
-    assert "GT01: $TARGET/gt01/index.html" in script
+    assert 'echo "  ${slug^^}: $TARGET/$slug/index.html"' in script
+    assert case_slugs == [f"gt{number:02d}" for number in range(1, 21)]
 
     assert "GitHub Pages是公共Canonical入口" in readme
     assert "site/gt01/index.html" in readme

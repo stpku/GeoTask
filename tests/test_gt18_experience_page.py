@@ -94,6 +94,4 @@ def test_gt17_readme_deploy_and_sitemap_include_gt18() -> None:
     assert 'href="../gt18/"' in gt17_html
     assert "GT18" in readme
     assert "https://skyswind.tailf4fad8.ts.net/geotask/gt18/" in readme
-    assert '"$SOURCE/gt18/index.html"' in script
-    assert 'test -f "$TARGET/gt18/index.html"' in script
     assert "https://stpku.github.io/GeoTask/gt18/" in sitemap

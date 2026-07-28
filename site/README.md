@@ -133,7 +133,16 @@ test -f /var/www/geotask-experience/robots.txt
 test -f /var/www/geotask-experience/sitemap.xml
 ```
 
-仓库中的`site/deploy-nginx.sh`会执行递归同步，检查项目门户、GT01—GT20、robots和sitemap，再验证并重载Nginx。
+仓库中的`site/deploy-nginx.sh`会读取生成的`site/cases.txt`，逐一检查目录中的全部公开案例、robots、sitemap和导航索引，再验证并重载Nginx。案例清单不再手工写入部署脚本。
+
+跨案例元数据统一维护在`cases/catalog.yaml`。修改目录后运行：
+
+```bash
+python tools/generate_case_catalog.py --write
+python tools/generate_case_catalog.py --check
+```
+
+生成器会同步更新门户案例区、`site/sitemap.xml`、`site/cases.txt`和`site/cases.json`。
 
 推荐配置：
 

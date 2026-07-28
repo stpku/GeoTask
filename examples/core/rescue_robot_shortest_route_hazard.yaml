@@ -1,0 +1,139 @@
+geotask:
+  id: "gt18-rescue-robot-shortest-route-hazard"
+  name: "GT18 Rescue Robot Shortest Route Hazard"
+  schema_version: "1.0"
+  goal: "Verify whether the geometrically shortest route is executable for a rescue robot under route hazard and equipment tolerance constraints."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "industrial_fire_scene_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  entry_point:
+    type: "point"
+    coordinates: [0, 0]
+  target_point:
+    type: "point"
+    coordinates: [120, 0]
+  safe_waypoint_1:
+    type: "point"
+    coordinates: [0, 70]
+  safe_waypoint_2:
+    type: "point"
+    coordinates: [120, 70]
+  shortest_route:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [120, 0]
+  safe_route:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [0, 70]
+      - [120, 70]
+      - [120, 0]
+  high_temperature_zone:
+    type: "rect"
+    bbox: [45, -12, 85, 12]
+
+operator_set:
+  - distance_2d
+  - line_intersects_rect
+
+tasks:
+  - id: "verify_rescue_routes"
+    family: "rescue_robot_route_feasibility"
+    goal: "Verify route lengths and whether each route intersects the high-temperature hazard zone."
+    assertions:
+      - id: "shortest_route_distance"
+        operator: "distance_2d"
+        object_refs: ["entry_point", "target_point"]
+        expected_type: "number"
+        unit: "meter"
+      - id: "safe_route_segment_1_distance"
+        operator: "distance_2d"
+        object_refs: ["entry_point", "safe_waypoint_1"]
+        expected_type: "number"
+        unit: "meter"
+      - id: "safe_route_segment_2_distance"
+        operator: "distance_2d"
+        object_refs: ["safe_waypoint_1", "safe_waypoint_2"]
+        expected_type: "number"
+        unit: "meter"
+      - id: "safe_route_segment_3_distance"
+        operator: "distance_2d"
+        object_refs: ["safe_waypoint_2", "target_point"]
+        expected_type: "number"
+        unit: "meter"
+      - id: "shortest_route_intersects_hazard"
+        operator: "line_intersects_rect"
+        object_refs: ["shortest_route", "high_temperature_zone"]
+        expected_type: "bool"
+      - id: "safe_route_intersects_hazard"
+        operator: "line_intersects_rect"
+        object_refs: ["safe_route", "high_temperature_zone"]
+        expected_type: "bool"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_route_feasibility_checks"
+      executor: "local"
+      assertion_refs:
+        - "shortest_route_distance"
+        - "safe_route_segment_1_distance"
+        - "safe_route_segment_2_distance"
+        - "safe_route_segment_3_distance"
+        - "shortest_route_intersects_hazard"
+        - "safe_route_intersects_hazard"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "industrial_fire_rescue_robot_entry"
+    decision_question: "Can the rescue robot enter by the geometrically shortest route?"
+  route_metrics:
+    shortest_route_length_m: 120
+    safe_route_length_m: 260
+    shortest_route_is_geometrically_shortest: true
+    shortest_route_intersects_high_temperature_zone: true
+    safe_route_intersects_high_temperature_zone: false
+  environment_evidence:
+    shortest_route_max_temperature_c: 120
+    safe_route_max_temperature_c: 60
+    evidence_source: "thermal_camera_and_fixed_sensor_fusion"
+    evidence_status: "verified"
+  robot_capability:
+    robot_id: "rescue_robot_r7"
+    maximum_operating_temperature_c: 80
+    thermal_protection_status: "standard"
+  feasibility_rule:
+    expression: "route_reaches_target AND NOT route_intersects_hazard AND route_max_temperature_c <= robot_maximum_operating_temperature_c"
+    shortest_route_reaches_target: true
+    shortest_route_temperature_compatible: false
+    shortest_route_executable: false
+    safe_route_reaches_target: true
+    safe_route_temperature_compatible: true
+    safe_route_executable: true
+  task_gate:
+    status: "open_for_safe_route_entry"
+    selected_action: "enter_via_safe_route"
+    rejected_actions:
+      - "enter_via_shortest_route"
+      - "abort_rescue_mission"
+    blocked_outputs:
+      - "authorize_shortest_route_entry"
+      - "ignore_verified_hazard"
+    required_controls:
+      - "retain_verified_temperature_evidence"
+      - "bind_route_to_robot_capability"
+      - "monitor_safe_route_temperature"
+      - "stop_if_temperature_exceeds_limit"
+    next_action: "dispatch_robot_via_safe_route"
+    expected_status: "verified_safe_route_entry"

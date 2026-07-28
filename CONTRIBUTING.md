@@ -94,7 +94,7 @@ A Core operator should be cross-domain, deterministic, offline, type-safe, unit-
 
 A public GT case should include a concrete application question, explicit objects and constraints, reusable Core assertions where available, differentiated candidate actions, a local verification path, a safe blocked or recovery state when needed, tests, and a real-world limitation statement.
 
-See the [GT01–GT17 Cookbook](docs/cookbook/gt01-gt17.md) or [中文案例手册](docs/cookbook/gt01-gt17.zh-CN.md).
+See the [GT01–GT18 Cookbook](docs/cookbook/gt01-gt18.md) or [中文案例手册](docs/cookbook/gt01-gt18.zh-CN.md).
 
 ## Conduct and security
 

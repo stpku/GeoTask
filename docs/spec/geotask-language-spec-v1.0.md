@@ -477,7 +477,7 @@ Defined protocol modes are:
 - `hybrid`
 - `shadow_compare`
 
-The public Core reference executor performs local deterministic execution. It does not call a hosted model or store model credentials. Documents intended for direct public Core execution SHOULD use `local_only`.
+The public Core reference executor performs local deterministic execution only. It does not call a hosted model or store model credentials. `model_only` returns an explicit model-generated skeleton without making a model call. `hybrid` and `shadow_compare` are protocol labels reserved for Runtime implementations; public Core returns `unverifiable` checks with `unsupported_execution_mode` and MUST NOT substitute local execution. Documents intended for direct public Core execution SHOULD use `local_only`.
 
 ### 11.2 Executors
 
@@ -489,7 +489,7 @@ Defined executor labels are:
 - `human`
 - `runtime`
 
-The presence of a label does not mean the public Core implements that executor. Unsupported execution paths MUST be surfaced explicitly.
+The presence of a label does not mean the public Core implements that executor. Public Core executes only `local` steps. A `model`, `connector`, `human`, or `runtime` step returns `unverifiable` with `unsupported_executor`; it MUST NOT be routed through the local operator dispatcher.
 
 ### 11.3 Steps
 

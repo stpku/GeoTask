@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14344d">
+  <meta name="description" content="GeoTask 每周一例第15期：静态地图显示通道可通行，但巡检机器人实时感知到托盘占据路线，因此必须停车并重新规划。">
+  <title>GeoTask GT15｜地图说可以通行，机器人为什么停下来了</title>
+  <style>
+    :root{color-scheme:light;--navy:#14344d;--blue:#256fa8;--teal:#16867f;--green:#148f62;--red:#c33731;--amber:#b97816;--ink:#17242d;--muted:#65737d;--line:#d8e2e8;--soft:#f3f7fa;--success:#e9f7f3;--success-line:#acd8ce;--danger:#fff0ef;--danger-line:#e5b5b0;--warm:#fff7e8;--shadow:0 14px 40px rgba(20,52,77,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(37,111,168,.15),transparent 38%),linear-gradient(180deg,#edf4f8 0,#f8fafb 36%,#fff 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+    button,a{-webkit-tap-highlight-color:transparent}.shell{width:min(100%,780px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:700}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:750}
+    .hero{padding:28px 22px 24px;border-radius:24px;background:linear-gradient(145deg,#14344d,#1b5274);color:#fff;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#9bdbd7;font-size:14px;font-weight:700}h1{margin:0;font-size:clamp(27px,7.4vw,42px);line-height:1.22;letter-spacing:-.5px}.lead{margin:16px 0 0;color:#d8e7ef;font-size:16px}.formula{margin-top:20px;padding:14px 16px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-size:16px;font-weight:750;overflow-wrap:anywhere}
+    .card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 9px 28px rgba(20,52,77,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px;line-height:1.35}p{margin:8px 0}.muted{color:var(--muted);font-size:14px}svg{display:block;width:100%;height:auto}.visual{padding:10px;border:1px solid #e4ebef;border-radius:16px;background:#fff}
+    .state-grid,.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.state,.metric-box{min-width:0;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.state strong,.metric-box strong{display:block;color:var(--navy)}.state .value,.metric-box .value{font:900 24px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}.state.map .value{color:var(--green)}.state.live{background:var(--danger);border-color:var(--danger-line)}.state.live .value,.metric-box.blocked .value{color:var(--red)}.metric-box.safe .value{color:var(--green)}.equation{margin-top:12px;padding:14px;border-radius:14px;background:var(--warm);color:#75520f;text-align:center;font-weight:850;overflow-wrap:anywhere}
+    .gate{margin-top:14px;padding:16px;border:1px solid var(--danger-line);border-radius:16px;background:var(--danger)}.gate h3{margin:0 0 10px;color:#a33a32}.blocked{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.blocked div{padding:10px;border-radius:12px;background:#fff;color:#a33a32;text-align:center;font-weight:800}.recovery{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}.recovery div{padding:10px;border-radius:12px;background:rgba(255,255,255,.82);color:var(--navy);font-weight:750}
+    .primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s ease,opacity .12s ease}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:#fff;box-shadow:0 8px 22px rgba(22,134,127,.23)}.secondary{margin-top:10px;background:#eaf2f7;color:var(--navy)}.primary:active,.secondary:active,.sample:active{transform:scale(.985)}.primary:disabled{opacity:.7;cursor:wait}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:700;text-align:center}.tip{margin-top:6px;color:var(--muted);font-size:13px;text-align:center}
+    .samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:58px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(37,111,168,.18);background:#e5f0f7}.verification{margin-top:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--success);border-color:var(--success-line)}.verification.contradicted{background:var(--danger);border-color:var(--danger-line)}.verification-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe9ef;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#ccebe3;color:#0f716a}.contradicted .badge{background:#f2d0cd;color:#a33a32}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{min-width:0;padding:10px;border-radius:12px;background:rgba(255,255,255,.75)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:13px;font-weight:850;overflow-wrap:anywhere}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a33a32}
+    details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:750}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:590px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.warning{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#74520f;font-size:14px}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);text-decoration:none;font-weight:750;background:#fff}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}
+    @media(max-width:420px){.state-grid,.metric-grid,.blocked{grid-template-columns:1fr}}@media(min-width:620px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}.recovery{grid-template-columns:repeat(3,1fr)}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <a href="../" aria-label="返回GeoTask项目首页" style="position:fixed;right:12px;bottom:12px;z-index:50;padding:9px 13px;border-radius:13px;background:rgba(255,255,255,.95);color:#14344d;text-decoration:none;font:700 13px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;box-shadow:0 6px 20px rgba(20,52,77,.16)">项目首页</a>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 每周一例 · GT15</span></div><a class="back" href="../gt14/">← GT14</a></div>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">巡检机器人 · 静态地图与实时环境状态</p>
+      <h1 id="title">地图说可以通行，机器人为什么停下来了？</h1>
+      <p class="lead">地图证明通道结构上可通行，但机器人在09:15:12实时检测到一个托盘占据路线。当前通行状态必须由此刻的环境证据决定。</p>
+      <div class="formula">selected_action = stop_and_replan_route</div>
+    </section>
+
+    <section class="card" aria-labelledby="scene-title">
+      <h2 id="scene-title">地图没有错，但它回答的不是“此刻有没有障碍”</h2>
+      <div class="visual">
+        <svg viewBox="0 0 720 420" role="img" aria-label="静态地图显示巡检通道开放，实时感知发现托盘占据机器人路线">
+          <rect x="55" y="80" width="610" height="250" rx="24" fill="#eef2f4" stroke="#8c999f" stroke-width="3"/>
+          <line x1="100" y1="205" x2="620" y2="205" stroke="#148f62" stroke-width="8" stroke-dasharray="14 10"/>
+          <text x="360" y="120" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#148f62" text-anchor="middle">静态地图：corridor_passable = true</text>
+          <rect x="120" y="165" width="72" height="80" rx="13" fill="#14344d"/>
+          <circle cx="137" cy="250" r="10" fill="#65737d"/><circle cx="175" cy="250" r="10" fill="#65737d"/>
+          <text x="156" y="198" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">巡检</text>
+          <text x="156" y="218" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">机器人</text>
+          <rect x="360" y="150" width="125" height="110" rx="10" fill="#c33731" opacity=".9"/>
+          <line x1="360" y1="150" x2="485" y2="260" stroke="#fff" stroke-width="4"/><line x1="485" y1="150" x2="360" y2="260" stroke="#fff" stroke-width="4"/>
+          <text x="422" y="195" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">临时托盘</text>
+          <text x="422" y="218" font-family="Arial,sans-serif" font-size="14" fill="#fff" text-anchor="middle">live obstacle</text>
+          <line x1="305" y1="145" x2="305" y2="265" stroke="#256fa8" stroke-width="4"/>
+          <text x="305" y="290" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#256fa8" text-anchor="middle">安全停车点</text>
+          <line x1="305" y1="315" x2="422" y2="315" stroke="#256fa8" stroke-width="4"/>
+          <text x="364" y="342" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#256fa8" text-anchor="middle">净距 4.0 米 ≥ 3.0 米</text>
+          <text x="360" y="385" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="#c33731" text-anchor="middle">current_passability = false</text>
+        </svg>
+      </div>
+      <div class="state-grid">
+        <div class="state map"><strong>静态地图状态</strong><div class="value">true</div><p class="muted">结构上可通行</p></div>
+        <div class="state live"><strong>当前路线状态</strong><div class="value">false</div><p class="muted">实时障碍占据通道</p></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="state-title">
+      <h2 id="state-title">执行动作必须使用与问题匹配的证据</h2>
+      <div class="metric-grid">
+        <div class="metric-box blocked"><strong>路线与障碍相交</strong><div class="value" id="route-intersects">true</div></div>
+        <div class="metric-box safe"><strong>安全停车净距</strong><div class="value" id="stop-clearance">4.0 m</div></div>
+        <div class="metric-box"><strong>最低停车净距</strong><div class="value">3.0 m</div></div>
+        <div class="metric-box"><strong>实时感知状态</strong><div class="value">current</div></div>
+      </div>
+      <div class="equation">结构可通行 ≠ 当前未占用 ≠ 立即可继续运动</div>
+      <div class="gate">
+        <h3>motion_gate = blocked</h3>
+        <p>实时障碍与规划路线相交，机器人必须在安全点停车，阻断自主前进和未经复核的继续巡检。</p>
+        <div class="blocked"><div>autonomous_forward_motion</div><div>continue_without_revalidation</div></div>
+        <div class="recovery"><div>重新规划路线</div><div>请求移除障碍</div><div>等待并重新核验</div></div>
+        <p><strong>恢复条件：</strong><code>live_obstacle_cleared == true and route_reverified == true</code></p>
+      </div>
+      <p class="warning">这里不是简单地说“传感器永远比地图权威”。地图负责结构与拓扑，实时感知负责当前占用；证据权威性必须与具体判断问题匹配。</p>
+    </section>
+
+    <section class="card" aria-labelledby="model-title">
+      <h2 id="model-title">第一步：让模型选择运动动作</h2>
+      <p>模型可以因为地图可通行而继续前进、把临时障碍忽略掉，或者停车并重新规划路线。</p>
+      <button class="primary" id="copy-open" type="button">复制 GT15 并打开 DeepSeek</button>
+      <button class="secondary" id="copy-only" type="button">只复制 GT15 任务</button>
+      <div class="status" id="copy-status" role="status" aria-live="polite"></div>
+      <p class="tip">得到模型建议后返回本页，选择对应动作并验证。</p>
+      <details><summary>查看将被复制的完整 GeoTask</summary><pre id="task-source">geotask:
+  id: "gt15-robot-live-obstacle-stop"
+  name: "GT15 Robot Live Obstacle Stop"
+  schema_version: "1.0"
+
+application_context:
+  scenario: "inspection_robot_static_map_live_obstacle"
+  robot: "wheeled_inspection_robot"
+
+static_map_state:
+  corridor_passable: true
+  map_updated_at: "08:00"
+  scope: "structural_passability"
+  proves_current_occupancy: false
+
+live_perception:
+  status: "current"
+  detected_at: "09:15:12"
+  sensor: "lidar_and_depth_camera"
+  obstacle_type: "temporary_pallet"
+  confidence: 0.97
+  obstacle_blocks_corridor: true
+
+route_state:
+  planned_route_intersects_obstacle: true
+  current_passability: false
+  safe_stop_clearance_m: 4.0
+  minimum_stop_clearance_m: 3.0
+  stop_point_is_safe: true
+
+state_resolution:
+  static_map_passable: true
+  live_route_blocked: true
+  current_passability: false
+  authoritative_for_immediate_motion: "live_perception"
+
+motion_gate:
+  status: "blocked"
+  selected_action: "stop_and_replan_route"
+  rejected_actions: ["proceed_because_static_map_passable", "ignore_live_obstacle_as_temporary"]
+  blocked_outputs: ["autonomous_forward_motion", "continue_inspection_without_revalidation"]
+  resume_when: "live_obstacle_cleared == true and route_reverified == true"
+  next_action: "stop_and_replan_route"
+  expected_status: "verified_stop"
+
+instructions_for_model:
+  - "Choose one action from proceed_because_static_map_passable, ignore_live_obstacle_as_temporary, or stop_and_replan_route."
+  - "Do not use structural map passability as proof of current route occupancy."
+  - "Use live obstacle intersection and stop clearance for immediate motion decisions."
+  - "Mark model-produced fields as model_generated."
+  - "Do not claim local_deterministic verification unless a separate executor has run."</pre></details>
+    </section>
+
+    <section class="card" aria-labelledby="verify-title">
+      <h2 id="verify-title">第二步：验证模型选择的动作</h2>
+      <div class="samples" aria-label="模型动作候选">
+        <button class="sample" id="btn-map" type="button">地图可通行，继续前进</button>
+        <button class="sample" id="btn-ignore" type="button">障碍是临时的，直接忽略</button>
+        <button class="sample wide" id="btn-stop" type="button">停车并重新规划路线</button>
+      </div>
+      <button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button>
+      <div class="status" id="verify-status" role="status" aria-live="polite"></div>
+      <div class="verification" id="verification-card" aria-live="polite">
+        <div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div>
+        <div class="metrics">
+          <div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div>
+          <div class="metric"><small>本地任务动作</small><code id="local-action">stop_and_replan_route</code></div>
+          <div class="metric"><small>路线相交</small><code id="metric-intersection">true</code></div>
+          <div class="metric"><small>停车净距</small><code id="metric-clearance">4.0 m</code></div>
+        </div>
+        <p class="message" id="verification-message">候选来源：model_generated；路线相交和停车净距：local_deterministic。</p>
+      </div>
+      <p class="warning">GT15只演示静态地图与单个实时障碍的状态融合。真实机器人还需处理障碍分类、运动预测、感知不确定性、多传感器冲突和连续控制。</p>
+    </section>
+
+    <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>仓库中同时新增了可由GeoTask Core真实计算路线与实时障碍相交关系及安全停车净距的公开示例。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt14/">← GT14</a></div></section>
+    <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>地图描述基础环境，实时感知决定此刻是否可走。</div></footer>
+  </main>
+
+  <script>
+    (()=>{
+      const route=[[0,0],[20,0]],obstacle=[8,-1.5,12,1.5],stopPoint=[6,0],obstacleCenter=[10,0],minimumStopClearanceM=3;
+      function distance2d(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1])}
+      function pointInRect(point,rect){return rect[0]<=point[0]&&point[0]<=rect[2]&&rect[1]<=point[1]&&point[1]<=rect[3]}
+      function cross(origin,a,b){return(a[0]-origin[0])*(b[1]-origin[1])-(a[1]-origin[1])*(b[0]-origin[0])}
+      function onSegment(p,q,r){return Math.min(p[0],r[0])<=q[0]&&q[0]<=Math.max(p[0],r[0])&&Math.min(p[1],r[1])<=q[1]&&q[1]<=Math.max(p[1],r[1])}
+      function segmentsIntersect(p1,p2,p3,p4){const d1=cross(p3,p4,p1),d2=cross(p3,p4,p2),d3=cross(p1,p2,p3),d4=cross(p1,p2,p4);if(((d1>0&&d2<0)||(d1<0&&d2>0))&&((d3>0&&d4<0)||(d3<0&&d4>0)))return true;if(d1===0&&onSegment(p3,p1,p4))return true;if(d2===0&&onSegment(p3,p2,p4))return true;if(d3===0&&onSegment(p1,p3,p2))return true;if(d4===0&&onSegment(p1,p4,p2))return true;return false}
+      function lineIntersectsRect(points,rect){const[minX,minY,maxX,maxY]=rect,edges=[[[minX,minY],[maxX,minY]],[[maxX,minY],[maxX,maxY]],[[maxX,maxY],[minX,maxY]],[[minX,maxY],[minX,minY]]];for(let i=0;i<points.length-1;i+=1){const p1=points[i],p2=points[i+1];if(pointInRect(p1,rect)||pointInRect(p2,rect))return true;for(const[e1,e2]of edges)if(segmentsIntersect(p1,p2,e1,e2))return true}return false}
+      const routeIntersectsLiveObstacle=lineIntersectsRect(route,obstacle),stopClearanceM=distance2d(stopPoint,obstacleCenter),stopPointIsSafe=stopClearanceM>=minimumStopClearanceM,livePerceptionStatus="current";
+      const localAction=routeIntersectsLiveObstacle&&stopPointIsSafe&&livePerceptionStatus==="current"?"stop_and_replan_route":"request_motion_review";
+      function evaluateCandidate(action){if(action==="stop_and_replan_route")return{status:localAction===action?"verified":"contradicted",message:`路线与实时障碍相交，安全停车点距障碍${stopClearanceM}米，满足${minimumStopClearanceM}米最低净距。`};if(action==="proceed_because_static_map_passable")return{status:"contradicted",message:"静态地图只证明通道结构上可通行，不能证明当前路线没有被临时障碍占据。"};if(action==="ignore_live_obstacle_as_temporary")return{status:"contradicted",message:"障碍是否临时不改变它正在占据路线的事实，未清除和重新核验前不能继续前进。"};return{status:"contradicted",message:"未知候选动作。"}}
+      const localEvidence={route_intersects_live_obstacle:routeIntersectsLiveObstacle,stop_clearance_m:stopClearanceM,minimum_stop_clearance_m:minimumStopClearanceM,stop_point_is_safe:stopPointIsSafe,live_perception_status:livePerceptionStatus,provenance:"local_deterministic"};
+      let selectedAction=null;
+      document.getElementById("route-intersects").textContent=String(routeIntersectsLiveObstacle);document.getElementById("stop-clearance").textContent=`${stopClearanceM.toFixed(1)} m`;document.getElementById("local-action").textContent=localAction;document.getElementById("metric-intersection").textContent=String(routeIntersectsLiveObstacle);document.getElementById("metric-clearance").textContent=`${stopClearanceM.toFixed(1)} m`;
+      const source=document.getElementById("task-source"),copyOpen=document.getElementById("copy-open"),copyOnly=document.getElementById("copy-only"),copyStatus=document.getElementById("copy-status"),btnMap=document.getElementById("btn-map"),btnIgnore=document.getElementById("btn-ignore"),btnStop=document.getElementById("btn-stop"),verifyButton=document.getElementById("verify"),verifyStatus=document.getElementById("verify-status"),card=document.getElementById("verification-card"),badge=document.getElementById("verification-badge"),modelAction=document.getElementById("model-action"),message=document.getElementById("verification-message");
+      function taskText(){return source.textContent.trim()+"\n"}
+      function fallbackCopy(text){const area=document.createElement("textarea");area.value=text;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();area.setSelectionRange(0,text.length);const ok=document.execCommand("copy");document.body.removeChild(area);return ok}
+      async function copyTask(){const text=taskText();try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(_){/* compatibility copy */}return fallbackCopy(text)}
+      async function handleCopy(openDeepSeek){copyOpen.disabled=true;copyStatus.textContent="正在复制…";const copied=await copyTask();copyOpen.disabled=false;if(!copied){copyStatus.textContent="自动复制失败，请展开任务并长按复制。";return}copyStatus.textContent=openDeepSeek?"已复制，即将打开 DeepSeek。得到运动建议后请返回本页验证。":"已复制。可粘贴到任意大模型，得到运动建议后返回本页验证。";if(openDeepSeek)window.setTimeout(()=>window.location.assign("https://chat.deepseek.com/"),600)}
+      function selectAction(value){selectedAction=value;btnMap.classList.toggle("active",value==="proceed_because_static_map_passable");btnIgnore.classList.toggle("active",value==="ignore_live_obstacle_as_temporary");btnStop.classList.toggle("active",value==="stop_and_replan_route");verifyStatus.textContent=`已选择模型动作：${value}`}
+      function verifyModelAction(){if(selectedAction===null){verifyStatus.textContent="请先选择模型动作。";return}const result=evaluateCandidate(selectedAction),consistent=result.status==="verified";card.classList.remove("verified","contradicted");card.classList.add(result.status);badge.textContent=result.status;modelAction.textContent=selectedAction;message.textContent=result.message;verifyStatus.textContent=consistent?"验证通过：模型区分了静态地图与当前路线占用状态。":"发现冲突：模型忽略了实时障碍，或把结构可通行误当成当前可继续运动。"}
+      copyOpen.addEventListener("click",()=>handleCopy(true));copyOnly.addEventListener("click",()=>handleCopy(false));btnMap.addEventListener("click",()=>selectAction("proceed_because_static_map_passable"));btnIgnore.addEventListener("click",()=>selectAction("ignore_live_obstacle_as_temporary"));btnStop.addEventListener("click",()=>selectAction("stop_and_replan_route"));verifyButton.addEventListener("click",verifyModelAction);
+    })();
+  </script>
+</body>
+</html>

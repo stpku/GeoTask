@@ -13,7 +13,7 @@
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="GeoTask">
   <meta property="og:title" content="GeoTask｜面向AI智能体的可验证时空任务协议">
-  <meta property="og:description" content="让模型负责理解与生成，让本地确定性路径负责验证。体验GT01—GT14机器人、无人机、自动驾驶和应急救援案例。">
+  <meta property="og:description" content="让模型负责理解与生成，让本地确定性路径负责验证。体验GT01—GT15机器人、无人机、自动驾驶、应急救援和实时环境状态案例。">
   <meta property="og:url" content="https://stpku.github.io/GeoTask/">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="GeoTask｜可验证时空任务协议">
@@ -177,7 +177,7 @@
           <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读中文白皮书</a>
         </div>
         <div class="trust-strip" aria-label="项目概览">
-          <div class="trust-item"><strong>13</strong><span>公开应用案例</span></div>
+          <div class="trust-item"><strong>15</strong><span>公开应用案例</span></div>
           <div class="trust-item"><strong>6</strong><span>本地确定性算子</span></div>
           <div class="trust-item"><strong>1.0</strong><span>文档Schema</span></div>
           <div class="trust-item"><strong>MIT</strong><span>GeoTask Core许可</span></div>
@@ -201,8 +201,8 @@
     <section class="block" id="cases">
       <div class="shell">
         <div class="section-head">
-          <div><h2>GT01—GT14渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、机器人协同、对象可行性和应急救援调度。</p></div>
-          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/cookbook/gt01-gt14.zh-CN.md">查看中文案例手册 →</a>
+          <div><h2>GT01—GT15渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、机器人协同、对象可行性、应急救援调度和实时环境状态。</p></div>
+          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/cookbook/gt01-gt15.zh-CN.md">查看中文案例手册 →</a>
         </div>
         <div class="stage">
           <h3 class="stage-heading"><span class="stage-num">1</span>空间关系：对象、算子与边界语义</h3>
@@ -236,6 +236,7 @@
             <a class="case" href="gt12/"><span class="case-id">GT12</span><h3>电量够到达，无人机为什么仍不能起飞？</h3><p>能到达目标不等于能保留安全余量完成任务。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt13/"><span class="case-id">GT13</span><h3>道路开放，车辆为什么还是过不去？</h3><p>道路状态与具体车辆的安全空间包络必须分别判断。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt14/"><span class="case-id">GT14</span><h3>最近的救援队，为什么不一定最快到达？</h3><p>直线距离只是空间事实，派遣动作必须验证真实路线、准备时间和响应窗口。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt15/"><span class="case-id">GT15</span><h3>地图说可以通行，机器人为什么停下来了？</h3><p>静态地图描述结构可通行性，实时感知决定当前路线是否被障碍占据。</p><span class="go">进入体验 →</span></a>
           </div>
         </div>
       </div>
@@ -270,7 +271,7 @@
       <div class="shell">
         <div class="section-head"><div><h2>当前能力与演进方向</h2><p>项目首页展示已经开放的能力，以及下一阶段面向社区持续建设的方向。</p></div></div>
         <div class="capability-grid">
-          <article class="capability-card open"><h3>当前已开放</h3><ul><li>六类Canonical对象</li><li>六个本地确定性算子</li><li>解析、规范化、结构验证和执行</li><li>结果、状态和Assurance元数据</li><li>CLI、JSON Schema、GT01—GT14与一致性测试</li></ul></article>
+          <article class="capability-card open"><h3>当前已开放</h3><ul><li>六类Canonical对象</li><li>六个本地确定性算子</li><li>解析、规范化、结构验证和执行</li><li>结果、状态和Assurance元数据</li><li>CLI、JSON Schema、GT01—GT15与一致性测试</li></ul></article>
           <article class="capability-card roadmap"><h3>持续建设</h3><ul><li>更多时空对象与确定性算子</li><li>Runtime接口与模型适配示例</li><li>可复用的行业Domain Pack规范</li><li>数据连接器与证据治理工具</li><li>更完整的评测基准和开发者工具</li></ul></article>
         </div>
       </div>

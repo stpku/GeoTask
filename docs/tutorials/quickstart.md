@@ -280,5 +280,5 @@ pytest tests/test_documentation_system.py -q
 - [Operator Registry](../operator_registry.md)
 - [Status and Assurance Model](../reference/status-model.md)
 - [Evidence and Recovery](../reference/evidence-and-recovery.md)
-- [GT01–GT15 Cookbook](../cookbook/gt01-gt15.md)
+- [GT01–GT16 Cookbook](../cookbook/gt01-gt16.md)
 - [White Paper](../whitepaper/GeoTask_White_Paper_v0.1.md)

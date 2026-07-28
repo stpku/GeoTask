@@ -223,6 +223,8 @@ required:
   - "site/sitemap.xml"
   - "site/cases.txt"
   - "site/cases.json"
+  - "site/assets/case-shared.css"
+  - "site/assets/case-navigation.js"
   - "cases/catalog.yaml"
   - "tools/generate_case_catalog.py"
   - ".github/workflows/pages.yml"

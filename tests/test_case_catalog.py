@@ -8,6 +8,7 @@ sync without adding one assertion block per new case.
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -24,6 +25,10 @@ CASE_NAVIGATION = ROOT / "site" / "cases.json"
 DEPLOY_SCRIPT = ROOT / "site" / "deploy-nginx.sh"
 PUBLIC_MANIFEST = ROOT / ".release" / "public-manifest.yaml"
 GENERATOR = ROOT / "tools" / "generate_case_catalog.py"
+SHARED_STYLE = ROOT / "site" / "assets" / "case-shared.css"
+SHARED_NAVIGATION = ROOT / "site" / "assets" / "case-navigation.js"
+STYLE_TAG = '<link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>'
+SCRIPT_TAG = '<script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>'
 
 
 def _catalog() -> dict:
@@ -106,6 +111,37 @@ def test_navigation_index_has_contiguous_previous_and_next_links() -> None:
         assert entry["next"] == expected_next
 
 
+def test_case_pages_load_only_the_shared_local_assets() -> None:
+    cases = _catalog()["cases"]
+
+    for case in cases:
+        html = (ROOT / case["page"]).read_text(encoding="utf-8")
+        script_sources = re.findall(r'<script[^>]+src="([^"]+)"', html)
+        stylesheet_sources = re.findall(
+            r'<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"', html
+        )
+
+        assert html.count(STYLE_TAG) == 1, case["id"]
+        assert html.count(SCRIPT_TAG) == 1, case["id"]
+        assert script_sources == ["../assets/case-navigation.js"], case["id"]
+        assert stylesheet_sources == ["../assets/case-shared.css"], case["id"]
+
+
+def test_shared_navigation_reads_only_the_same_origin_case_index() -> None:
+    script = SHARED_NAVIGATION.read_text(encoding="utf-8")
+    stylesheet = SHARED_STYLE.read_text(encoding="utf-8")
+
+    assert 'new URL("../", script.src)' in script
+    assert 'new URL("cases.json", siteRoot)' in script
+    assert 'fetch(catalogUrl, { credentials: "same-origin" })' in script
+    assert "XMLHttpRequest" not in script
+    assert "localStorage" not in script
+    assert "document.cookie" not in script
+    assert "http://" not in script
+    assert "https://" not in script
+    assert "url(" not in stylesheet.lower()
+
+
 def test_deployment_and_public_export_consume_generated_catalog_outputs() -> None:
     script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
     manifest = yaml.safe_load(PUBLIC_MANIFEST.read_text(encoding="utf-8"))
@@ -124,5 +160,10 @@ def test_deployment_and_public_export_consume_generated_catalog_outputs() -> Non
     ):
         assert path in included
         assert path in required
-    for path in ("site/cases.txt", "site/cases.json"):
+    for path in (
+        "site/cases.txt",
+        "site/cases.json",
+        "site/assets/case-shared.css",
+        "site/assets/case-navigation.js",
+    ):
         assert path in required

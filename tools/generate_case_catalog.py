@@ -26,6 +26,14 @@ SLUGS_PATH = ROOT / "site" / "cases.txt"
 NAVIGATION_PATH = ROOT / "site" / "cases.json"
 START_MARKER = "<!-- CASE_CATALOG:START -->"
 END_MARKER = "<!-- CASE_CATALOG:END -->"
+CASE_STYLE_TAG = (
+    '  <link rel="stylesheet" href="../assets/case-shared.css" '
+    'data-geotask-case-shared>'
+)
+CASE_SCRIPT_TAG = (
+    '  <script src="../assets/case-navigation.js" defer '
+    'data-geotask-case-shared></script>'
+)
 
 
 class CatalogError(ValueError):
@@ -180,13 +188,31 @@ def render_navigation(data: dict[str, Any]) -> str:
     return json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
 
 
+def render_case_page(current: str) -> str:
+    """Ensure one case page loads the shared navigation assets."""
+    updated = current
+    if CASE_STYLE_TAG not in updated:
+        if "</head>" not in updated:
+            raise CatalogError("case page is missing </head>")
+        updated = updated.replace("</head>", f"{CASE_STYLE_TAG}\n</head>", 1)
+    if CASE_SCRIPT_TAG not in updated:
+        if "</body>" not in updated:
+            raise CatalogError("case page is missing </body>")
+        updated = updated.replace("</body>", f"{CASE_SCRIPT_TAG}\n</body>", 1)
+    return updated
+
+
 def generated_outputs(data: dict[str, Any]) -> dict[Path, str]:
-    return {
+    outputs = {
         PORTAL_PATH: render_portal(data, PORTAL_PATH.read_text(encoding="utf-8")),
         SITEMAP_PATH: render_sitemap(data),
         SLUGS_PATH: render_slugs(data),
         NAVIGATION_PATH: render_navigation(data),
     }
+    for case in data["cases"]:
+        page_path = ROOT / case["page"]
+        outputs[page_path] = render_case_page(page_path.read_text(encoding="utf-8"))
+    return outputs
 
 
 def write_outputs(outputs: dict[Path, str]) -> None:

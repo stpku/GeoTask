@@ -142,7 +142,7 @@ python tools/generate_case_catalog.py --write
 python tools/generate_case_catalog.py --check
 ```
 
-生成器会同步更新门户案例区、`site/sitemap.xml`、`site/cases.txt`和`site/cases.json`。
+生成器会同步更新门户案例区、`site/sitemap.xml`、`site/cases.txt`、`site/cases.json`，并为每个案例页注入`site/assets/case-shared.css`和`site/assets/case-navigation.js`。共享脚本从同源`cases.json`生成“上一例—全部案例—下一例”导航；原页面链接继续保留为离线降级路径。
 
 推荐配置：
 

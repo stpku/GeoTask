@@ -321,5 +321,5 @@ Do not commit:
 
 - [Status and Assurance Model](status-model.md)
 - [Language and Execution Specification](../spec/geotask-language-spec-v1.0.md)
-- [GT01–GT14 Cookbook](../cookbook/gt01-gt14.md)
+- [GT01–GT15 Cookbook](../cookbook/gt01-gt15.md)
 - [White Paper](../whitepaper/GeoTask_White_Paper_v0.1.md)

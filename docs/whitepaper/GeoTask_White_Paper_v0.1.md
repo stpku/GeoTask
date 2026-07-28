@@ -374,7 +374,7 @@ required envelope = body width + left buffer + right buffer
 
 ---
 
-## 7. GT01–GT14 渐进式案例
+## 7. GT01–GT15 渐进式案例
 
 | 阶段 | 案例 | 核心能力 |
 |---|---|---|
@@ -392,6 +392,7 @@ required envelope = body width + left buffer + right buffer
 | 资源余量 | GT12 | 到达能力与安全完成能力 |
 | 空间包络 | GT13 | 道路开放与车辆净空约束 |
 | 应急调度 | GT14 | 最近距离与最早验证到达时间 |
+| 实时环境状态 | GT15 | 静态地图与当前路线占用状态 |
 
 这些案例不是独立技巧，而是同一任务模型的逐步展开：
 
@@ -481,7 +482,7 @@ GeoTask Core 采用 MIT 许可，公开以下能力：
 - JSON Schema；
 - 快速入门；
 - 状态和证据参考；
-- GT01–GT14 Cookbook。
+- GT01–GT15 Cookbook。
 
 ### 后续候选方向
 
@@ -513,7 +514,7 @@ GeoTask 试图建立的，是自然语言智能与确定性时空计算之间的
 
 - [GeoTask Language and Execution Specification v1.0](../spec/geotask-language-spec-v1.0.md)
 - [Quickstart](../tutorials/quickstart.md)
-- [GT01–GT14 Cookbook](../cookbook/gt01-gt14.md)
+- [GT01–GT15 Cookbook](../cookbook/gt01-gt15.md)
 - [Status and Assurance Model](../reference/status-model.md)
 - [Evidence and Recovery](../reference/evidence-and-recovery.md)
 - [Machine-readable JSON Schema](../../schemas/geotask-v1.0.schema.json)

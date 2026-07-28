@@ -109,6 +109,11 @@ if [[ ! -f "$SOURCE/gt19/index.html" ]]; then
   exit 1
 fi
 
+if [[ ! -f "$SOURCE/gt20/index.html" ]]; then
+  echo "Missing GT20 page: $SOURCE/gt20/index.html" >&2
+  exit 1
+fi
+
 sudo install -d -m 0755 "$TARGET"
 sudo rsync -a --delete "$SOURCE/" "$TARGET/"
 
@@ -134,6 +139,7 @@ test -f "$TARGET/gt16/index.html"
 test -f "$TARGET/gt17/index.html"
 test -f "$TARGET/gt18/index.html"
 test -f "$TARGET/gt19/index.html"
+test -f "$TARGET/gt20/index.html"
 
 sudo nginx -t
 sudo systemctl reload nginx
@@ -159,6 +165,7 @@ echo "  GT16: $TARGET/gt16/index.html"
 echo "  GT17: $TARGET/gt17/index.html"
 echo "  GT18: $TARGET/gt18/index.html"
 echo "  GT19: $TARGET/gt19/index.html"
+echo "  GT20: $TARGET/gt20/index.html"
 echo
 echo "Verify externally:"
 echo "  https://skyswind.tailf4fad8.ts.net/geotask/"
@@ -181,3 +188,4 @@ echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt16/"
 echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt17/"
 echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt18/"
 echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt19/"
+echo "  https://skyswind.tailf4fad8.ts.net/geotask/gt20/"

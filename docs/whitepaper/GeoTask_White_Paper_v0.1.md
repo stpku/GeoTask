@@ -374,7 +374,7 @@ required envelope = body width + left buffer + right buffer
 
 ---
 
-## 7. GT01–GT19 渐进式案例
+## 7. GT01–GT20 渐进式案例
 
 | 阶段 | 案例 | 核心能力 |
 |---|---|---|
@@ -397,6 +397,7 @@ required envelope = body width + left buffer + right buffer
 | 城市事件去重 | GT17 | 多源上报、时空聚类与单任务派发 |
 | 设备能力约束 | GT18 | 最短路线、环境风险与机器人耐受能力 |
 | 高风险动作门控 | GT19 | 到达条件、地面净空与载荷释放授权 |
+| 路口入口门控 | GT20 | 绿灯许可、下游净空与完整驶离能力 |
 
 这些案例不是独立技巧，而是同一任务模型的逐步展开：
 
@@ -486,7 +487,7 @@ GeoTask Core 采用 MIT 许可，公开以下能力：
 - JSON Schema；
 - 快速入门；
 - 状态和证据参考；
-- GT01–GT19 Cookbook。
+- GT01–GT20 Cookbook。
 
 ### 后续候选方向
 
@@ -518,7 +519,7 @@ GeoTask 试图建立的，是自然语言智能与确定性时空计算之间的
 
 - [GeoTask Language and Execution Specification v1.0](../spec/geotask-language-spec-v1.0.md)
 - [Quickstart](../tutorials/quickstart.md)
-- [GT01–GT19 Cookbook](../cookbook/gt01-gt19.md)
+- [GT01–GT20 Cookbook](../cookbook/gt01-gt20.md)
 - [Status and Assurance Model](../reference/status-model.md)
 - [Evidence and Recovery](../reference/evidence-and-recovery.md)
 - [Machine-readable JSON Schema](../../schemas/geotask-v1.0.schema.json)

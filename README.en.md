@@ -21,11 +21,11 @@ GeoTask turns spatial, temporal, evidential, resource, and action constraints in
 
 ## Start here
 
-- [Try the GT01–GT19 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT20 experience](https://stpku.github.io/GeoTask/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
-- [GT01–GT19 Cookbook](docs/cookbook/gt01-gt19.md)
+- [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
 - [v0.1.1 PyPI hotfix release notes](docs/release_v0_1_1.md)
 - [Public roadmap](ROADMAP.md)
 - [Documentation index](docs/README.en.md)
@@ -91,7 +91,7 @@ geotask run my_distance.yaml
 | Geometry | GT01–GT03 | What spatial relationship is actually true? |
 | Space-time composition | GT04–GT06 | Do horizontal, vertical, and temporal conditions all hold? |
 | Uncertainty and evidence | GT07–GT09 | What happens when evidence is missing or conflicting? |
-| Action and feasibility | GT10–GT19 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, city-event deduplication, equipment-capability, and high-risk action-gate constraints? |
+| Action and feasibility | GT10–GT20 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, city-event deduplication, equipment-capability, and high-risk action-gate constraints? |
 
 Selected examples:
 
@@ -107,8 +107,9 @@ Selected examples:
 - **GT17:** ten reports of one incident should create one dispatch task while preserving all ten evidence sources.
 - **GT18:** the geometrically shortest route may be unsafe when it crosses a hazard beyond the rescue robot's operating capability.
 - **GT19:** reaching the target overhead does not authorize payload release while the live ground-clearance condition remains false.
+- **GT20:** a green signal does not authorize intersection entry while the downstream exit cannot store and clear the full vehicle.
 
-See the [Cookbook](docs/cookbook/gt01-gt19.md) for all cases and source files.
+See the [Cookbook](docs/cookbook/gt01-gt20.md) for all cases and source files.
 
 ## Implemented public Core
 

@@ -113,7 +113,7 @@ pytest tests/test_documentation_system.py -q
 
 案例应包含一个具体应用问题、显式对象和约束、可复用Core断言、多个候选动作、本地验证路径、安全阻断或恢复条件，以及真实应用边界说明。
 
-可参考[GT01—GT19中文案例手册](docs/cookbook/gt01-gt19.zh-CN.md)。
+可参考[GT01—GT20中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)。
 
 ## 行为规范与安全问题
 

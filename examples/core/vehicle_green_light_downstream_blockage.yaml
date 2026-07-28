@@ -1,0 +1,125 @@
+geotask:
+  id: "gt20-vehicle-green-light-downstream-blockage"
+  name: "GT20 Vehicle Green Light Downstream Blockage"
+  schema_version: "1.0"
+  goal: "Verify whether a vehicle may enter a signalized intersection when the light is green but downstream storage is insufficient to clear the junction."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "signalized_intersection_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  stop_line_point:
+    type: "point"
+    coordinates: [0, 0]
+  intersection_exit_point:
+    type: "point"
+    coordinates: [20, 0]
+  downstream_queue_tail:
+    type: "point"
+    coordinates: [24, 0]
+  planned_vehicle_path:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [20, 0]
+      - [40, 0]
+  downstream_occupied_zone:
+    type: "rect"
+    bbox: [24, -2, 40, 2]
+  green_phase_window:
+    type: "time_interval"
+    start: "08:15"
+    end: "08:16"
+  intended_entry_window:
+    type: "time_interval"
+    start: "08:15"
+    end: "08:16"
+
+operator_set:
+  - distance_2d
+  - line_intersects_rect
+  - time_overlap
+
+tasks:
+  - id: "verify_intersection_entry_gate"
+    family: "vehicle_intersection_entry_feasibility"
+    goal: "Verify signal timing, downstream queue occupation, and available exit storage before allowing the vehicle to enter the intersection."
+    assertions:
+      - id: "green_phase_matches_entry_window"
+        operator: "time_overlap"
+        object_refs: ["green_phase_window", "intended_entry_window"]
+        expected_type: "bool"
+      - id: "path_intersects_downstream_queue"
+        operator: "line_intersects_rect"
+        object_refs: ["planned_vehicle_path", "downstream_occupied_zone"]
+        expected_type: "bool"
+      - id: "available_downstream_storage"
+        operator: "distance_2d"
+        object_refs: ["intersection_exit_point", "downstream_queue_tail"]
+        expected_type: "number"
+        unit: "meter"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_intersection_entry_checks"
+      executor: "local"
+      assertion_refs:
+        - "green_phase_matches_entry_window"
+        - "path_intersects_downstream_queue"
+        - "available_downstream_storage"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "autonomous_vehicle_green_signal_with_queue_spillback"
+    decision_question: "May the vehicle enter the intersection because the signal is green?"
+  signal_evidence:
+    signal_aspect: "green"
+    signal_permission_valid: true
+    evidence_source: "signal_phase_and_timing_interface"
+    evidence_status: "verified"
+    verified_at: "08:15"
+  downstream_state:
+    path_intersects_downstream_queue: true
+    available_storage_m: 4.0
+    queue_spillback_present: true
+    downstream_exit_clear: false
+    evidence_source: "vehicle_perception_and_roadside_queue_detector"
+    evidence_status: "verified"
+    freshness_limit_seconds: 3
+  vehicle_envelope:
+    vehicle_id: "autonomous_shuttle_v5"
+    vehicle_length_m: 4.8
+    minimum_exit_buffer_m: 2.0
+    required_storage_m: 6.8
+  entry_rule:
+    expression: "signal_permission_valid AND downstream_exit_clear AND available_storage_m >= required_storage_m"
+    signal_condition_verified: true
+    downstream_condition_verified: true
+    storage_sufficient: false
+    intersection_entry_authorized: false
+  task_gate:
+    status: "blocked_pending_downstream_clearance"
+    selected_action: "wait_before_stop_line_and_recheck_downstream"
+    rejected_actions:
+      - "enter_intersection_because_green"
+      - "enter_intersection_and_wait_inside"
+    blocked_outputs:
+      - "intersection_entry_command"
+      - "follow_green_without_exit_check"
+    required_controls:
+      - "remain_before_stop_line"
+      - "retain_signal_and_queue_evidence"
+      - "recheck_downstream_storage"
+      - "enter_only_when_full_vehicle_can_clear_junction"
+      - "reevaluate_if_signal_phase_changes"
+    resume_when: "signal_permission_valid == true AND downstream_exit_clear == true AND available_storage_m >= 6.8 AND downstream_evidence_age_seconds <= 3"
+    next_action: "recheck_signal_and_downstream_clearance"
+    expected_status: "verified_intersection_hold"

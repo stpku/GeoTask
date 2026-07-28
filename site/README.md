@@ -135,7 +135,19 @@ test -f /var/www/geotask-experience/sitemap.xml
 
 仓库中的`site/deploy-nginx.sh`会读取生成的`site/cases.txt`，逐一检查目录中的全部公开案例、robots、sitemap和导航索引，再验证并重载Nginx。案例清单不再手工写入部署脚本。
 
-跨案例元数据统一维护在`cases/catalog.yaml`。修改目录后运行：
+新增案例先运行脚手架预览：
+
+```bash
+python tools/scaffold_case.py \
+  --stage action_feasibility \
+  --case-key uav-weather-diversion \
+  --title-zh "天气恶化后，无人机为什么不能继续直飞？" \
+  --summary-zh "核验天气证据变化后，原飞行动作是否仍然可执行。"
+```
+
+确认后追加`--write`。脚手架只要求4个作者输入：`cases/catalog.yaml`、案例示例YAML、案例体验页和一个合并测试文件；门户、Sitemap、部署列表和导航索引自动生成。脚手架输出是标记明确的可运行starter，发布前必须替换示例距离、对象、约束、候选动作和测试。
+
+跨案例元数据统一维护在`cases/catalog.yaml`。单独修改目录后运行：
 
 ```bash
 python tools/generate_case_catalog.py --write
@@ -176,5 +188,5 @@ curl -I https://skyswind.tailf4fad8.ts.net/geotask/gt13/
 - GitHub Pages作为公共Canonical入口和长期备份；
 - 开发镜像用于内部验收和国内访问测试；
 - 微信文章的“阅读原文”直接链接对应GT案例，不再把根地址当作GT01；
-- 新增案例时同时更新项目门户、sitemap、部署检查、README和自动化测试；
+- 新增案例优先使用`tools/scaffold_case.py`，作者只维护目录条目、示例YAML、体验页和合并测试；门户、Sitemap、部署列表和导航索引由生成器同步；
 - 任何静态文件中都不得写入模型密钥、客户数据或内部路径。

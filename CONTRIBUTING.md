@@ -96,7 +96,19 @@ A public GT case should include a concrete application question, explicit object
 
 See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md) or [中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md).
 
-Cross-case metadata is maintained in `cases/catalog.yaml`. After adding or editing a case entry, run:
+Start a new case with the scaffold command. It defaults to preview mode and shows the four authored inputs it will create or update:
+
+```bash
+python tools/scaffold_case.py \
+  --stage action_feasibility \
+  --case-key uav-weather-diversion \
+  --title-zh "天气恶化后，无人机为什么不能继续直飞？" \
+  --summary-zh "核验天气证据变化后，原飞行动作是否仍然可执行。"
+```
+
+Review the paths, then repeat the command with `--write`. The scaffold creates one example YAML, one experience page, one combined business/page test, and one `cases/catalog.yaml` entry. It then runs the catalog generator automatically. Generated content is deliberately marked as a runnable `starter`; replace its 3-4-5 distance objects, assertions, candidate actions, page copy, and tests before committing.
+
+Cross-case metadata is maintained in `cases/catalog.yaml`. After later editing catalog metadata, run:
 
 ```bash
 python tools/generate_case_catalog.py --write

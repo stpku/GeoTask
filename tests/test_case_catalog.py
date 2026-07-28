@@ -156,7 +156,9 @@ def test_deployment_and_public_export_consume_generated_catalog_outputs() -> Non
     for path in (
         "cases/catalog.yaml",
         "tools/generate_case_catalog.py",
+        "tools/scaffold_case.py",
         "tests/test_case_catalog.py",
+        "tests/test_case_scaffold.py",
     ):
         assert path in included
         assert path in required

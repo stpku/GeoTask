@@ -98,5 +98,3 @@ def test_gt09_readme_and_deploy_script_include_gt10() -> None:
     assert 'href="../gt10/"' in gt09_html
     assert "GT10" in readme
     assert "https://skyswind.tailf4fad8.ts.net/geotask/gt10/" in readme
-    assert '"$SOURCE/gt10/index.html"' in script
-    assert 'test -f "$TARGET/gt10/index.html"' in script

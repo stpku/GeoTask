@@ -96,6 +96,15 @@ A public GT case should include a concrete application question, explicit object
 
 See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md) or [中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md).
 
+Cross-case metadata is maintained in `cases/catalog.yaml`. After adding or editing a case entry, run:
+
+```bash
+python tools/generate_case_catalog.py --write
+python tools/generate_case_catalog.py --check
+```
+
+The generator updates the portal case cards, sitemap, deployment slug list, and navigation index. Do not hand-edit generated regions or duplicate case paths in the deployment script.
+
 ## Conduct and security
 
 Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md). Do not report security vulnerabilities in a public issue; follow [SECURITY.md](SECURITY.md).

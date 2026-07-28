@@ -77,4 +77,3 @@ def test_nginx_deployment_syncs_the_complete_site_tree() -> None:
     assert "try_files $uri $uri/ /geotask/index.html;" not in readme
     assert "index index.html;" in readme
     assert "rsync -a --delete" in script
-    assert 'test -f "$TARGET/gt02/index.html"' in script

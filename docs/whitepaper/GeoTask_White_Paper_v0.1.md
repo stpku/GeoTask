@@ -374,7 +374,7 @@ required envelope = body width + left buffer + right buffer
 
 ---
 
-## 7. GT01–GT16 渐进式案例
+## 7. GT01–GT17 渐进式案例
 
 | 阶段 | 案例 | 核心能力 |
 |---|---|---|
@@ -394,6 +394,7 @@ required envelope = body width + left buffer + right buffer
 | 应急调度 | GT14 | 最近距离与最早验证到达时间 |
 | 实时环境状态 | GT15 | 静态地图与当前路线占用状态 |
 | 多机时空冲突 | GT16 | 路线交叉、高度重叠与时间分离 |
+| 城市事件去重 | GT17 | 多源上报、时空聚类与单任务派发 |
 
 这些案例不是独立技巧，而是同一任务模型的逐步展开：
 
@@ -483,7 +484,7 @@ GeoTask Core 采用 MIT 许可，公开以下能力：
 - JSON Schema；
 - 快速入门；
 - 状态和证据参考；
-- GT01–GT16 Cookbook。
+- GT01–GT17 Cookbook。
 
 ### 后续候选方向
 
@@ -515,7 +516,7 @@ GeoTask 试图建立的，是自然语言智能与确定性时空计算之间的
 
 - [GeoTask Language and Execution Specification v1.0](../spec/geotask-language-spec-v1.0.md)
 - [Quickstart](../tutorials/quickstart.md)
-- [GT01–GT16 Cookbook](../cookbook/gt01-gt16.md)
+- [GT01–GT17 Cookbook](../cookbook/gt01-gt17.md)
 - [Status and Assurance Model](../reference/status-model.md)
 - [Evidence and Recovery](../reference/evidence-and-recovery.md)
 - [Machine-readable JSON Schema](../../schemas/geotask-v1.0.schema.json)

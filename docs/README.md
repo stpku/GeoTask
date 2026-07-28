@@ -2,19 +2,19 @@
 
 **简体中文** | [English](README.en.md)
 
-GeoTask文档按照“理解项目、开始使用、查阅规范、扩展开发”四类组织。第一次接触GeoTask，建议先阅读白皮书和中文快速入门，再结合GT01—GT16案例理解完整工作方式。
+GeoTask文档按照“理解项目、开始使用、查阅规范、扩展开发”四类组织。第一次接触GeoTask，建议先阅读白皮书和中文快速入门，再结合GT01—GT17案例理解完整工作方式。
 
 ## 从这里开始
 
 - [GeoTask白皮书v0.1](whitepaper/GeoTask_White_Paper_v0.1.md)：项目为什么存在、核心架构、可信执行、应用模式和公开边界。
 - [白皮书构建说明](whitepaper/README.md)：从Markdown生成HTML、DOCX和可选PDF。
 - [中文快速入门](tutorials/quickstart.zh-CN.md)：安装、验证、执行和检查第一个任务。
-- [GT01—GT16中文案例手册](cookbook/gt01-gt16.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度和实时环境状态。
+- [GT01—GT17中文案例手册](cookbook/gt01-gt17.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度和实时环境状态。
 - [当前实现语言与执行规范v1.0](spec/geotask-language-spec-v1.0.md)：当前公共Core真正实现的规范性文本。
 - [v0.1.1 PyPI修正版发布说明](release_v0_1_1.md)：修正发行元数据与模块版本不一致，并完成PyPI安装验证。
 - [v0.1.0 Public Preview发布说明](release_v0_1_0.md)：首个固定版本的能力、资产和验证状态。
 - [公共路线图](../ROADMAP.md)：面向协议、Core、工具和生态的后续方向。
-- [英文Quickstart](tutorials/quickstart.md)与[英文Cookbook](cookbook/gt01-gt16.md)。
+- [英文Quickstart](tutorials/quickstart.md)与[英文Cookbook](cookbook/gt01-gt17.md)。
 
 ## 工程参考
 

@@ -38,7 +38,8 @@ def test_mobile_experience_page_contains_gt01_task() -> None:
 def test_mobile_experience_page_is_static_and_secret_free() -> None:
     html = PAGE.read_text(encoding="utf-8").lower()
 
-    assert "<script src=" not in html
+    assert '<script src="../assets/case-navigation.js"' in html
+    assert '<script src="http' not in html
     assert "api_key" not in html
     assert "authorization:" not in html
     assert "analytics" not in html

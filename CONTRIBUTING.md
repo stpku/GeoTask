@@ -103,7 +103,7 @@ python tools/generate_case_catalog.py --write
 python tools/generate_case_catalog.py --check
 ```
 
-The generator updates the portal case cards, sitemap, deployment slug list, and navigation index. Do not hand-edit generated regions or duplicate case paths in the deployment script.
+The generator updates the portal case cards, sitemap, deployment slug list, navigation index, and shared navigation asset references on every case page. Do not hand-edit generated regions, add another case-navigation script tag, or duplicate case paths in the deployment script. Case-specific verification logic may remain inline; cross-case navigation belongs in `site/assets/`.
 
 ## Conduct and security
 

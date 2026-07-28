@@ -75,7 +75,6 @@ def test_gt07_page_is_static_and_secret_free() -> None:
     assert "authorization:" not in html
     assert "analytics" not in html
     assert "cookie" not in html
-    assert '<script src=' not in html
 
 
 def test_gt06_readme_and_deploy_script_include_gt07() -> None:

@@ -71,7 +71,6 @@ def test_gt03_page_is_static_and_secret_free() -> None:
     assert "authorization:" not in html
     assert "analytics" not in html
     assert "cookie" not in html
-    assert '<script src=' not in html
 
 
 # ── 6. Navigation links ───────────────────────────────────────────────────

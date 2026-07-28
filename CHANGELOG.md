@@ -24,8 +24,16 @@ All notable public changes to GeoTask Core are documented here.
 
 ### Changed
 
+- Make `OperatorContract` the single source of truth for public operator metadata, eliminating the separate hand-maintained registry table.
+- Enforce operator output types, assertion `expected_type`, and executable basic invariants before granting deterministic assurance.
+- Return explicit `unverifiable` checks for `hybrid`, `shadow_compare`, and non-`local` executors instead of substituting local execution.
 - Serialize PyPI publishing workflows and skip the publish job when the package version already exists, preventing duplicate manual dispatches from ending as failed releases.
 - Ensure subprocess-based CLI tests execute the current source tree rather than an older installed package.
+
+### Fixed
+
+- Correct compatibility documentation: selected STIR function, CLI, and YAML aliases remain, but the old `stir_core` Python package path is not distributed.
+- Replace migration guidance that referenced a helper script excluded from the public repository with direct Git commands.
 
 ## [0.1.1] - 2026-07-27
 

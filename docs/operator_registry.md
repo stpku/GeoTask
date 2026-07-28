@@ -13,15 +13,18 @@ python -m geotask_core.cli inspect operators distance_2d
 ```
 
 The CLI prints the same metadata exposed by
-`geotask_core.operator_registry`.
+`geotask_core.operator_registry`. That compact metadata is generated from the
+full v1 `OperatorContract` registry, which is the single source of truth for
+operator names, arity, input types, outputs, error codes, examples, and
+invariants.
 
 ## Registry Summary
 
 | Operator | Output | Supported Input | Notes |
 |----------|--------|-----------------|-------|
 | `distance_2d` | `float` | point + point | Euclidean distance in local 2D coordinates. |
-| `line_intersects_rect` | `bool` | line + rect | Boundary contact counts as intersection. |
-| `point_to_line_distance_2d` | `float` | point + line | Shortest distance to a line segment. |
+| `line_intersects_rect` | `bool` | polyline + rect | Boundary contact counts as intersection. |
+| `point_to_line_distance_2d` | `float` | point + polyline | Shortest distance to a polyline. |
 | `rect_contains_point` | `bool` | rect + point | Boundary contact counts as containment. |
 | `time_overlap` | `bool` | time interval + time interval | Boundary contact counts as overlap. |
 | `altitude_overlap` | `bool` | altitude range + altitude range | Boundary contact counts as overlap. |

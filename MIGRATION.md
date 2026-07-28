@@ -70,7 +70,8 @@ using them.
 
 The old Python function names (`load_stir`, `validate_stir`, `run_stir`)
 remain as aliases for the new names (`load_geotask`, `validate_geotask`,
-`run_geotask`).
+`run_geotask`). The old `stir_core` Python package path is not distributed;
+update imports to use `geotask_core`.
 
 ## Remote Repository
 
@@ -86,4 +87,4 @@ After:
 https://gitee.com/stpku/GeoTask.git
 ```
 
-Use `scripts/migrate_remote_to_geotask.sh` to update your remotes safely.
+Update the remote directly with `git remote set-url origin https://gitee.com/stpku/GeoTask.git`, then verify it with `git remote -v`.

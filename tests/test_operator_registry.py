@@ -44,6 +44,22 @@ def test_operator_metadata_has_required_fields():
         assert metadata["examples"]
 
 
+def test_operator_metadata_is_projected_from_v1_contracts():
+    """Compact registry metadata stays aligned with full v1 contracts."""
+    from geotask_core.operator_registry import list_operator_metadata
+    from geotask_core.v1.operator_contracts import default_registry
+
+    metadata_by_name = {
+        item["name"]: item for item in list_operator_metadata()
+    }
+    for contract in default_registry.list_all():
+        metadata = metadata_by_name[contract.name]
+        assert metadata["arity"] == contract.arity
+        assert metadata["supported_geometry"] == contract.input_types
+        assert metadata["error_codes"] == contract.error_codes
+        assert metadata["invariants"] == contract.invariants
+
+
 def test_get_operator_metadata_unknown_operator_has_clear_error():
     """Unknown operators fail with a stable, user-facing error code."""
     from geotask_core.operator_registry import get_operator_metadata

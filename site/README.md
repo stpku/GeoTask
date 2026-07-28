@@ -1,6 +1,6 @@
 # GeoTask项目门户与案例体验站
 
-`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT14互动案例、`robots.txt`和`sitemap.xml`。
+`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT15互动案例、`robots.txt`和`sitemap.xml`。
 
 站点没有后台、统计脚本、Cookie、账号系统、模型密钥或外部JavaScript依赖。案例页只在浏览器中复制任务、执行局部确定性复算，并跳转到用户选择的大模型平台。
 
@@ -13,8 +13,9 @@ site/gt02/index.html     GT02独立验证体验
 ...
 site/gt13/index.html     GT13车辆安全包络体验
 site/gt14/index.html     GT14应急救援最快到达体验
+site/gt15/index.html     GT15巡检机器人实时障碍体验
 site/robots.txt          搜索引擎规则
-site/sitemap.xml         门户与GT01—GT14索引
+site/sitemap.xml         门户与GT01—GT15索引
 ```
 
 根地址始终代表GeoTask项目本身，不再代表某一个案例。每个案例使用独立稳定地址，并提供返回项目首页的入口。
@@ -35,6 +36,7 @@ site/sitemap.xml         门户与GT01—GT14索引
 - `GT12`：合法绕飞路线加安全余量超过无人机剩余航程
 - `GT13`：道路开放但施工通道2.4米，小于车辆2.7米安全包络
 - `GT14`：救援队A距离更近但14分钟到达，救援队B只需8分钟并满足12分钟响应时限
+- `GT15`：静态地图显示通道可通行，但实时托盘障碍与路线相交，机器人必须停车并重新规划
 
 ## 公共访问地址
 
@@ -55,6 +57,7 @@ GitHub Pages是公共Canonical入口：
 - <https://stpku.github.io/GeoTask/gt12/>
 - <https://stpku.github.io/GeoTask/gt13/>
 - <https://stpku.github.io/GeoTask/gt14/>
+- <https://stpku.github.io/GeoTask/gt15/>
 
 当前开发镜像：
 
@@ -73,6 +76,7 @@ GitHub Pages是公共Canonical入口：
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt12/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt13/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt14/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt15/>
 
 公共仓库：<https://github.com/stpku/GeoTask>
 
@@ -99,11 +103,12 @@ test -f /var/www/geotask-experience/gt01/index.html
 test -f /var/www/geotask-experience/gt02/index.html
 test -f /var/www/geotask-experience/gt13/index.html
 test -f /var/www/geotask-experience/gt14/index.html
+test -f /var/www/geotask-experience/gt15/index.html
 test -f /var/www/geotask-experience/robots.txt
 test -f /var/www/geotask-experience/sitemap.xml
 ```
 
-仓库中的`site/deploy-nginx.sh`会执行递归同步，检查项目门户、GT01—GT14、robots和sitemap，再验证并重载Nginx。
+仓库中的`site/deploy-nginx.sh`会执行递归同步，检查项目门户、GT01—GT15、robots和sitemap，再验证并重载Nginx。
 
 推荐配置：
 

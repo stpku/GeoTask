@@ -12,7 +12,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - YAML任务解析、规范化、结构验证与执行；
 - 结果状态、Assurance和模型输出比较验证；
 - Language Specification 1.0与JSON Schema 1.0；
-- GT01—GT14渐进式应用案例；
+- GT01—GT15渐进式应用案例；
 - 中文项目门户、白皮书、Quickstart和Cookbook；
 - Python 3.10—3.13持续集成与公共导出安全检查。
 
@@ -56,7 +56,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - YAML parsing, canonicalization, validation, and execution;
 - result status, assurance metadata, and model-output comparison;
 - Language Specification 1.0 and JSON Schema 1.0;
-- GT01–GT14 progressive application cases;
+- GT01–GT15 progressive application cases;
 - project portal, white paper, Quickstart, and Cookbook;
 - CI on Python 3.10–3.13 and public-export safety checks.
 

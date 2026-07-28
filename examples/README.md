@@ -30,6 +30,8 @@ patent-sensitive workflows.
   where an autonomous vehicle requires a 2.7-meter object-specific safety envelope.
 - `examples/core/emergency_response_fastest_arrival.yaml`: two rescue teams where the
   nearest team arrives in 14 minutes while the farther team arrives in 8 minutes and meets the response deadline.
+- `examples/core/robot_live_obstacle_stop.yaml`: an inspection robot whose static map is
+  structurally passable while live perception detects a route-blocking pallet and verifies a safe stop point.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

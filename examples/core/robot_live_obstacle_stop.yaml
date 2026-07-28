@@ -1,0 +1,105 @@
+geotask:
+  id: "gt15-robot-live-obstacle-stop"
+  name: "GT15 Robot Live Obstacle Stop"
+  schema_version: "1.0"
+  goal: "Distinguish static map passability from current route occupancy when live perception detects an obstacle on a robot inspection route."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "inspection_corridor_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  inspection_route:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [20, 0]
+  detected_obstacle_zone:
+    type: "rect"
+    bbox: [8, -1.5, 12, 1.5]
+  safe_stop_point:
+    type: "point"
+    coordinates: [6, 0]
+  obstacle_center:
+    type: "point"
+    coordinates: [10, 0]
+
+operator_set:
+  - line_intersects_rect
+  - distance_2d
+
+tasks:
+  - id: "verify_live_route_occupancy"
+    family: "robot_environment_state"
+    goal: "Verify whether the planned route intersects the live obstacle and whether the selected stop point preserves clearance."
+    assertions:
+      - id: "route_intersects_live_obstacle"
+        operator: "line_intersects_rect"
+        object_refs: ["inspection_route", "detected_obstacle_zone"]
+        expected_type: "bool"
+      - id: "stop_clearance_distance"
+        operator: "distance_2d"
+        object_refs: ["safe_stop_point", "obstacle_center"]
+        expected_type: "number"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_live_obstacle_checks"
+      executor: "local"
+      assertion_refs:
+        - "route_intersects_live_obstacle"
+        - "stop_clearance_distance"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "inspection_robot_static_map_live_obstacle"
+    robot: "wheeled_inspection_robot"
+    decision_question: "Why must the robot stop when the map says the corridor is passable but live perception detects a blocking obstacle?"
+  static_map_state:
+    corridor_passable: true
+    map_updated_at: "08:00"
+    scope: "structural_passability"
+    proves_current_occupancy: false
+  live_perception:
+    status: "current"
+    detected_at: "09:15:12"
+    sensor: "lidar_and_depth_camera"
+    obstacle_type: "temporary_pallet"
+    confidence: 0.97
+    obstacle_blocks_corridor: true
+  route_state:
+    planned_route_intersects_obstacle: true
+    current_passability: false
+    safe_stop_clearance_m: 4.0
+    minimum_stop_clearance_m: 3.0
+    stop_point_is_safe: true
+  state_resolution:
+    static_map_passable: true
+    live_route_blocked: true
+    current_passability: false
+    reason: "static_map_does_not_prove_current_occupancy"
+    authoritative_for_immediate_motion: "live_perception"
+  motion_gate:
+    status: "blocked"
+    reason: "current_route_occupied_by_live_obstacle"
+    selected_action: "stop_and_replan_route"
+    alternatives:
+      - "request_obstacle_removal"
+      - "update_dynamic_map"
+      - "wait_for_route_clearance"
+    rejected_actions:
+      - "proceed_because_static_map_passable"
+      - "ignore_live_obstacle_as_temporary"
+    blocked_outputs:
+      - "autonomous_forward_motion"
+      - "continue_inspection_without_revalidation"
+    resume_when: "live_obstacle_cleared == true and route_reverified == true"
+    next_action: "stop_and_replan_route"
+    expected_status: "verified_stop"

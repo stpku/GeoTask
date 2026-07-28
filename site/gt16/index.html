@@ -65,7 +65,7 @@ instructions_for_model:
 
     <section class="card"><h2>第二步：验证模型结论</h2><div class="samples"><button class="sample" id="btn-route" type="button">路线相交，所以一定相撞</button><button class="sample" id="btn-altitude" type="button">高度重叠，所以一定相撞</button><button class="sample wide" id="btn-separation" type="button">保持已核验的时间间隔</button></div><button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button><div class="status" id="verify-status" role="status"></div><div class="verification" id="verification-card"><div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div><div class="metrics"><div class="metric"><small>模型候选动作</small><code id="model-action">—</code></div><div class="metric"><small>本地任务动作</small><code>maintain_planned_time_separation</code></div><div class="metric"><small>高度重叠</small><code>true</code></div><div class="metric"><small>时间重叠</small><code>false</code></div></div><p class="message" id="verification-message">候选来源：model_generated；路线距离、高度和时间关系：local_deterministic。</p></div><p class="warning">GT16演示的是计划级交叉窗口。真实低空冲突探测还需要速度、航向、定位误差、保护区半径、通信延迟和预测不确定性。</p></section>
 
-    <section class="card"><h2>查看项目与继续体验</h2><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt15/">← GT15</a></div></section>
+    <section class="card"><h2>查看项目与继续体验</h2><p>GT17 已上线：同一个城市事件被十个来源连续上报，系统需要合并为一个处置任务，同时保留全部来源证据。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt17/">进入 GT17</a></div></section>
     <footer>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</footer>
   </main>
   <script>

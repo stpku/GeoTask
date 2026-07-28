@@ -1,0 +1,151 @@
+geotask:
+  id: "gt17-city-event-report-deduplication"
+  name: "GT17 City Event Report Deduplication"
+  schema_version: "1.0"
+  goal: "Verify whether ten citizen reports describe one city incident and create one dispatch task while preserving all source evidence."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "city_intersection_xy_m"
+  horizontal_unit: "meter"
+
+objects:
+  incident_anchor:
+    type: "point"
+    coordinates: [0, 0]
+  report_01_location: {type: "point", coordinates: [0, 0]}
+  report_02_location: {type: "point", coordinates: [5, 3]}
+  report_03_location: {type: "point", coordinates: [-4, 6]}
+  report_04_location: {type: "point", coordinates: [8, -5]}
+  report_05_location: {type: "point", coordinates: [-7, -6]}
+  report_06_location: {type: "point", coordinates: [12, 4]}
+  report_07_location: {type: "point", coordinates: [-10, 9]}
+  report_08_location: {type: "point", coordinates: [15, -2]}
+  report_09_location: {type: "point", coordinates: [-13, -11]}
+  report_10_location: {type: "point", coordinates: [18, 6]}
+  dedup_time_window:
+    type: "time_interval"
+    start: "08:00"
+    end: "08:10"
+  report_01_time: {type: "time_interval", start: "08:00", end: "08:01"}
+  report_02_time: {type: "time_interval", start: "08:01", end: "08:02"}
+  report_03_time: {type: "time_interval", start: "08:02", end: "08:03"}
+  report_04_time: {type: "time_interval", start: "08:03", end: "08:04"}
+  report_05_time: {type: "time_interval", start: "08:04", end: "08:05"}
+  report_06_time: {type: "time_interval", start: "08:05", end: "08:06"}
+  report_07_time: {type: "time_interval", start: "08:05", end: "08:06"}
+  report_08_time: {type: "time_interval", start: "08:06", end: "08:07"}
+  report_09_time: {type: "time_interval", start: "08:07", end: "08:08"}
+  report_10_time: {type: "time_interval", start: "08:08", end: "08:09"}
+
+operator_set:
+  - distance_2d
+  - time_overlap
+
+tasks:
+  - id: "verify_report_cluster"
+    family: "city_event_deduplication"
+    goal: "Verify that every report is spatially close to the incident anchor and falls inside the same deduplication time window."
+    assertions:
+      - {id: "report_01_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_01_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_02_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_02_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_03_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_03_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_04_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_04_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_05_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_05_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_06_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_06_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_07_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_07_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_08_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_08_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_09_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_09_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_10_distance", operator: "distance_2d", object_refs: ["incident_anchor", "report_10_location"], expected_type: "number", unit: "meter"}
+      - {id: "report_01_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_01_time"], expected_type: "bool"}
+      - {id: "report_02_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_02_time"], expected_type: "bool"}
+      - {id: "report_03_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_03_time"], expected_type: "bool"}
+      - {id: "report_04_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_04_time"], expected_type: "bool"}
+      - {id: "report_05_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_05_time"], expected_type: "bool"}
+      - {id: "report_06_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_06_time"], expected_type: "bool"}
+      - {id: "report_07_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_07_time"], expected_type: "bool"}
+      - {id: "report_08_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_08_time"], expected_type: "bool"}
+      - {id: "report_09_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_09_time"], expected_type: "bool"}
+      - {id: "report_10_time_overlap", operator: "time_overlap", object_refs: ["dedup_time_window", "report_10_time"], expected_type: "bool"}
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_dedup_checks"
+      executor: "local"
+      assertion_refs:
+        - "report_01_distance"
+        - "report_02_distance"
+        - "report_03_distance"
+        - "report_04_distance"
+        - "report_05_distance"
+        - "report_06_distance"
+        - "report_07_distance"
+        - "report_08_distance"
+        - "report_09_distance"
+        - "report_10_distance"
+        - "report_01_time_overlap"
+        - "report_02_time_overlap"
+        - "report_03_time_overlap"
+        - "report_04_time_overlap"
+        - "report_05_time_overlap"
+        - "report_06_time_overlap"
+        - "report_07_time_overlap"
+        - "report_08_time_overlap"
+        - "report_09_time_overlap"
+        - "report_10_time_overlap"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  application_context:
+    scenario: "ten_reports_of_one_road_waterlogging_event"
+    decision_question: "Should ten reports of the same incident create ten dispatch tasks?"
+  report_cluster:
+    report_count: 10
+    event_type: "road_waterlogging"
+    road_segment: "renmin_road_xingfu_street_intersection"
+    same_semantic_signature: true
+    spatial_threshold_m: 30
+    maximum_report_distance_m: 18.97
+    all_reports_within_spatial_threshold: true
+    dedup_window: "08:00-08:10"
+    all_reports_within_temporal_window: true
+    source_ids:
+      - "citizen_app_001"
+      - "citizen_app_002"
+      - "hotline_12345_003"
+      - "traffic_camera_004"
+      - "citizen_app_005"
+      - "patrol_officer_006"
+      - "citizen_app_007"
+      - "bus_driver_008"
+      - "citizen_app_009"
+      - "traffic_police_010"
+  dedup_rule:
+    expression: "same_semantic_signature AND all_reports_within_spatial_threshold AND all_reports_within_temporal_window"
+    duplicate_reports_verified: true
+    unique_incident_count: 1
+    evidence_source_count: 10
+  task_gate:
+    status: "open_for_single_dispatch"
+    selected_action: "merge_reports_and_create_one_task"
+    task_count: 1
+    preserve_source_evidence: true
+    rejected_actions:
+      - "create_ten_dispatch_tasks"
+      - "discard_repeated_reports"
+    blocked_outputs:
+      - "duplicate_dispatch"
+      - "duplicate_work_orders"
+      - "source_evidence_loss"
+    required_controls:
+      - "retain_all_source_ids"
+      - "increment_report_count"
+      - "update_incident_confidence"
+      - "link_new_reports_to_existing_task"
+    next_action: "dispatch_single_verified_task"
+    expected_status: "verified_deduplication"

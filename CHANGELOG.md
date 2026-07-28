@@ -13,6 +13,8 @@ All notable public changes to GeoTask Core are documented here.
 - Add the GT15 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 - Add GT16, a multi-UAV crossing case that combines shared crossing location, altitude overlap, and non-overlapping crossing windows to verify temporal separation.
 - Add the GT16 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
+- Add GT17, a city-event deduplication case that merges ten semantically consistent spatiotemporal reports into one dispatch task while preserving every source as evidence.
+- Add the GT17 interactive page, public example, bilingual cookbook coverage, site navigation, and regression tests.
 
 ### Changed
 

@@ -34,6 +34,8 @@ patent-sensitive workflows.
   structurally passable while live perception detects a route-blocking pallet and verifies a safe stop point.
 - `examples/core/uav_route_crossing_temporal_separation.yaml`: two UAV routes pass the same
   crossing point with overlapping altitudes but non-overlapping crossing windows and verified temporal separation.
+- `examples/core/city_event_report_deduplication.yaml`: ten reports with one semantic,
+  spatial, and temporal signature are merged into one dispatch task while all source evidence is retained.
 - `examples/geotask_core_lite.yaml`: legacy Core lite example used by tests.
 - `examples/basic_distance.yaml`: basic distance example.
 - `examples/route_zone_intersection.yaml`: line and rectangle intersection

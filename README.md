@@ -21,10 +21,10 @@ GeoTask把自然语言中的空间、时间、证据、资源和行动约束转�
 
 ## 从这里开始
 
-- [立即体验GT01—GT18](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT19](https://stpku.github.io/GeoTask/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
-- [GT01—GT18中文案例手册](docs/cookbook/gt01-gt18.zh-CN.md)
+- [GT01—GT19中文案例手册](docs/cookbook/gt01-gt19.zh-CN.md)
 - [当前实现语言与执行规范v1.0](docs/spec/geotask-language-spec-v1.0.md)
 - [v0.1.1 PyPI修正版发布说明](docs/release_v0_1_1.md)
 - [公共路线图](ROADMAP.md)
@@ -96,7 +96,7 @@ geotask validate my_distance.yaml
 geotask run my_distance.yaml
 ```
 
-## 18个公开应用案例
+## 19个公开应用案例
 
 GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示AI如何可靠地理解、执行和验证时空任务。
 
@@ -105,7 +105,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 | 空间关系 | GT01—GT03 | 距离、边界接触和多段路线到底是什么关系？ |
 | 时空组合 | GT04—GT06 | 水平、高度和时间条件是否同时成立？ |
 | 不确定性与证据 | GT07—GT09 | 缺证据或证据冲突时，系统应该怎么办？ |
-| 行动与可行性 | GT10—GT18 | 约束确认以后，下一步具体执行什么？ |
+| 行动与可行性 | GT10—GT19 | 约束确认以后，下一步具体执行什么？ |
 
 重点案例：
 
@@ -119,9 +119,10 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT15：** 地图结构可通行，不等于机器人当前路线没有被实时障碍占据；
 - **GT16：** 两条无人机路线相交，不等于它们会在同一高度和同一时刻发生碰撞；
 - **GT17：** 十次上报不等于十起事件，应合并为一个任务并保留十份来源证据；
-- **GT18：** 最短路线能够到达目标，不等于它满足环境风险和救援机器人耐受能力约束。
+- **GT18：** 最短路线能够到达目标，不等于它满足环境风险和救援机器人耐受能力约束；
+- **GT19：** 无人机到达目标上空，不等于投放区已经净空并获得载荷释放授权。
 
-完整案例、源码和学习路径见[中文案例手册](docs/cookbook/gt01-gt18.zh-CN.md)。
+完整案例、源码和学习路径见[中文案例手册](docs/cookbook/gt01-gt19.zh-CN.md)。
 
 ## 当前公共Core真正支持什么
 
@@ -161,7 +162,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 
 ## 案例扩展语义
 
-GT07—GT18还展示了：
+GT07—GT19还展示了：
 
 ```text
 unverifiable
@@ -213,8 +214,8 @@ geotask inspect operators
 - [English documentation index](docs/README.en.md)
 - [中文快速入门](docs/tutorials/quickstart.zh-CN.md)
 - [英文快速入门](docs/tutorials/quickstart.md)
-- [中文案例手册](docs/cookbook/gt01-gt18.zh-CN.md)
-- [英文Cookbook](docs/cookbook/gt01-gt18.md)
+- [中文案例手册](docs/cookbook/gt01-gt19.zh-CN.md)
+- [英文Cookbook](docs/cookbook/gt01-gt19.md)
 - [JSON Schema](schemas/geotask-v1.0.schema.json)
 - [状态与可信等级](docs/reference/status-model.md)
 - [证据、冲突、阻断与恢复](docs/reference/evidence-and-recovery.md)

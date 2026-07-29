@@ -50,6 +50,7 @@ from geotask_core.v1.serialized_validation import (
     invalid_versioned_payload_report,
     validate_versioned_payload,
 )
+from geotask_core.v1.artifact_registry import artifact_registry_payload
 
 
 def _get_command_name() -> str:
@@ -460,10 +461,52 @@ def _print_validation_diagnostics(
         print(f"{prefix}    Suggested fix: {diagnostic['suggested_fix']}", file=out)
 
 
+def _print_inspect_schemas_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print("Usage: geotask inspect schemas [--format yaml|json]", file=out)
+    print(
+        "Lists the stable public artifact registry, including schema IDs, "
+        "versions, generation guidance, and validation commands.",
+        file=out,
+    )
+
+
+def _parse_inspect_schemas_args(args: list[str]) -> dict[str, object]:
+    parsed: dict[str, object] = {"help": False, "format": "yaml"}
+    seen_format = False
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_inspect_schemas_usage()
+            return {"help": True}
+        if arg == "--format":
+            if seen_format:
+                raise ValueError("--format may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--format requires a value")
+            seen_format = True
+            parsed["format"] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown inspect schemas option: {arg}")
+
+    output_format = str(parsed["format"])
+    if output_format not in {"yaml", "json"}:
+        raise ValueError(
+            f"unsupported_inspect_schemas_format: {output_format}. "
+            "Supported formats: yaml, json"
+        )
+    return parsed
+
+
 def cmd_inspect(args: list[str]):
     """Inspect public-safe Core metadata."""
     if not args or args[0] in ("--help", "-h"):
-        print("Usage: geotask inspect <operators|schema|examples> [operator_name]")
+        print(
+            "Usage: geotask inspect "
+            "<operators|schema|schemas|examples> [options]"
+        )
         return None
 
     subject = args[0]
@@ -485,13 +528,32 @@ def cmd_inspect(args: list[str]):
         print_result(result)
         return result
 
+    if subject == "schemas":
+        try:
+            parsed = _parse_inspect_schemas_args(args[1:])
+            if parsed.get("help"):
+                return None
+        except ValueError as exc:
+            print(f"inspect_schemas_failed: {exc}", file=sys.stderr)
+            sys.exit(1)
+
+        result = artifact_registry_payload()
+        if parsed["format"] == "json":
+            sys.stdout.write(_render_json(result, compact=False))
+        else:
+            print_result(result)
+        return result
+
     if subject == "examples":
         result = _example_index()
         print_result(result)
         return result
 
     print(f"Unknown inspect target: {subject}", file=sys.stderr)
-    print("Available inspect targets: operators, schema, examples", file=sys.stderr)
+    print(
+        "Available inspect targets: operators, schema, schemas, examples",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 

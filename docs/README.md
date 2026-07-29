@@ -12,6 +12,7 @@ GeoTask文档按照“理解项目、开始使用、查阅规范、扩展开发�
 - [GT01—GT20中文案例手册](cookbook/gt01-gt20.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度、设备能力约束和高风险动作门控。
 - [当前实现语言与执行规范v1.0](spec/geotask-language-spec-v1.0.md)：当前公共Core真正实现的规范性文本。
 - [标准执行结果v1.0](spec/geotask-result-v1.0.md)：定义`GeotaskResult.to_dict()`、结果JSON Schema和`geotask result validate`命令。
+- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现任务文档、执行结果和控制评估结果的Schema、版本及操作命令。
 - [版本化载荷校验v1.0](spec/geotask-versioned-payload-validation-v1.0.md)：统一执行结果与控制结果的严格加载、Schema元数据、诊断和文本/JSON报告。
 - [控制扩展Profile v1.0](spec/geotask-control-extension-profile-v1.0.md)：对证据请求、证据冲突、决策规则和任务门控进行版本化校验。
 - [控制表达式语言v1.0](spec/geotask-control-expression-language-v1.0.md)：定义安全有限语法、三值逻辑、比较语义和公共解析求值API。
@@ -29,7 +30,7 @@ GeoTask文档按照“理解项目、开始使用、查阅规范、扩展开发�
 - [CLI使用说明](cli_usage.md)
 - [架构说明](architecture.md)
 - [算子扩展指南](operator-guide.md)
-- 机器可读Schema：[任务文档](../schemas/geotask-v1.0.schema.json)、[标准执行结果](../schemas/geotask-result-v1.0.schema.json)、[控制评估结果](../schemas/geotask-control-evaluation-v1.0.schema.json)
+- 机器可读Schema：[制品注册表](../schemas/geotask-artifact-registry-v1.0.schema.json)、[任务文档](../schemas/geotask-v1.0.schema.json)、[标准执行结果](../schemas/geotask-result-v1.0.schema.json)、[控制评估结果](../schemas/geotask-control-evaluation-v1.0.schema.json)
 
 ## 三层规范关系
 

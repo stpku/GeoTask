@@ -102,11 +102,18 @@ geometry.
 python -m geotask_core.cli inspect operators
 python -m geotask_core.cli inspect operators distance_2d
 python -m geotask_core.cli inspect schema
+python -m geotask_core.cli inspect schemas
+python -m geotask_core.cli inspect schemas --format json
 python -m geotask_core.cli inspect examples
 ```
 
 - `inspect operators` lists public-safe Core operator registry metadata.
-- `inspect schema` summarizes the minimal YAML structure.
+- `inspect schema` summarizes the minimal GeoTask document structure.
+- `inspect schemas` lists the public Artifact Registry: task document,
+  execution-result, and control-evaluation contracts with Schema IDs, versions,
+  repository paths, generation guidance, validation commands, and execution
+  boundaries. YAML is the default; `--format json` emits clean machine-readable
+  JSON.
 - `inspect examples` lists repository examples and marks public-safe Core
   examples separately from domain-pack examples.
 

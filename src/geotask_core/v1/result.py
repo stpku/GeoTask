@@ -8,6 +8,7 @@ and AssuranceLevel conversion.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
@@ -16,6 +17,58 @@ from geotask_core.v1.enums import AssuranceLevel
 
 
 # -- Result Dataclasses
+
+
+class ResultFormatError(ValueError):
+    """Raised when serialized GeoTask result data violates the v1 contract."""
+
+
+def _require_mapping(value: object, path: str) -> Mapping[str, Any]:
+    if not isinstance(value, Mapping):
+        raise ResultFormatError(f"{path} must be an object")
+    return value
+
+
+def _require_list(value: object, path: str) -> list:
+    if not isinstance(value, list):
+        raise ResultFormatError(f"{path} must be an array")
+    return value
+
+
+def _require_string(value: object, path: str) -> str:
+    if not isinstance(value, str):
+        raise ResultFormatError(f"{path} must be a string")
+    return value
+
+
+def _require_bool(value: object, path: str) -> bool:
+    if not isinstance(value, bool):
+        raise ResultFormatError(f"{path} must be a boolean")
+    return value
+
+
+def _require_int(value: object, path: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ResultFormatError(f"{path} must be an integer")
+    return value
+
+
+def _require_keys(
+    value: Mapping[str, Any],
+    *,
+    path: str,
+    required: set[str],
+) -> None:
+    missing = sorted(required - set(value))
+    if missing:
+        raise ResultFormatError(
+            f"{path} is missing required field(s): {', '.join(missing)}"
+        )
+    unknown = sorted(set(value) - required)
+    if unknown:
+        raise ResultFormatError(
+            f"{path} contains unknown field(s): {', '.join(unknown)}"
+        )
 
 
 @dataclass
@@ -137,6 +190,222 @@ class GeotaskResult:
         ]
 
     # -- v1 Serialization
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> "GeotaskResult":
+        """Deserialize the canonical v1 ``geotask_result`` JSON shape.
+
+        The loader is intentionally strict: missing and unknown fields are
+        rejected so CLI control evaluation cannot silently reinterpret a
+        legacy or partially shaped result.
+        """
+
+        wrapper = _require_mapping(payload, "result")
+        _require_keys(wrapper, path="result", required={"geotask_result"})
+        data = _require_mapping(wrapper["geotask_result"], "geotask_result")
+        _require_keys(
+            data,
+            path="geotask_result",
+            required={
+                "schema_version",
+                "task_id",
+                "execution",
+                "checks",
+                "outputs",
+                "summary",
+                "overall",
+                "warnings",
+                "errors",
+            },
+        )
+
+        schema_version = _require_string(
+            data["schema_version"], "geotask_result.schema_version"
+        )
+        if schema_version != "1.0":
+            raise ResultFormatError(
+                "geotask_result.schema_version must be '1.0'"
+            )
+        task_id = _require_string(data["task_id"], "geotask_result.task_id")
+        if not task_id:
+            raise ResultFormatError("geotask_result.task_id must not be empty")
+
+        execution_data = _require_mapping(
+            data["execution"], "geotask_result.execution"
+        )
+        _require_keys(
+            execution_data,
+            path="geotask_result.execution",
+            required={"mode", "status", "started_at", "finished_at"},
+        )
+        execution = ExecutionSummary(
+            mode=_require_string(
+                execution_data["mode"], "geotask_result.execution.mode"
+            ),
+            status=_require_string(
+                execution_data["status"], "geotask_result.execution.status"
+            ),
+            started_at=_require_string(
+                execution_data["started_at"],
+                "geotask_result.execution.started_at",
+            ),
+            finished_at=_require_string(
+                execution_data["finished_at"],
+                "geotask_result.execution.finished_at",
+            ),
+        )
+
+        checks: list[CheckResult] = []
+        for index, raw_check in enumerate(
+            _require_list(data["checks"], "geotask_result.checks")
+        ):
+            path = f"geotask_result.checks[{index}]"
+            check = _require_mapping(raw_check, path)
+            _require_keys(
+                check,
+                path=path,
+                required={
+                    "assertion_id",
+                    "operator",
+                    "object_refs",
+                    "executor",
+                    "value",
+                    "unit",
+                    "status",
+                    "assurance_level",
+                    "deterministic",
+                    "evidence_refs",
+                    "error",
+                },
+            )
+            object_refs = _require_list(check["object_refs"], f"{path}.object_refs")
+            evidence_refs = _require_list(
+                check["evidence_refs"], f"{path}.evidence_refs"
+            )
+            for ref_index, ref in enumerate(object_refs):
+                _require_string(ref, f"{path}.object_refs[{ref_index}]")
+            for ref_index, ref in enumerate(evidence_refs):
+                _require_string(ref, f"{path}.evidence_refs[{ref_index}]")
+            error = check["error"]
+            if error is not None:
+                error = dict(_require_mapping(error, f"{path}.error"))
+
+            checks.append(
+                CheckResult(
+                    assertion_id=_require_string(
+                        check["assertion_id"], f"{path}.assertion_id"
+                    ),
+                    operator=_require_string(check["operator"], f"{path}.operator"),
+                    object_refs=list(object_refs),
+                    executor=_require_string(check["executor"], f"{path}.executor"),
+                    value=check["value"],
+                    unit=_require_string(check["unit"], f"{path}.unit"),
+                    status=_require_string(check["status"], f"{path}.status"),
+                    assurance_level=_require_string(
+                        check["assurance_level"], f"{path}.assurance_level"
+                    ),
+                    deterministic=_require_bool(
+                        check["deterministic"], f"{path}.deterministic"
+                    ),
+                    evidence_refs=list(evidence_refs),
+                    error=error,
+                )
+            )
+
+        outputs = dict(
+            _require_mapping(data["outputs"], "geotask_result.outputs")
+        )
+        summary_data = _require_mapping(
+            data["summary"], "geotask_result.summary"
+        )
+        _require_keys(
+            summary_data,
+            path="geotask_result.summary",
+            required={
+                "total_checks",
+                "verified",
+                "contradicted",
+                "need_review",
+                "invalid",
+            },
+        )
+        summary = ResultSummary(
+            total_checks=_require_int(
+                summary_data["total_checks"],
+                "geotask_result.summary.total_checks",
+            ),
+            verified=_require_int(
+                summary_data["verified"], "geotask_result.summary.verified"
+            ),
+            contradicted=_require_int(
+                summary_data["contradicted"],
+                "geotask_result.summary.contradicted",
+            ),
+            need_review=_require_int(
+                summary_data["need_review"],
+                "geotask_result.summary.need_review",
+            ),
+            invalid=_require_int(
+                summary_data["invalid"], "geotask_result.summary.invalid"
+            ),
+        )
+        summary_counts = {
+            "total_checks": summary.total_checks,
+            "verified": summary.verified,
+            "contradicted": summary.contradicted,
+            "need_review": summary.need_review,
+            "invalid": summary.invalid,
+        }
+        negative_counts = sorted(
+            name for name, value in summary_counts.items() if value < 0
+        )
+        if negative_counts:
+            raise ResultFormatError(
+                "geotask_result.summary contains negative count(s): "
+                + ", ".join(negative_counts)
+            )
+        if summary.total_checks != len(checks):
+            raise ResultFormatError(
+                "geotask_result.summary.total_checks must equal the number "
+                f"of checks ({len(checks)})"
+            )
+
+        overall_data = _require_mapping(
+            data["overall"], "geotask_result.overall"
+        )
+        _require_keys(
+            overall_data,
+            path="geotask_result.overall",
+            required={"status", "assurance_level"},
+        )
+        overall = OverallResult(
+            status=_require_string(
+                overall_data["status"], "geotask_result.overall.status"
+            ),
+            assurance_level=_require_string(
+                overall_data["assurance_level"],
+                "geotask_result.overall.assurance_level",
+            ),
+        )
+
+        warnings = _require_list(data["warnings"], "geotask_result.warnings")
+        for index, warning in enumerate(warnings):
+            _require_string(warning, f"geotask_result.warnings[{index}]")
+        errors = _require_list(data["errors"], "geotask_result.errors")
+        for index, error in enumerate(errors):
+            _require_mapping(error, f"geotask_result.errors[{index}]")
+
+        return cls(
+            schema_version=schema_version,
+            task_id=task_id,
+            execution=execution,
+            checks=checks,
+            outputs=outputs,
+            summary=summary,
+            overall=overall,
+            warnings=list(warnings),
+            errors=[dict(error) for error in errors],
+        )
 
     def to_dict(self) -> dict:
         """Serialize to v1.0 result dict format.

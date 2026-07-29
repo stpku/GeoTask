@@ -280,7 +280,14 @@ def test_result_validate_command_does_not_execute_task() -> None:
     command_source = source.split("def cmd_result", 1)[1].split(
         "def cmd_normalize", 1
     )[0]
+    shared_source = source.split("def _validate_serialized_artifact", 1)[1].split(
+        "def _parse_result_validate_args", 1
+    )[0]
+    framework_source = (
+        REPO_ROOT / "src" / "geotask_core" / "v1" / "serialized_validation.py"
+    ).read_text(encoding="utf-8")
 
     assert "execute_canonical" not in command_source
     assert "run_geotask" not in command_source
-    assert "GeotaskResult.from_dict" in command_source
+    assert "validate_versioned_payload" in shared_source
+    assert "loader=GeotaskResult.from_dict" in framework_source

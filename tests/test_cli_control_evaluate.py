@@ -457,8 +457,8 @@ def test_control_command_source_does_not_execute_canonical_or_next_action() -> N
     source = (REPO_ROOT / "src" / "geotask_core" / "cli.py").read_text(
         encoding="utf-8"
     )
-    command_source = source.split("def cmd_control", 1)[1].split(
-        "def print_result", 1
+    command_source = source.split("def _cmd_control_evaluate", 1)[1].split(
+        "def _cmd_control_validate", 1
     )[0]
 
     assert "execute_canonical" not in command_source

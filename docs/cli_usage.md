@@ -60,6 +60,8 @@ python -m geotask_core.cli control evaluate task.yaml \
   --result execution-result.json \
   --state control-state.yaml \
   --output control-evaluation.json
+
+python -m geotask_core.cli control validate control-evaluation.json
 ```
 
 ## Result Validate
@@ -159,6 +161,27 @@ assertion declared by that document. Malformed, legacy-shaped, cross-task, or
 partially shaped result files fail with a non-zero exit code and no traceback.
 Duplicate JSON or YAML keys and non-finite JSON numbers are also rejected.
 `--output` cannot overwrite the GeoTask, execution-result, or state input file.
+
+## Control Validate
+
+```bash
+python -m geotask_core.cli control validate control-evaluation.json
+python -m geotask_core.cli control validate control-evaluation.json --format json
+```
+
+`control validate` strictly loads a serialized Control Evaluation Result v1.0.
+It checks the public JSON shape plus Core invariants including immutable context
+entry/value consistency, control-block state derivation, aggregate unknown and
+output lists, `gate_satisfied`, and the required `action_executed: false` value.
+
+Text mode prints a compact valid report or writes invalid diagnostics to stderr.
+JSON mode always emits a parseable `control_validation` report and returns a
+non-zero exit code for invalid data. The command does not evaluate expressions,
+rerun a GeoTask, execute `next_action`, or release outputs.
+
+`result validate` and `control validate` share the same versioned payload
+validation framework for argument handling, schema metadata, diagnostics, and
+text/JSON reports. Their strict loaders remain artifact-specific.
 
 ## Normalize And Eval
 

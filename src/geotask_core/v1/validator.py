@@ -50,6 +50,7 @@ from geotask_core.v1.ir import (
     Task,
     VerificationDefinition,
 )
+from geotask_core.v1.extension_profiles import validate_extension_profiles
 from geotask_core.v1.operator_contracts import default_registry
 
 if TYPE_CHECKING:
@@ -1251,6 +1252,30 @@ def validate_canonical(doc: CanonicalDocument) -> list[dict]:
                 "verification",
                 EXECUTION_ERROR,
                 f"Unexpected error validating assurance reachability: {exc}",
+                severity="error",
+            )
+        )
+
+    # (i) Versioned extension profiles
+    try:
+        assertion_ids = {
+            assertion.id
+            for task in doc.tasks
+            for assertion in task.assertions
+            if assertion.id
+        }
+        diagnostics.extend(
+            validate_extension_profiles(
+                doc.extensions,
+                assertion_ids=assertion_ids,
+            )
+        )
+    except Exception as exc:
+        diagnostics.append(
+            _diagnostic(
+                "extensions.extension_profile",
+                EXECUTION_ERROR,
+                f"Unexpected error validating extension profile: {exc}",
                 severity="error",
             )
         )

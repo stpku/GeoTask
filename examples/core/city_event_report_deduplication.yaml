@@ -101,6 +101,9 @@ output_contract:
   required_fields: []
 
 extensions:
+  extension_profile:
+    id: "geotask.control"
+    version: "1.0"
   application_context:
     scenario: "ten_reports_of_one_road_waterlogging_event"
     decision_question: "Should ten reports of the same incident create ten dispatch tasks?"
@@ -130,11 +133,11 @@ extensions:
     duplicate_reports_verified: true
     unique_incident_count: 1
     evidence_source_count: 10
+    dispatch_task_count: 1
+    preserve_source_evidence: true
   task_gate:
     status: "open_for_single_dispatch"
     selected_action: "merge_reports_and_create_one_task"
-    task_count: 1
-    preserve_source_evidence: true
     rejected_actions:
       - "create_ten_dispatch_tasks"
       - "discard_repeated_reports"
@@ -147,5 +150,6 @@ extensions:
       - "increment_report_count"
       - "update_incident_confidence"
       - "link_new_reports_to_existing_task"
+    resume_when: "verified_event_cluster_active == true AND dispatch_task_count == 1"
     next_action: "dispatch_single_verified_task"
     expected_status: "verified_deduplication"

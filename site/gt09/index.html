@@ -119,12 +119,19 @@ known_results:
     schedule: "09:30-11:00"
 
 extensions:
+  extension_profile:
+    id: "geotask.control"
+    version: "1.0"
   evidence_conflict:
     id: "resolve-restricted-schedule-conflict"
+    subject: "restricted_schedule"
     conflict_type: "incompatible_verified_sources"
     conflicting_assertions:
       - "temporal_conflict_authority_a"
       - "temporal_conflict_bulletin_b"
+    source_refs:
+      - "authority_notice_a"
+      - "operations_bulletin_b"
     blocked_outputs:
       - "full_conflict"
       - "automatic_approval"

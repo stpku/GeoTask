@@ -39,6 +39,11 @@ from geotask_core.v1.canonicalizer import canonicalize
 from geotask_core.v1.validator import validate_canonical
 from geotask_core.v1.executor import execute_canonical
 from geotask_core.v1.result import GeotaskResult
+from geotask_core.v1.extension_profiles import (
+    CONTROL_PROFILE_ID,
+    CONTROL_PROFILE_VERSION,
+    validate_extension_profiles,
+)
 
 __all__ = [
     "__version__",
@@ -75,4 +80,7 @@ __all__ = [
     "validate_canonical",
     "execute_canonical",
     "GeotaskResult",
+    "CONTROL_PROFILE_ID",
+    "CONTROL_PROFILE_VERSION",
+    "validate_extension_profiles",
 ]

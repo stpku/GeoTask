@@ -113,6 +113,9 @@ execution:
   mode: "model_then_local_verify"
 
 extensions:
+  extension_profile:
+    id: "geotask.control"
+    version: "1.0"
   decision_rule:
     id: "full_conflict"
     logic: "three_valued_and"

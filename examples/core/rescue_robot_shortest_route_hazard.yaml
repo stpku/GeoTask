@@ -95,6 +95,9 @@ output_contract:
   required_fields: []
 
 extensions:
+  extension_profile:
+    id: "geotask.control"
+    version: "1.0"
   application_context:
     scenario: "industrial_fire_rescue_robot_entry"
     decision_question: "Can the rescue robot enter by the geometrically shortest route?"
@@ -135,5 +138,6 @@ extensions:
       - "bind_route_to_robot_capability"
       - "monitor_safe_route_temperature"
       - "stop_if_temperature_exceeds_limit"
+    resume_when: "safe_route_executable == true AND monitored_temperature_c <= 80"
     next_action: "dispatch_robot_via_safe_route"
     expected_status: "verified_safe_route_entry"

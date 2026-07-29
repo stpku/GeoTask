@@ -26,6 +26,10 @@
   id: "gt17-city-event-report-deduplication"
   schema_version: "1.0"
 
+extension_profile:
+  id: "geotask.control"
+  version: "1.0"
+
 report_cluster:
   report_count: 10
   event_type: "road_waterlogging"
@@ -42,12 +46,12 @@ dedup_rule:
   expression: "same_semantic_signature AND all_reports_within_spatial_threshold AND all_reports_within_temporal_window"
   duplicate_reports_verified: true
   unique_incident_count: 1
+  dispatch_task_count: 1
+  preserve_source_evidence: true
 
 task_gate:
   status: "open_for_single_dispatch"
   selected_action: "merge_reports_and_create_one_task"
-  task_count: 1
-  preserve_source_evidence: true
   rejected_actions:
     - "create_ten_dispatch_tasks"
     - "discard_repeated_reports"
@@ -55,6 +59,12 @@ task_gate:
     - "duplicate_dispatch"
     - "duplicate_work_orders"
     - "source_evidence_loss"
+  required_controls:
+    - "retain_all_source_ids"
+    - "increment_report_count"
+    - "update_incident_confidence"
+    - "link_new_reports_to_existing_task"
+  resume_when: "verified_event_cluster_active == true AND dispatch_task_count == 1"
   next_action: "dispatch_single_verified_task"
   expected_status: "verified_deduplication"
 

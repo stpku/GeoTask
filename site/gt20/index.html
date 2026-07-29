@@ -26,6 +26,10 @@
   id: "gt20-vehicle-green-light-downstream-blockage"
   schema_version: "1.0"
 
+extension_profile:
+  id: "geotask.control"
+  version: "1.0"
+
 signal_evidence:
   signal_aspect: "green"
   signal_permission_valid: true
@@ -60,6 +64,12 @@ task_gate:
   blocked_outputs:
     - "intersection_entry_command"
     - "follow_green_without_exit_check"
+  required_controls:
+    - "remain_before_stop_line"
+    - "retain_signal_and_queue_evidence"
+    - "recheck_downstream_storage"
+    - "enter_only_when_full_vehicle_can_clear_junction"
+    - "reevaluate_if_signal_phase_changes"
   resume_when: "signal_permission_valid == true AND downstream_exit_clear == true AND available_storage_m >= 6.8 AND downstream_evidence_age_seconds <= 3"
   next_action: "recheck_signal_and_downstream_clearance"
   expected_status: "verified_intersection_hold"

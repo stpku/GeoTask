@@ -26,6 +26,10 @@
   id: "gt19-uav-arrival-ground-clearance-release"
   schema_version: "1.0"
 
+extension_profile:
+  id: "geotask.control"
+  version: "1.0"
+
 arrival_state:
   projection_inside_drop_zone: true
   release_altitude_authorized: true
@@ -59,6 +63,12 @@ task_gate:
   blocked_outputs:
     - "payload_release_command"
     - "automatic_drop_authorization"
+  required_controls:
+    - "retain_live_ground_clearance_evidence"
+    - "notify_ground_team_to_clear_drop_zone"
+    - "maintain_safe_hover_position"
+    - "reverify_clearance_before_release"
+    - "abort_or_divert_if_hover_margin_expires"
   resume_when: "ground_zone_clear == true AND clearance_evidence_age_seconds <= 15"
   next_action: "request_ground_clearance_and_reverify"
   expected_status: "verified_release_hold"

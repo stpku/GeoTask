@@ -392,6 +392,12 @@
         "version": {"const": "1.0"}
       }
     },
+    "controlExpression": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "description": "Finite GeoTask control expression. Full grammar validation is performed by GeoTask Core; JSON Schema enforces only scalar shape and resource length."
+    },
     "controlDecisionRule": {
       "type": "object",
       "required": ["id", "logic", "expression"],
@@ -399,7 +405,7 @@
       "properties": {
         "id": {"$ref": "#/$defs/id"},
         "logic": {"type": "string", "minLength": 1},
-        "expression": {"type": "string", "minLength": 1},
+        "expression": {"$ref": "#/$defs/controlExpression"},
         "unknown_policy": {"type": "string", "minLength": 1},
         "expected_status": {"type": "string", "minLength": 1}
       }
@@ -415,7 +421,7 @@
         "reason": {"type": "string", "minLength": 1},
         "required_fields": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
         "blocked_outputs": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
-        "resume_when": {"type": "string", "minLength": 1},
+        "resume_when": {"$ref": "#/$defs/controlExpression"},
         "next_action": {"type": "string", "minLength": 1}
       }
     },
@@ -442,7 +448,7 @@
         "compared_fields": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
         "blocked_outputs": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
         "resolution_required_fields": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
-        "resume_when": {"type": "string", "minLength": 1},
+        "resume_when": {"$ref": "#/$defs/controlExpression"},
         "next_action": {"type": "string", "minLength": 1},
         "expected_status": {"type": "string", "minLength": 1}
       }
@@ -457,7 +463,7 @@
         "rejected_actions": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
         "blocked_outputs": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
         "required_controls": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
-        "resume_when": {"type": "string", "minLength": 1},
+        "resume_when": {"$ref": "#/$defs/controlExpression"},
         "next_action": {"type": "string", "minLength": 1},
         "expected_status": {"type": "string", "minLength": 1}
       }

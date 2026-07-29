@@ -44,6 +44,15 @@ from geotask_core.v1.extension_profiles import (
     CONTROL_PROFILE_VERSION,
     validate_extension_profiles,
 )
+from geotask_core.v1.control_expressions import (
+    CONTROL_EXPRESSION_LANGUAGE_ID,
+    CONTROL_EXPRESSION_LANGUAGE_VERSION,
+    ExpressionSyntaxError,
+    ExpressionEvaluationError,
+    parse_control_expression,
+    evaluate_control_expression,
+    referenced_identifiers,
+)
 
 __all__ = [
     "__version__",
@@ -83,4 +92,11 @@ __all__ = [
     "CONTROL_PROFILE_ID",
     "CONTROL_PROFILE_VERSION",
     "validate_extension_profiles",
+    "CONTROL_EXPRESSION_LANGUAGE_ID",
+    "CONTROL_EXPRESSION_LANGUAGE_VERSION",
+    "ExpressionSyntaxError",
+    "ExpressionEvaluationError",
+    "parse_control_expression",
+    "evaluate_control_expression",
+    "referenced_identifiers",
 ]

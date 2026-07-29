@@ -139,9 +139,10 @@ UNVERIFIABLE_CLAIM         = "unverifiable_claim"
 EXECUTION_ERROR            = "execution_error"
 OUTPUT_CONTRACT_VIOLATION  = "output_contract_violation"
 
-# Extension profile errors
+# Extension profile and expression errors
 UNSUPPORTED_EXTENSION_PROFILE = "unsupported_extension_profile"
 EXTENSION_PROFILE_VIOLATION   = "extension_profile_violation"
+INVALID_EXPRESSION             = "invalid_expression"
 
 
 class DiagnosticSeverity(str, Enum):

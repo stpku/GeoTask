@@ -105,6 +105,13 @@ def test_profile_api_is_exported_from_public_namespaces() -> None:
         assert module.CONTROL_PROFILE_ID == "geotask.control"
         assert module.CONTROL_PROFILE_VERSION == "1.0"
         assert callable(module.validate_extension_profiles)
+        assert module.CONTROL_EXPRESSION_LANGUAGE_ID == "geotask.control-expression"
+        assert module.CONTROL_EXPRESSION_LANGUAGE_VERSION == "1.0"
+        assert callable(module.parse_control_expression)
+        assert callable(module.evaluate_control_expression)
+        assert callable(module.referenced_identifiers)
+        assert issubclass(module.ExpressionSyntaxError, ValueError)
+        assert issubclass(module.ExpressionEvaluationError, ValueError)
 
 
 def test_unprofiled_extensions_remain_open_for_backward_compatibility() -> None:

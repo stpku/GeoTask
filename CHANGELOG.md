@@ -28,6 +28,7 @@ All notable public changes to GeoTask Core are documented here.
 - Add the safe finite `geotask.control-expression/1.0` parser and evaluator with three-valued logic, scalar comparisons, identifier inspection, resource limits, and normative language documentation.
 - Add read-only control contexts and the versioned Control Evaluation Result contract for gate state, unknown identifiers, blocked outputs, output eligibility, and provenance without executing actions.
 - Add `geotask control evaluate` for schema-compatible, non-executing control evaluation from a GeoTask document, canonical execution-result JSON, and optional JSON/YAML domain state.
+- Add `geotask run --format v1-json --output result.json` so the CLI can produce the canonical `GeotaskResult.to_dict()` payload consumed by control evaluation while preserving compatibility YAML as the default.
 
 ### Changed
 

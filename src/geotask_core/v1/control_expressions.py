@@ -312,6 +312,8 @@ def referenced_identifiers(expression: str | ControlExpression) -> frozenset[str
 
 
 def _resolve_identifier(context: Mapping[str, object], name: str) -> object:
+    """Resolve an exact or dotted identifier from a read-only context mapping."""
+
     if name in context:
         return context[name]
 

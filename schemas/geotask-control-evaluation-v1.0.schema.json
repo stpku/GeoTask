@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-control-evaluation-v1.0.schema.json",
+  "title": "GeoTask Control Evaluation Result v1.0",
+  "type": "object",
+  "required": ["control_evaluation"],
+  "additionalProperties": false,
+  "properties": {
+    "control_evaluation": {"$ref": "#/$defs/controlEvaluation"}
+  },
+  "$defs": {
+    "scalar": {
+      "type": ["boolean", "number", "string", "null"]
+    },
+    "stringList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string"}
+    },
+    "contextValue": {
+      "oneOf": [
+        {"$ref": "#/$defs/scalar"},
+        {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/contextValue"}
+        }
+      ]
+    },
+    "contextEntry": {
+      "type": "object",
+      "required": [
+        "name",
+        "value",
+        "source",
+        "assertion_status",
+        "assurance_level",
+        "deterministic",
+        "evidence_refs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "value": {"$ref": "#/$defs/scalar"},
+        "source": {
+          "enum": ["assertion_result", "domain_state"]
+        },
+        "assertion_status": {"type": "string"},
+        "assurance_level": {"type": "string"},
+        "deterministic": {"type": "boolean"},
+        "evidence_refs": {"$ref": "#/$defs/stringList"}
+      }
+    },
+    "controlContext": {
+      "type": "object",
+      "required": ["values", "entries"],
+      "additionalProperties": false,
+      "properties": {
+        "values": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/contextValue"}
+        },
+        "entries": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/contextEntry"}
+        }
+      }
+    },
+    "blockEvaluation": {
+      "type": "object",
+      "required": [
+        "block",
+        "expression_field",
+        "expression",
+        "value",
+        "state",
+        "satisfied",
+        "referenced_identifiers",
+        "unknown_identifiers",
+        "blocked_outputs",
+        "eligible_outputs",
+        "selected_action",
+        "next_action",
+        "required_controls",
+        "rejected_actions",
+        "declared_status",
+        "evaluation_error",
+        "action_executed"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "block": {
+          "enum": [
+            "decision_rule",
+            "evidence_request",
+            "evidence_conflict",
+            "task_gate"
+          ]
+        },
+        "expression_field": {
+          "enum": ["expression", "resume_when"]
+        },
+        "expression": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "value": {"type": ["boolean", "null"]},
+        "state": {
+          "enum": ["satisfied", "not_satisfied", "blocked", "unknown", "error"]
+        },
+        "satisfied": {"type": "boolean"},
+        "referenced_identifiers": {"$ref": "#/$defs/stringList"},
+        "unknown_identifiers": {"$ref": "#/$defs/stringList"},
+        "blocked_outputs": {"$ref": "#/$defs/stringList"},
+        "eligible_outputs": {"$ref": "#/$defs/stringList"},
+        "selected_action": {"type": "string"},
+        "next_action": {"type": "string"},
+        "required_controls": {"$ref": "#/$defs/stringList"},
+        "rejected_actions": {"$ref": "#/$defs/stringList"},
+        "declared_status": {"type": "string"},
+        "evaluation_error": {"type": "string"},
+        "action_executed": {"const": false}
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": ["code", "path", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "path": {"type": "string"},
+        "message": {"type": "string", "minLength": 1}
+      }
+    },
+    "controlEvaluation": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "task_id",
+        "profile",
+        "state",
+        "gate_satisfied",
+        "control_context",
+        "evaluations",
+        "unknown_identifiers",
+        "blocked_outputs",
+        "eligible_outputs",
+        "diagnostics",
+        "action_executed"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {"const": "1.0"},
+        "task_id": {"type": "string", "minLength": 1},
+        "profile": {
+          "type": "object",
+          "required": ["id", "version"],
+          "additionalProperties": false,
+          "properties": {
+            "id": {"type": "string"},
+            "version": {"type": "string"}
+          }
+        },
+        "state": {
+          "enum": [
+            "not_applicable",
+            "satisfied",
+            "not_satisfied",
+            "blocked",
+            "unknown",
+            "error"
+          ]
+        },
+        "gate_satisfied": {"type": ["boolean", "null"]},
+        "control_context": {"$ref": "#/$defs/controlContext"},
+        "evaluations": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/blockEvaluation"}
+        },
+        "unknown_identifiers": {"$ref": "#/$defs/stringList"},
+        "blocked_outputs": {"$ref": "#/$defs/stringList"},
+        "eligible_outputs": {"$ref": "#/$defs/stringList"},
+        "diagnostics": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/diagnostic"}
+        },
+        "action_executed": {"const": false}
+      }
+    }
+  }
+}

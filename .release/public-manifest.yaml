@@ -111,6 +111,7 @@ include:
   - "docs/spec/geotask-language-spec-v1.0.md"
   - "docs/spec/geotask-control-extension-profile-v1.0.md"
   - "docs/spec/geotask-control-expression-language-v1.0.md"
+  - "docs/spec/geotask-control-evaluation-v1.0.md"
   - "docs/spec/target-specification-status.md"
   - "docs/tutorials/quickstart.md"
   - "docs/tutorials/quickstart.zh-CN.md"
@@ -136,6 +137,7 @@ include:
 
   # Public machine-readable specification
   - "schemas/geotask-v1.0.schema.json"
+  - "schemas/geotask-control-evaluation-v1.0.schema.json"
 
   # Root docs
   - "README.md"
@@ -215,7 +217,9 @@ required:
   - "docs/spec/geotask-language-spec-v1.0.md"
   - "docs/spec/geotask-control-extension-profile-v1.0.md"
   - "docs/spec/geotask-control-expression-language-v1.0.md"
+  - "docs/spec/geotask-control-evaluation-v1.0.md"
   - "schemas/geotask-v1.0.schema.json"
+  - "schemas/geotask-control-evaluation-v1.0.schema.json"
   - "site/index.html"
   - "site/gt01/index.html"
   - "site/gt14/index.html"

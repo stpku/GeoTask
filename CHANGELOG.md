@@ -26,6 +26,7 @@ All notable public changes to GeoTask Core are documented here.
 - Add a preview-first, transactional case scaffold command that creates the three case files and one catalog entry required for the next public case.
 - Add the opt-in `geotask.control/1.0` Extension Profile, machine-readable schema, Core validation, public constants, and normative documentation for decision rules, evidence requests, evidence conflicts, and task gates.
 - Add the safe finite `geotask.control-expression/1.0` parser and evaluator with three-valued logic, scalar comparisons, identifier inspection, resource limits, and normative language documentation.
+- Add read-only control contexts and the versioned Control Evaluation Result contract for gate state, unknown identifiers, blocked outputs, output eligibility, and provenance without executing actions.
 
 ### Changed
 
@@ -34,6 +35,7 @@ All notable public changes to GeoTask Core are documented here.
 - Replace 20 hand-written deployment checks and output lines with a generated case slug list and one validation loop.
 - Reduce future case authoring to four inputs while generated portal, Sitemap, deployment, and navigation files remain derivative outputs.
 - Keep extensions open by default, but apply strict structural, assertion-reference, and finite-expression syntax validation when a document explicitly declares `geotask.control/1.0`.
+- Keep control evaluation observational: it never mutates execution results, changes assurance, releases outputs, or executes `next_action`; satisfied outputs are reported only as eligible for separate authorization.
 - Make `OperatorContract` the single source of truth for public operator metadata, eliminating the separate hand-maintained registry table.
 - Enforce operator output types, assertion `expected_type`, and executable basic invariants before granting deterministic assurance.
 - Return explicit `unverifiable` checks for `hybrid`, `shadow_compare`, and non-`local` executors instead of substituting local execution.

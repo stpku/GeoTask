@@ -25,7 +25,40 @@ Validation failures return a non-zero exit code.
 python -m geotask_core.cli run examples/geotask_core_lite.yaml
 ```
 
-`run` validates the file and executes deterministic Core operators.
+Compatibility YAML remains the default. For the canonical v1 result contract, use machine-readable JSON:
+
+```bash
+python -m geotask_core.cli run \
+  examples/core/uav_arrival_ground_clearance_release.yaml \
+  --format v1-json \
+  --output execution-result.json
+```
+
+`--format v1-json` executes the canonical document and serializes the exact
+`GeotaskResult.to_dict()` shape. Its stdout contains JSON only; when `--output`
+is supplied, stdout remains empty. `--compact` selects single-line v1 JSON.
+
+Supported formats are:
+
+- `yaml`: the existing compatibility result from `run_geotask()`;
+- `v1-json`: the canonical result accepted by `control evaluate --result`.
+
+`--output` may be `-` for stdout but cannot overwrite the input GeoTask file.
+Unsupported formats, duplicate options, invalid documents, and write failures
+return a non-zero exit code without a traceback.
+
+The complete CLI pipeline is:
+
+```bash
+python -m geotask_core.cli run task.yaml \
+  --format v1-json \
+  --output execution-result.json
+
+python -m geotask_core.cli control evaluate task.yaml \
+  --result execution-result.json \
+  --state control-state.yaml \
+  --output control-evaluation.json
+```
 
 ## Explain
 

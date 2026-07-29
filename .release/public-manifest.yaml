@@ -26,6 +26,7 @@ include:
   - "tests/test_architecture_boundaries.py"
   - "tests/test_cli_foundation_commands.py"
   - "tests/test_cli_control_evaluate.py"
+  - "tests/test_cli_run_formats.py"
   - "tests/test_cli_inspect.py"
   - "tests/test_core_examples_v0_2.py"
   - "tests/test_mobile_experience_page.py"
@@ -244,6 +245,7 @@ required:
   - "tests/test_case_catalog.py"
   - "tests/test_case_scaffold.py"
   - "tests/test_cli_control_evaluate.py"
+  - "tests/test_cli_run_formats.py"
   - "tests/test_version_consistency.py"
   - "tests/test_release_pipeline_regression.py"
 

@@ -2,7 +2,7 @@
 
 Usage:
     geotask validate <file.yaml>
-    geotask run <file.yaml>
+    geotask run <file.yaml> [--format yaml|v1-json] [--output <file>|-]
     geotask normalize <file.txt> [--geotask <file.yaml>]
     geotask eval <file.yaml> <model_output.txt>
     geotask control evaluate <file.yaml> --result <result.json> [--state <state.yaml>]
@@ -35,6 +35,7 @@ from geotask_core.operator_registry import (
     list_operator_metadata,
 )
 from geotask_core.v1.canonicalizer import canonicalize
+from geotask_core.v1.executor import execute_canonical
 from geotask_core.v1.control_evaluation import (
     ControlContextError,
     evaluate_control_profile,
@@ -66,24 +67,146 @@ def cmd_validate(path: str):
     return data
 
 
-def cmd_run(path: str):
-    """Run a GeoTask document."""
-    print(f"[run] {path}")
-    data = load_geotask(path)
-    diagnostics = validate_document(data)
-    if data.get("_deprecated_stir_field"):
-        print("  Warning: Using deprecated 'stir' top-level field. Please migrate to 'geotask'.", file=sys.stderr)
-    errors = [d for d in diagnostics if d.get("severity", "error") == "error"]
-    warnings_only = [d for d in diagnostics if d.get("severity") == "warning"]
-    if warnings_only:
-        _print_validation_diagnostics(warnings_only, prefix="  ", label="Warnings")
-    if errors:
-        _print_validation_diagnostics(errors, prefix="  ")
-        sys.exit(1)
+def _print_run_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask run <geotask.yaml> "
+        "[--format yaml|v1-json] [--output <file>|-] [--compact]",
+        file=out,
+    )
+    print(
+        "Default format is compatibility YAML. v1-json emits the canonical "
+        "GeotaskResult.to_dict() shape for control evaluation.",
+        file=out,
+    )
 
-    result = run_geotask(data)
-    print_result(result)
-    return result
+
+def _parse_run_args(args: list[str]) -> dict[str, object]:
+    parsed: dict[str, object] = {
+        "format": "yaml",
+        "output_path": None,
+        "compact": False,
+    }
+    seen_value_flags: set[str] = set()
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_run_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in ("--format", "--output"):
+            if arg in seen_value_flags:
+                raise ValueError(f"{arg} may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a value")
+            seen_value_flags.add(arg)
+            target = "format" if arg == "--format" else "output_path"
+            parsed[target] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown run option: {arg}")
+
+    output_format = str(parsed["format"])
+    if output_format not in {"yaml", "v1-json"}:
+        raise ValueError(
+            f"unsupported_run_format: {output_format}. Supported formats: yaml, v1-json"
+        )
+    if parsed["compact"] and output_format != "v1-json":
+        raise ValueError("--compact is supported only with --format v1-json")
+    return parsed
+
+
+def _write_or_print_output(
+    rendered: str,
+    *,
+    output_path: object,
+    input_paths: list[Path],
+) -> None:
+    if output_path is None or output_path == "-":
+        sys.stdout.write(rendered)
+        return
+
+    resolved_output = Path(str(output_path)).resolve()
+    if resolved_output in [path.resolve() for path in input_paths]:
+        raise ValueError("--output must not overwrite an input file")
+    try:
+        resolved_output.write_text(rendered, encoding="utf-8")
+    except OSError as exc:
+        raise ValueError(
+            f"cannot write output file {str(output_path)!r}: {exc}"
+        ) from exc
+
+
+def cmd_run(path: str, args: list[str] | None = None):
+    """Run a GeoTask document in compatibility YAML or canonical v1 JSON."""
+    if path in ("--help", "-h"):
+        _print_run_usage()
+        return None
+
+    try:
+        parsed = _parse_run_args(list(args or []))
+        if parsed.get("help"):
+            return None
+
+        data = load_geotask(path)
+        diagnostics = validate_document(data)
+        if data.get("_deprecated_stir_field"):
+            print(
+                "Warning: Using deprecated 'stir' top-level field. "
+                "Please migrate to 'geotask'.",
+                file=sys.stderr,
+            )
+        errors = [
+            d for d in diagnostics if d.get("severity", "error") == "error"
+        ]
+        warnings_only = [d for d in diagnostics if d.get("severity") == "warning"]
+        if warnings_only:
+            _print_validation_diagnostics(
+                warnings_only,
+                label="Warnings",
+                stream=sys.stderr,
+            )
+        if errors:
+            _print_validation_diagnostics(errors, stream=sys.stderr)
+            sys.exit(1)
+
+        output_format = str(parsed["format"])
+        if output_format == "v1-json":
+            result = execute_canonical(canonicalize(data))
+            rendered = _render_json(
+                result.to_dict(),
+                compact=bool(parsed["compact"]),
+            )
+        else:
+            result = run_geotask(data)
+            rendered = yaml.dump(
+                result,
+                allow_unicode=True,
+                default_flow_style=False,
+                sort_keys=False,
+            )
+            if not rendered.endswith("\n"):
+                rendered += "\n"
+
+        if output_format == "yaml" and parsed["output_path"] is None:
+            print(f"[run] {path}")
+        _write_or_print_output(
+            rendered,
+            output_path=parsed["output_path"],
+            input_paths=[Path(path)],
+        )
+        return result
+    except SystemExit:
+        raise
+    except (OSError, TypeError, ValueError, yaml.YAMLError) as exc:
+        print(f"run_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
 
 
 def cmd_normalize(path: str, geotask_path: str | None = None):
@@ -573,28 +696,17 @@ def cmd_control(args: list[str]):
         ).to_dict()
         rendered = _render_json(payload, compact=bool(parsed["compact"]))
 
-        output_path = parsed["output_path"]
-        if output_path is None or output_path == "-":
-            sys.stdout.write(rendered)
-        else:
-            resolved_output = Path(str(output_path)).resolve()
-            input_paths = [
-                Path(geotask_path).resolve(),
-                Path(str(parsed["result_path"])).resolve(),
-            ]
-            if parsed["state_path"] is not None:
-                input_paths.append(Path(str(parsed["state_path"])).resolve())
-            if resolved_output in input_paths:
-                raise ValueError(
-                    "--output must not overwrite the GeoTask, execution-result, "
-                    "or state input file"
-                )
-            try:
-                resolved_output.write_text(rendered, encoding="utf-8")
-            except OSError as exc:
-                raise ValueError(
-                    f"cannot write output file {str(output_path)!r}: {exc}"
-                ) from exc
+        input_paths = [
+            Path(geotask_path),
+            Path(str(parsed["result_path"])),
+        ]
+        if parsed["state_path"] is not None:
+            input_paths.append(Path(str(parsed["state_path"])))
+        _write_or_print_output(
+            rendered,
+            output_path=parsed["output_path"],
+            input_paths=input_paths,
+        )
         return payload
     except SystemExit:
         raise
@@ -645,6 +757,10 @@ def main():
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
         print(f"  {cmd_name} run examples/geotask_core_lite.yaml")
+        print(
+            f"  {cmd_name} run examples/core/uav_arrival_ground_clearance_release.yaml "
+            "--format v1-json --output execution-result.json"
+        )
         print(f"  {cmd_name} normalize examples/deepseek_output_sample.txt")
         print(f"  {cmd_name} normalize examples/model_outputs/deepseek_cn.md --geotask examples/geotask_core_lite.yaml")
         print(f"  {cmd_name} eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt")
@@ -686,6 +802,10 @@ def main():
         cmd_report(sys.argv[2], sys.argv[3:])
         return
 
+    if command == "run":
+        cmd_run(sys.argv[2], sys.argv[3:])
+        return
+
     # eval takes two file arguments
     if command == "eval":
         if len(sys.argv) < 4:
@@ -705,7 +825,6 @@ def main():
 
     commands = {
         "validate": cmd_validate,
-        "run": cmd_run,
     }
 
     if command not in commands:

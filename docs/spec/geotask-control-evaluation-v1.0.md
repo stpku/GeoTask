@@ -55,9 +55,15 @@ geotask control evaluate task.yaml \
 ```
 
 `execution-result.json` MUST use the canonical wrapper produced by
-`GeotaskResult.to_dict()`. The optional state file may be JSON or YAML. The
-command emits Control Evaluation Result JSON to stdout by default; `--output`
-writes the payload to a file and `--compact` selects single-line JSON.
+`GeotaskResult.to_dict()`. It can be generated directly with:
+
+```bash
+geotask run task.yaml --format v1-json --output execution-result.json
+```
+
+The optional state file may be JSON or YAML. The command emits Control
+Evaluation Result JSON to stdout by default; `--output` writes the payload to a
+file and `--compact` selects single-line JSON.
 
 The CLI does not run the GeoTask document, execute `next_action`, change the
 input result, or authorize any output. It rejects malformed result shapes,

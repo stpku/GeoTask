@@ -11,6 +11,14 @@ import pytest
 from tests.v1.conftest import _PROJECT_ROOT, _load_yaml
 
 
+def _valid_serialized_result() -> dict:
+    from geotask_core.v1.canonicalizer import canonicalize
+    from geotask_core.v1.executor import execute_canonical
+
+    data = _load_yaml("examples/core/v1_minimal_distance.yaml")
+    return execute_canonical(canonicalize(data)).to_dict()
+
+
 def test_v1_result_has_legacy_projections() -> None:
     """``GeotaskResult`` includes ``measurements``, ``conclusion``, ``verified_by`` legacy fields."""
     from geotask_core.v1.canonicalizer import canonicalize
@@ -146,7 +154,7 @@ def test_result_from_dict_roundtrips_canonical_shape() -> None:
 def test_result_from_dict_rejects_missing_unknown_and_wrong_types() -> None:
     from geotask_core.v1.result import GeotaskResult, ResultFormatError
 
-    base = GeotaskResult(task_id="result-format-test").to_dict()
+    base = _valid_serialized_result()
 
     missing = deepcopy(base)
     del missing["geotask_result"]["summary"]
@@ -169,7 +177,9 @@ def test_result_from_dict_rejects_missing_unknown_and_wrong_types() -> None:
         GeotaskResult.from_dict(negative)
 
     inconsistent = deepcopy(base)
-    inconsistent["geotask_result"]["summary"]["total_checks"] = 1
+    inconsistent["geotask_result"]["summary"]["total_checks"] = (
+        len(inconsistent["geotask_result"]["checks"]) + 1
+    )
     with pytest.raises(ResultFormatError, match="must equal the number of checks"):
         GeotaskResult.from_dict(inconsistent)
 
@@ -177,7 +187,7 @@ def test_result_from_dict_rejects_missing_unknown_and_wrong_types() -> None:
 def test_result_from_dict_rejects_non_v1_schema() -> None:
     from geotask_core.v1.result import GeotaskResult, ResultFormatError
 
-    payload = GeotaskResult(task_id="result-version-test").to_dict()
+    payload = _valid_serialized_result()
     payload["geotask_result"]["schema_version"] = "2.0"
 
     with pytest.raises(ResultFormatError, match="must be '1.0'"):

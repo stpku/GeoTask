@@ -21,6 +21,8 @@ from geotask_core.v1.ir import (
     CanonicalDocument,
 )
 from geotask_core.v1.result import (
+    GEOTASK_RESULT_SCHEMA_ID,
+    GEOTASK_RESULT_SCHEMA_VERSION,
     CheckResult,
     ExecutionSummary,
     ResultSummary,
@@ -66,6 +68,8 @@ __all__ = [
     "VerificationDefinition",
     "OutputContract",
     "CanonicalDocument",
+    "GEOTASK_RESULT_SCHEMA_ID",
+    "GEOTASK_RESULT_SCHEMA_VERSION",
     "CheckResult",
     "ExecutionSummary",
     "ResultSummary",

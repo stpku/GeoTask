@@ -70,6 +70,19 @@ input result, or authorize any output. It rejects malformed result shapes,
 cross-task result files, undeclared assertion checks, non-mapping state files,
 and non-finite JSON values.
 
+A serialized result can be validated independently:
+
+```bash
+geotask control validate control-evaluation.json
+geotask control validate control-evaluation.json --format json
+```
+
+The command uses `load_control_evaluation()` to enforce this Schema and the
+cross-field invariants described in this specification. It does not evaluate
+expressions or rerun the source GeoTask. Execution-result and control-result
+validation share the [Versioned Payload Validation v1.0](geotask-versioned-payload-validation-v1.0.md)
+framework while retaining separate strict loaders.
+
 ## 3. Read-only `control_context`
 
 `build_control_context()` creates an immutable context from two sources.

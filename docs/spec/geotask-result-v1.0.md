@@ -209,7 +209,9 @@ result = GeotaskResult.from_dict(payload)
 ```
 
 `from_dict()` is intentionally strict and does not reinterpret legacy result
-shapes as v1.0.
+shapes as v1.0. Execution-result and control-result validation share the
+[Versioned Payload Validation v1.0](geotask-versioned-payload-validation-v1.0.md)
+framework for reports and diagnostics while retaining artifact-specific loaders.
 
 ## 6. CLI pipeline
 

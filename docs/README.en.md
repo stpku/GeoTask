@@ -9,6 +9,7 @@ GeoTask documentation is organized by purpose. Start with the white paper for th
 - [GeoTask White Paper v0.1](whitepaper/GeoTask_White_Paper_v0.1.md) — why GeoTask exists, its architecture, trust model, application patterns, and public boundary. See the [build guide](whitepaper/README.md) for HTML, DOCX, and PDF commands.
 - [GeoTask Language and Execution Specification v1.0](spec/geotask-language-spec-v1.0.md) — the normative profile implemented by the current public Core.
 - [GeoTask Execution Result v1.0](spec/geotask-result-v1.0.md) — the `GeotaskResult.to_dict()` contract, public result JSON Schema, and `geotask result validate` command.
+- [GeoTask Versioned Payload Validation v1.0](spec/geotask-versioned-payload-validation-v1.0.md) — shared strict loading, schema metadata, diagnostics, and text/JSON reports for execution and control results.
 - [GeoTask Control Extension Profile v1.0](spec/geotask-control-extension-profile-v1.0.md) — versioned validation for evidence requests, evidence conflicts, decision rules, and task gates.
 - [GeoTask Control Expression Language v1.0](spec/geotask-control-expression-language-v1.0.md) — the safe finite grammar, three-valued logic, comparison semantics, and public parser/evaluator API.
 - [GeoTask Control Evaluation Result v1.0](spec/geotask-control-evaluation-v1.0.md) — read-only binding of assertion results and explicit domain state into gate status, unknown identifiers, and still-blocked outputs.

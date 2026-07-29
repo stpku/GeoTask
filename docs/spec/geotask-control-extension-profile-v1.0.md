@@ -153,10 +153,11 @@ Domain measurements and result statistics MUST remain in sibling domain structur
 
 GeoTask Core validates the profile during `validate_document()` and `validate_canonical()`.
 
-The profile adds two stable diagnostic codes:
+The profile and its expression language add three stable diagnostic codes:
 
 - `unsupported_extension_profile`: the declared profile identifier or version is not implemented;
-- `extension_profile_violation`: the declared profile violates a profile-level rule, such as an empty or duplicate control list.
+- `extension_profile_violation`: the declared profile violates a profile-level rule, such as an empty or duplicate control list;
+- `invalid_expression`: a profiled expression does not match the finite expression grammar or exceeds its resource limits.
 
 Existing Core diagnostics are reused for structural issues:
 
@@ -165,7 +166,7 @@ Existing Core diagnostics are reused for structural issues:
 - `invalid_type`
 - `invalid_reference`
 
-Profile validation does not execute `resume_when` or expression strings. It validates their presence and structure. A Runtime or Domain Pack may implement expression evaluation, but it MUST NOT report that evaluation as a Core deterministic operator unless the relevant semantics are registered and executed.
+Profile validation parses `decision_rule.expression` and every profiled `resume_when` field with the finite [GeoTask Control Expression Language v1.0](geotask-control-expression-language-v1.0.md). Syntax failures produce `invalid_expression` diagnostics with a character position. The public evaluator can explicitly evaluate a parsed expression against a supplied mapping, but `execute_canonical()` does not automatically unblock outputs or execute `next_action`. A Runtime or Domain Pack may bind evaluated results to workflow transitions, but it MUST NOT report that workflow evaluation as a Core deterministic operator unless the relevant operator semantics are registered and executed.
 
 ## 8. Compatibility and evolution
 

@@ -10,8 +10,13 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
+from geotask_core.v1.control_expressions import (
+    ExpressionSyntaxError,
+    parse_control_expression,
+)
 from geotask_core.v1.enums import (
     EXTENSION_PROFILE_VIOLATION,
+    INVALID_EXPRESSION,
     INVALID_REFERENCE,
     INVALID_TYPE,
     MISSING_FIELD,
@@ -155,6 +160,27 @@ def _check_optional_string(mapping: dict, path: str, field: str) -> list[dict]:
     ]
 
 
+def _check_expression(mapping: dict, path: str, field: str) -> list[dict]:
+    diagnostics = _check_required_string(mapping, path, field)
+    if diagnostics:
+        return diagnostics
+
+    expression = mapping[field]
+    try:
+        parse_control_expression(expression)
+    except ExpressionSyntaxError as exc:
+        return [
+            _diagnostic(
+                f"{path}.{field}",
+                INVALID_EXPRESSION,
+                f"Invalid control expression: {exc.message} at position {exc.position}.",
+                "Use only identifiers, true/false/unknown, numbers, quoted strings, "
+                "parentheses, NOT/AND/OR, and == != < <= > >=.",
+            )
+        ]
+    return []
+
+
 def _check_string_list(
     mapping: dict,
     path: str,
@@ -280,7 +306,7 @@ def _validate_decision_rule(value: object) -> list[dict]:
     diagnostics.extend(_check_unknown_fields(mapping, path, _DECISION_RULE_FIELDS))
     diagnostics.extend(_check_identifier(mapping, path))
     diagnostics.extend(_check_required_string(mapping, path, "logic"))
-    diagnostics.extend(_check_required_string(mapping, path, "expression"))
+    diagnostics.extend(_check_expression(mapping, path, "expression"))
     diagnostics.extend(_check_optional_string(mapping, path, "unknown_policy"))
     diagnostics.extend(_check_optional_string(mapping, path, "expected_status"))
     return diagnostics
@@ -293,8 +319,9 @@ def _validate_evidence_request(value: object, assertion_ids: set[str]) -> list[d
         return diagnostics
     diagnostics.extend(_check_unknown_fields(mapping, path, _EVIDENCE_REQUEST_FIELDS))
     diagnostics.extend(_check_identifier(mapping, path))
-    for field in ("trigger", "reason", "resume_when", "next_action"):
+    for field in ("trigger", "reason", "next_action"):
         diagnostics.extend(_check_required_string(mapping, path, field))
+    diagnostics.extend(_check_expression(mapping, path, "resume_when"))
     diagnostics.extend(_check_optional_string(mapping, path, "trigger_status"))
     diagnostics.extend(_check_string_list(mapping, path, "required_fields"))
     diagnostics.extend(_check_string_list(mapping, path, "blocked_outputs"))
@@ -309,8 +336,9 @@ def _validate_evidence_conflict(value: object, assertion_ids: set[str]) -> list[
         return diagnostics
     diagnostics.extend(_check_unknown_fields(mapping, path, _EVIDENCE_CONFLICT_FIELDS))
     diagnostics.extend(_check_identifier(mapping, path))
-    for field in ("subject", "conflict_type", "resume_when", "next_action"):
+    for field in ("subject", "conflict_type", "next_action"):
         diagnostics.extend(_check_required_string(mapping, path, field))
+    diagnostics.extend(_check_expression(mapping, path, "resume_when"))
     diagnostics.extend(_check_optional_string(mapping, path, "expected_status"))
     diagnostics.extend(_check_string_list(mapping, path, "conflicting_assertions", min_items=2))
     diagnostics.extend(_check_string_list(mapping, path, "source_refs", min_items=2))
@@ -329,8 +357,9 @@ def _validate_task_gate(value: object) -> list[dict]:
     if mapping is None:
         return diagnostics
     diagnostics.extend(_check_unknown_fields(mapping, path, _TASK_GATE_FIELDS))
-    for field in ("status", "selected_action", "resume_when", "next_action"):
+    for field in ("status", "selected_action", "next_action"):
         diagnostics.extend(_check_required_string(mapping, path, field))
+    diagnostics.extend(_check_expression(mapping, path, "resume_when"))
     diagnostics.extend(_check_optional_string(mapping, path, "expected_status"))
     diagnostics.extend(_check_string_list(mapping, path, "rejected_actions", required=False))
     diagnostics.extend(_check_string_list(mapping, path, "blocked_outputs"))

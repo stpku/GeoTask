@@ -60,11 +60,14 @@ def test_gt17_dedup_rule_creates_one_incident_without_losing_evidence() -> None:
     assert rule["duplicate_reports_verified"] is True
     assert rule["unique_incident_count"] == 1
     assert rule["evidence_source_count"] == 10
+    assert rule["dispatch_task_count"] == 1
+    assert rule["preserve_source_evidence"] is True
 
     assert gate["status"] == "open_for_single_dispatch"
     assert gate["selected_action"] == "merge_reports_and_create_one_task"
-    assert gate["task_count"] == 1
-    assert gate["preserve_source_evidence"] is True
+    assert gate["resume_when"] == (
+        "verified_event_cluster_active == true AND dispatch_task_count == 1"
+    )
     assert gate["next_action"] == "dispatch_single_verified_task"
     assert gate["expected_status"] == "verified_deduplication"
 

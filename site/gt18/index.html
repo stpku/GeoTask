@@ -26,6 +26,10 @@
   id: "gt18-rescue-robot-shortest-route-hazard"
   schema_version: "1.0"
 
+extension_profile:
+  id: "geotask.control"
+  version: "1.0"
+
 route_metrics:
   shortest_route_length_m: 120
   safe_route_length_m: 260
@@ -56,6 +60,12 @@ task_gate:
   blocked_outputs:
     - "authorize_shortest_route_entry"
     - "ignore_verified_hazard"
+  required_controls:
+    - "retain_verified_temperature_evidence"
+    - "bind_route_to_robot_capability"
+    - "monitor_safe_route_temperature"
+    - "stop_if_temperature_exceeds_limit"
+  resume_when: "safe_route_executable == true AND monitored_temperature_c <= 80"
   next_action: "dispatch_robot_via_safe_route"
   expected_status: "verified_safe_route_entry"
 

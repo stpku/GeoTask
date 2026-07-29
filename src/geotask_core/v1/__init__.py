@@ -27,6 +27,11 @@ from geotask_core.v1.result import (
     OverallResult,
     GeotaskResult,
 )
+from geotask_core.v1.extension_profiles import (
+    CONTROL_PROFILE_ID,
+    CONTROL_PROFILE_VERSION,
+    validate_extension_profiles,
+)
 
 __all__ = [
     "GeotaskVersion",
@@ -47,4 +52,7 @@ __all__ = [
     "ResultSummary",
     "OverallResult",
     "GeotaskResult",
+    "CONTROL_PROFILE_ID",
+    "CONTROL_PROFILE_VERSION",
+    "validate_extension_profiles",
 ]

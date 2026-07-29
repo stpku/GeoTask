@@ -572,7 +572,7 @@ Rules:
 4. safety or approval decisions MUST NOT claim Core verification unless the relevant rule is implemented and executed;
 5. sensitive customer rules SHOULD live in a separate Domain Pack or private Runtime.
 
-The JSON Schema intentionally allows arbitrary nested extension content.
+The JSON Schema keeps extensions open unless a document declares `extensions.extension_profile`. The implemented public profile `geotask.control/1.0` strictly validates `decision_rule`, `evidence_request`, `evidence_conflict`, and `task_gate` while leaving domain-specific sibling fields open. See [GeoTask Control Extension Profile v1.0](geotask-control-extension-profile-v1.0.md).
 
 ---
 

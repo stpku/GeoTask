@@ -38,8 +38,27 @@
     "output_contract": {"$ref": "#/$defs/outputContract"},
     "extensions": {
       "type": "object",
-      "description": "Open application and Domain Pack extension mapping. Extensions must not redefine Core operator semantics.",
-      "additionalProperties": true
+      "description": "Open application and Domain Pack extension mapping. Extensions must not redefine Core operator semantics. Declaring extension_profile opts the document into strict validation for that public profile.",
+      "additionalProperties": true,
+      "properties": {
+        "extension_profile": {"$ref": "#/$defs/extensionProfile"}
+      },
+      "dependentSchemas": {
+        "extension_profile": {
+          "properties": {
+            "decision_rule": {"$ref": "#/$defs/controlDecisionRule"},
+            "evidence_request": {"$ref": "#/$defs/controlEvidenceRequest"},
+            "evidence_conflict": {"$ref": "#/$defs/controlEvidenceConflict"},
+            "task_gate": {"$ref": "#/$defs/controlTaskGate"}
+          },
+          "anyOf": [
+            {"required": ["decision_rule"]},
+            {"required": ["evidence_request"]},
+            {"required": ["evidence_conflict"]},
+            {"required": ["task_gate"]}
+          ]
+        }
+      }
     },
     "expected_results": {
       "type": "array",
@@ -356,6 +375,91 @@
         "allow_model_inference": {"type": "boolean"},
         "numeric_precision": {"type": "object", "additionalProperties": true},
         "ordering": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "nonEmptyUniqueStringList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "extensionProfile": {
+      "type": "object",
+      "required": ["id", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"const": "geotask.control"},
+        "version": {"const": "1.0"}
+      }
+    },
+    "controlDecisionRule": {
+      "type": "object",
+      "required": ["id", "logic", "expression"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "logic": {"type": "string", "minLength": 1},
+        "expression": {"type": "string", "minLength": 1},
+        "unknown_policy": {"type": "string", "minLength": 1},
+        "expected_status": {"type": "string", "minLength": 1}
+      }
+    },
+    "controlEvidenceRequest": {
+      "type": "object",
+      "required": ["id", "trigger", "reason", "required_fields", "blocked_outputs", "resume_when", "next_action"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "trigger": {"$ref": "#/$defs/id"},
+        "trigger_status": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1},
+        "required_fields": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+        "blocked_outputs": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+        "resume_when": {"type": "string", "minLength": 1},
+        "next_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "controlEvidenceConflict": {
+      "type": "object",
+      "required": ["id", "subject", "conflict_type", "conflicting_assertions", "source_refs", "blocked_outputs", "resolution_required_fields", "resume_when", "next_action"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "subject": {"type": "string", "minLength": 1},
+        "conflict_type": {"type": "string", "minLength": 1},
+        "conflicting_assertions": {
+          "allOf": [
+            {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+            {"minItems": 2}
+          ]
+        },
+        "source_refs": {
+          "allOf": [
+            {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+            {"minItems": 2}
+          ]
+        },
+        "compared_fields": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+        "blocked_outputs": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+        "resolution_required_fields": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+        "resume_when": {"type": "string", "minLength": 1},
+        "next_action": {"type": "string", "minLength": 1},
+        "expected_status": {"type": "string", "minLength": 1}
+      }
+    },
+    "controlTaskGate": {
+      "type": "object",
+      "required": ["status", "selected_action", "blocked_outputs", "required_controls", "resume_when", "next_action"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {"type": "string", "minLength": 1},
+        "selected_action": {"type": "string", "minLength": 1},
+        "rejected_actions": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+        "blocked_outputs": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+        "required_controls": {"$ref": "#/$defs/nonEmptyUniqueStringList"},
+        "resume_when": {"type": "string", "minLength": 1},
+        "next_action": {"type": "string", "minLength": 1},
+        "expected_status": {"type": "string", "minLength": 1}
       }
     },
     "expectedResult": {

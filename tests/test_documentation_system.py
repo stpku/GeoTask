@@ -18,6 +18,7 @@ DOC_INDEX_EN = ROOT / "docs" / "README.en.md"
 WHITEPAPER = ROOT / "docs" / "whitepaper" / "GeoTask_White_Paper_v0.1.md"
 WHITEPAPER_BUILD = ROOT / "docs" / "whitepaper" / "README.md"
 LANGUAGE_SPEC = ROOT / "docs" / "spec" / "geotask-language-spec-v1.0.md"
+CONTROL_PROFILE_SPEC = ROOT / "docs" / "spec" / "geotask-control-extension-profile-v1.0.md"
 TARGET_SPEC_STATUS = ROOT / "docs" / "spec" / "target-specification-status.md"
 QUICKSTART_EN = ROOT / "docs" / "tutorials" / "quickstart.md"
 QUICKSTART_ZH = ROOT / "docs" / "tutorials" / "quickstart.zh-CN.md"
@@ -44,6 +45,7 @@ DOCUMENTS = (
     WHITEPAPER,
     WHITEPAPER_BUILD,
     LANGUAGE_SPEC,
+    CONTROL_PROFILE_SPEC,
     TARGET_SPEC_STATUS,
     QUICKSTART_EN,
     QUICKSTART_ZH,
@@ -178,6 +180,7 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "whitepaper/GeoTask_White_Paper_v0.1.md",
         "whitepaper/README.md",
         "spec/geotask-language-spec-v1.0.md",
+        "spec/geotask-control-extension-profile-v1.0.md",
         "tutorials/quickstart.md",
         "tutorials/quickstart.zh-CN.md",
         "reference/status-model.md",
@@ -258,6 +261,19 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
     assert "unsupported_execution_mode" in text
     assert "unsupported_executor" in text
     assert "MUST NOT substitute local execution" in text
+    assert "geotask.control/1.0" in text
+    assert "geotask-control-extension-profile-v1.0.md" in text
+
+    profile_text = CONTROL_PROFILE_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "decision_rule",
+        "evidence_request",
+        "evidence_conflict",
+        "task_gate",
+        "unsupported_extension_profile",
+        "extension_profile_violation",
+    ):
+        assert f"`{fragment}`" in profile_text
 
 
 def test_legacy_compatibility_docs_match_distributed_package() -> None:

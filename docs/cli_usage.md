@@ -54,11 +54,35 @@ python -m geotask_core.cli run task.yaml \
   --format v1-json \
   --output execution-result.json
 
+python -m geotask_core.cli result validate execution-result.json
+
 python -m geotask_core.cli control evaluate task.yaml \
   --result execution-result.json \
   --state control-state.yaml \
   --output control-evaluation.json
 ```
+
+## Result Validate
+
+```bash
+python -m geotask_core.cli result validate execution-result.json
+python -m geotask_core.cli result validate execution-result.json --format json
+```
+
+`result validate` checks the canonical `geotask_result` v1.0 contract without
+executing the GeoTask document. Text mode prints a compact valid report or writes
+invalid-result diagnostics to stderr. JSON mode always emits a parseable
+`result_validation` report and uses a non-zero exit code for invalid input.
+
+The validator checks required and unknown fields, schema version, field types,
+public status and assurance enums, non-negative summary counts, and the Core
+cross-field invariant `summary.total_checks == len(checks)`. It also rejects
+malformed JSON, duplicate keys, and non-finite numbers.
+
+The public structural contract is available at
+`schemas/geotask-result-v1.0.schema.json`. Third-party tools may validate it
+without importing GeoTask Python code; the CLI additionally enforces the
+cross-field check-count invariant that JSON Schema Draft 2020-12 cannot express.
 
 ## Explain
 
@@ -152,4 +176,3 @@ The CLI is a developer tool for Core validation, deterministic execution,
 inspection, and reporting. Domain-specific extensions should remain in domain
 packs, and patent-sensitive or non-public material should not be copied into
 Core CLI output or public-safe docs.
-

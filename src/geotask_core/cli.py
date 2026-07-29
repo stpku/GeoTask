@@ -3,6 +3,7 @@
 Usage:
     geotask validate <file.yaml>
     geotask run <file.yaml> [--format yaml|v1-json] [--output <file>|-]
+    geotask result validate <execution-result.json> [--format text|json]
     geotask normalize <file.txt> [--geotask <file.yaml>]
     geotask eval <file.yaml> <model_output.txt>
     geotask control evaluate <file.yaml> --result <result.json> [--state <state.yaml>]
@@ -40,7 +41,12 @@ from geotask_core.v1.control_evaluation import (
     ControlContextError,
     evaluate_control_profile,
 )
-from geotask_core.v1.result import GeotaskResult, ResultFormatError
+from geotask_core.v1.result import (
+    GEOTASK_RESULT_SCHEMA_ID,
+    GEOTASK_RESULT_SCHEMA_VERSION,
+    GeotaskResult,
+    ResultFormatError,
+)
 
 
 def _get_command_name() -> str:
@@ -207,6 +213,140 @@ def cmd_run(path: str, args: list[str] | None = None):
     except (OSError, TypeError, ValueError, yaml.YAMLError) as exc:
         print(f"run_failed: {exc}", file=sys.stderr)
         sys.exit(1)
+
+
+def _print_result_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask result validate <execution-result.json> "
+        "[--format text|json]",
+        file=out,
+    )
+    print(
+        "Validates the canonical geotask_result v1.0 payload without "
+        "executing a GeoTask document.",
+        file=out,
+    )
+
+
+def _parse_result_validate_args(args: list[str]) -> dict[str, object]:
+    if not args or args[0] in ("--help", "-h"):
+        _print_result_usage()
+        return {"help": True}
+    if args[0] != "validate":
+        raise ValueError(
+            f"unknown result command {args[0]!r}; available command: validate"
+        )
+    if len(args) >= 2 and args[1] in ("--help", "-h"):
+        _print_result_usage()
+        return {"help": True}
+    if len(args) < 2 or args[1].startswith("-"):
+        raise ValueError("result validate requires an execution-result JSON file")
+
+    parsed: dict[str, object] = {
+        "help": False,
+        "result_path": args[1],
+        "format": "text",
+    }
+    seen_format = False
+    index = 2
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_result_usage()
+            return {"help": True}
+        if arg == "--format":
+            if seen_format:
+                raise ValueError("--format may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--format requires a value")
+            seen_format = True
+            parsed["format"] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown result validate option: {arg}")
+
+    output_format = str(parsed["format"])
+    if output_format not in {"text", "json"}:
+        raise ValueError(
+            f"unsupported_result_validation_format: {output_format}. "
+            "Supported formats: text, json"
+        )
+    return parsed
+
+
+def _result_validation_report(
+    *,
+    result_path: str,
+    valid: bool,
+    result: GeotaskResult | None = None,
+    message: str = "",
+) -> dict:
+    diagnostics = []
+    if message:
+        diagnostics.append(
+            {
+                "code": "invalid_geotask_result",
+                "path": "",
+                "message": message,
+            }
+        )
+    return {
+        "result_validation": {
+            "valid": valid,
+            "schema_id": GEOTASK_RESULT_SCHEMA_ID,
+            "schema_version": GEOTASK_RESULT_SCHEMA_VERSION,
+            "file": result_path,
+            "task_id": "" if result is None else result.task_id,
+            "check_count": 0 if result is None else len(result.checks),
+            "diagnostics": diagnostics,
+        }
+    }
+
+
+def cmd_result(args: list[str]):
+    """Validate canonical GeoTask execution-result JSON without execution."""
+
+    try:
+        parsed = _parse_result_validate_args(args)
+        if parsed.get("help"):
+            return None
+    except ValueError as exc:
+        print(f"result_validate_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+    result_path = str(parsed["result_path"])
+    output_format = str(parsed["format"])
+    try:
+        payload = _load_json_mapping(result_path, "execution result")
+        result = GeotaskResult.from_dict(payload)
+    except (ResultFormatError, ValueError, OSError) as exc:
+        report = _result_validation_report(
+            result_path=result_path,
+            valid=False,
+            message=str(exc),
+        )
+        if output_format == "json":
+            sys.stdout.write(_render_json(report, compact=False))
+        else:
+            print(f"Result INVALID: {result_path}", file=sys.stderr)
+            print(f"  {exc}", file=sys.stderr)
+            print(f"  Schema: {GEOTASK_RESULT_SCHEMA_ID}", file=sys.stderr)
+        sys.exit(1)
+
+    report = _result_validation_report(
+        result_path=result_path,
+        valid=True,
+        result=result,
+    )
+    if output_format == "json":
+        sys.stdout.write(_render_json(report, compact=False))
+    else:
+        print(f"Result valid: {result_path}")
+        print(f"  Schema: {GEOTASK_RESULT_SCHEMA_ID}")
+        print(f"  Task: {result.task_id}")
+        print(f"  Checks: {len(result.checks)}")
+    return report
 
 
 def cmd_normalize(path: str, geotask_path: str | None = None):
@@ -747,12 +887,12 @@ def main():
 
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, explain, inspect, report, control, normalize, eval, version")
+        print("Commands: validate, run, result, explain, inspect, report, control, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, explain, inspect, report, control, normalize, eval, version")
+        print("Commands: validate, run, result, explain, inspect, report, control, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -761,6 +901,7 @@ def main():
             f"  {cmd_name} run examples/core/uav_arrival_ground_clearance_release.yaml "
             "--format v1-json --output execution-result.json"
         )
+        print(f"  {cmd_name} result validate execution-result.json")
         print(f"  {cmd_name} normalize examples/deepseek_output_sample.txt")
         print(f"  {cmd_name} normalize examples/model_outputs/deepseek_cn.md --geotask examples/geotask_core_lite.yaml")
         print(f"  {cmd_name} eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt")
@@ -788,6 +929,10 @@ def main():
 
     if command == "control":
         cmd_control(sys.argv[2:])
+        return
+
+    if command == "result":
+        cmd_result(sys.argv[2:])
         return
 
     if command == "inspect":
@@ -829,7 +974,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, explain, inspect, report, control, normalize, eval, version")
+        print(f"Available commands: validate, run, result, explain, inspect, report, control, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

@@ -13,7 +13,25 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-from geotask_core.v1.enums import AssuranceLevel
+from geotask_core.v1.enums import (
+    AssuranceLevel,
+    ClaimStatus,
+    ExecutionMode,
+    ExecutionStatus,
+    ExecutorType,
+)
+
+
+GEOTASK_RESULT_SCHEMA_ID = (
+    "https://stpku.github.io/GeoTask/schemas/geotask-result-v1.0.schema.json"
+)
+GEOTASK_RESULT_SCHEMA_VERSION = "1.0"
+
+_EXECUTION_MODES = {item.value for item in ExecutionMode}
+_EXECUTION_STATUSES = {item.value for item in ExecutionStatus}
+_EXECUTOR_TYPES = {item.value for item in ExecutorType}
+_CLAIM_STATUSES = {item.value for item in ClaimStatus}
+_ASSURANCE_LEVELS = {item.name for item in AssuranceLevel}
 
 
 # -- Result Dataclasses
@@ -39,6 +57,15 @@ def _require_string(value: object, path: str) -> str:
     if not isinstance(value, str):
         raise ResultFormatError(f"{path} must be a string")
     return value
+
+
+def _require_enum(value: object, path: str, allowed: set[str]) -> str:
+    text = _require_string(value, path)
+    if text not in allowed:
+        raise ResultFormatError(
+            f"{path} must be one of: {', '.join(sorted(allowed))}"
+        )
+    return text
 
 
 def _require_bool(value: object, path: str) -> bool:
@@ -239,11 +266,15 @@ class GeotaskResult:
             required={"mode", "status", "started_at", "finished_at"},
         )
         execution = ExecutionSummary(
-            mode=_require_string(
-                execution_data["mode"], "geotask_result.execution.mode"
+            mode=_require_enum(
+                execution_data["mode"],
+                "geotask_result.execution.mode",
+                _EXECUTION_MODES,
             ),
-            status=_require_string(
-                execution_data["status"], "geotask_result.execution.status"
+            status=_require_enum(
+                execution_data["status"],
+                "geotask_result.execution.status",
+                _EXECUTION_STATUSES,
             ),
             started_at=_require_string(
                 execution_data["started_at"],
@@ -297,12 +328,18 @@ class GeotaskResult:
                     ),
                     operator=_require_string(check["operator"], f"{path}.operator"),
                     object_refs=list(object_refs),
-                    executor=_require_string(check["executor"], f"{path}.executor"),
+                    executor=_require_enum(
+                        check["executor"], f"{path}.executor", _EXECUTOR_TYPES
+                    ),
                     value=check["value"],
                     unit=_require_string(check["unit"], f"{path}.unit"),
-                    status=_require_string(check["status"], f"{path}.status"),
-                    assurance_level=_require_string(
-                        check["assurance_level"], f"{path}.assurance_level"
+                    status=_require_enum(
+                        check["status"], f"{path}.status", _CLAIM_STATUSES
+                    ),
+                    assurance_level=_require_enum(
+                        check["assurance_level"],
+                        f"{path}.assurance_level",
+                        _ASSURANCE_LEVELS,
                     ),
                     deterministic=_require_bool(
                         check["deterministic"], f"{path}.deterministic"
@@ -379,12 +416,15 @@ class GeotaskResult:
             required={"status", "assurance_level"},
         )
         overall = OverallResult(
-            status=_require_string(
-                overall_data["status"], "geotask_result.overall.status"
+            status=_require_enum(
+                overall_data["status"],
+                "geotask_result.overall.status",
+                _CLAIM_STATUSES,
             ),
-            assurance_level=_require_string(
+            assurance_level=_require_enum(
                 overall_data["assurance_level"],
                 "geotask_result.overall.assurance_level",
+                _ASSURANCE_LEVELS,
             ),
         )
 

@@ -114,5 +114,6 @@ def test_cli_usage_doc_covers_foundation_commands():
         "inspect examples",
         "report",
         "control evaluate",
+        "control validate",
     ]:
         assert command in text

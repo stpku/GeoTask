@@ -58,14 +58,25 @@ from geotask_core.v1.control_expressions import (
     referenced_identifiers,
 )
 from geotask_core.v1.control_evaluation import (
+    CONTROL_EVALUATION_SCHEMA_ID,
     CONTROL_EVALUATION_SCHEMA_VERSION,
     ControlContextError,
+    ControlEvaluationFormatError,
     ControlContextEntry,
     ControlContext,
     ControlBlockEvaluation,
     ControlEvaluationResult,
     build_control_context,
     evaluate_control_profile,
+    load_control_evaluation,
+)
+from geotask_core.v1.serialized_validation import (
+    VersionedPayloadContract,
+    VersionedPayloadValidationReport,
+    invalid_versioned_payload_report,
+    validate_versioned_payload,
+    EXECUTION_RESULT_VALIDATION_CONTRACT,
+    CONTROL_EVALUATION_VALIDATION_CONTRACT,
 )
 
 __all__ = [
@@ -115,12 +126,21 @@ __all__ = [
     "parse_control_expression",
     "evaluate_control_expression",
     "referenced_identifiers",
+    "CONTROL_EVALUATION_SCHEMA_ID",
     "CONTROL_EVALUATION_SCHEMA_VERSION",
     "ControlContextError",
+    "ControlEvaluationFormatError",
     "ControlContextEntry",
     "ControlContext",
     "ControlBlockEvaluation",
     "ControlEvaluationResult",
     "build_control_context",
     "evaluate_control_profile",
+    "load_control_evaluation",
+    "VersionedPayloadContract",
+    "VersionedPayloadValidationReport",
+    "invalid_versioned_payload_report",
+    "validate_versioned_payload",
+    "EXECUTION_RESULT_VALIDATION_CONTRACT",
+    "CONTROL_EVALUATION_VALIDATION_CONTRACT",
 ]

@@ -7,6 +7,7 @@ Usage:
     geotask normalize <file.txt> [--geotask <file.yaml>]
     geotask eval <file.yaml> <model_output.txt>
     geotask control evaluate <file.yaml> --result <result.json> [--state <state.yaml>]
+    geotask control validate <control-evaluation.json> [--format text|json]
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
     python -m geotask_core.cli normalize <file.txt> [--geotask <file.yaml>]
@@ -41,11 +42,13 @@ from geotask_core.v1.control_evaluation import (
     ControlContextError,
     evaluate_control_profile,
 )
-from geotask_core.v1.result import (
-    GEOTASK_RESULT_SCHEMA_ID,
-    GEOTASK_RESULT_SCHEMA_VERSION,
-    GeotaskResult,
-    ResultFormatError,
+from geotask_core.v1.result import GeotaskResult, ResultFormatError
+from geotask_core.v1.serialized_validation import (
+    CONTROL_EVALUATION_VALIDATION_CONTRACT,
+    EXECUTION_RESULT_VALIDATION_CONTRACT,
+    VersionedPayloadContract,
+    invalid_versioned_payload_report,
+    validate_versioned_payload,
 )
 
 
@@ -229,31 +232,46 @@ def _print_result_usage(stream=None) -> None:
     )
 
 
-def _parse_result_validate_args(args: list[str]) -> dict[str, object]:
-    if not args or args[0] in ("--help", "-h"):
-        _print_result_usage()
+def _print_control_validate_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask control validate <control-evaluation.json> "
+        "[--format text|json]",
+        file=out,
+    )
+    print(
+        "Validates a Control Evaluation Result v1.0 payload without "
+        "evaluating expressions or executing actions.",
+        file=out,
+    )
+
+
+def _parse_serialized_validate_args(
+    args: list[str],
+    *,
+    command_label: str,
+    file_description: str,
+    usage_printer,
+) -> dict[str, object]:
+    if not args:
+        raise ValueError(f"{command_label} requires {file_description}")
+    if args[0] in ("--help", "-h"):
+        usage_printer()
         return {"help": True}
-    if args[0] != "validate":
-        raise ValueError(
-            f"unknown result command {args[0]!r}; available command: validate"
-        )
-    if len(args) >= 2 and args[1] in ("--help", "-h"):
-        _print_result_usage()
-        return {"help": True}
-    if len(args) < 2 or args[1].startswith("-"):
-        raise ValueError("result validate requires an execution-result JSON file")
+    if args[0].startswith("-"):
+        raise ValueError(f"{command_label} requires {file_description}")
 
     parsed: dict[str, object] = {
         "help": False,
-        "result_path": args[1],
+        "path": args[0],
         "format": "text",
     }
     seen_format = False
-    index = 2
+    index = 1
     while index < len(args):
         arg = args[index]
         if arg in ("--help", "-h"):
-            _print_result_usage()
+            usage_printer()
             return {"help": True}
         if arg == "--format":
             if seen_format:
@@ -264,44 +282,74 @@ def _parse_result_validate_args(args: list[str]) -> dict[str, object]:
             parsed["format"] = args[index + 1]
             index += 2
             continue
-        raise ValueError(f"unknown result validate option: {arg}")
+        raise ValueError(f"unknown {command_label} option: {arg}")
 
     output_format = str(parsed["format"])
     if output_format not in {"text", "json"}:
         raise ValueError(
-            f"unsupported_result_validation_format: {output_format}. "
+            f"unsupported_validation_format: {output_format}. "
             "Supported formats: text, json"
         )
     return parsed
 
 
-def _result_validation_report(
+def _validate_serialized_artifact(
     *,
-    result_path: str,
-    valid: bool,
-    result: GeotaskResult | None = None,
-    message: str = "",
+    path: str,
+    file_label: str,
+    output_format: str,
+    contract: VersionedPayloadContract,
 ) -> dict:
-    diagnostics = []
-    if message:
-        diagnostics.append(
-            {
-                "code": "invalid_geotask_result",
-                "path": "",
-                "message": message,
-            }
+    try:
+        payload = _load_json_mapping(path, file_label)
+    except (ValueError, OSError) as exc:
+        report = invalid_versioned_payload_report(
+            contract,
+            file=path,
+            message=str(exc),
         )
-    return {
-        "result_validation": {
-            "valid": valid,
-            "schema_id": GEOTASK_RESULT_SCHEMA_ID,
-            "schema_version": GEOTASK_RESULT_SCHEMA_VERSION,
-            "file": result_path,
-            "task_id": "" if result is None else result.task_id,
-            "check_count": 0 if result is None else len(result.checks),
-            "diagnostics": diagnostics,
-        }
-    }
+        loaded = None
+    else:
+        report, loaded = validate_versioned_payload(
+            payload,
+            contract,
+            file=path,
+        )
+
+    rendered_report = report.to_dict()
+    if output_format == "json":
+        sys.stdout.write(_render_json(rendered_report, compact=False))
+    elif report.valid:
+        print(f"{contract.artifact_name} valid: {path}")
+        print(f"  Schema: {contract.schema_id}")
+        print(f"  Task: {report.task_id}")
+        print(f"  {contract.count_label}: {report.item_count}")
+    else:
+        message = report.diagnostics[0]["message"]
+        print(f"{contract.artifact_name} INVALID: {path}", file=sys.stderr)
+        print(f"  {message}", file=sys.stderr)
+        print(f"  Schema: {contract.schema_id}", file=sys.stderr)
+
+    if not report.valid:
+        sys.exit(1)
+    assert loaded is not None
+    return rendered_report
+
+
+def _parse_result_validate_args(args: list[str]) -> dict[str, object]:
+    if not args or args[0] in ("--help", "-h"):
+        _print_result_usage()
+        return {"help": True}
+    if args[0] != "validate":
+        raise ValueError(
+            f"unknown result command {args[0]!r}; available command: validate"
+        )
+    return _parse_serialized_validate_args(
+        args[1:],
+        command_label="result validate",
+        file_description="an execution-result JSON file",
+        usage_printer=_print_result_usage,
+    )
 
 
 def cmd_result(args: list[str]):
@@ -311,42 +359,17 @@ def cmd_result(args: list[str]):
         parsed = _parse_result_validate_args(args)
         if parsed.get("help"):
             return None
+        return _validate_serialized_artifact(
+            path=str(parsed["path"]),
+            file_label="execution result",
+            output_format=str(parsed["format"]),
+            contract=EXECUTION_RESULT_VALIDATION_CONTRACT,
+        )
+    except SystemExit:
+        raise
     except ValueError as exc:
         print(f"result_validate_failed: {exc}", file=sys.stderr)
         sys.exit(1)
-
-    result_path = str(parsed["result_path"])
-    output_format = str(parsed["format"])
-    try:
-        payload = _load_json_mapping(result_path, "execution result")
-        result = GeotaskResult.from_dict(payload)
-    except (ResultFormatError, ValueError, OSError) as exc:
-        report = _result_validation_report(
-            result_path=result_path,
-            valid=False,
-            message=str(exc),
-        )
-        if output_format == "json":
-            sys.stdout.write(_render_json(report, compact=False))
-        else:
-            print(f"Result INVALID: {result_path}", file=sys.stderr)
-            print(f"  {exc}", file=sys.stderr)
-            print(f"  Schema: {GEOTASK_RESULT_SCHEMA_ID}", file=sys.stderr)
-        sys.exit(1)
-
-    report = _result_validation_report(
-        result_path=result_path,
-        valid=True,
-        result=result,
-    )
-    if output_format == "json":
-        sys.stdout.write(_render_json(report, compact=False))
-    else:
-        print(f"Result valid: {result_path}")
-        print(f"  Schema: {GEOTASK_RESULT_SCHEMA_ID}")
-        print(f"  Task: {result.task_id}")
-        print(f"  Checks: {len(result.checks)}")
-    return report
 
 
 def cmd_normalize(path: str, geotask_path: str | None = None):
@@ -654,6 +677,25 @@ def _format_markdown_report(payload: dict) -> str:
 
 def _print_control_usage(stream=None) -> None:
     out = stream or sys.stdout
+    print("Usage: geotask control <evaluate|validate> ...", file=out)
+    print(
+        "  geotask control evaluate <geotask.yaml> --result <result.json> "
+        "[--state <state.json|state.yaml>] [--output <file>] [--compact]",
+        file=out,
+    )
+    print(
+        "  geotask control validate <control-evaluation.json>",
+        file=out,
+    )
+    print("  Validates Control Evaluation Result v1.0.", file=out)
+    print(
+        "The CLI never executes next_action or releases outputs.",
+        file=out,
+    )
+
+
+def _print_control_evaluate_usage(stream=None) -> None:
+    out = stream or sys.stdout
     print(
         "Usage: geotask control evaluate <geotask.yaml> "
         "--result <geotask-result.json> "
@@ -670,14 +712,14 @@ def _print_control_usage(stream=None) -> None:
 
 def _parse_control_evaluate_args(args: list[str]) -> dict[str, object]:
     if not args or args[0] in ("--help", "-h"):
-        _print_control_usage()
+        _print_control_evaluate_usage()
         return {"help": True}
     if args[0] != "evaluate":
         raise ValueError(
             f"unknown control command {args[0]!r}; available command: evaluate"
         )
     if len(args) >= 2 and args[1] in ("--help", "-h"):
-        _print_control_usage()
+        _print_control_evaluate_usage()
         return {"help": True}
     if len(args) < 2 or args[1].startswith("-"):
         raise ValueError("control evaluate requires a GeoTask YAML file")
@@ -699,7 +741,7 @@ def _parse_control_evaluate_args(args: list[str]) -> dict[str, object]:
     while index < len(args):
         arg = args[index]
         if arg in ("--help", "-h"):
-            _print_control_usage()
+            _print_control_evaluate_usage()
             return {"help": True}
         if arg == "--compact":
             if parsed["compact"]:
@@ -810,8 +852,8 @@ def _render_json(payload: dict, *, compact: bool) -> str:
     ) + "\n"
 
 
-def cmd_control(args: list[str]):
-    """Evaluate a versioned control profile without executing declared actions."""
+def _cmd_control_evaluate(args: list[str]):
+    """Evaluate a versioned control profile without executing actions."""
 
     try:
         parsed = _parse_control_evaluate_args(args)
@@ -860,6 +902,49 @@ def cmd_control(args: list[str]):
     ) as exc:
         print(f"control_evaluate_failed: {exc}", file=sys.stderr)
         sys.exit(1)
+
+
+def _cmd_control_validate(args: list[str]):
+    """Validate a serialized Control Evaluation Result without evaluation."""
+
+    try:
+        parsed = _parse_serialized_validate_args(
+            args,
+            command_label="control validate",
+            file_description="a control-evaluation JSON file",
+            usage_printer=_print_control_validate_usage,
+        )
+        if parsed.get("help"):
+            return None
+        return _validate_serialized_artifact(
+            path=str(parsed["path"]),
+            file_label="control evaluation",
+            output_format=str(parsed["format"]),
+            contract=CONTROL_EVALUATION_VALIDATION_CONTRACT,
+        )
+    except SystemExit:
+        raise
+    except ValueError as exc:
+        print(f"control_validate_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_control(args: list[str]):
+    """Evaluate or validate versioned control artifacts without actions."""
+
+    if not args or args[0] in ("--help", "-h"):
+        _print_control_usage()
+        return None
+    if args[0] == "evaluate":
+        return _cmd_control_evaluate(args)
+    if args[0] == "validate":
+        return _cmd_control_validate(args[1:])
+    print(
+        f"control_failed: unknown control command {args[0]!r}; "
+        "available commands: evaluate, validate",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 
 
 def print_result(result: dict):

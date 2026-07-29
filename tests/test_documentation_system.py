@@ -20,6 +20,8 @@ WHITEPAPER_BUILD = ROOT / "docs" / "whitepaper" / "README.md"
 LANGUAGE_SPEC = ROOT / "docs" / "spec" / "geotask-language-spec-v1.0.md"
 CONTROL_PROFILE_SPEC = ROOT / "docs" / "spec" / "geotask-control-extension-profile-v1.0.md"
 CONTROL_EXPRESSION_SPEC = ROOT / "docs" / "spec" / "geotask-control-expression-language-v1.0.md"
+CONTROL_EVALUATION_SPEC = ROOT / "docs" / "spec" / "geotask-control-evaluation-v1.0.md"
+CONTROL_EVALUATION_SCHEMA = ROOT / "schemas" / "geotask-control-evaluation-v1.0.schema.json"
 TARGET_SPEC_STATUS = ROOT / "docs" / "spec" / "target-specification-status.md"
 QUICKSTART_EN = ROOT / "docs" / "tutorials" / "quickstart.md"
 QUICKSTART_ZH = ROOT / "docs" / "tutorials" / "quickstart.zh-CN.md"
@@ -48,6 +50,8 @@ DOCUMENTS = (
     LANGUAGE_SPEC,
     CONTROL_PROFILE_SPEC,
     CONTROL_EXPRESSION_SPEC,
+    CONTROL_EVALUATION_SPEC,
+    CONTROL_EVALUATION_SCHEMA,
     TARGET_SPEC_STATUS,
     QUICKSTART_EN,
     QUICKSTART_ZH,
@@ -184,6 +188,7 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "spec/geotask-language-spec-v1.0.md",
         "spec/geotask-control-extension-profile-v1.0.md",
         "spec/geotask-control-expression-language-v1.0.md",
+        "spec/geotask-control-evaluation-v1.0.md",
         "tutorials/quickstart.md",
         "tutorials/quickstart.zh-CN.md",
         "reference/status-model.md",
@@ -293,6 +298,28 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
     ):
         assert fragment in expression_text
     assert "eval(" not in expression_text
+
+    evaluation_text = CONTROL_EVALUATION_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "Control Evaluation Result v1.0",
+        "build_control_context",
+        "evaluate_control_profile",
+        "blocked_outputs",
+        "eligible_outputs",
+        '"action_executed": false',
+        "does not automatically call it",
+    ):
+        assert fragment in evaluation_text
+
+    evaluation_schema = CONTROL_EVALUATION_SCHEMA.read_text(encoding="utf-8")
+    for fragment in (
+        '"schema_version"',
+        '"gate_satisfied"',
+        '"control_context"',
+        '"eligible_outputs"',
+        '"action_executed": {"const": false}',
+    ):
+        assert fragment in evaluation_schema
 
 
 def test_legacy_compatibility_docs_match_distributed_package() -> None:

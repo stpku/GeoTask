@@ -53,6 +53,16 @@ from geotask_core.v1.control_expressions import (
     evaluate_control_expression,
     referenced_identifiers,
 )
+from geotask_core.v1.control_evaluation import (
+    CONTROL_EVALUATION_SCHEMA_VERSION,
+    ControlContextError,
+    ControlContextEntry,
+    ControlContext,
+    ControlBlockEvaluation,
+    ControlEvaluationResult,
+    build_control_context,
+    evaluate_control_profile,
+)
 
 __all__ = [
     "__version__",
@@ -99,4 +109,12 @@ __all__ = [
     "parse_control_expression",
     "evaluate_control_expression",
     "referenced_identifiers",
+    "CONTROL_EVALUATION_SCHEMA_VERSION",
+    "ControlContextError",
+    "ControlContextEntry",
+    "ControlContext",
+    "ControlBlockEvaluation",
+    "ControlEvaluationResult",
+    "build_control_context",
+    "evaluate_control_profile",
 ]

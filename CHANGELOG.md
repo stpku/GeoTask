@@ -27,6 +27,7 @@ All notable public changes to GeoTask Core are documented here.
 - Add the opt-in `geotask.control/1.0` Extension Profile, machine-readable schema, Core validation, public constants, and normative documentation for decision rules, evidence requests, evidence conflicts, and task gates.
 - Add the safe finite `geotask.control-expression/1.0` parser and evaluator with three-valued logic, scalar comparisons, identifier inspection, resource limits, and normative language documentation.
 - Add read-only control contexts and the versioned Control Evaluation Result contract for gate state, unknown identifiers, blocked outputs, output eligibility, and provenance without executing actions.
+- Add `geotask control evaluate` for schema-compatible, non-executing control evaluation from a GeoTask document, canonical execution-result JSON, and optional JSON/YAML domain state.
 
 ### Changed
 
@@ -36,6 +37,7 @@ All notable public changes to GeoTask Core are documented here.
 - Reduce future case authoring to four inputs while generated portal, Sitemap, deployment, and navigation files remain derivative outputs.
 - Keep extensions open by default, but apply strict structural, assertion-reference, and finite-expression syntax validation when a document explicitly declares `geotask.control/1.0`.
 - Keep control evaluation observational: it never mutates execution results, changes assurance, releases outputs, or executes `next_action`; satisfied outputs are reported only as eligible for separate authorization.
+- Deserialize canonical `geotask_result` payloads strictly for control evaluation, rejecting unknown or missing fields, non-v1 versions, invalid types, negative summary counts, and check-count mismatches.
 - Make `OperatorContract` the single source of truth for public operator metadata, eliminating the separate hand-maintained registry table.
 - Enforce operator output types, assertion `expected_type`, and executable basic invariants before granting deterministic assurance.
 - Return explicit `unverifiable` checks for `hybrid`, `shadow_compare`, and non-`local` executors instead of substituting local execution.

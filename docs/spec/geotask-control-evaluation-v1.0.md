@@ -44,6 +44,26 @@ payload = control_result.to_dict()
 
 `evaluate_control_profile()` is an explicit call. `execute_canonical()` does not automatically call it, change blocked outputs, or execute `next_action`.
 
+### 2.1 CLI
+
+The public CLI exposes the same observational contract:
+
+```bash
+geotask control evaluate task.yaml \
+  --result execution-result.json \
+  --state control-state.yaml
+```
+
+`execution-result.json` MUST use the canonical wrapper produced by
+`GeotaskResult.to_dict()`. The optional state file may be JSON or YAML. The
+command emits Control Evaluation Result JSON to stdout by default; `--output`
+writes the payload to a file and `--compact` selects single-line JSON.
+
+The CLI does not run the GeoTask document, execute `next_action`, change the
+input result, or authorize any output. It rejects malformed result shapes,
+cross-task result files, undeclared assertion checks, non-mapping state files,
+and non-finite JSON values.
+
 ## 3. Read-only `control_context`
 
 `build_control_context()` creates an immutable context from two sources.

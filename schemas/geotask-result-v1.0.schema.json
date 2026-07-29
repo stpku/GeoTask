@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-result-v1.0.schema.json",
+  "title": "GeoTask Execution Result v1.0",
+  "description": "Canonical execution-result payload produced by GeotaskResult.to_dict(). Cross-field count consistency is additionally enforced by GeoTask Core.",
+  "type": "object",
+  "required": ["geotask_result"],
+  "additionalProperties": false,
+  "properties": {
+    "geotask_result": {"$ref": "#/$defs/geotaskResult"}
+  },
+  "$defs": {
+    "jsonValue": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "boolean"},
+        {"type": "number"},
+        {"type": "string"},
+        {
+          "type": "array",
+          "items": {"$ref": "#/$defs/jsonValue"}
+        },
+        {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/jsonValue"}
+        }
+      ]
+    },
+    "stringList": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "execution": {
+      "type": "object",
+      "required": ["mode", "status", "started_at", "finished_at"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["model_only", "local_only", "hybrid", "shadow_compare"]
+        },
+        "status": {
+          "enum": ["pending", "running", "completed", "partial", "failed", "skipped"]
+        },
+        "started_at": {"type": "string"},
+        "finished_at": {"type": "string"}
+      }
+    },
+    "check": {
+      "type": "object",
+      "required": [
+        "assertion_id",
+        "operator",
+        "object_refs",
+        "executor",
+        "value",
+        "unit",
+        "status",
+        "assurance_level",
+        "deterministic",
+        "evidence_refs",
+        "error"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "assertion_id": {"type": "string", "minLength": 1},
+        "operator": {"type": "string", "minLength": 1},
+        "object_refs": {"$ref": "#/$defs/stringList"},
+        "executor": {
+          "enum": ["model", "local", "connector", "human", "runtime"]
+        },
+        "value": {"$ref": "#/$defs/jsonValue"},
+        "unit": {"type": "string"},
+        "status": {
+          "enum": [
+            "proposed",
+            "computed",
+            "verified",
+            "contradicted",
+            "need_review",
+            "need_data",
+            "invalid_input",
+            "invalid_operator",
+            "invalid_reference",
+            "execution_error",
+            "unverifiable"
+          ]
+        },
+        "assurance_level": {
+          "enum": [
+            "unverified",
+            "model_generated",
+            "model_self_checked",
+            "local_deterministic",
+            "model_local_agreement",
+            "independent_cross_verified",
+            "human_reviewed"
+          ]
+        },
+        "deterministic": {"type": "boolean"},
+        "evidence_refs": {"$ref": "#/$defs/stringList"},
+        "error": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": {"$ref": "#/$defs/jsonValue"}
+            }
+          ]
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total_checks", "verified", "contradicted", "need_review", "invalid"],
+      "additionalProperties": false,
+      "properties": {
+        "total_checks": {"type": "integer", "minimum": 0},
+        "verified": {"type": "integer", "minimum": 0},
+        "contradicted": {"type": "integer", "minimum": 0},
+        "need_review": {"type": "integer", "minimum": 0},
+        "invalid": {"type": "integer", "minimum": 0}
+      }
+    },
+    "overall": {
+      "type": "object",
+      "required": ["status", "assurance_level"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "proposed",
+            "computed",
+            "verified",
+            "contradicted",
+            "need_review",
+            "need_data",
+            "invalid_input",
+            "invalid_operator",
+            "invalid_reference",
+            "execution_error",
+            "unverifiable"
+          ]
+        },
+        "assurance_level": {
+          "enum": [
+            "unverified",
+            "model_generated",
+            "model_self_checked",
+            "local_deterministic",
+            "model_local_agreement",
+            "independent_cross_verified",
+            "human_reviewed"
+          ]
+        }
+      }
+    },
+    "errorEntry": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/jsonValue"}
+    },
+    "geotaskResult": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "task_id",
+        "execution",
+        "checks",
+        "outputs",
+        "summary",
+        "overall",
+        "warnings",
+        "errors"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {"const": "1.0"},
+        "task_id": {"type": "string", "minLength": 1},
+        "execution": {"$ref": "#/$defs/execution"},
+        "checks": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/check"}
+        },
+        "outputs": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/jsonValue"}
+        },
+        "summary": {"$ref": "#/$defs/summary"},
+        "overall": {"$ref": "#/$defs/overall"},
+        "warnings": {"$ref": "#/$defs/stringList"},
+        "errors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/errorEntry"}
+        }
+      }
+    }
+  }
+}

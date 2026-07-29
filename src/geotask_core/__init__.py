@@ -38,7 +38,11 @@ from geotask_core.v1.ir import CanonicalDocument, GeotaskMetadata
 from geotask_core.v1.canonicalizer import canonicalize
 from geotask_core.v1.validator import validate_canonical
 from geotask_core.v1.executor import execute_canonical
-from geotask_core.v1.result import GeotaskResult
+from geotask_core.v1.result import (
+    GEOTASK_RESULT_SCHEMA_ID,
+    GEOTASK_RESULT_SCHEMA_VERSION,
+    GeotaskResult,
+)
 from geotask_core.v1.extension_profiles import (
     CONTROL_PROFILE_ID,
     CONTROL_PROFILE_VERSION,
@@ -98,6 +102,8 @@ __all__ = [
     "canonicalize",
     "validate_canonical",
     "execute_canonical",
+    "GEOTASK_RESULT_SCHEMA_ID",
+    "GEOTASK_RESULT_SCHEMA_VERSION",
     "GeotaskResult",
     "CONTROL_PROFILE_ID",
     "CONTROL_PROFILE_VERSION",

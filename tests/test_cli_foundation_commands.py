@@ -29,7 +29,7 @@ def test_cli_help_lists_foundation_commands():
     result = _run_cli("--help")
 
     assert result.returncode == 0
-    for command in ["validate", "run", "explain", "inspect", "report"]:
+    for command in ["validate", "run", "result", "explain", "inspect", "report"]:
         assert command in result.stdout
 
 
@@ -107,6 +107,7 @@ def test_cli_usage_doc_covers_foundation_commands():
     for command in [
         "validate",
         "run",
+        "result validate",
         "explain",
         "inspect operators",
         "inspect schema",

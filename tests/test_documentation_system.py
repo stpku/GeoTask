@@ -18,6 +18,8 @@ DOC_INDEX_EN = ROOT / "docs" / "README.en.md"
 WHITEPAPER = ROOT / "docs" / "whitepaper" / "GeoTask_White_Paper_v0.1.md"
 WHITEPAPER_BUILD = ROOT / "docs" / "whitepaper" / "README.md"
 LANGUAGE_SPEC = ROOT / "docs" / "spec" / "geotask-language-spec-v1.0.md"
+RESULT_SPEC = ROOT / "docs" / "spec" / "geotask-result-v1.0.md"
+RESULT_SCHEMA = ROOT / "schemas" / "geotask-result-v1.0.schema.json"
 CONTROL_PROFILE_SPEC = ROOT / "docs" / "spec" / "geotask-control-extension-profile-v1.0.md"
 CONTROL_EXPRESSION_SPEC = ROOT / "docs" / "spec" / "geotask-control-expression-language-v1.0.md"
 CONTROL_EVALUATION_SPEC = ROOT / "docs" / "spec" / "geotask-control-evaluation-v1.0.md"
@@ -48,6 +50,8 @@ DOCUMENTS = (
     WHITEPAPER,
     WHITEPAPER_BUILD,
     LANGUAGE_SPEC,
+    RESULT_SPEC,
+    RESULT_SCHEMA,
     CONTROL_PROFILE_SPEC,
     CONTROL_EXPRESSION_SPEC,
     CONTROL_EVALUATION_SPEC,
@@ -186,6 +190,7 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "whitepaper/GeoTask_White_Paper_v0.1.md",
         "whitepaper/README.md",
         "spec/geotask-language-spec-v1.0.md",
+        "spec/geotask-result-v1.0.md",
         "spec/geotask-control-extension-profile-v1.0.md",
         "spec/geotask-control-expression-language-v1.0.md",
         "spec/geotask-control-evaluation-v1.0.md",
@@ -272,6 +277,23 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
     assert "geotask.control/1.0" in text
     assert "geotask-control-extension-profile-v1.0.md" in text
     assert "geotask-control-expression-language-v1.0.md" in text
+
+    result_text = RESULT_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "GeoTask Execution Result v1.0",
+        "GeotaskResult.to_dict()",
+        "geotask result validate",
+        "summary.total_checks == len(checks)",
+        "does not execute the task",
+    ):
+        assert fragment in result_text
+
+    result_schema = json.loads(RESULT_SCHEMA.read_text(encoding="utf-8"))
+    Draft202012Validator.check_schema(result_schema)
+    assert result_schema["$id"].endswith("geotask-result-v1.0.schema.json")
+    assert result_schema["properties"]["geotask_result"]["$ref"] == (
+        "#/$defs/geotaskResult"
+    )
 
     profile_text = CONTROL_PROFILE_SPEC.read_text(encoding="utf-8")
     for fragment in (
@@ -442,6 +464,8 @@ def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
         "docs/README.en.md",
         "docs/tutorials/quickstart.zh-CN.md",
         "docs/cookbook/gt01-gt20.zh-CN.md",
+        "docs/spec/geotask-result-v1.0.md",
+        "schemas/geotask-result-v1.0.schema.json",
         "CONTRIBUTING.zh-CN.md",
         "CODE_OF_CONDUCT.md",
         ".github/ISSUE_TEMPLATE/bug_report.yml",

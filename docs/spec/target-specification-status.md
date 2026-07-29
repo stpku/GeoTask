@@ -9,9 +9,10 @@ It is intentionally separate from the public implemented profile.
 For the current public Core, use:
 
 1. [GeoTask Language and Execution Specification v1.0](geotask-language-spec-v1.0.md)
-2. [Machine-readable JSON Schema](../../schemas/geotask-v1.0.schema.json)
-3. public source code and tests
-4. [Operator Registry](../operator_registry.md)
+2. [GeoTask Artifact Registry v1.0](geotask-artifact-registry-v1.0.md) and `geotask inspect schemas`
+3. machine-readable task, execution-result, control-result, and registry JSON Schemas
+4. public source code and tests
+5. [Operator Registry](../operator_registry.md)
 
 These sources describe what the current repository can parse, validate, and execute.
 

@@ -111,6 +111,7 @@ def test_cli_usage_doc_covers_foundation_commands():
         "explain",
         "inspect operators",
         "inspect schema",
+        "inspect schemas",
         "inspect examples",
         "report",
         "control evaluate",

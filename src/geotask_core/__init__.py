@@ -78,6 +78,16 @@ from geotask_core.v1.serialized_validation import (
     EXECUTION_RESULT_VALIDATION_CONTRACT,
     CONTROL_EVALUATION_VALIDATION_CONTRACT,
 )
+from geotask_core.v1.artifact_registry import (
+    ARTIFACT_REGISTRY_SCHEMA_ID,
+    ARTIFACT_REGISTRY_VERSION,
+    GEOTASK_DOCUMENT_SCHEMA_ID,
+    GEOTASK_DOCUMENT_SCHEMA_VERSION,
+    ArtifactDescriptor,
+    list_artifact_descriptors,
+    get_artifact_descriptor,
+    artifact_registry_payload,
+)
 
 __all__ = [
     "__version__",
@@ -143,4 +153,12 @@ __all__ = [
     "validate_versioned_payload",
     "EXECUTION_RESULT_VALIDATION_CONTRACT",
     "CONTROL_EVALUATION_VALIDATION_CONTRACT",
+    "ARTIFACT_REGISTRY_SCHEMA_ID",
+    "ARTIFACT_REGISTRY_VERSION",
+    "GEOTASK_DOCUMENT_SCHEMA_ID",
+    "GEOTASK_DOCUMENT_SCHEMA_VERSION",
+    "ArtifactDescriptor",
+    "list_artifact_descriptors",
+    "get_artifact_descriptor",
+    "artifact_registry_payload",
 ]

@@ -20,6 +20,12 @@ WHITEPAPER_BUILD = ROOT / "docs" / "whitepaper" / "README.md"
 LANGUAGE_SPEC = ROOT / "docs" / "spec" / "geotask-language-spec-v1.0.md"
 RESULT_SPEC = ROOT / "docs" / "spec" / "geotask-result-v1.0.md"
 RESULT_SCHEMA = ROOT / "schemas" / "geotask-result-v1.0.schema.json"
+ARTIFACT_REGISTRY_SPEC = (
+    ROOT / "docs" / "spec" / "geotask-artifact-registry-v1.0.md"
+)
+ARTIFACT_REGISTRY_SCHEMA = (
+    ROOT / "schemas" / "geotask-artifact-registry-v1.0.schema.json"
+)
 VERSIONED_VALIDATION_SPEC = (
     ROOT / "docs" / "spec" / "geotask-versioned-payload-validation-v1.0.md"
 )
@@ -55,6 +61,8 @@ DOCUMENTS = (
     LANGUAGE_SPEC,
     RESULT_SPEC,
     RESULT_SCHEMA,
+    ARTIFACT_REGISTRY_SPEC,
+    ARTIFACT_REGISTRY_SCHEMA,
     VERSIONED_VALIDATION_SPEC,
     CONTROL_PROFILE_SPEC,
     CONTROL_EXPRESSION_SPEC,
@@ -195,6 +203,7 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "whitepaper/README.md",
         "spec/geotask-language-spec-v1.0.md",
         "spec/geotask-result-v1.0.md",
+        "spec/geotask-artifact-registry-v1.0.md",
         "spec/geotask-versioned-payload-validation-v1.0.md",
         "spec/geotask-control-extension-profile-v1.0.md",
         "spec/geotask-control-expression-language-v1.0.md",
@@ -299,6 +308,27 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
     assert result_schema["properties"]["geotask_result"]["$ref"] == (
         "#/$defs/geotaskResult"
     )
+
+    registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "GeoTask Artifact Registry v1.0",
+        "geotask inspect schemas --format json",
+        "ArtifactDescriptor",
+        "geotask.document",
+        "geotask.execution-result",
+        "geotask.control-evaluation",
+        "does not scan the filesystem",
+    ):
+        assert fragment in registry_text
+
+    registry_schema = json.loads(ARTIFACT_REGISTRY_SCHEMA.read_text(encoding="utf-8"))
+    Draft202012Validator.check_schema(registry_schema)
+    assert registry_schema["$id"].endswith(
+        "geotask-artifact-registry-v1.0.schema.json"
+    )
+    assert registry_schema["properties"]["artifact_registry"]["properties"][
+        "registry_version"
+    ]["const"] == "1.0"
 
     validation_text = VERSIONED_VALIDATION_SPEC.read_text(encoding="utf-8")
     for fragment in (
@@ -481,7 +511,9 @@ def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
         "docs/tutorials/quickstart.zh-CN.md",
         "docs/cookbook/gt01-gt20.zh-CN.md",
         "docs/spec/geotask-result-v1.0.md",
+        "docs/spec/geotask-artifact-registry-v1.0.md",
         "docs/spec/geotask-versioned-payload-validation-v1.0.md",
+        "schemas/geotask-artifact-registry-v1.0.schema.json",
         "schemas/geotask-result-v1.0.schema.json",
         "CONTRIBUTING.zh-CN.md",
         "CODE_OF_CONDUCT.md",

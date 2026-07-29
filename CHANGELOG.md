@@ -31,6 +31,7 @@ All notable public changes to GeoTask Core are documented here.
 - Add `geotask run --format v1-json --output result.json` so the CLI can produce the canonical `GeotaskResult.to_dict()` payload consumed by control evaluation while preserving compatibility YAML as the default.
 - Add the public `geotask-result-v1.0` JSON Schema, strict result enum validation, and `geotask result validate` with text or machine-readable JSON reports.
 - Add `geotask control validate`, strict Control Evaluation Result loading, and a shared versioned-payload validation framework for execution and control result reports.
+- Add the public Artifact Registry and `geotask inspect schemas --format json` for discovering task-document, execution-result, and control-evaluation schemas and commands.
 
 ### Changed
 

@@ -5,6 +5,7 @@ Usage:
     geotask run <file.yaml>
     geotask normalize <file.txt> [--geotask <file.yaml>]
     geotask eval <file.yaml> <model_output.txt>
+    geotask control evaluate <file.yaml> --result <result.json> [--state <state.yaml>]
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
     python -m geotask_core.cli normalize <file.txt> [--geotask <file.yaml>]
@@ -15,10 +16,14 @@ The old `stir` CLI command is deprecated but still works as an alias.
 
 import sys
 import json
+from collections.abc import Mapping
 from pathlib import Path
+
+import yaml
 
 from geotask_core._version import __version__
 from geotask_core.parser import (
+    _UniqueKeyLoader,
     load_geotask,
     validate_document,
 )
@@ -29,6 +34,12 @@ from geotask_core.operator_registry import (
     get_operator_metadata,
     list_operator_metadata,
 )
+from geotask_core.v1.canonicalizer import canonicalize
+from geotask_core.v1.control_evaluation import (
+    ControlContextError,
+    evaluate_control_profile,
+)
+from geotask_core.v1.result import GeotaskResult, ResultFormatError
 
 
 def _get_command_name() -> str:
@@ -378,6 +389,227 @@ def _format_markdown_report(payload: dict) -> str:
     return "\n".join(lines)
 
 
+def _print_control_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask control evaluate <geotask.yaml> "
+        "--result <geotask-result.json> "
+        "[--state <state.json|state.yaml>] "
+        "[--output <control-evaluation.json>] [--compact]",
+        file=out,
+    )
+    print(
+        "Evaluates geotask.control/1.0 conditions only; it never executes "
+        "next_action or releases outputs.",
+        file=out,
+    )
+
+
+def _parse_control_evaluate_args(args: list[str]) -> dict[str, object]:
+    if not args or args[0] in ("--help", "-h"):
+        _print_control_usage()
+        return {"help": True}
+    if args[0] != "evaluate":
+        raise ValueError(
+            f"unknown control command {args[0]!r}; available command: evaluate"
+        )
+    if len(args) >= 2 and args[1] in ("--help", "-h"):
+        _print_control_usage()
+        return {"help": True}
+    if len(args) < 2 or args[1].startswith("-"):
+        raise ValueError("control evaluate requires a GeoTask YAML file")
+
+    parsed: dict[str, object] = {
+        "help": False,
+        "geotask_path": args[1],
+        "result_path": None,
+        "state_path": None,
+        "output_path": None,
+        "compact": False,
+    }
+    value_flags = {
+        "--result": "result_path",
+        "--state": "state_path",
+        "--output": "output_path",
+    }
+    index = 2
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_control_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in value_flags:
+            target = value_flags[arg]
+            if parsed[target] is not None:
+                raise ValueError(f"{arg} may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a file path")
+            parsed[target] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown control evaluate option: {arg}")
+
+    if parsed["result_path"] is None:
+        raise ValueError("control evaluate requires --result <geotask-result.json>")
+    return parsed
+
+
+def _reject_nonfinite_json(value: str) -> None:
+    raise ValueError(f"non-finite JSON number {value!r} is not allowed")
+
+
+def _unique_json_object(pairs: list[tuple[str, object]]) -> dict:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key {key!r}")
+        result[key] = value
+    return result
+
+
+def _load_json_mapping(path: str, label: str) -> dict:
+    try:
+        payload = json.loads(
+            Path(path).read_text(encoding="utf-8"),
+            parse_constant=_reject_nonfinite_json,
+            object_pairs_hook=_unique_json_object,
+        )
+    except OSError as exc:
+        raise ValueError(f"cannot read {label} file {path!r}: {exc}") from exc
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"invalid JSON in {label} file {path!r} at "
+            f"line {exc.lineno}, column {exc.colno}: {exc.msg}"
+        ) from exc
+    except ValueError as exc:
+        raise ValueError(f"invalid JSON in {label} file {path!r}: {exc}") from exc
+    if not isinstance(payload, Mapping):
+        raise ValueError(f"{label} file {path!r} must contain a JSON object")
+    return dict(payload)
+
+
+def _load_state_mapping(path: str | None) -> dict:
+    if path is None:
+        return {}
+    state_path = Path(path)
+    try:
+        text = state_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise ValueError(f"cannot read state file {path!r}: {exc}") from exc
+
+    try:
+        if state_path.suffix.lower() == ".json":
+            payload = json.loads(
+                text,
+                parse_constant=_reject_nonfinite_json,
+                object_pairs_hook=_unique_json_object,
+            )
+        else:
+            payload = yaml.load(text, Loader=_UniqueKeyLoader)
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"invalid JSON in state file {path!r} at "
+            f"line {exc.lineno}, column {exc.colno}: {exc.msg}"
+        ) from exc
+    except ValueError as exc:
+        raise ValueError(f"invalid JSON in state file {path!r}: {exc}") from exc
+    except yaml.YAMLError as exc:
+        raise ValueError(f"invalid YAML in state file {path!r}: {exc}") from exc
+
+    if payload is None:
+        return {}
+    if not isinstance(payload, Mapping):
+        raise ValueError(f"state file {path!r} must contain an object or mapping")
+    return dict(payload)
+
+
+def _render_json(payload: dict, *, compact: bool) -> str:
+    if compact:
+        return json.dumps(
+            payload,
+            ensure_ascii=False,
+            allow_nan=False,
+            separators=(",", ":"),
+            sort_keys=False,
+        ) + "\n"
+    return json.dumps(
+        payload,
+        ensure_ascii=False,
+        allow_nan=False,
+        indent=2,
+        sort_keys=False,
+    ) + "\n"
+
+
+def cmd_control(args: list[str]):
+    """Evaluate a versioned control profile without executing declared actions."""
+
+    try:
+        parsed = _parse_control_evaluate_args(args)
+        if parsed.get("help"):
+            return None
+
+        geotask_path = str(parsed["geotask_path"])
+        data = _load_valid_geotask(geotask_path, label="GeoTask")
+        document = canonicalize(data)
+        result_payload = _load_json_mapping(
+            str(parsed["result_path"]),
+            "execution result",
+        )
+        execution_result = GeotaskResult.from_dict(result_payload)
+        domain_state = _load_state_mapping(
+            None if parsed["state_path"] is None else str(parsed["state_path"])
+        )
+        payload = evaluate_control_profile(
+            document,
+            execution_result,
+            domain_state,
+        ).to_dict()
+        rendered = _render_json(payload, compact=bool(parsed["compact"]))
+
+        output_path = parsed["output_path"]
+        if output_path is None or output_path == "-":
+            sys.stdout.write(rendered)
+        else:
+            resolved_output = Path(str(output_path)).resolve()
+            input_paths = [
+                Path(geotask_path).resolve(),
+                Path(str(parsed["result_path"])).resolve(),
+            ]
+            if parsed["state_path"] is not None:
+                input_paths.append(Path(str(parsed["state_path"])).resolve())
+            if resolved_output in input_paths:
+                raise ValueError(
+                    "--output must not overwrite the GeoTask, execution-result, "
+                    "or state input file"
+                )
+            try:
+                resolved_output.write_text(rendered, encoding="utf-8")
+            except OSError as exc:
+                raise ValueError(
+                    f"cannot write output file {str(output_path)!r}: {exc}"
+                ) from exc
+        return payload
+    except SystemExit:
+        raise
+    except (
+        ControlContextError,
+        ResultFormatError,
+        ValueError,
+        TypeError,
+        OSError,
+        yaml.YAMLError,
+    ) as exc:
+        print(f"control_evaluate_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
 def print_result(result: dict):
     """Print a result dict as YAML."""
     import yaml
@@ -403,12 +635,12 @@ def main():
 
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, explain, inspect, report, normalize, eval, version")
+        print("Commands: validate, run, explain, inspect, report, control, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, explain, inspect, report, normalize, eval, version")
+        print("Commands: validate, run, explain, inspect, report, control, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -419,6 +651,10 @@ def main():
         print(f"  {cmd_name} inspect operators")
         print(f"  {cmd_name} explain examples/geotask_core_lite.yaml")
         print(f"  {cmd_name} report examples/geotask_core_lite.yaml --format json")
+        print(
+            f"  {cmd_name} control evaluate examples/core/uav_arrival_ground_clearance_release.yaml "
+            "--result execution-result.json --state control-state.yaml"
+        )
         print()
         print(f"  python -m geotask_core.cli validate examples/geotask_core_lite.yaml")
         print(f"  python -m geotask_core.cli run examples/geotask_core_lite.yaml")
@@ -433,6 +669,10 @@ def main():
         sys.exit(1)
 
     command = sys.argv[1]
+
+    if command == "control":
+        cmd_control(sys.argv[2:])
+        return
 
     if command == "inspect":
         cmd_inspect(sys.argv[2:])
@@ -470,7 +710,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, explain, inspect, report, normalize, eval, version")
+        print(f"Available commands: validate, run, explain, inspect, report, control, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

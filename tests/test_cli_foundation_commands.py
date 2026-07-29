@@ -112,5 +112,6 @@ def test_cli_usage_doc_covers_foundation_commands():
         "inspect schema",
         "inspect examples",
         "report",
+        "control evaluate",
     ]:
         assert command in text

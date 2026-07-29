@@ -62,6 +62,47 @@ python -m geotask_core.cli report examples/geotask_core_lite.yaml --format markd
 result report. Supported formats are `json` and `markdown`; unsupported formats
 return `unsupported_report_format` with a non-zero exit code.
 
+## Control Evaluate
+
+```bash
+python -m geotask_core.cli control evaluate \
+  examples/core/uav_arrival_ground_clearance_release.yaml \
+  --result execution-result.json \
+  --state control-state.yaml
+```
+
+`control evaluate` is a read-only command for documents that declare
+`geotask.control/1.0`. It requires a canonical execution-result JSON file
+produced by `GeotaskResult.to_dict()`. An optional state file may be JSON or
+YAML and supplies explicit finite scalar domain values used by the control
+expressions.
+
+The command writes schema-compatible Control Evaluation Result JSON to stdout.
+Use `--output <file.json>` to write the payload to a file without adding status
+text to stdout, and use `--compact` for single-line JSON.
+
+```bash
+python -m geotask_core.cli control evaluate \
+  examples/core/uav_arrival_ground_clearance_release.yaml \
+  --result execution-result.json \
+  --state control-state.json \
+  --output control-evaluation.json \
+  --compact
+```
+
+The result reports `blocked_outputs`, `eligible_outputs`, unknown identifiers,
+and provenance. `eligible_outputs` means only that the evaluated conditions are
+currently satisfied. The command never executes `next_action`, changes the
+execution result, authorizes an operation, or releases an output. Every result
+therefore keeps `action_executed: false`.
+
+The execution result must belong to the same GeoTask document: its `task_id`
+must match the document ID, and every serialized check must reference an
+assertion declared by that document. Malformed, legacy-shaped, cross-task, or
+partially shaped result files fail with a non-zero exit code and no traceback.
+Duplicate JSON or YAML keys and non-finite JSON numbers are also rejected.
+`--output` cannot overwrite the GeoTask, execution-result, or state input file.
+
 ## Normalize And Eval
 
 ```bash

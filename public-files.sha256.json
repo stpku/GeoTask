@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 13088,
-    "sha256": "6b702fd582bf1a38a95986069059822041db5b7e67709df1c9fe4840979978c4"
+    "size": 13290,
+    "sha256": "1a0cb9959274e3c964b1c199cff1902d608f2eae742b55900be7d07033b1f885"
   },
   {
     "path": "CITATION.cff",
@@ -131,13 +131,13 @@
   },
   {
     "path": ".github/workflows/publish-pypi.yml",
-    "size": 6382,
-    "sha256": "b411dd5640984832bd5f18cc1b74ce6eb3989ce1e4416caae7c7eb25a9ae8c79"
+    "size": 6981,
+    "sha256": "89bd47b7ad87105affdfa2f71322f5be6964dfa2f0b41e86830fa7d4a86a5cb2"
   },
   {
     "path": ".release/README.md",
-    "size": 3695,
-    "sha256": "640721b2f12e7ced889e0a25218bb1cff4dfebdce73e92e9b95972d2ae0bfec5"
+    "size": 3726,
+    "sha256": "e93ce155bc19e6302550d6b756bc94ca903946798aab6174d2651d666e82e1ed"
   },
   {
     "path": ".release/export_public.py",
@@ -266,8 +266,8 @@
   },
   {
     "path": "docs/release_v0_2_0.md",
-    "size": 10755,
-    "sha256": "f3bd786ca4403c388959142d6f8cbd2414955621c4f2b122fe812072ac4c31ed"
+    "size": 10853,
+    "sha256": "468e626e05c33cc8f5d0ed4064d467710ac55c732b8f9da66934ddfdff664218"
   },
   {
     "path": "docs/architecture_decisions/ADR-001-core-runtime-domain-pack.md",
@@ -1156,8 +1156,8 @@
   },
   {
     "path": "tests/test_release_preflight.py",
-    "size": 5795,
-    "sha256": "7b83b1eeb5df7aac9af2e583d591af164c69006b2e2305624902ef230001db6b"
+    "size": 6095,
+    "sha256": "34754d1cd3b2e11da981356ab232dac316cf332d821bc75df2f4f04868258247"
   },
   {
     "path": "tests/test_result_schema_and_cli.py",

@@ -65,6 +65,10 @@
             "task_document",
             "execution_result",
             "control_evaluation_result",
+            "agent_generation_preparation_report",
+            "agent_revision_verification_report",
+            "agent_revision_retry_report",
+            "agent_evidence_recovery_report",
             "artifact_validation_report"
           ]
         },

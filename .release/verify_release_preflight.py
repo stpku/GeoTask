@@ -7,9 +7,9 @@ release notes, Quickstarts, README navigation, and optional wheel/sdist metadata
 all describe the same release.
 
 Examples:
-    python .release/verify_release_preflight.py --expected-version 0.2.0
+    python .release/verify_release_preflight.py --expected-version 0.3.0
     python .release/verify_release_preflight.py \
-        --expected-version 0.2.0 --artifacts dist --format json
+        --expected-version 0.3.0 --artifacts dist --format json
 """
 
 from __future__ import annotations

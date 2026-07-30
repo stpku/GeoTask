@@ -33,6 +33,10 @@ CONTROL_PROFILE_SPEC = ROOT / "docs" / "spec" / "geotask-control-extension-profi
 CONTROL_EXPRESSION_SPEC = ROOT / "docs" / "spec" / "geotask-control-expression-language-v1.0.md"
 CONTROL_EVALUATION_SPEC = ROOT / "docs" / "spec" / "geotask-control-evaluation-v1.0.md"
 CONTROL_EVALUATION_SCHEMA = ROOT / "schemas" / "geotask-control-evaluation-v1.0.schema.json"
+AGENT_INTEGRATION_SPEC = (
+    ROOT / "docs" / "spec" / "geotask-agent-integration-profile-v0.1.md"
+)
+AGENT_SKILL = ROOT / "skills" / "geotask-core" / "SKILL.md"
 TARGET_SPEC_STATUS = ROOT / "docs" / "spec" / "target-specification-status.md"
 QUICKSTART_EN = ROOT / "docs" / "tutorials" / "quickstart.md"
 QUICKSTART_ZH = ROOT / "docs" / "tutorials" / "quickstart.zh-CN.md"
@@ -47,7 +51,7 @@ CITATION = ROOT / "CITATION.cff"
 ROADMAP = ROOT / "ROADMAP.md"
 RELEASE_NOTES_010 = ROOT / "docs" / "release_v0_1_0.md"
 RELEASE_NOTES_011 = ROOT / "docs" / "release_v0_1_1.md"
-RELEASE_NOTES = ROOT / "docs" / "release_v0_2_0.md"
+RELEASE_NOTES = ROOT / "docs" / "release_v0_3_0.md"
 CODEOWNERS = ROOT / ".github" / "CODEOWNERS"
 PYPI_WORKFLOW = ROOT / ".github" / "workflows" / "publish-pypi.yml"
 
@@ -69,6 +73,8 @@ DOCUMENTS = (
     CONTROL_EXPRESSION_SPEC,
     CONTROL_EVALUATION_SPEC,
     CONTROL_EVALUATION_SCHEMA,
+    AGENT_INTEGRATION_SPEC,
+    AGENT_SKILL,
     TARGET_SPEC_STATUS,
     QUICKSTART_EN,
     QUICKSTART_ZH,
@@ -210,6 +216,8 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "spec/geotask-control-extension-profile-v1.0.md",
         "spec/geotask-control-expression-language-v1.0.md",
         "spec/geotask-control-evaluation-v1.0.md",
+        "spec/geotask-agent-integration-profile-v0.1.md",
+        "../skills/geotask-core/SKILL.md",
         "tutorials/quickstart.md",
         "tutorials/quickstart.zh-CN.md",
         "reference/status-model.md",
@@ -319,6 +327,12 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.document",
         "geotask.execution-result",
         "geotask.control-evaluation",
+        "geotask.agent-generation-preparation",
+        "geotask.agent-revision-verification",
+        "geotask.agent-revision-retry",
+        "geotask.agent-evidence-recovery",
+        "exactly eight artifacts",
+        "all nine public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text
@@ -392,6 +406,68 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         assert fragment in evaluation_schema
 
 
+def test_agent_integration_profile_and_skill_define_safe_recovery() -> None:
+    specification = AGENT_INTEGRATION_SPEC.read_text(encoding="utf-8")
+    skill = AGENT_SKILL.read_text(encoding="utf-8")
+
+    for fragment in (
+        "GeoTask Agent Integration Profile v0.1",
+        "geotask.agent-integration",
+        "inspect_artifacts",
+        "validate_artifact",
+        "execute_task",
+        "evaluate_control",
+        "geotask agent prepare",
+        "agent_generated_distance_draft.yaml",
+        "mechanical_only",
+        "domain_inference_used=false",
+        "revision_request/0.1",
+        "agent_revision_verification/0.1",
+        "agent_revision_retry/0.1",
+        "geotask.agent-generation-preparation",
+        "geotask.agent-revision-verification",
+        "geotask.agent-revision-retry",
+        "geotask-agent-generation-preparation-v0.1.schema.json",
+        "geotask-agent-revision-verification-v0.1.schema.json",
+        "geotask-agent-revision-retry-v0.1.schema.json",
+        "registered public Artifacts",
+        "candidate_values",
+        "selected_value",
+        "requested paths",
+        "revision_base_sha256",
+        "agent_generated_distance_blocked.yaml",
+        "agent_generated_distance_revised.yaml",
+        "geotask agent retry",
+        "geotask agent recover",
+        "task_reexecuted",
+        "next_action_executed",
+        "model_guess_used",
+        "single named boolean condition",
+    ):
+        assert fragment in specification
+
+    for fragment in (
+        "name: geotask-core",
+        "geotask agent inspect",
+        "geotask agent prepare",
+        "preparation-report.json",
+        "geotask agent retry",
+        "retry-report.json",
+        "--verification-output revision-verification.json",
+        "changed-path check",
+        "artifact validate geotask.agent-generation-preparation",
+        "artifact validate geotask.agent-revision-retry",
+        "geotask agent recover",
+        "Do not answer `full_conflict=true`",
+        "next_action_executed = false",
+        "model_guess_used = false",
+    ):
+        assert fragment in skill
+
+    assert "execute production actions" not in skill.lower()
+    assert "Public Core examples must use fictional evidence" in skill
+
+
 def test_legacy_compatibility_docs_match_distributed_package() -> None:
     init_text = (ROOT / "src" / "geotask_core" / "__init__.py").read_text(
         encoding="utf-8"
@@ -429,12 +505,14 @@ def test_root_readmes_match_current_capabilities() -> None:
             "feature_collection",
         ):
             assert f"`{object_type}`" in text
+        assert "geotask agent prepare" in text
+        assert "geotask agent retry" in text
 
 
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
     for path in (QUICKSTART_EN, QUICKSTART_ZH):
         text = path.read_text(encoding="utf-8")
-        assert "python -m pip install --no-cache-dir geotask-core==0.2.0" in text
+        assert "python -m pip install --no-cache-dir geotask-core==0.3.0" in text
         assert "from importlib.metadata import version" in text
         assert "geotask --help" in text
         assert "geotask inspect operators" in text
@@ -515,6 +593,21 @@ def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
         "docs/spec/geotask-result-v1.0.md",
         "docs/spec/geotask-artifact-registry-v1.0.md",
         "docs/spec/geotask-versioned-payload-validation-v1.0.md",
+        "docs/spec/geotask-agent-integration-profile-v0.1.md",
+        "skills/geotask-core/SKILL.md",
+        "src/geotask_core/v1/agent_generation.py",
+        "src/geotask_core/v1/agent_artifacts.py",
+        "examples/core/agent_generated_distance_draft.yaml",
+        "examples/core/agent_generated_distance_blocked.yaml",
+        "examples/core/agent_generated_distance_revised.yaml",
+        "tests/test_agent_generated_document_preparation.py",
+        "tests/test_agent_generated_document_revision.py",
+        "tests/test_agent_artifacts.py",
+        "tests/test_agent_evidence_recovery_artifact.py",
+        "schemas/geotask-agent-generation-preparation-v0.1.schema.json",
+        "schemas/geotask-agent-integration-v0.1.schema.json",
+        "schemas/geotask-agent-revision-verification-v0.1.schema.json",
+        "schemas/geotask-agent-revision-retry-v0.1.schema.json",
         "schemas/geotask-artifact-registry-v1.0.schema.json",
         "schemas/geotask-result-v1.0.schema.json",
         "CONTRIBUTING.zh-CN.md",
@@ -556,28 +649,29 @@ def test_public_preview_release_assets_are_consistent() -> None:
     workflow = yaml.safe_load(PYPI_WORKFLOW.read_text(encoding="utf-8"))
 
     assert citation["cff-version"] == "1.2.0"
-    assert citation["version"] == "0.2.0"
-    assert str(citation["date-released"]) == "2026-07-30"
+    assert citation["version"] == "0.3.0"
+    assert str(citation["date-released"]) == "2026-07-31"
     assert citation["repository-code"] == "https://github.com/stpku/GeoTask"
     assert citation["url"] == "https://stpku.github.io/GeoTask/"
     assert citation["license"] == "MIT"
 
     assert "v0.1：公共预览" in roadmap
-    assert "v0.2：扩展空间对象与开发体验" in roadmap
-    assert "v0.3：Runtime接口与模型适配" in roadmap
-    assert "v0.4：Domain Pack规范与生态" in roadmap
+    assert "v0.2.0：制品契约" in roadmap
+    assert "v0.3.0：Agent集成（当前稳定）" in roadmap
+    assert "v0.4：Runtime接口、模型适配与对象扩展" in roadmap
+    assert "v0.5：Domain Pack规范与生态" in roadmap
 
-    assert "GeoTask Core v0.2.0 Artifact Contracts Release" in release
-    assert "v0.2.0" in release
-    assert "geotask-core==0.2.0" in release
-    assert "geotask.artifact-validation-report" in release
-    assert "1070 passed, 1 skipped" in release
-    assert "61 passed" in release
-    assert "253 files" in release
-    assert "verify_release_preflight.py" in release
-    assert "normalizes UTF-8 text to LF" in release
-    assert "five valid schemas" in release
-    assert "four public artifacts" in release
+    assert "GeoTask Core v0.3.0 Agent Integration Release" in release
+    assert "v0.3.0" in release
+    assert "geotask-core==0.3.0" in release
+    assert "geotask.agent-evidence-recovery" in release
+    assert "1149 passed, 1 skipped" in release
+    assert "153 passed" in release
+    assert "272 files" in release
+    assert "eight public Artifacts" in release
+    assert "nine valid Schemas" in release
+    assert "task_reexecuted=true" in release
+    assert "model_guess_used=false" in release
 
     assert "/src/geotask_core/ @stpku" in codeowners
     assert "/.release/ @stpku" in codeowners
@@ -622,6 +716,7 @@ def test_public_manifest_requires_release_governance_files() -> None:
         "docs/release_v0_1_0.md",
         "docs/release_v0_1_1.md",
         "docs/release_v0_2_0.md",
+        "docs/release_v0_3_0.md",
         ".github/CODEOWNERS",
         ".github/workflows/publish-pypi.yml",
         "MANIFEST.in",

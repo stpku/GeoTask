@@ -27,7 +27,7 @@ Windows PowerShell：
 从PyPI安装固定版本，并检查CLI与算子注册表：
 
 ```bash
-python -m pip install --no-cache-dir geotask-core==0.2.0
+python -m pip install --no-cache-dir geotask-core==0.3.0
 geotask --help
 geotask inspect operators
 ```
@@ -38,7 +38,7 @@ geotask inspect operators
 python -c "from importlib.metadata import version; print(version('geotask-core'))"
 ```
 
-预期输出为`0.2.0`。
+预期输出为`0.3.0`。
 
 ## 2. 检查安装结果
 

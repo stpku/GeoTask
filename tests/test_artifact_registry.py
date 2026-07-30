@@ -14,6 +14,16 @@ import yaml
 from jsonschema import Draft202012Validator
 
 import geotask_core.cli as cli_module
+from geotask_core.v1.agent_artifacts import (
+    AGENT_EVIDENCE_RECOVERY_SCHEMA_ID,
+    AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION,
+    AGENT_GENERATION_PREPARATION_SCHEMA_ID,
+    AGENT_GENERATION_PREPARATION_SCHEMA_VERSION,
+    AGENT_REVISION_RETRY_SCHEMA_ID,
+    AGENT_REVISION_RETRY_SCHEMA_VERSION,
+    AGENT_REVISION_VERIFICATION_SCHEMA_ID,
+    AGENT_REVISION_VERIFICATION_SCHEMA_VERSION,
+)
 from geotask_core.v1.artifact_registry import (
     ARTIFACT_REGISTRY_SCHEMA_ID,
     ARTIFACT_REGISTRY_VERSION,
@@ -65,7 +75,7 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def test_registry_contains_exactly_four_stable_public_artifacts() -> None:
+def test_registry_contains_exactly_eight_stable_public_artifacts() -> None:
     artifacts = list_artifact_descriptors()
     payload = artifact_registry_payload()["artifact_registry"]
 
@@ -80,10 +90,14 @@ def test_registry_contains_exactly_four_stable_public_artifacts() -> None:
         "geotask.document",
         "geotask.execution-result",
         "geotask.control-evaluation",
+        "geotask.agent-generation-preparation",
+        "geotask.agent-revision-verification",
+        "geotask.agent-revision-retry",
+        "geotask.agent-evidence-recovery",
         "geotask.artifact-validation-report",
     ]
     assert len({item.artifact_id for item in artifacts}) == len(artifacts)
-    assert artifact_registry_payload()["artifact_registry"]["artifact_count"] == 4
+    assert artifact_registry_payload()["artifact_registry"]["artifact_count"] == 8
 
 
 def test_registry_payload_matches_its_public_json_schema() -> None:
@@ -101,10 +115,29 @@ def test_registry_payload_matches_its_public_json_schema() -> None:
 
 def test_registry_schema_metadata_matches_published_json_schemas() -> None:
     expected = {
-        "geotask.document": GEOTASK_DOCUMENT_SCHEMA_ID,
-        "geotask.execution-result": GEOTASK_RESULT_SCHEMA_ID,
-        "geotask.control-evaluation": CONTROL_EVALUATION_SCHEMA_ID,
-        "geotask.artifact-validation-report": ARTIFACT_VALIDATION_SCHEMA_ID,
+        "geotask.document": (GEOTASK_DOCUMENT_SCHEMA_ID, "1.0"),
+        "geotask.execution-result": (GEOTASK_RESULT_SCHEMA_ID, "1.0"),
+        "geotask.control-evaluation": (CONTROL_EVALUATION_SCHEMA_ID, "1.0"),
+        "geotask.agent-generation-preparation": (
+            AGENT_GENERATION_PREPARATION_SCHEMA_ID,
+            AGENT_GENERATION_PREPARATION_SCHEMA_VERSION,
+        ),
+        "geotask.agent-revision-verification": (
+            AGENT_REVISION_VERIFICATION_SCHEMA_ID,
+            AGENT_REVISION_VERIFICATION_SCHEMA_VERSION,
+        ),
+        "geotask.agent-revision-retry": (
+            AGENT_REVISION_RETRY_SCHEMA_ID,
+            AGENT_REVISION_RETRY_SCHEMA_VERSION,
+        ),
+        "geotask.agent-evidence-recovery": (
+            AGENT_EVIDENCE_RECOVERY_SCHEMA_ID,
+            AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION,
+        ),
+        "geotask.artifact-validation-report": (
+            ARTIFACT_VALIDATION_SCHEMA_ID,
+            "1.0",
+        ),
     }
 
     assert GEOTASK_DOCUMENT_SCHEMA_VERSION == "1.0"
@@ -112,10 +145,11 @@ def test_registry_schema_metadata_matches_published_json_schemas() -> None:
         schema_path = REPO_ROOT / artifact.schema_path
         specification_path = REPO_ROOT / artifact.specification_path
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        expected_id, expected_version = expected[artifact.artifact_id]
 
-        assert schema["$id"] == expected[artifact.artifact_id]
+        assert schema["$id"] == expected_id
         assert artifact.schema_id == schema["$id"]
-        assert artifact.schema_version == "1.0"
+        assert artifact.schema_version == expected_version
         assert specification_path.is_file()
         assert specification_path.stat().st_size > 500
 
@@ -126,6 +160,10 @@ def test_schema_bundle_exposes_all_public_schema_ids_offline() -> None:
         GEOTASK_DOCUMENT_SCHEMA_ID,
         GEOTASK_RESULT_SCHEMA_ID,
         CONTROL_EVALUATION_SCHEMA_ID,
+        AGENT_GENERATION_PREPARATION_SCHEMA_ID,
+        AGENT_REVISION_VERIFICATION_SCHEMA_ID,
+        AGENT_REVISION_RETRY_SCHEMA_ID,
+        AGENT_EVIDENCE_RECOVERY_SCHEMA_ID,
         ARTIFACT_VALIDATION_SCHEMA_ID,
     )
 
@@ -158,8 +196,8 @@ def test_schema_bundle_manifest_matches_authoritative_schema_bytes() -> None:
     assert SCHEMA_BUNDLE_VERSION == "1.0"
     assert SCHEMA_BUNDLE_MANIFEST_FILENAME == "schema-bundle-manifest-v1.0.json"
     assert manifest["bundle_version"] == SCHEMA_BUNDLE_VERSION
-    assert manifest["schema_count"] == 5
-    assert len(manifest["schemas"]) == 5
+    assert manifest["schema_count"] == 9
+    assert len(manifest["schemas"]) == 9
 
     for entry in manifest["schemas"]:
         raw = (REPO_ROOT / "schemas" / entry["filename"]).read_bytes()
@@ -176,7 +214,7 @@ def test_schema_bundle_verification_supports_all_and_one_artifact() -> None:
 
     assert all_report["valid"] is True
     assert all_report["bundle_version"] == SCHEMA_BUNDLE_VERSION
-    assert all_report["checked_count"] == 5
+    assert all_report["checked_count"] == 9
     assert all(item["valid"] for item in all_report["schemas"])
     assert all_report["diagnostics"] == []
 
@@ -253,6 +291,10 @@ def test_schema_bundle_build_configuration_is_public_and_complete() -> None:
     pyproject = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
     manifest = (REPO_ROOT / "MANIFEST.in").read_text(encoding="utf-8")
     expected_files = {
+        "geotask-agent-generation-preparation-v0.1.schema.json",
+        "geotask-agent-integration-v0.1.schema.json",
+        "geotask-agent-revision-retry-v0.1.schema.json",
+        "geotask-agent-revision-verification-v0.1.schema.json",
         "geotask-artifact-registry-v1.0.schema.json",
         "geotask-artifact-validation-v1.0.schema.json",
         "geotask-v1.0.schema.json",
@@ -271,6 +313,10 @@ def test_registry_generation_and_validation_guidance_is_explicit() -> None:
     document = get_artifact_descriptor("geotask.document")
     execution = get_artifact_descriptor("geotask.execution-result")
     control = get_artifact_descriptor("geotask.control-evaluation")
+    preparation = get_artifact_descriptor("geotask.agent-generation-preparation")
+    verification = get_artifact_descriptor("geotask.agent-revision-verification")
+    retry = get_artifact_descriptor("geotask.agent-revision-retry")
+    recovery = get_artifact_descriptor("geotask.agent-evidence-recovery")
     validation_report = get_artifact_descriptor(
         "geotask.artifact-validation-report"
     )
@@ -293,6 +339,28 @@ def test_registry_generation_and_validation_guidance_is_explicit() -> None:
     )
     assert control.wrapper_key == "control_evaluation"
     assert "never execute next_action" in control.execution_boundary
+
+    assert "geotask agent prepare" in str(preparation.generation_command)
+    assert preparation.wrapper_key == "agent_generation_preparation"
+    assert preparation.schema_version == "0.1"
+    assert "does not prepare or execute" in preparation.execution_boundary
+
+    assert "geotask agent retry" in str(verification.generation_command)
+    assert "--verification-output" in str(verification.generation_command)
+    assert verification.wrapper_key == "agent_revision_verification"
+    assert verification.schema_version == "0.1"
+    assert "does not rerun diff verification" in verification.execution_boundary
+
+    assert "geotask agent retry" in str(retry.generation_command)
+    assert retry.wrapper_key == "agent_revision_retry"
+    assert retry.schema_version == "0.1"
+    assert "does not repeat the retry" in retry.execution_boundary
+
+    assert "geotask agent recover" in str(recovery.generation_command)
+    assert recovery.wrapper_key == "agent_integration"
+    assert recovery.schema_version == "0.1"
+    assert recovery.schema_id == AGENT_EVIDENCE_RECOVERY_SCHEMA_ID
+    assert "does not reacquire evidence" in recovery.execution_boundary
 
     assert "artifact validate <artifact-id>" in str(
         validation_report.generation_command
@@ -350,14 +418,19 @@ def test_public_manifest_requires_artifact_registry_assets() -> None:
         "src/geotask_core/v1/artifact_registry.py",
         "src/geotask_core/v1/schema_bundle.py",
         "src/geotask_core/v1/artifact_validation.py",
+        "src/geotask_core/v1/agent_artifacts.py",
         ".release/verify_release_preflight.py",
         ".release/verify_schema_distribution.py",
         "docs/spec/geotask-artifact-registry-v1.0.md",
         "docs/spec/geotask-artifact-validation-v1.0.md",
+        "schemas/geotask-agent-generation-preparation-v0.1.schema.json",
+        "schemas/geotask-agent-revision-verification-v0.1.schema.json",
+        "schemas/geotask-agent-revision-retry-v0.1.schema.json",
         "schemas/geotask-artifact-registry-v1.0.schema.json",
         "schemas/geotask-artifact-validation-v1.0.schema.json",
         "tests/test_artifact_registry.py",
         "tests/test_artifact_validation.py",
+        "tests/test_agent_artifacts.py",
         "tests/test_release_preflight.py",
     ):
         assert path in required
@@ -378,6 +451,20 @@ def test_public_namespaces_export_artifact_registry() -> None:
         assert namespace.ARTIFACT_VALIDATION_SCHEMA_VERSION == (
             ARTIFACT_VALIDATION_SCHEMA_VERSION
         )
+        assert namespace.AGENT_GENERATION_PREPARATION_SCHEMA_ID == (
+            AGENT_GENERATION_PREPARATION_SCHEMA_ID
+        )
+        assert namespace.AGENT_GENERATION_PREPARATION_SCHEMA_VERSION == "0.1"
+        assert namespace.AGENT_REVISION_VERIFICATION_SCHEMA_ID == (
+            AGENT_REVISION_VERIFICATION_SCHEMA_ID
+        )
+        assert namespace.AGENT_REVISION_VERIFICATION_SCHEMA_VERSION == "0.1"
+        assert namespace.AGENT_REVISION_RETRY_SCHEMA_ID == AGENT_REVISION_RETRY_SCHEMA_ID
+        assert namespace.AGENT_REVISION_RETRY_SCHEMA_VERSION == "0.1"
+        assert namespace.AGENT_EVIDENCE_RECOVERY_SCHEMA_ID == (
+            AGENT_EVIDENCE_RECOVERY_SCHEMA_ID
+        )
+        assert namespace.AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION == "0.1"
         assert namespace.ArtifactDescriptor is ArtifactDescriptor
         assert namespace.list_artifact_descriptors is list_artifact_descriptors
         assert namespace.get_artifact_descriptor is get_artifact_descriptor
@@ -461,14 +548,14 @@ def test_schema_verify_supports_text_json_and_exact_artifact() -> None:
 
     assert text_result.returncode == 0
     assert text_result.stderr == ""
-    assert "Schema Bundle valid: 5 schema(s), version 1.0" in text_result.stdout
-    assert text_result.stdout.count("sha256=") == 5
+    assert "Schema Bundle valid: 9 schema(s), version 1.0" in text_result.stdout
+    assert text_result.stdout.count("sha256=") == 9
 
     assert json_result.returncode == 0
     assert json_result.stderr == ""
     all_report = json.loads(json_result.stdout)["schema_bundle_verification"]
     assert all_report["valid"] is True
-    assert all_report["checked_count"] == 5
+    assert all_report["checked_count"] == 9
     assert all_report["diagnostics"] == []
 
     assert exact_result.returncode == 0
@@ -552,7 +639,7 @@ def test_inspect_schemas_default_yaml_is_parseable() -> None:
     payload = yaml.safe_load(result.stdout)
     registry = payload["artifact_registry"]
     assert registry["registry_version"] == "1.0"
-    assert registry["artifact_count"] == 4
+    assert registry["artifact_count"] == 8
     assert registry["artifacts"][0]["artifact_id"] == "geotask.document"
     assert registry["artifacts"][0]["generation_command"] is None
 
@@ -567,7 +654,10 @@ def test_inspect_schemas_json_is_stable_machine_readable_output() -> None:
     assert payload == artifact_registry_payload()
     for artifact in payload["artifact_registry"]["artifacts"]:
         assert artifact["schema_id"].startswith("https://")
-        assert artifact["schema_version"] == "1.0"
+        expected_version = (
+            "0.1" if artifact["artifact_id"].startswith("geotask.agent-") else "1.0"
+        )
+        assert artifact["schema_version"] == expected_version
         assert artifact["validation_command"].startswith(
             "geotask artifact validate "
         )
@@ -609,10 +699,10 @@ def test_inspect_schemas_can_include_bundle_integrity_results() -> None:
     assert all_result.returncode == 0
     assert all_result.stderr == ""
     all_payload = json.loads(all_result.stdout)
-    assert all_payload["artifact_registry"]["artifact_count"] == 4
+    assert all_payload["artifact_registry"]["artifact_count"] == 8
     all_verification = all_payload["schema_bundle_verification"]
     assert all_verification["valid"] is True
-    assert all_verification["checked_count"] == 5
+    assert all_verification["checked_count"] == 9
     assert all_verification["diagnostics"] == []
 
     assert exact_result.returncode == 0
@@ -636,7 +726,7 @@ def test_inspect_schemas_verify_emits_json_before_nonzero_exit(
         "schema_bundle_verification": {
             "valid": False,
             "bundle_version": "1.0",
-            "checked_count": 5,
+            "checked_count": 9,
             "schemas": [],
             "diagnostics": [
                 {
@@ -660,7 +750,7 @@ def test_inspect_schemas_verify_emits_json_before_nonzero_exit(
     assert exc_info.value.code == 1
     assert captured.err == ""
     payload = json.loads(captured.out)
-    assert payload["artifact_registry"]["artifact_count"] == 4
+    assert payload["artifact_registry"]["artifact_count"] == 8
     assert payload["schema_bundle_verification"]["valid"] is False
     assert payload["schema_bundle_verification"]["diagnostics"][0]["code"] == (
         "invalid_bundled_schema"

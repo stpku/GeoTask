@@ -259,6 +259,102 @@ rerun a GeoTask, execute `next_action`, or release outputs.
 validation framework for argument handling, schema metadata, diagnostics, and
 text/JSON reports. Their strict loaders remain artifact-specific.
 
+## Agent Integration Preview
+
+Discover the model-neutral Agent tool contract:
+
+```bash
+python -m geotask_core.cli agent inspect --format json
+```
+
+The profile exposes `inspect_artifacts`, `validate_artifact`, `execute_task`, and
+`evaluate_control`. It also declares mandatory rules: unknown is not a boolean,
+blocked outputs remain blocked, recovered assertions are recomputed, and
+`next_action` is never executed by Core.
+
+Prepare an Agent-generated draft before trusting or executing it:
+
+```bash
+python -m geotask_core.cli agent prepare \
+  examples/core/agent_generated_distance_draft.yaml \
+  --repaired-output prepared.yaml \
+  --output preparation-report.json
+```
+
+`agent prepare` runs strict validation, applies only mechanical protocol repairs,
+revalidates, and then executes with `local_only`. It may add Schema metadata,
+stable task/assertion IDs, `operator_set`, local execution defaults, and a
+fail-closed output contract. It never changes coordinates, chooses an operator,
+infers `object_refs`, invents evidence, or runs a non-local mode.
+
+A `valid` or `repaired` report exits successfully. A `blocked` report is still
+written as JSON but exits with code `2`, and `--repaired-output` is not created.
+Its `revision_request.required_changes` lists unresolved paths, action types, and
+safe candidate inventories. Candidate values are never selected automatically.
+Use the returned `prepared_document` as the revision base, preserve the blocked
+report, and submit the revision through the changed-path gate:
+
+```bash
+geotask agent prepare examples/core/agent_generated_distance_blocked.yaml \
+  --output blocked-preparation.json
+# Agent revises only after selecting explicit semantics.
+geotask agent retry \
+  blocked-preparation.json \
+  examples/core/agent_generated_distance_revised.yaml \
+  --verification-output revision-verification.json \
+  --prepared-output prepared.yaml \
+  --output retry-report.json
+```
+
+`agent retry` reconstructs the revision request, verifies the base SHA-256, and
+rejects changes outside requested paths before validation or execution. A revised
+operator may update `operator_set`, but the inventory must exactly match operators
+used by revised assertions. Coordinate, evidence, metadata, goal, control-policy,
+and task-order changes are rejected unless explicitly requested. Rejection exits
+with code `2`, writes a machine-readable report, and never creates
+`--prepared-output`.
+
+The preparation, revision-verification, and retry traces are registered public
+Artifacts backed by offline Schemas. Validate retained reports without repeating
+the workflow:
+
+```bash
+geotask artifact validate geotask.agent-generation-preparation blocked-preparation.json --format json
+geotask artifact validate geotask.agent-revision-verification revision-verification.json --format json
+geotask artifact validate geotask.agent-revision-retry retry-report.json --format json
+geotask artifact validate geotask.agent-evidence-recovery recovery-report.json --format json
+```
+
+Artifact validity is structural: a valid report may record `blocked` or `rejected`.
+Use `--compact` for one-line JSON and `--format text` for a concise summary.
+
+Run the GT08 end-to-end recovery demo:
+
+```bash
+python -m geotask_core.cli agent recover \
+  examples/core/evidence_request_plan.yaml \
+  --evidence examples/core/evidence_request_verified_state.yaml \
+  --output recovery-report.json
+```
+
+`agent recover` first executes the unchanged document and preserves the trigger
+assertion as `unverifiable`. It then verifies every declared required evidence
+field, evaluates `resume_when`, materializes only the trigger's single named
+condition to literal `true` in an in-memory copy, reruns the task, and evaluates
+the final control state.
+
+The command defaults to structured JSON. `--compact` emits one-line JSON,
+`--format text` prints a concise summary, and `--output <file.json>` writes JSON
+without status text. A complete but unsatisfied or incomplete evidence state is
+an expected `blocked` report and exits successfully; malformed contracts and
+unsupported condition shapes fail non-zero. The command never mutates the input
+GeoTask, calls a model, executes `next_action`, or releases an output.
+
+The output is the registered `geotask.agent-evidence-recovery` Artifact backed by
+`geotask-agent-integration-v0.1.schema.json`. Validating that file is read-only and
+does not reacquire evidence or repeat recovery. A structurally valid file may still
+record `state=blocked`.
+
 ## Normalize And Eval
 
 ```bash

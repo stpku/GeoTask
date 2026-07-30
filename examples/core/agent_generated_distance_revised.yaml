@@ -1,0 +1,42 @@
+# Fictional Agent revision created from the blocked preparation report.
+# The Agent explicitly selected a registered operator and existing object ids;
+# GeoTask Core still performs final validation and deterministic execution.
+geotask:
+  id: "agent-generated-distance-blocked"
+  schema_version: "1.0"
+  name: "agent-generated-distance-blocked"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  start:
+    type: "point"
+    coordinates: [0, 0]
+  finish:
+    type: "point"
+    coordinates: [3, 4]
+
+operator_set: ["distance_2d"]
+
+tasks:
+  - id: "task_1"
+    goal: "Measure the deterministic distance between the two explicit points."
+    assertions:
+      - id: "task_1_assertion_1"
+        operator: "distance_2d"
+        object_refs: ["start", "finish"]
+        expected_type: "number"
+
+execution:
+  mode: "local_only"
+  steps: []
+
+output_contract:
+  format: "structured"
+  required_fields: []
+  allow_model_inference: false

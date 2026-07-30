@@ -10,6 +10,16 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from geotask_core.v1.agent_artifacts import (
+    AGENT_EVIDENCE_RECOVERY_SCHEMA_ID,
+    AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION,
+    AGENT_GENERATION_PREPARATION_SCHEMA_ID,
+    AGENT_GENERATION_PREPARATION_SCHEMA_VERSION,
+    AGENT_REVISION_RETRY_SCHEMA_ID,
+    AGENT_REVISION_RETRY_SCHEMA_VERSION,
+    AGENT_REVISION_VERIFICATION_SCHEMA_ID,
+    AGENT_REVISION_VERIFICATION_SCHEMA_VERSION,
+)
 from geotask_core.v1.control_evaluation import (
     CONTROL_EVALUATION_SCHEMA_ID,
     CONTROL_EVALUATION_SCHEMA_VERSION,
@@ -150,6 +160,127 @@ _ARTIFACTS = (
         ),
     ),
     ArtifactDescriptor(
+        artifact_id="geotask.agent-generation-preparation",
+        title="GeoTask Agent Generation Preparation Report v0.1",
+        kind="agent_generation_preparation_report",
+        schema_id=AGENT_GENERATION_PREPARATION_SCHEMA_ID,
+        schema_version=AGENT_GENERATION_PREPARATION_SCHEMA_VERSION,
+        schema_path=(
+            "schemas/geotask-agent-generation-preparation-v0.1.schema.json"
+        ),
+        specification_path="docs/spec/geotask-agent-integration-profile-v0.1.md",
+        wrapper_key="agent_generation_preparation",
+        generation_command=(
+            "geotask agent prepare <generated.yaml> "
+            "--output <preparation-report.json>"
+        ),
+        generation_note=(
+            "Produced by fail-closed validation, mechanical protocol repair, "
+            "revalidation, and optional deterministic local execution."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.agent-generation-preparation "
+            "<preparation-report.json>"
+        ),
+        description=(
+            "Versioned Agent draft preparation trace containing diagnostics, "
+            "mechanical repairs, revision request, prepared document, and result."
+        ),
+        execution_boundary=(
+            "Validating the report does not prepare or execute the embedded task."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.agent-revision-verification",
+        title="GeoTask Agent Revision Verification Report v0.1",
+        kind="agent_revision_verification_report",
+        schema_id=AGENT_REVISION_VERIFICATION_SCHEMA_ID,
+        schema_version=AGENT_REVISION_VERIFICATION_SCHEMA_VERSION,
+        schema_path=(
+            "schemas/geotask-agent-revision-verification-v0.1.schema.json"
+        ),
+        specification_path="docs/spec/geotask-agent-integration-profile-v0.1.md",
+        wrapper_key="agent_revision_verification",
+        generation_command=(
+            "geotask agent retry <blocked-report.json> <revised.yaml> "
+            "--verification-output <revision-verification.json>"
+        ),
+        generation_note=(
+            "Produced directly by agent retry after deterministic changed-path "
+            "verification and before any re-execution."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.agent-revision-verification "
+            "<revision-verification.json>"
+        ),
+        description=(
+            "Requested-path diff decision with stable document fingerprints, "
+            "resolved changes, and fail-closed violations."
+        ),
+        execution_boundary=(
+            "Validating the report does not rerun diff verification or execute a task."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.agent-revision-retry",
+        title="GeoTask Agent Revision Retry Report v0.1",
+        kind="agent_revision_retry_report",
+        schema_id=AGENT_REVISION_RETRY_SCHEMA_ID,
+        schema_version=AGENT_REVISION_RETRY_SCHEMA_VERSION,
+        schema_path="schemas/geotask-agent-revision-retry-v0.1.schema.json",
+        specification_path="docs/spec/geotask-agent-integration-profile-v0.1.md",
+        wrapper_key="agent_revision_retry",
+        generation_command=(
+            "geotask agent retry <blocked-report.json> <revised.yaml> "
+            "--output <retry-report.json>"
+        ),
+        generation_note=(
+            "Produced by guarded revision verification followed by fail-closed "
+            "preparation and deterministic execution only after acceptance."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.agent-revision-retry "
+            "<retry-report.json>"
+        ),
+        description=(
+            "Composite guarded retry trace containing the revision decision and "
+            "optional preparation/execution report."
+        ),
+        execution_boundary=(
+            "Validating the report does not repeat the retry, preparation, or task."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.agent-evidence-recovery",
+        title="GeoTask Agent Evidence Recovery Report v0.1",
+        kind="agent_evidence_recovery_report",
+        schema_id=AGENT_EVIDENCE_RECOVERY_SCHEMA_ID,
+        schema_version=AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION,
+        schema_path="schemas/geotask-agent-integration-v0.1.schema.json",
+        specification_path="docs/spec/geotask-agent-integration-profile-v0.1.md",
+        wrapper_key="agent_integration",
+        generation_command=(
+            "geotask agent recover <task.yaml> --evidence <state.yaml> "
+            "--output <recovery-report.json>"
+        ),
+        generation_note=(
+            "Produced by fail-closed evidence completeness checks, read-only control "
+            "evaluation, and deterministic re-execution only after resume conditions pass."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.agent-evidence-recovery "
+            "<recovery-report.json>"
+        ),
+        description=(
+            "Auditable before/resume/after evidence-recovery trace containing execution "
+            "results, control evaluations, blocked outputs, and explicit safety flags."
+        ),
+        execution_boundary=(
+            "Validating the report does not reacquire evidence, rerun recovery, execute "
+            "next_action, or release outputs."
+        ),
+    ),
+    ArtifactDescriptor(
         artifact_id="geotask.artifact-validation-report",
         title="GeoTask Artifact Validation Report v1.0",
         kind="artifact_validation_report",
@@ -224,6 +355,14 @@ __all__ = [
     "GEOTASK_DOCUMENT_SCHEMA_VERSION",
     "ARTIFACT_VALIDATION_SCHEMA_ID",
     "ARTIFACT_VALIDATION_SCHEMA_VERSION",
+    "AGENT_GENERATION_PREPARATION_SCHEMA_ID",
+    "AGENT_GENERATION_PREPARATION_SCHEMA_VERSION",
+    "AGENT_REVISION_VERIFICATION_SCHEMA_ID",
+    "AGENT_REVISION_VERIFICATION_SCHEMA_VERSION",
+    "AGENT_REVISION_RETRY_SCHEMA_ID",
+    "AGENT_REVISION_RETRY_SCHEMA_VERSION",
+    "AGENT_EVIDENCE_RECOVERY_SCHEMA_ID",
+    "AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION",
     "ArtifactDescriptor",
     "list_artifact_descriptors",
     "get_artifact_descriptor",

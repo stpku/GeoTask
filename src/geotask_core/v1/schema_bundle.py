@@ -9,6 +9,10 @@ from pathlib import Path
 from typing import Any
 
 from geotask_core.v1.artifact_registry import (
+    AGENT_EVIDENCE_RECOVERY_SCHEMA_ID,
+    AGENT_GENERATION_PREPARATION_SCHEMA_ID,
+    AGENT_REVISION_RETRY_SCHEMA_ID,
+    AGENT_REVISION_VERIFICATION_SCHEMA_ID,
     ARTIFACT_REGISTRY_SCHEMA_ID,
     ARTIFACT_VALIDATION_SCHEMA_ID,
     GEOTASK_DOCUMENT_SCHEMA_ID,
@@ -25,6 +29,14 @@ _SCHEMA_FILENAME_BY_ID = {
     GEOTASK_DOCUMENT_SCHEMA_ID: "geotask-v1.0.schema.json",
     GEOTASK_RESULT_SCHEMA_ID: "geotask-result-v1.0.schema.json",
     CONTROL_EVALUATION_SCHEMA_ID: "geotask-control-evaluation-v1.0.schema.json",
+    AGENT_GENERATION_PREPARATION_SCHEMA_ID: (
+        "geotask-agent-generation-preparation-v0.1.schema.json"
+    ),
+    AGENT_REVISION_VERIFICATION_SCHEMA_ID: (
+        "geotask-agent-revision-verification-v0.1.schema.json"
+    ),
+    AGENT_REVISION_RETRY_SCHEMA_ID: "geotask-agent-revision-retry-v0.1.schema.json",
+    AGENT_EVIDENCE_RECOVERY_SCHEMA_ID: "geotask-agent-integration-v0.1.schema.json",
     ARTIFACT_VALIDATION_SCHEMA_ID: "geotask-artifact-validation-v1.0.schema.json",
 }
 BUNDLED_SCHEMA_IDS = tuple(_SCHEMA_FILENAME_BY_ID)

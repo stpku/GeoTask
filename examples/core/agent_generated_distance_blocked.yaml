@@ -1,0 +1,27 @@
+# Fictional Agent-generated draft with semantic binding errors.
+# Core may expose registered operators and existing object ids as candidates,
+# but it must not select the correct operator or object binding automatically.
+geotask:
+  id: "agent-generated-distance-blocked"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  start:
+    type: "point"
+    coordinates: [0, 0]
+  finish:
+    type: "point"
+    coordinates: [3, 4]
+
+tasks:
+  - goal: "Measure the deterministic distance between the two explicit points."
+    assertions:
+      - operator: "distance"
+        object_refs: ["start", "destination"]
+        expected_type: "number"

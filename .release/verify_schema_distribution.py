@@ -26,6 +26,10 @@ BUNDLE_MANIFEST_PATH = (
     "geotask_core/schemas/schema-bundle-manifest-v1.0.json"
 )
 EXPECTED_SCHEMA_FILENAMES = {
+    "geotask-agent-generation-preparation-v0.1.schema.json",
+    "geotask-agent-integration-v0.1.schema.json",
+    "geotask-agent-revision-retry-v0.1.schema.json",
+    "geotask-agent-revision-verification-v0.1.schema.json",
     "geotask-artifact-registry-v1.0.schema.json",
     "geotask-artifact-validation-v1.0.schema.json",
     "geotask-control-evaluation-v1.0.schema.json",

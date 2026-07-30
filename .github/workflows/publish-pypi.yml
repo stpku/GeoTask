@@ -86,10 +86,25 @@ jobs:
           printf 'ground_zone_clear: false\nclearance_evidence_age_seconds: 8\n' > control-state.yaml
           .venv-schema-smoke/bin/geotask control evaluate examples/core/uav_arrival_ground_clearance_release.yaml --result execution-result.json --state control-state.yaml --output control-evaluation.json
           .venv-schema-smoke/bin/geotask artifact validate geotask.control-evaluation control-evaluation.json --format json > control-validation.json
-          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("schema-verification.json", encoding="utf-8"))["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 5'
+          set +e
+          .venv-schema-smoke/bin/geotask agent prepare examples/core/agent_generated_distance_blocked.yaml --output blocked-preparation.json --compact
+          blocked_exit=$?
+          set -e
+          test "$blocked_exit" -eq 2
+          .venv-schema-smoke/bin/geotask artifact validate geotask.agent-generation-preparation blocked-preparation.json --format json > agent-preparation-validation.json
+          .venv-schema-smoke/bin/geotask agent retry blocked-preparation.json examples/core/agent_generated_distance_revised.yaml --output revision-retry.json --verification-output revision-verification.json --prepared-output retried-prepared.yaml --compact
+          .venv-schema-smoke/bin/geotask artifact validate geotask.agent-revision-verification revision-verification.json --format json > agent-verification-validation.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.agent-revision-retry revision-retry.json --format json > agent-retry-validation.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.artifact-validation-report agent-retry-validation.json --format json > agent-validation-report-validation.json
+          .venv-schema-smoke/bin/geotask agent recover examples/core/evidence_request_plan.yaml --evidence examples/core/evidence_request_verified_state.yaml --compact > agent-recovery.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.agent-evidence-recovery agent-recovery.json --format json > agent-recovery-validation.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.artifact-validation-report agent-recovery-validation.json --format json > recovery-validation-report-validation.json
+          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("schema-verification.json", encoding="utf-8"))["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 9'
           .venv-schema-smoke/bin/python -c 'import json; schema=json.load(open("execution-result.schema.json", encoding="utf-8")); assert schema["$id"].endswith("geotask-result-v1.0.schema.json")'
           .venv-schema-smoke/bin/python -c 'import json; payload=json.load(open("schema-inspection.json", encoding="utf-8")); assert payload["artifact_registry"]["artifact_count"] == 1; report=payload["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 1'
-          .venv-schema-smoke/bin/python -c 'import json; files=("document-validation.json","result-validation.json","control-validation.json","validation-report-validation.json"); reports=[json.load(open(path, encoding="utf-8"))["artifact_validation"] for path in files]; assert [r["artifact_id"] for r in reports] == ["geotask.document","geotask.execution-result","geotask.control-evaluation","geotask.artifact-validation-report"]; assert all(r["valid"] is True and r["schema_verified"] is True for r in reports)'
+          .venv-schema-smoke/bin/python -c 'import json; files=("document-validation.json","result-validation.json","control-validation.json","agent-preparation-validation.json","agent-verification-validation.json","agent-retry-validation.json","agent-recovery-validation.json","validation-report-validation.json"); reports=[json.load(open(path, encoding="utf-8"))["artifact_validation"] for path in files]; assert [r["artifact_id"] for r in reports] == ["geotask.document","geotask.execution-result","geotask.control-evaluation","geotask.agent-generation-preparation","geotask.agent-revision-verification","geotask.agent-revision-retry","geotask.agent-evidence-recovery","geotask.artifact-validation-report"]; assert all(r["valid"] is True and r["schema_verified"] is True for r in reports)'
+          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("agent-validation-report-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.artifact-validation-report" and report["valid"] is True and report["summary"]["validated_artifact_id"] == "geotask.agent-revision-retry"'
+          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("recovery-validation-report-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.artifact-validation-report" and report["valid"] is True and report["summary"]["validated_artifact_id"] == "geotask.agent-evidence-recovery"'
       - id: package-version
         name: Read package version
         shell: bash

@@ -17,7 +17,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT_PATH = ROOT / ".release" / "verify_release_preflight.py"
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 
 def _load_preflight():
@@ -88,8 +88,8 @@ def test_release_preflight_accepts_current_source_contract() -> None:
     assert report["valid"] is True
     assert report["version"] == VERSION
     assert report["tag"] == f"v{VERSION}"
-    assert report["release_date"] == "2026-07-30"
-    assert report["release_notes"] == "docs/release_v0_2_0.md"
+    assert report["release_date"] == "2026-07-31"
+    assert report["release_notes"] == "docs/release_v0_3_0.md"
     assert report["artifacts_checked"] is False
     assert report["errors"] == []
     assert all(check["valid"] for check in report["checks"])
@@ -118,7 +118,7 @@ def test_release_preflight_rejects_expected_version_mismatch() -> None:
 
     report = preflight.verify_release_preflight(
         ROOT,
-        expected_version="0.2.1",
+        expected_version="0.3.1",
     )["release_preflight"]
 
     assert report["valid"] is False
@@ -152,7 +152,7 @@ def test_release_preflight_cli_emits_machine_readable_failure() -> None:
             "--root",
             str(ROOT),
             "--expected-version",
-            "0.2.1",
+            "0.3.1",
             "--format",
             "json",
         ],
@@ -167,7 +167,7 @@ def test_release_preflight_cli_emits_machine_readable_failure() -> None:
     report = json.loads(result.stdout)["release_preflight"]
     assert report["valid"] is False
     assert report["version"] == VERSION
-    assert report["expected_version"] == "0.2.1"
+    assert report["expected_version"] == "0.3.1"
     assert any("expected release version" in error for error in report["errors"])
     assert "Traceback" not in result.stdout
 

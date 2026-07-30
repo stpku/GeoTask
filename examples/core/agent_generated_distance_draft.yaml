@@ -1,0 +1,27 @@
+# Fictional Agent-generated draft with mechanical protocol omissions.
+# GeoTask Core may add IDs and fail-closed execution/output defaults, but it
+# must not change coordinates, operator selection, or object bindings.
+geotask:
+  id: "agent-generated-distance-draft"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  start:
+    type: "point"
+    coordinates: [0, 0]
+  finish:
+    type: "point"
+    coordinates: [3, 4]
+
+tasks:
+  - goal: "Measure the deterministic distance between the two explicit points."
+    assertions:
+      - operator: "distance_2d"
+        object_refs: ["start", "finish"]
+        expected_type: "number"

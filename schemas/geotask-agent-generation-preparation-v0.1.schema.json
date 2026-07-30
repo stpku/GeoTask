@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-agent-generation-preparation-v0.1.schema.json",
+  "title": "GeoTask Agent Generation Preparation Report v0.1",
+  "type": "object",
+  "required": ["agent_generation_preparation"],
+  "additionalProperties": false,
+  "properties": {
+    "agent_generation_preparation": {"$ref": "#/$defs/report"}
+  },
+  "$defs": {
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "diagnostic": {
+      "type": "object",
+      "required": ["path", "code", "message", "severity"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {"type": "string"},
+        "code": {"$ref": "#/$defs/nonEmptyString"},
+        "message": {"$ref": "#/$defs/nonEmptyString"},
+        "severity": {"enum": ["error", "warning"]},
+        "suggested_fix": {"type": "string"}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["valid", "diagnostics"],
+      "additionalProperties": false,
+      "properties": {
+        "valid": {"type": "boolean"},
+        "diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}}
+      }
+    },
+    "repair": {
+      "type": "object",
+      "required": ["code", "path", "before", "after", "reason", "domain_inference_used", "model_called"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"$ref": "#/$defs/nonEmptyString"},
+        "path": {"$ref": "#/$defs/nonEmptyString"},
+        "before": true,
+        "after": true,
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "domain_inference_used": {"const": false},
+        "model_called": {"const": false}
+      }
+    },
+    "revisionChange": {
+      "type": "object",
+      "required": ["code", "path", "action", "instruction", "candidate_values", "selected_value", "automatic_change_allowed", "retryable", "requires_external_input"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"$ref": "#/$defs/nonEmptyString"},
+        "path": {"$ref": "#/$defs/nonEmptyString"},
+        "action": {"$ref": "#/$defs/nonEmptyString"},
+        "instruction": {"$ref": "#/$defs/nonEmptyString"},
+        "candidate_values": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "selected_value": {"type": "null"},
+        "automatic_change_allowed": {"const": false},
+        "retryable": {"type": "boolean"},
+        "requires_external_input": {"type": "boolean"}
+      }
+    },
+    "revisionRequest": {
+      "type": "object",
+      "required": ["request_version", "state", "next_action", "revision_base", "revision_base_sha256", "required_changes", "forbidden_changes", "retry_command", "resume_when", "model_called", "automatic_revision_applied"],
+      "additionalProperties": false,
+      "properties": {
+        "request_version": {"const": "0.1"},
+        "state": {"enum": ["not_required", "required", "routing_required"]},
+        "next_action": {"enum": ["none", "revise_generated_document", "route_to_authorized_runtime"]},
+        "revision_base": {"const": "prepared_document"},
+        "revision_base_sha256": {"$ref": "#/$defs/sha256"},
+        "required_changes": {"type": "array", "items": {"$ref": "#/$defs/revisionChange"}},
+        "forbidden_changes": {"type": "array", "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "retry_command": {"const": "geotask agent retry <blocked-report.json> <revised.yaml>"},
+        "resume_when": {"const": "final_validation.valid == true"},
+        "model_called": {"const": false},
+        "automatic_revision_applied": {"const": false}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "not_required"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "next_action": {"const": "none"},
+              "required_changes": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"state": {"const": "required"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "next_action": {"const": "revise_generated_document"},
+              "required_changes": {"minItems": 1}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"state": {"const": "routing_required"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "next_action": {"const": "route_to_authorized_runtime"},
+              "required_changes": {"minItems": 1}
+            }
+          }
+        }
+      ]
+    },
+    "repairPolicy": {
+      "type": "object",
+      "required": ["mechanical_only", "source_mutated", "domain_inference_used", "model_called", "non_local_execution_allowed"],
+      "additionalProperties": false,
+      "properties": {
+        "mechanical_only": {"const": true},
+        "source_mutated": {"const": false},
+        "domain_inference_used": {"const": false},
+        "model_called": {"const": false},
+        "non_local_execution_allowed": {"const": false}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["repair_count", "initial_error_count", "residual_error_count", "task_executed", "execution_status", "overall_status", "check_count"],
+      "additionalProperties": false,
+      "properties": {
+        "repair_count": {"type": "integer", "minimum": 0},
+        "initial_error_count": {"type": "integer", "minimum": 0},
+        "residual_error_count": {"type": "integer", "minimum": 0},
+        "task_executed": {"type": "boolean"},
+        "execution_status": {"type": "string"},
+        "overall_status": {"type": "string"},
+        "check_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "report": {
+      "type": "object",
+      "required": ["report_version", "state", "repair_policy", "initial_validation", "repairs", "final_validation", "revision_request", "prepared_document", "execution_result", "summary"],
+      "additionalProperties": false,
+      "properties": {
+        "report_version": {"const": "0.1"},
+        "state": {"enum": ["valid", "repaired", "blocked"]},
+        "repair_policy": {"$ref": "#/$defs/repairPolicy"},
+        "initial_validation": {"$ref": "#/$defs/validation"},
+        "repairs": {"type": "array", "items": {"$ref": "#/$defs/repair"}},
+        "final_validation": {"$ref": "#/$defs/validation"},
+        "revision_request": {"$ref": "#/$defs/revisionRequest"},
+        "prepared_document": {"type": "object"},
+        "execution_result": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "required": ["geotask_result"],
+              "additionalProperties": false,
+              "properties": {"geotask_result": {"type": "object"}}
+            }
+          ]
+        },
+        "summary": {"$ref": "#/$defs/summary"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "blocked"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "final_validation": {"properties": {"valid": {"const": false}}},
+              "execution_result": {"type": "null"},
+              "summary": {"properties": {"task_executed": {"const": false}}},
+              "revision_request": {"properties": {"state": {"enum": ["required", "routing_required"]}}}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"state": {"enum": ["valid", "repaired"]}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "final_validation": {"properties": {"valid": {"const": true}}},
+              "execution_result": {"type": "object"},
+              "summary": {"properties": {"task_executed": {"const": true}}},
+              "revision_request": {"properties": {"state": {"const": "not_required"}}}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"state": {"const": "valid"}}, "required": ["state"]},
+          "then": {"properties": {"repairs": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"state": {"const": "repaired"}}, "required": ["state"]},
+          "then": {"properties": {"repairs": {"minItems": 1}}}
+        }
+      ]
+    }
+  }
+}

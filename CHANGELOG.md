@@ -4,6 +4,16 @@ All notable public changes to GeoTask Core are documented here.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-31
+
+### Added
+
+- Add the model-neutral GeoTask Agent Integration Profile v0.1 with four discoverable tools: Artifact inspection, Artifact validation, deterministic task execution, and read-only control evaluation.
+- Add `geotask agent inspect`, fail-closed `geotask agent prepare`, guarded `geotask agent retry`, and fail-closed `geotask agent recover` commands. Generated drafts are strictly validated, mechanically repaired, revalidated, and locally executed without inferring coordinates, operators, object bindings, evidence, or domain policy. Blocked preparation reports include a versioned revision request; retry recomputes that request, verifies the revision-base SHA-256, rejects changes outside requested paths, and executes only after the diff is accepted.
+- Register `agent_generation_preparation/0.1`, `agent_revision_verification/0.1`, `agent_revision_retry/0.1`, and `agent_integration/0.1` evidence-recovery reports as public Artifacts with offline Draft 2020-12 Schemas, strict loaders, unified Artifact validation, and distribution integrity gates. The Registry now exposes eight Artifacts and the Schema Bundle contains nine Schemas.
+- Extend GT08 with fictional verified schedule evidence and deterministic re-execution of the previously unverifiable temporal assertion after all required evidence and `resume_when` checks pass.
+- Add a public `skills/geotask-core/SKILL.md` for Agent injection and bilingual Profile, Cookbook, CLI, evidence-recovery, and experience-page documentation.
+
 ### Fixed
 
 - Make manual PyPI publication web-compatible by dispatching from the default branch, checking out the requested `v<version>` tag, and verifying that HEAD matches the tag before building.
@@ -135,6 +145,7 @@ All notable public changes to GeoTask Core are documented here.
 - Clean-environment PyPI smoke test passing for installation, CLI help, operator inspection, distribution version `0.1.0`, validation, and minimal deterministic execution.
 - Known issue: the published `0.1.0` artifact reports `geotask_core.__version__ == "0.2.0"`; a patch release is required to align the module attribute with distribution metadata.
 
+[0.3.0]: https://github.com/stpku/GeoTask/releases/tag/v0.3.0
 [0.2.0]: https://github.com/stpku/GeoTask/releases/tag/v0.2.0
 [0.1.1]: https://github.com/stpku/GeoTask/releases/tag/v0.1.1
 [0.1.0]: https://github.com/stpku/GeoTask/releases/tag/v0.1.0-public-preview

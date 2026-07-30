@@ -164,6 +164,21 @@ instructions_for_model:
       <p class="warning">GT08只生成补证据计划，不会自动伪造发布单位、时间版本或来源。证据必须由外部可信流程提供并确认。</p>
     </section>
 
+    <section class="card" aria-labelledby="recover-title">
+      <h2 id="recover-title">第三步：证据补齐后重新执行</h2>
+      <p>当外部可信流程补齐全部字段，并明确给出<code>restricted_schedule_verified: true</code>后，GeoTask不会直接把状态改成“已批准”，而是重新执行受影响的<code>temporal_conflict</code>断言。</p>
+      <pre>geotask agent recover examples/core/evidence_request_plan.yaml \
+  --evidence examples/core/evidence_request_verified_state.yaml</pre>
+      <div class="metrics">
+        <div class="metric"><small>恢复状态</small><code>recovered</code></div>
+        <div class="metric"><small>时间冲突重算</small><code>true / verified</code></div>
+        <div class="metric"><small>任务重新执行</small><code>task_reexecuted=true</code></div>
+        <div class="metric"><small>动作自动执行</small><code>next_action_executed=false</code></div>
+      </div>
+      <p><strong>完整恢复结果：</strong><code>full_conflict=true</code>，原先阻断的输出变为可用；报告同时保留首次<code>unverifiable</code>结果、证据字段检查、恢复条件求值和重新执行结果。</p>
+      <p class="warning">示例证据全部为虚构数据。Core只核对字段完整性和显式恢复状态，不负责认证真实监管文件，也不会使用模型猜测缺失内容（<code>model_guess_used=false</code>）。</p>
+    </section>
+
     <section class="card" aria-labelledby="join-title"><h2 id="join-title">查看项目与继续体验</h2><p>GT09 已上线：当两份已核验证据推导出相反结果时，系统会发起冲突复核，而不是擅自选择来源。</p><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt09/">进入 GT09</a></div></section>
     <footer><div>GeoTask Core · MIT License · 无账号、无模型密钥、无后台模型调用</div><div>不知道之后，不补想象；补证据。</div></footer>
   </main>

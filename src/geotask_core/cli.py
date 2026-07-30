@@ -11,6 +11,10 @@ Usage:
     geotask eval <file.yaml> <model_output.txt>
     geotask control evaluate <file.yaml> --result <result.json> [--state <state.yaml>]
     geotask control validate <control-evaluation.json> [--format text|json]
+    geotask agent inspect [--format text|json]
+    geotask agent prepare <generated.yaml> [--format text|json]
+    geotask agent retry <blocked-report.json> <revised.yaml> [--format text|json]
+    geotask agent recover <task.yaml> --evidence <state.yaml> [--format text|json]
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
     python -m geotask_core.cli normalize <file.txt> [--geotask <file.yaml>]
@@ -59,6 +63,16 @@ from geotask_core.v1.schema_bundle import (
     verify_schema_bundle,
 )
 from geotask_core.v1.artifact_validation import validate_artifact_file
+from geotask_core.v1.agent_integration import (
+    AgentIntegrationError,
+    agent_integration_profile_payload,
+    recover_evidence_request,
+)
+from geotask_core.v1.agent_generation import (
+    AgentGenerationError,
+    prepare_generated_document,
+    retry_generated_document,
+)
 
 
 def _get_command_name() -> str:
@@ -1330,6 +1344,495 @@ def cmd_control(args: list[str]):
     sys.exit(1)
 
 
+def _print_agent_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print("Usage: geotask agent inspect [--format text|json]", file=out)
+    print(
+        "       geotask agent prepare <generated.yaml> "
+        "[--format text|json] [--output <report.json>|-] "
+        "[--repaired-output <task.yaml>] [--compact]",
+        file=out,
+    )
+    print(
+        "       geotask agent retry <blocked-report.json> <revised.yaml> "
+        "[--format text|json] [--output <report.json>|-] "
+        "[--verification-output <report.json>] "
+        "[--prepared-output <task.yaml>] [--compact]",
+        file=out,
+    )
+    print(
+        "       geotask agent recover <task.yaml> --evidence <state.yaml> "
+        "[--format text|json] [--output <file>|-] [--compact]",
+        file=out,
+    )
+    print(
+        "The preview Agent profile composes existing Artifact, execution, and "
+        "control contracts without calling a model or executing next_action.",
+        file=out,
+    )
+
+
+def _parse_agent_inspect_args(args: list[str]) -> dict[str, object]:
+    parsed: dict[str, object] = {"format": "text"}
+    index = 0
+    seen_format = False
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_agent_usage()
+            return {"help": True}
+        if arg == "--format":
+            if seen_format:
+                raise ValueError("--format may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--format requires a value")
+            seen_format = True
+            parsed["format"] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown agent inspect option: {arg}")
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("agent inspect --format must be text or json")
+    return parsed
+
+
+def _parse_agent_prepare_args(args: list[str]) -> dict[str, object]:
+    if not args:
+        raise ValueError("agent prepare requires a generated GeoTask YAML file")
+    if args[0] in ("--help", "-h"):
+        _print_agent_usage()
+        return {"help": True}
+    if args[0].startswith("-"):
+        raise ValueError("agent prepare requires a generated GeoTask YAML file")
+
+    parsed: dict[str, object] = {
+        "task_path": args[0],
+        "format": "json",
+        "output_path": None,
+        "repaired_output_path": None,
+        "compact": False,
+    }
+    seen: set[str] = set()
+    index = 1
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_agent_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in {"--format", "--output", "--repaired-output"}:
+            if arg in seen:
+                raise ValueError(f"{arg} may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a value")
+            seen.add(arg)
+            target = {
+                "--format": "format",
+                "--output": "output_path",
+                "--repaired-output": "repaired_output_path",
+            }[arg]
+            parsed[target] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown agent prepare option: {arg}")
+
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("agent prepare --format must be text or json")
+    if parsed["compact"] and parsed["format"] != "json":
+        raise ValueError("--compact is supported only with --format json")
+    if parsed["format"] == "text" and parsed["output_path"] is not None:
+        raise ValueError("--output is supported only with --format json")
+    return parsed
+
+
+def _parse_agent_retry_args(args: list[str]) -> dict[str, object]:
+    if len(args) < 2:
+        raise ValueError(
+            "agent retry requires a blocked preparation report and revised GeoTask YAML"
+        )
+    if args[0] in ("--help", "-h"):
+        _print_agent_usage()
+        return {"help": True}
+    if args[0].startswith("-") or args[1].startswith("-"):
+        raise ValueError(
+            "agent retry requires a blocked preparation report and revised GeoTask YAML"
+        )
+
+    parsed: dict[str, object] = {
+        "report_path": args[0],
+        "revised_path": args[1],
+        "format": "json",
+        "output_path": None,
+        "verification_output_path": None,
+        "prepared_output_path": None,
+        "compact": False,
+    }
+    seen: set[str] = set()
+    index = 2
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_agent_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in {
+            "--format",
+            "--output",
+            "--verification-output",
+            "--prepared-output",
+        }:
+            if arg in seen:
+                raise ValueError(f"{arg} may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a value")
+            seen.add(arg)
+            target = {
+                "--format": "format",
+                "--output": "output_path",
+                "--verification-output": "verification_output_path",
+                "--prepared-output": "prepared_output_path",
+            }[arg]
+            parsed[target] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown agent retry option: {arg}")
+
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("agent retry --format must be text or json")
+    if parsed["compact"] and parsed["format"] != "json":
+        raise ValueError("--compact is supported only with --format json")
+    if parsed["format"] == "text" and parsed["output_path"] is not None:
+        raise ValueError("--output is supported only with --format json")
+    if parsed["verification_output_path"] == "-":
+        raise ValueError("--verification-output requires a file path, not stdout")
+    return parsed
+
+
+def _parse_agent_recover_args(args: list[str]) -> dict[str, object]:
+    if not args:
+        raise ValueError("agent recover requires a GeoTask YAML file")
+    if args[0] in ("--help", "-h"):
+        _print_agent_usage()
+        return {"help": True}
+    if args[0].startswith("-"):
+        raise ValueError("agent recover requires a GeoTask YAML file")
+
+    parsed: dict[str, object] = {
+        "task_path": args[0],
+        "evidence_path": None,
+        "format": "json",
+        "output_path": None,
+        "compact": False,
+    }
+    seen: set[str] = set()
+    index = 1
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_agent_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in {"--evidence", "--format", "--output"}:
+            if arg in seen:
+                raise ValueError(f"{arg} may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a value")
+            seen.add(arg)
+            target = {
+                "--evidence": "evidence_path",
+                "--format": "format",
+                "--output": "output_path",
+            }[arg]
+            parsed[target] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown agent recover option: {arg}")
+
+    if parsed["evidence_path"] is None:
+        raise ValueError("agent recover requires --evidence <state.yaml>")
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("agent recover --format must be text or json")
+    if parsed["compact"] and parsed["format"] != "json":
+        raise ValueError("--compact is supported only with --format json")
+    if parsed["format"] == "text" and parsed["output_path"] is not None:
+        raise ValueError("--output is supported only with --format json")
+    return parsed
+
+
+def _cmd_agent_inspect(args: list[str]):
+    parsed = _parse_agent_inspect_args(args)
+    if parsed.get("help"):
+        return None
+    payload = agent_integration_profile_payload()
+    if parsed["format"] == "json":
+        sys.stdout.write(_render_json(payload, compact=False))
+    else:
+        profile = payload["agent_integration_profile"]
+        print(
+            "GeoTask Agent Integration Profile "
+            f"{profile['id']}/{profile['version']} ({profile['status']})"
+        )
+        for tool in profile["tools"]:
+            print(f"  {tool['name']}: {tool['purpose']}")
+            print(f"    CLI: {tool['cli']}")
+    return payload
+
+
+def _cmd_agent_prepare(args: list[str]):
+    parsed = _parse_agent_prepare_args(args)
+    if parsed.get("help"):
+        return None
+
+    task_path = str(parsed["task_path"])
+    document = load_geotask(task_path)
+    result = prepare_generated_document(document)
+    payload = result.to_dict()
+    body = payload["agent_generation_preparation"]
+
+    repaired_output = parsed["repaired_output_path"]
+    report_output = parsed["output_path"]
+    input_path = Path(task_path).resolve()
+    if repaired_output is not None:
+        repaired_path = Path(str(repaired_output)).resolve()
+        if repaired_path == input_path:
+            raise ValueError("--repaired-output must not overwrite the generated input")
+        if report_output is not None and report_output != "-":
+            if repaired_path == Path(str(report_output)).resolve():
+                raise ValueError("--output and --repaired-output must be different files")
+        if body["final_validation"]["valid"]:
+            if repaired_path.suffix.lower() == ".json":
+                rendered_document = _render_json(
+                    body["prepared_document"],
+                    compact=False,
+                )
+            else:
+                rendered_document = yaml.safe_dump(
+                    body["prepared_document"],
+                    allow_unicode=True,
+                    default_flow_style=False,
+                    sort_keys=False,
+                )
+            repaired_path.write_text(rendered_document, encoding="utf-8")
+
+    if parsed["format"] == "json":
+        rendered = _render_json(payload, compact=bool(parsed["compact"]))
+        _write_or_print_output(
+            rendered,
+            output_path=report_output,
+            input_paths=[Path(task_path)],
+        )
+    else:
+        print(f"Agent generated-document preparation {body['state']}: {task_path}")
+        print(f"  Initial errors: {body['summary']['initial_error_count']}")
+        print(f"  Mechanical repairs: {body['summary']['repair_count']}")
+        print(f"  Residual errors: {body['summary']['residual_error_count']}")
+        print(f"  Task executed: {str(body['summary']['task_executed']).lower()}")
+        print(f"  Overall status: {body['summary']['overall_status'] or 'not_executed'}")
+        if body["repairs"]:
+            print("  Repair codes: " + ", ".join(item["code"] for item in body["repairs"]))
+        if body["final_validation"]["diagnostics"]:
+            print(
+                "  Blocking diagnostics: "
+                + ", ".join(
+                    item["code"]
+                    for item in body["final_validation"]["diagnostics"]
+                    if item.get("severity", "error") == "error"
+                )
+            )
+
+    if body["state"] == "blocked":
+        sys.exit(2)
+    return payload
+
+
+def _cmd_agent_retry(args: list[str]):
+    parsed = _parse_agent_retry_args(args)
+    if parsed.get("help"):
+        return None
+
+    report_path = str(parsed["report_path"])
+    revised_path = str(parsed["revised_path"])
+    preparation_report = _load_json_mapping(
+        report_path,
+        "Agent blocked preparation report",
+    )
+    revised_document = load_geotask(revised_path)
+    result = retry_generated_document(preparation_report, revised_document)
+    payload = result.to_dict()
+    body = payload["agent_revision_retry"]
+
+    prepared_output = parsed["prepared_output_path"]
+    verification_output = parsed["verification_output_path"]
+    output_path = parsed["output_path"]
+    input_paths = [Path(report_path).resolve(), Path(revised_path).resolve()]
+    resolved_outputs: dict[str, Path] = {}
+    for label, raw_path in (
+        ("--output", output_path),
+        ("--verification-output", verification_output),
+        ("--prepared-output", prepared_output),
+    ):
+        if raw_path is None or raw_path == "-":
+            continue
+        resolved_path = Path(str(raw_path)).resolve()
+        if resolved_path in input_paths:
+            raise ValueError(
+                f"{label} must not overwrite the blocked report or revised input"
+            )
+        if resolved_path in resolved_outputs.values():
+            raise ValueError(
+                "--output, --verification-output, and --prepared-output "
+                "must be different files"
+            )
+        resolved_outputs[label] = resolved_path
+
+    verification_path = resolved_outputs.get("--verification-output")
+    if verification_path is not None:
+        verification_payload = {
+            "agent_revision_verification": body["revision_verification"]
+        }
+        verification_path.write_text(
+            _render_json(verification_payload, compact=False),
+            encoding="utf-8",
+        )
+
+    prepared_path = resolved_outputs.get("--prepared-output")
+    if prepared_path is not None:
+        preparation = body.get("preparation")
+        if body["state"] == "accepted" and isinstance(preparation, Mapping):
+            prepared_document = preparation.get("prepared_document")
+            if isinstance(prepared_document, Mapping):
+                if prepared_path.suffix.lower() == ".json":
+                    rendered_document = _render_json(
+                        dict(prepared_document),
+                        compact=False,
+                    )
+                else:
+                    rendered_document = yaml.safe_dump(
+                        dict(prepared_document),
+                        allow_unicode=True,
+                        default_flow_style=False,
+                        sort_keys=False,
+                    )
+                prepared_path.write_text(rendered_document, encoding="utf-8")
+
+    if parsed["format"] == "json":
+        rendered = _render_json(payload, compact=bool(parsed["compact"]))
+        _write_or_print_output(
+            rendered,
+            output_path=output_path,
+            input_paths=input_paths,
+        )
+    else:
+        verification = body["revision_verification"]
+        print(f"Agent generated-document retry {body['state']}: {revised_path}")
+        print(f"  Revision verification: {verification['state']}")
+        print(
+            f"  Changed paths: {verification['summary']['changed_path_count']}"
+        )
+        print(f"  Violations: {verification['summary']['violation_count']}")
+        print(f"  Task executed: {str(body['summary']['task_executed']).lower()}")
+        print(
+            f"  Overall status: {body['summary']['overall_status'] or 'not_executed'}"
+        )
+        for violation in verification["violations"]:
+            print(
+                f"  {violation['code']} at {violation['path']}: "
+                f"{violation['message']}"
+            )
+
+    if body["state"] != "accepted":
+        sys.exit(2)
+    return payload
+
+
+def _cmd_agent_recover(args: list[str]):
+    parsed = _parse_agent_recover_args(args)
+    if parsed.get("help"):
+        return None
+
+    task_path = str(parsed["task_path"])
+    evidence_path = str(parsed["evidence_path"])
+    document = _load_valid_geotask(task_path, label="Agent recovery GeoTask")
+    evidence_state = _load_state_mapping(evidence_path)
+    result = recover_evidence_request(document, evidence_state)
+    payload = result.to_dict()
+    body = payload["agent_integration"]
+
+    if parsed["format"] == "json":
+        rendered = _render_json(payload, compact=bool(parsed["compact"]))
+        _write_or_print_output(
+            rendered,
+            output_path=parsed["output_path"],
+            input_paths=[Path(task_path), Path(evidence_path)],
+        )
+    else:
+        print(f"Agent evidence recovery {body['state']}: {body['task_id']}")
+        print(f"  Request: {body['request']['id']}")
+        print(f"  Trigger: {body['request']['trigger']}")
+        missing = body["request"]["missing_fields"]
+        print(f"  Missing evidence: {', '.join(missing) if missing else 'none'}")
+        print(f"  Task reexecuted: {str(body['materialization']['task_reexecuted']).lower()}")
+        print(f"  Decision value: {body['summary']['decision_value']}")
+        print(
+            "  Blocked outputs: "
+            + (", ".join(body["summary"]["blocked_outputs"]) or "none")
+        )
+        print(
+            "  Eligible outputs: "
+            + (", ".join(body["summary"]["eligible_outputs"]) or "none")
+        )
+    return payload
+
+
+def cmd_agent(args: list[str]):
+    """Inspect, prepare, retry guarded revisions, or recover blocked evidence."""
+
+    try:
+        if not args or args[0] in ("--help", "-h"):
+            _print_agent_usage()
+            return None
+        if args[0] == "inspect":
+            return _cmd_agent_inspect(args[1:])
+        if args[0] == "prepare":
+            return _cmd_agent_prepare(args[1:])
+        if args[0] == "retry":
+            return _cmd_agent_retry(args[1:])
+        if args[0] == "recover":
+            return _cmd_agent_recover(args[1:])
+        raise ValueError(
+            f"unknown agent command {args[0]!r}; "
+            "available commands: inspect, prepare, retry, recover"
+        )
+    except SystemExit:
+        raise
+    except (
+        AgentIntegrationError,
+        AgentGenerationError,
+        ControlContextError,
+        ValueError,
+        TypeError,
+        OSError,
+        yaml.YAMLError,
+    ) as exc:
+        print(f"agent_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
 def print_result(result: dict):
     """Print a result dict as YAML."""
     import yaml
@@ -1355,12 +1858,12 @@ def main():
 
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -1384,6 +1887,20 @@ def main():
             f"  {cmd_name} control evaluate examples/core/uav_arrival_ground_clearance_release.yaml "
             "--result execution-result.json --state control-state.yaml"
         )
+        print(f"  {cmd_name} agent inspect --format json")
+        print(
+            f"  {cmd_name} agent prepare examples/core/agent_generated_distance_draft.yaml "
+            "--repaired-output prepared.yaml"
+        )
+        print(
+            f"  {cmd_name} agent retry blocked-preparation.json "
+            "examples/core/agent_generated_distance_revised.yaml "
+            "--prepared-output prepared.yaml"
+        )
+        print(
+            f"  {cmd_name} agent recover examples/core/evidence_request_plan.yaml "
+            "--evidence examples/core/evidence_request_verified_state.yaml"
+        )
         print()
         print(f"  python -m geotask_core.cli validate examples/geotask_core_lite.yaml")
         print(f"  python -m geotask_core.cli run examples/geotask_core_lite.yaml")
@@ -1401,6 +1918,10 @@ def main():
 
     if command == "control":
         cmd_control(sys.argv[2:])
+        return
+
+    if command == "agent":
+        cmd_agent(sys.argv[2:])
         return
 
     if command == "result":
@@ -1454,7 +1975,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, normalize, eval, version")
+        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

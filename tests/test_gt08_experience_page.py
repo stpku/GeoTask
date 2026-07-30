@@ -56,6 +56,25 @@ def test_gt08_page_generates_request_from_local_status() -> None:
     assert "model_generated" in html
 
 
+def test_gt08_page_shows_verified_evidence_recovery_and_reexecution() -> None:
+    html = GT08_PAGE.read_text(encoding="utf-8")
+
+    required_fragments = (
+        "第三步：证据补齐后重新执行",
+        "geotask agent recover",
+        "evidence_request_verified_state.yaml",
+        "restricted_schedule_verified: true",
+        "recovered",
+        "true / verified",
+        "task_reexecuted=true",
+        "next_action_executed=false",
+        "model_guess_used=false",
+        "full_conflict=true",
+    )
+    for fragment in required_fragments:
+        assert fragment in html
+
+
 def test_gt08_page_exposes_three_candidate_actions() -> None:
     html = GT08_PAGE.read_text(encoding="utf-8")
 

@@ -91,6 +91,25 @@ A resume condition SHOULD identify the exact state change required. Avoid condit
 
 After the condition becomes true, dependent assertions SHOULD be recomputed. Do not simply change `blocked` to `approved` without rerunning the affected logic.
 
+### 4.1 Agent Recovery Preview
+
+The public Agent integration preview implements this recomputation rule for one
+fail-closed pattern: an evidence request whose trigger assertion uses a single
+named condition.
+
+```bash
+geotask agent recover examples/core/evidence_request_plan.yaml \
+  --evidence examples/core/evidence_request_verified_state.yaml
+```
+
+The command preserves the first `unverifiable` execution, checks every
+`required_fields` entry, evaluates `resume_when`, rewrites only the trigger
+condition in an in-memory copy, reruns the task, and evaluates the final control
+state. Incomplete evidence returns a structured `blocked` report without
+reexecution. Core still records `next_action_executed=false`.
+
+See [GeoTask Agent Integration Profile v0.1](../spec/geotask-agent-integration-profile-v0.1.md).
+
 ## 5. Conflicting Evidence
 
 Two evidence items may each be authentic and verified while still making incompatible claims.

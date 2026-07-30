@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-agent-revision-retry-v0.1.schema.json",
+  "title": "GeoTask Agent Revision Retry Report v0.1",
+  "type": "object",
+  "required": ["agent_revision_retry"],
+  "additionalProperties": false,
+  "properties": {
+    "agent_revision_retry": {"$ref": "#/$defs/report"}
+  },
+  "$defs": {
+    "summary": {
+      "type": "object",
+      "required": ["revision_accepted", "task_executed", "preparation_state", "overall_status"],
+      "additionalProperties": false,
+      "properties": {
+        "revision_accepted": {"type": "boolean"},
+        "task_executed": {"type": "boolean"},
+        "preparation_state": {"type": "string"},
+        "overall_status": {"type": "string"}
+      }
+    },
+    "report": {
+      "type": "object",
+      "required": ["report_version", "state", "revision_verification", "preparation", "summary"],
+      "additionalProperties": false,
+      "properties": {
+        "report_version": {"const": "0.1"},
+        "state": {"enum": ["accepted", "rejected", "blocked"]},
+        "revision_verification": {
+          "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-agent-revision-verification-v0.1.schema.json#/$defs/report"
+        },
+        "preparation": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-agent-generation-preparation-v0.1.schema.json#/$defs/report"
+            }
+          ]
+        },
+        "summary": {"$ref": "#/$defs/summary"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "rejected"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "revision_verification": {"properties": {"state": {"const": "rejected"}}},
+              "preparation": {"type": "null"},
+              "summary": {
+                "properties": {
+                  "revision_accepted": {"const": false},
+                  "task_executed": {"const": false},
+                  "preparation_state": {"const": ""},
+                  "overall_status": {"const": ""}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"state": {"const": "accepted"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "revision_verification": {"properties": {"state": {"const": "accepted"}}},
+              "preparation": {"properties": {"state": {"enum": ["valid", "repaired"]}}},
+              "summary": {
+                "properties": {
+                  "revision_accepted": {"const": true},
+                  "task_executed": {"const": true},
+                  "preparation_state": {"enum": ["valid", "repaired"]}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"state": {"const": "blocked"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "revision_verification": {"properties": {"state": {"const": "accepted"}}},
+              "preparation": {"properties": {"state": {"const": "blocked"}}},
+              "summary": {
+                "properties": {
+                  "revision_accepted": {"const": true},
+                  "task_executed": {"const": false},
+                  "preparation_state": {"const": "blocked"},
+                  "overall_status": {"const": ""}
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

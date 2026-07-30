@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-agent-integration-v0.1.schema.json",
+  "title": "GeoTask Agent Evidence Recovery Report v0.1",
+  "description": "A fail-closed agent_integration/0.1 trace for evidence-gated deterministic recovery.",
+  "type": "object",
+  "required": ["agent_integration"],
+  "properties": {
+    "agent_integration": {
+      "$ref": "#/$defs/report"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": ["code", "path", "message"],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "path": {
+          "type": "string"
+        },
+        "message": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "required": [
+        "id",
+        "trigger",
+        "trigger_status",
+        "reason",
+        "required_fields",
+        "missing_fields",
+        "evidence_complete",
+        "blocked_outputs",
+        "resume_when",
+        "next_action"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "trigger": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "trigger_status": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "required_fields": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "missing_fields": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "evidence_complete": {
+          "type": "boolean"
+        },
+        "blocked_outputs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "resume_when": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "next_action": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "materialization": {
+      "type": "object",
+      "required": [
+        "condition_identifier",
+        "condition_value",
+        "condition_rewritten_to_literal",
+        "task_reexecuted",
+        "next_action_executed",
+        "model_guess_used"
+      ],
+      "properties": {
+        "condition_identifier": {
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_-]*$"
+        },
+        "condition_value": {
+          "type": ["boolean", "null"]
+        },
+        "condition_rewritten_to_literal": {
+          "type": "boolean"
+        },
+        "task_reexecuted": {
+          "type": "boolean"
+        },
+        "next_action_executed": {
+          "const": false
+        },
+        "model_guess_used": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": ["decision_value", "blocked_outputs", "eligible_outputs"],
+      "properties": {
+        "decision_value": {
+          "type": ["boolean", "null"]
+        },
+        "blocked_outputs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "eligible_outputs": {
+          "$ref": "#/$defs/stringArray"
+        }
+      },
+      "additionalProperties": false
+    },
+    "report": {
+      "type": "object",
+      "required": [
+        "report_version",
+        "profile",
+        "task_id",
+        "state",
+        "request",
+        "materialization",
+        "initial_execution",
+        "initial_control_evaluation",
+        "resume_control_evaluation",
+        "resumed_execution",
+        "final_control_evaluation",
+        "summary",
+        "diagnostics"
+      ],
+      "properties": {
+        "report_version": {
+          "const": "0.1"
+        },
+        "profile": {
+          "type": "object",
+          "required": ["id", "version"],
+          "properties": {
+            "id": {
+              "const": "geotask.agent-integration"
+            },
+            "version": {
+              "const": "0.1"
+            }
+          },
+          "additionalProperties": false
+        },
+        "task_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "state": {
+          "enum": ["blocked", "recovered"]
+        },
+        "request": {
+          "$ref": "#/$defs/request"
+        },
+        "materialization": {
+          "$ref": "#/$defs/materialization"
+        },
+        "initial_execution": {
+          "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-result-v1.0.schema.json"
+        },
+        "initial_control_evaluation": {
+          "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-control-evaluation-v1.0.schema.json"
+        },
+        "resume_control_evaluation": {
+          "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-control-evaluation-v1.0.schema.json"
+        },
+        "resumed_execution": {
+          "anyOf": [
+            {
+              "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-result-v1.0.schema.json"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "final_control_evaluation": {
+          "anyOf": [
+            {
+              "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-control-evaluation-v1.0.schema.json"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/summary"
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "blocked"
+              }
+            },
+            "required": ["state"]
+          },
+          "then": {
+            "properties": {
+              "materialization": {
+                "properties": {
+                  "condition_rewritten_to_literal": {
+                    "const": false
+                  },
+                  "task_reexecuted": {
+                    "const": false
+                  }
+                }
+              },
+              "resumed_execution": {
+                "type": "null"
+              },
+              "final_control_evaluation": {
+                "type": "null"
+              },
+              "summary": {
+                "properties": {
+                  "eligible_outputs": {
+                    "maxItems": 0
+                  }
+                }
+              },
+              "diagnostics": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "request": {
+                "properties": {
+                  "missing_fields": {
+                    "maxItems": 0
+                  },
+                  "evidence_complete": {
+                    "const": true
+                  }
+                }
+              },
+              "materialization": {
+                "properties": {
+                  "condition_value": {
+                    "const": true
+                  },
+                  "condition_rewritten_to_literal": {
+                    "const": true
+                  },
+                  "task_reexecuted": {
+                    "const": true
+                  }
+                }
+              },
+              "resumed_execution": {
+                "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-result-v1.0.schema.json"
+              },
+              "final_control_evaluation": {
+                "$ref": "https://stpku.github.io/GeoTask/schemas/geotask-control-evaluation-v1.0.schema.json"
+              },
+              "diagnostics": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

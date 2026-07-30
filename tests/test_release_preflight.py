@@ -5,11 +5,14 @@ from __future__ import annotations
 import importlib.util
 import io
 import json
+import os
 import subprocess
 import sys
 import tarfile
 import zipfile
 from pathlib import Path
+
+import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -192,3 +195,31 @@ def test_ci_and_publish_workflows_enforce_release_preflight() -> None:
     assert '--expected-version "$EXPECTED_VERSION"' in publish
     assert '--expected-tag "v$EXPECTED_VERSION"' in publish
     assert "--artifacts dist" in publish
+
+
+def test_publish_workflow_package_version_step_executes(tmp_path: Path) -> None:
+    workflow = yaml.safe_load(
+        (ROOT / ".github" / "workflows" / "publish-pypi.yml").read_text(
+            encoding="utf-8"
+        )
+    )
+    step = next(
+        item
+        for item in workflow["jobs"]["build"]["steps"]
+        if item.get("id") == "package-version"
+    )
+    output_path = tmp_path / "github-output.txt"
+    environment = os.environ.copy()
+    environment["GITHUB_OUTPUT"] = output_path.as_posix()
+
+    result = subprocess.run(
+        ["bash", "-e", "-o", "pipefail", "-c", step["run"]],
+        cwd=ROOT,
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert output_path.read_text(encoding="utf-8") == f"version={VERSION}\n"

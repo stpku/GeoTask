@@ -64,7 +64,8 @@
           "enum": [
             "task_document",
             "execution_result",
-            "control_evaluation_result"
+            "control_evaluation_result",
+            "artifact_validation_report"
           ]
         },
         "schema_id": {

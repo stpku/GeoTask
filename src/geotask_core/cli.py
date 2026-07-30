@@ -4,6 +4,9 @@ Usage:
     geotask validate <file.yaml>
     geotask run <file.yaml> [--format yaml|v1-json] [--output <file>|-]
     geotask result validate <execution-result.json> [--format text|json]
+    geotask artifact validate <artifact-id> <file> [--format text|json]
+    geotask schema export <artifact-id> [--output <file>|-] [--compact]
+    geotask schema verify [artifact-id] [--format text|json]
     geotask normalize <file.txt> [--geotask <file.yaml>]
     geotask eval <file.yaml> <model_output.txt>
     geotask control evaluate <file.yaml> --result <result.json> [--state <state.yaml>]
@@ -51,6 +54,11 @@ from geotask_core.v1.serialized_validation import (
     validate_versioned_payload,
 )
 from geotask_core.v1.artifact_registry import artifact_registry_payload
+from geotask_core.v1.schema_bundle import (
+    load_artifact_schema,
+    verify_schema_bundle,
+)
+from geotask_core.v1.artifact_validation import validate_artifact_file
 
 
 def _get_command_name() -> str:
@@ -461,18 +469,305 @@ def _print_validation_diagnostics(
         print(f"{prefix}    Suggested fix: {diagnostic['suggested_fix']}", file=out)
 
 
+def _print_artifact_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask artifact validate <artifact-id> <file> "
+        "[--format text|json]",
+        file=out,
+    )
+    print(
+        "Validates a registered public artifact without executing operators, "
+        "control actions, or output releases.",
+        file=out,
+    )
+
+
+def _parse_artifact_validate_args(args: list[str]) -> dict[str, object]:
+    if not args or args[0] in ("--help", "-h"):
+        _print_artifact_usage()
+        return {"help": True}
+    if args[0] != "validate":
+        raise ValueError(
+            f"unknown artifact command {args[0]!r}; available command: validate"
+        )
+    if len(args) >= 2 and args[1] in ("--help", "-h"):
+        _print_artifact_usage()
+        return {"help": True}
+    if len(args) < 2 or args[1].startswith("-"):
+        raise ValueError("artifact validate requires an Artifact ID")
+    if len(args) < 3 or args[2].startswith("-"):
+        raise ValueError("artifact validate requires an artifact file")
+
+    parsed: dict[str, object] = {
+        "artifact_id": args[1],
+        "path": args[2],
+        "format": "text",
+    }
+    seen_format = False
+    index = 3
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_artifact_usage()
+            return {"help": True}
+        if arg == "--format":
+            if seen_format:
+                raise ValueError("--format may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--format requires a value")
+            seen_format = True
+            parsed["format"] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown artifact validate option: {arg}")
+
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError(
+            f"unsupported artifact validation format: {parsed['format']}. "
+            "Supported formats: text, json"
+        )
+    return parsed
+
+
+def cmd_artifact(args: list[str]):
+    """Validate any registered public artifact through one stable command."""
+
+    try:
+        parsed = _parse_artifact_validate_args(args)
+        if parsed.get("help"):
+            return None
+        report = validate_artifact_file(
+            str(parsed["artifact_id"]),
+            str(parsed["path"]),
+        )
+        rendered = report.to_dict()
+        body = rendered["artifact_validation"]
+        if parsed["format"] == "json":
+            sys.stdout.write(_render_json(rendered, compact=False))
+        elif report.valid:
+            print(f"Artifact valid: {body['file']}")
+            print(f"  Artifact: {body['artifact_id']}")
+            print(f"  Schema: {body['schema_id']}")
+            print(f"  Schema verified: {str(body['schema_verified']).lower()}")
+            for key, value in body["summary"].items():
+                print(f"  {key}: {value}")
+        else:
+            print(f"Artifact INVALID: {body['file']}", file=sys.stderr)
+            print(f"  Artifact: {body['artifact_id']}", file=sys.stderr)
+            print(f"  Schema: {body['schema_id']}", file=sys.stderr)
+            for diagnostic in body["diagnostics"]:
+                path = diagnostic["path"] or "<root>"
+                print(
+                    f"  {diagnostic['code']} at {path}: {diagnostic['message']}",
+                    file=sys.stderr,
+                )
+
+        if not report.valid:
+            sys.exit(1)
+        return rendered
+    except SystemExit:
+        raise
+    except (KeyError, OSError, TypeError, ValueError, yaml.YAMLError) as exc:
+        print(f"artifact_validate_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
+def _print_schema_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask schema export <artifact-id> "
+        "[--output <file>|-] [--compact]",
+        file=out,
+    )
+    print(
+        "       geotask schema verify [artifact-id] [--format text|json]",
+        file=out,
+    )
+    print(
+        "Exports or verifies installed public JSON Schemas without network access.",
+        file=out,
+    )
+
+
+def _parse_schema_export_args(args: list[str]) -> dict[str, object]:
+    parsed: dict[str, object] = {
+        "artifact_id": None,
+        "output_path": None,
+        "compact": False,
+    }
+    seen_output = False
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_schema_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg == "--output":
+            if seen_output:
+                raise ValueError("--output may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--output requires a value")
+            seen_output = True
+            parsed["output_path"] = args[index + 1]
+            index += 2
+            continue
+        if not arg.startswith("--"):
+            if parsed["artifact_id"] is not None:
+                raise ValueError("only one artifact ID may be provided")
+            parsed["artifact_id"] = arg
+            index += 1
+            continue
+        raise ValueError(f"unknown schema export option: {arg}")
+
+    if parsed["artifact_id"] is None:
+        raise ValueError("schema export requires an artifact ID")
+    return parsed
+
+
+def _parse_schema_verify_args(args: list[str]) -> dict[str, object]:
+    parsed: dict[str, object] = {
+        "artifact_id": None,
+        "format": "text",
+    }
+    seen_format = False
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_schema_usage()
+            return {"help": True}
+        if arg == "--format":
+            if seen_format:
+                raise ValueError("--format may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--format requires a value")
+            seen_format = True
+            parsed["format"] = args[index + 1]
+            index += 2
+            continue
+        if not arg.startswith("--"):
+            if parsed["artifact_id"] is not None:
+                raise ValueError("only one artifact ID may be provided")
+            parsed["artifact_id"] = arg
+            index += 1
+            continue
+        raise ValueError(f"unknown schema verify option: {arg}")
+
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError(
+            f"unsupported schema verify format: {parsed['format']}. "
+            "Supported formats: text, json"
+        )
+    return parsed
+
+
+def _cmd_schema_export(args: list[str]):
+    parsed = _parse_schema_export_args(args)
+    if parsed.get("help"):
+        return None
+    schema = load_artifact_schema(str(parsed["artifact_id"]))
+    rendered = _render_json(schema, compact=bool(parsed["compact"]))
+    _write_or_print_output(
+        rendered,
+        output_path=parsed["output_path"],
+        input_paths=[],
+    )
+    return schema
+
+
+def _cmd_schema_verify(args: list[str]):
+    parsed = _parse_schema_verify_args(args)
+    if parsed.get("help"):
+        return None
+    artifact_id = (
+        str(parsed["artifact_id"])
+        if parsed["artifact_id"] is not None
+        else None
+    )
+    report = verify_schema_bundle(artifact_id)
+    verification = report["schema_bundle_verification"]
+    if parsed["format"] == "json":
+        sys.stdout.write(_render_json(report, compact=False))
+    elif verification["valid"]:
+        print(
+            "Schema Bundle valid: "
+            f"{verification['checked_count']} schema(s), "
+            f"version {verification['bundle_version']}"
+        )
+        for schema in verification["schemas"]:
+            print(f"  OK {schema['schema_id']}  sha256={schema['actual_sha256']}")
+    else:
+        print("Schema Bundle INVALID", file=sys.stderr)
+        for diagnostic in verification["diagnostics"]:
+            print(
+                f"  {diagnostic['code']}: {diagnostic['message']}",
+                file=sys.stderr,
+            )
+
+    if not verification["valid"]:
+        sys.exit(1)
+    return report
+
+
+def cmd_schema(args: list[str]):
+    """Export or verify installed public JSON Schemas without network access."""
+
+    if not args or args[0] in ("--help", "-h"):
+        _print_schema_usage()
+        return None
+    if args[0] == "export":
+        try:
+            return _cmd_schema_export(args[1:])
+        except SystemExit:
+            raise
+        except (KeyError, OSError, TypeError, ValueError) as exc:
+            print(f"schema_export_failed: {exc}", file=sys.stderr)
+            sys.exit(1)
+    if args[0] == "verify":
+        try:
+            return _cmd_schema_verify(args[1:])
+        except SystemExit:
+            raise
+        except (KeyError, OSError, TypeError, ValueError) as exc:
+            print(f"schema_verify_failed: {exc}", file=sys.stderr)
+            sys.exit(1)
+    print(
+        f"schema_failed: unknown schema command {args[0]!r}; "
+        "available commands: export, verify",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
 def _print_inspect_schemas_usage(stream=None) -> None:
     out = stream or sys.stdout
-    print("Usage: geotask inspect schemas [--format yaml|json]", file=out)
+    print(
+        "Usage: geotask inspect schemas [artifact-id] "
+        "[--format yaml|json] [--verify]",
+        file=out,
+    )
     print(
         "Lists the stable public artifact registry, including schema IDs, "
-        "versions, generation guidance, and validation commands.",
+        "versions, generation guidance, and validation commands. --verify "
+        "adds local Schema Bundle integrity results.",
         file=out,
     )
 
 
 def _parse_inspect_schemas_args(args: list[str]) -> dict[str, object]:
-    parsed: dict[str, object] = {"help": False, "format": "yaml"}
+    parsed: dict[str, object] = {
+        "help": False,
+        "format": "yaml",
+        "artifact_id": None,
+        "verify": False,
+    }
     seen_format = False
     index = 0
     while index < len(args):
@@ -488,6 +783,18 @@ def _parse_inspect_schemas_args(args: list[str]) -> dict[str, object]:
             seen_format = True
             parsed["format"] = args[index + 1]
             index += 2
+            continue
+        if arg == "--verify":
+            if parsed["verify"]:
+                raise ValueError("--verify may be provided only once")
+            parsed["verify"] = True
+            index += 1
+            continue
+        if not arg.startswith("--"):
+            if parsed["artifact_id"] is not None:
+                raise ValueError("only one artifact ID may be provided")
+            parsed["artifact_id"] = arg
+            index += 1
             continue
         raise ValueError(f"unknown inspect schemas option: {arg}")
 
@@ -533,15 +840,29 @@ def cmd_inspect(args: list[str]):
             parsed = _parse_inspect_schemas_args(args[1:])
             if parsed.get("help"):
                 return None
-        except ValueError as exc:
+            artifact_id = (
+                str(parsed["artifact_id"])
+                if parsed["artifact_id"] is not None
+                else None
+            )
+            result = artifact_registry_payload(artifact_id=artifact_id)
+            verification_valid = True
+            if parsed["verify"]:
+                verification = verify_schema_bundle(artifact_id)
+                result.update(verification)
+                verification_valid = bool(
+                    verification["schema_bundle_verification"]["valid"]
+                )
+        except (KeyError, ValueError) as exc:
             print(f"inspect_schemas_failed: {exc}", file=sys.stderr)
             sys.exit(1)
 
-        result = artifact_registry_payload()
         if parsed["format"] == "json":
             sys.stdout.write(_render_json(result, compact=False))
         else:
             print_result(result)
+        if not verification_valid:
+            sys.exit(1)
         return result
 
     if subject == "examples":
@@ -1034,12 +1355,12 @@ def main():
 
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, explain, inspect, report, control, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, explain, inspect, report, control, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -1049,6 +1370,10 @@ def main():
             "--format v1-json --output execution-result.json"
         )
         print(f"  {cmd_name} result validate execution-result.json")
+        print(
+            f"  {cmd_name} schema export geotask.execution-result "
+            "--output geotask-result.schema.json"
+        )
         print(f"  {cmd_name} normalize examples/deepseek_output_sample.txt")
         print(f"  {cmd_name} normalize examples/model_outputs/deepseek_cn.md --geotask examples/geotask_core_lite.yaml")
         print(f"  {cmd_name} eval examples/geotask_core_lite.yaml examples/deepseek_output_sample.txt")
@@ -1080,6 +1405,14 @@ def main():
 
     if command == "result":
         cmd_result(sys.argv[2:])
+        return
+
+    if command == "artifact":
+        cmd_artifact(sys.argv[2:])
+        return
+
+    if command == "schema":
+        cmd_schema(sys.argv[2:])
         return
 
     if command == "inspect":
@@ -1121,7 +1454,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, result, explain, inspect, report, control, normalize, eval, version")
+        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

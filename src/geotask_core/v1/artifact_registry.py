@@ -29,6 +29,11 @@ GEOTASK_DOCUMENT_SCHEMA_ID = (
     "https://github.com/stpku/GeoTask/schemas/geotask-v1.0.schema.json"
 )
 GEOTASK_DOCUMENT_SCHEMA_VERSION = "1.0"
+ARTIFACT_VALIDATION_SCHEMA_ID = (
+    "https://stpku.github.io/GeoTask/schemas/"
+    "geotask-artifact-validation-v1.0.schema.json"
+)
+ARTIFACT_VALIDATION_SCHEMA_VERSION = "1.0"
 
 
 @dataclass(frozen=True)
@@ -82,7 +87,9 @@ _ARTIFACTS = (
             "Authored input. GeoTask Core does not synthesize task documents; "
             "public case starters may be created with tools/scaffold_case.py."
         ),
-        validation_command="geotask validate <task.yaml>",
+        validation_command=(
+            "geotask artifact validate geotask.document <task.yaml>"
+        ),
         description=(
             "Declarative spatial-task input consumed by GeoTask Core validation "
             "and deterministic execution."
@@ -104,7 +111,8 @@ _ARTIFACTS = (
         ),
         generation_note="Produced by deterministic GeoTask Core execution.",
         validation_command=(
-            "geotask result validate <execution-result.json>"
+            "geotask artifact validate geotask.execution-result "
+            "<execution-result.json>"
         ),
         description=(
             "Canonical checks, outputs, summary, assurance, warnings, and errors "
@@ -130,7 +138,8 @@ _ARTIFACTS = (
             "Produced by read-only evaluation of geotask.control/1.0 conditions."
         ),
         validation_command=(
-            "geotask control validate <control-evaluation.json>"
+            "geotask artifact validate geotask.control-evaluation "
+            "<control-evaluation.json>"
         ),
         description=(
             "Read-only control context, gate state, unknown identifiers, and "
@@ -138,6 +147,35 @@ _ARTIFACTS = (
         ),
         execution_boundary=(
             "Evaluation and validation never execute next_action or release outputs."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.artifact-validation-report",
+        title="GeoTask Artifact Validation Report v1.0",
+        kind="artifact_validation_report",
+        schema_id=ARTIFACT_VALIDATION_SCHEMA_ID,
+        schema_version=ARTIFACT_VALIDATION_SCHEMA_VERSION,
+        schema_path="schemas/geotask-artifact-validation-v1.0.schema.json",
+        specification_path="docs/spec/geotask-artifact-validation-v1.0.md",
+        wrapper_key="artifact_validation",
+        generation_command=(
+            "geotask artifact validate <artifact-id> <file> --format json "
+            "> <artifact-validation.json>"
+        ),
+        generation_note=(
+            "Produced by read-only Registry-driven validation of a public artifact."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.artifact-validation-report "
+            "<artifact-validation.json>"
+        ),
+        description=(
+            "Versioned validation outcome containing target Artifact identity, "
+            "Schema integrity state, summary, and normalized diagnostics."
+        ),
+        execution_boundary=(
+            "Validating a report does not repeat the original validation target, "
+            "execute operators, or release outputs."
         ),
     ),
 )
@@ -160,15 +198,21 @@ def get_artifact_descriptor(artifact_id: str) -> ArtifactDescriptor:
         raise KeyError(f"unknown GeoTask artifact: {artifact_id}") from exc
 
 
-def artifact_registry_payload() -> dict[str, Any]:
-    """Return the machine-readable public registry payload."""
+def artifact_registry_payload(artifact_id: str | None = None) -> dict[str, Any]:
+    """Return the public registry payload, optionally filtered by artifact ID."""
+
+    artifacts = (
+        _ARTIFACTS
+        if artifact_id is None
+        else (get_artifact_descriptor(artifact_id),)
+    )
 
     return {
         "artifact_registry": {
             "schema_id": ARTIFACT_REGISTRY_SCHEMA_ID,
             "registry_version": ARTIFACT_REGISTRY_VERSION,
-            "artifact_count": len(_ARTIFACTS),
-            "artifacts": [item.to_dict() for item in _ARTIFACTS],
+            "artifact_count": len(artifacts),
+            "artifacts": [item.to_dict() for item in artifacts],
         }
     }
 
@@ -178,6 +222,8 @@ __all__ = [
     "ARTIFACT_REGISTRY_VERSION",
     "GEOTASK_DOCUMENT_SCHEMA_ID",
     "GEOTASK_DOCUMENT_SCHEMA_VERSION",
+    "ARTIFACT_VALIDATION_SCHEMA_ID",
+    "ARTIFACT_VALIDATION_SCHEMA_VERSION",
     "ArtifactDescriptor",
     "list_artifact_descriptors",
     "get_artifact_descriptor",

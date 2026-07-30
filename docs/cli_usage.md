@@ -54,15 +54,59 @@ python -m geotask_core.cli run task.yaml \
   --format v1-json \
   --output execution-result.json
 
-python -m geotask_core.cli result validate execution-result.json
+python -m geotask_core.cli artifact validate \
+  geotask.execution-result execution-result.json \
+  --format json > artifact-validation.json
+
+python -m geotask_core.cli artifact validate \
+  geotask.artifact-validation-report artifact-validation.json
 
 python -m geotask_core.cli control evaluate task.yaml \
   --result execution-result.json \
   --state control-state.yaml \
   --output control-evaluation.json
 
-python -m geotask_core.cli control validate control-evaluation.json
+python -m geotask_core.cli artifact validate \
+  geotask.control-evaluation control-evaluation.json
 ```
+
+## Artifact Validate
+
+```bash
+python -m geotask_core.cli artifact validate \
+  geotask.document task.yaml
+
+python -m geotask_core.cli artifact validate \
+  geotask.execution-result execution-result.json \
+  --format json
+
+python -m geotask_core.cli artifact validate \
+  geotask.control-evaluation control-evaluation.json \
+  --format json
+
+python -m geotask_core.cli artifact validate \
+  geotask.artifact-validation-report artifact-validation.json \
+  --format json
+```
+
+`artifact validate` is the canonical Registry-driven validation entry point. It
+resolves the stable Artifact ID, verifies the installed Schema Bundle, then
+reuses the artifact-specific strict semantic validator. All JSON reports use the
+same `artifact_validation/1.0` envelope with Artifact and Schema identity,
+`schema_verified`, source file, artifact-specific summary, and normalized
+diagnostics.
+
+JSON mode always emits a parseable report before returning non-zero for invalid
+input. Text mode prints a compact success report or writes diagnostics to stderr.
+The command never executes operators, reruns a task, reevaluates control
+conditions, executes `next_action`, or releases outputs. When the selected
+Artifact ID is `geotask.artifact-validation-report`, the command validates the
+report envelope, Registry identity, scalar summary, diagnostics, and cross-field
+invariants without repeating validation of the report's original target.
+
+The original `validate`, `result validate`, and `control validate` commands remain
+available for compatibility. The public Artifact Registry advertises
+`artifact validate` as the canonical `validation_command`.
 
 ## Result Validate
 
@@ -104,16 +148,41 @@ python -m geotask_core.cli inspect operators distance_2d
 python -m geotask_core.cli inspect schema
 python -m geotask_core.cli inspect schemas
 python -m geotask_core.cli inspect schemas --format json
+python -m geotask_core.cli inspect schemas --verify --format json
+python -m geotask_core.cli inspect schemas geotask.execution-result --format json
+python -m geotask_core.cli inspect schemas geotask.execution-result --verify --format json
+python -m geotask_core.cli inspect schemas geotask.artifact-validation-report --format json
+python -m geotask_core.cli schema export geotask.execution-result
+python -m geotask_core.cli schema export geotask.execution-result --output geotask-result.schema.json
+python -m geotask_core.cli schema export geotask.artifact-validation-report --output artifact-validation.schema.json
+python -m geotask_core.cli schema verify
+python -m geotask_core.cli schema verify geotask.execution-result --format json
 python -m geotask_core.cli inspect examples
 ```
 
 - `inspect operators` lists public-safe Core operator registry metadata.
 - `inspect schema` summarizes the minimal GeoTask document structure.
 - `inspect schemas` lists the public Artifact Registry: task document,
-  execution-result, and control-evaluation contracts with Schema IDs, versions,
-  repository paths, generation guidance, validation commands, and execution
-  boundaries. YAML is the default; `--format json` emits clean machine-readable
-  JSON.
+  execution-result, control-evaluation, and Artifact Validation Report contracts
+  with Schema IDs, versions, repository paths, generation guidance, validation
+  commands, and execution boundaries. YAML is the default; `--format json` emits
+  clean machine-readable JSON. Supplying one stable Artifact ID returns a
+  one-entry registry envelope; unknown IDs fail explicitly. `--verify` appends a
+  sibling `schema_bundle_verification` report to the inspection output. With no
+  Artifact ID it verifies the registry Schema and all four artifact Schemas; with
+  an Artifact ID it verifies only that artifact's Schema. Without `--verify`, the
+  original Artifact Registry v1.0 payload remains structurally compatible.
+- `schema export <artifact-id>` writes the installed JSON Schema for one
+  registered artifact. Output is formatted JSON on stdout by default;
+  `--output <file>` saves it without status text, and `--compact` emits one-line
+  JSON for pipelines. The command uses the wheel's offline Schema Bundle and
+  never fetches a remote URL. Every load verifies the bundled file against its
+  generated manifest before returning JSON.
+- `schema verify` checks the versioned Bundle Manifest, expected filenames,
+  byte sizes, SHA-256 digests, JSON parsing, and published Schema `$id` values.
+  With no Artifact ID it checks all five bundled Schemas; supplying one stable
+  Artifact ID checks only that artifact. Text is the default and `--format json`
+  emits a machine-readable report with stable non-zero failure behavior.
 - `inspect examples` lists repository examples and marks public-safe Core
   examples separately from domain-pack examples.
 

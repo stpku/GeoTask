@@ -101,7 +101,7 @@ python .release/verify_release_preflight.py \
   --format json
 ```
 
-预检统一核对版本源、`CITATION.cff`、CHANGELOG、Git标签文本、Release Notes、双语Quickstart、README导航，以及wheel/sdist文件名和包内版本元数据。PyPI手工工作流要求显式输入预期版本，并且必须从名称精确为`v<版本>`的Git标签运行；普通分支、错误标签或输入值与源码版本不一致都会在构建上传前失败。
+预检统一核对版本源、`CITATION.cff`、CHANGELOG、Git标签文本、Release Notes、双语Quickstart、README导航，以及wheel/sdist文件名和包内版本元数据。PyPI手工工作流从默认分支启动，要求显式输入预期版本，随后明确检出对应的`v<版本>`标签并核对HEAD；非默认分支、缺失或错误标签、输入值与源码版本不一致都会在构建上传前失败。
 
 ### 安装与核验
 
@@ -214,7 +214,7 @@ python .release/verify_release_preflight.py \
   --format json
 ```
 
-The preflight checks the version source, `CITATION.cff`, CHANGELOG, Git tag text, Release Notes, bilingual Quickstarts, README navigation, wheel/sdist filenames, and embedded package metadata. The manual PyPI workflow requires an explicit expected version and must be dispatched from the exact `v<version>` Git tag; a branch ref, mismatched tag, or source-version mismatch fails before build and upload.
+The preflight checks the version source, `CITATION.cff`, CHANGELOG, Git tag text, Release Notes, bilingual Quickstarts, README navigation, wheel/sdist filenames, and embedded package metadata. The manual PyPI workflow is dispatched from the default branch, requires an explicit expected version, then checks out the matching `v<version>` tag and verifies HEAD; a non-default branch, missing or mismatched tag, or source-version mismatch fails before build and upload.
 
 ### Install and verify
 

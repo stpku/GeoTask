@@ -182,8 +182,13 @@ def test_ci_and_publish_workflows_enforce_release_preflight() -> None:
     assert "verify_release_preflight.py" in publish
     assert '${{ github.ref_type }}' in publish
     assert '${{ github.ref_name }}' in publish
-    assert 'if [ "$RELEASE_REF_TYPE" != "tag" ]' in publish
-    assert 'if [ "$RELEASE_REF_NAME" != "v$EXPECTED_VERSION" ]' in publish
+    assert '${{ github.event.repository.default_branch }}' in publish
+    assert 'if [ "$DISPATCH_REF_TYPE" != "branch" ]' in publish
+    assert 'if [ "$DISPATCH_REF_NAME" != "$DEFAULT_BRANCH" ]' in publish
+    assert 'ref: v${{ inputs.version }}' in publish
+    assert "fetch-depth: 0" in publish
+    assert 'tag_commit="$(git rev-list -n 1 "$expected_tag")"' in publish
+    assert 'if [ "$head_commit" != "$tag_commit" ]' in publish
     assert '--expected-version "$EXPECTED_VERSION"' in publish
     assert '--expected-tag "v$EXPECTED_VERSION"' in publish
     assert "--artifacts dist" in publish

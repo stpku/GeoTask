@@ -117,13 +117,14 @@ geotask inspect schemas --verify --format json
 
 ### 验证结果
 
-- 完整源仓：`1069 passed, 1 skipped`；
-- 发布治理聚焦回归：`60 passed`；
+- 完整源仓：`1070 passed, 1 skipped`；
+- 发布治理聚焦回归：`61 passed`；
 - wheel与sdist构建通过；
 - 从sdist重建wheel并通过同一五-Schema制品门禁；
 - 隔离环境安装后，Registry发现、Schema导出、Schema完整性检查、三类基础制品验证和验证报告自验证全部通过；
 - wheel与sdist均通过Twine检查；
-- 公共发布流水线导出253个文件，边界检查、导出验证、敏感扫描、哈希生成和哈希校验全部通过。
+- 公共发布流水线导出253个文件，边界检查、导出验证、敏感扫描、哈希生成和哈希校验全部通过；
+- UTF-8文本在公开哈希生成和校验时统一规范化为LF，Windows CRLF导出与Linux/GitHub检出使用同一稳定摘要。
 
 ## English release notes
 
@@ -229,10 +230,11 @@ Distribution metadata, `geotask_core.__version__`, and the CLI should report `0.
 
 ### Verification
 
-- Full source repository: `1069 passed, 1 skipped`;
-- Focused release-governance regression suite: `60 passed`;
+- Full source repository: `1070 passed, 1 skipped`;
+- Focused release-governance regression suite: `61 passed`;
 - wheel and sdist builds passed;
 - a wheel rebuilt from the sdist passed the same five-Schema distribution gate;
 - isolated installed CLI/API smoke tests passed for Registry discovery, Schema export and verification, base Artifact validation, and validation-report self-validation;
 - wheel and sdist passed Twine checks;
-- the public release pipeline exported 253 files and passed boundary checks, export verification, sensitive scanning, hash generation, and hash verification.
+- the public release pipeline exported 253 files and passed boundary checks, export verification, sensitive scanning, hash generation, and hash verification;
+- public hashing normalizes UTF-8 text to LF, so Windows CRLF exports and Linux/GitHub checkouts share one stable digest set.

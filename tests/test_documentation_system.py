@@ -571,10 +571,11 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "v0.2.0" in release
     assert "geotask-core==0.2.0" in release
     assert "geotask.artifact-validation-report" in release
-    assert "1069 passed, 1 skipped" in release
-    assert "60 passed" in release
+    assert "1070 passed, 1 skipped" in release
+    assert "61 passed" in release
     assert "253 files" in release
     assert "verify_release_preflight.py" in release
+    assert "normalizes UTF-8 text to LF" in release
     assert "five valid schemas" in release
     assert "four public artifacts" in release
 

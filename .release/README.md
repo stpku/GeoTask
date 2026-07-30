@@ -12,7 +12,8 @@ Tools for exporting, verifying, and scanning a public release of GeoTask Core.
 | `verify_release_preflight.py` | Verifies version, date, tag text, release notes, Quickstarts, and optional wheel/sdist metadata |
 | `verify_schema_distribution.py` | Verifies wheel/sdist Schema Bundle manifests, digests, source parity, and CLI entry point |
 | `scan_public_export.py` | Scans for secrets, internal paths, binary files |
-| `release_public.py` | Full pipeline: boundary check → export → verify → scan |
+| `hash_public_export.py` | Generates and verifies cross-platform SHA-256 manifests with UTF-8 text normalized to LF |
+| `release_public.py` | Full pipeline: boundary check → export → verify → scan → hash |
 
 ## Quick Start
 
@@ -63,6 +64,10 @@ python .release/scan_public_export.py ../geotask-public-v1.0
    - API keys, tokens, passwords, private keys
     - Internal paths (Windows `C:` disk, Linux `/` home dirs)
    - Binary files
+
+5. **Hash** — Generates and verifies one SHA-256 manifest. UTF-8 text is
+   normalized to LF before hashing, while binary and non-UTF-8 files retain
+   their original bytes, so Windows and Linux checkouts verify identically.
 
 ## Manifest Rules
 

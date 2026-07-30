@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-artifact-validation-v1.0.schema.json",
+  "title": "GeoTask Artifact Validation Report v1.0",
+  "description": "Machine-readable outcome of read-only Registry-driven validation for one public GeoTask artifact.",
+  "type": "object",
+  "required": ["artifact_validation"],
+  "additionalProperties": false,
+  "properties": {
+    "artifact_validation": {
+      "type": "object",
+      "required": [
+        "report_version",
+        "valid",
+        "artifact_id",
+        "artifact_kind",
+        "schema_id",
+        "schema_version",
+        "schema_verified",
+        "file",
+        "summary",
+        "diagnostics"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "report_version": {"const": "1.0"},
+        "valid": {"type": "boolean"},
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^geotask\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "artifact_kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_id": {
+          "type": "string",
+          "format": "uri"
+        },
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+$"
+        },
+        "schema_verified": {"type": "boolean"},
+        "file": {"type": "string"},
+        "summary": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "number", "integer", "boolean", "null"]
+          }
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/diagnostic"}
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"schema_verified": {"const": false}},
+            "required": ["schema_verified"]
+          },
+          "then": {
+            "properties": {"valid": {"const": false}}
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "diagnostic": {
+      "type": "object",
+      "required": [
+        "code",
+        "path",
+        "message",
+        "severity",
+        "suggested_fix"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "path": {"type": "string"},
+        "message": {"type": "string", "minLength": 1},
+        "severity": {"enum": ["error", "warning"]},
+        "suggested_fix": {"type": "string"}
+      }
+    }
+  }
+}

@@ -15,5 +15,6 @@ def test_package_version_has_one_source_of_truth() -> None:
 
     assert 'dynamic = ["version"]' in pyproject
     assert 'version = {attr = "geotask_core._version.__version__"}' in pyproject
-    assert __version__ == source_version == "0.1.1"
+    assert __version__ == source_version == "0.2.0"
     assert citation["version"] == source_version
+    assert str(citation["date-released"]) == "2026-07-30"

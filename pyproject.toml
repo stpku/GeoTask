@@ -62,6 +62,9 @@ stir = "geotask_core.cli:main"
 [tool.setuptools.dynamic]
 version = {attr = "geotask_core._version.__version__"}
 
+[tool.setuptools.cmdclass]
+build_py = "geotask_build_support.BuildPy"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["geotask_core*"]

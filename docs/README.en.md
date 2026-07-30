@@ -9,13 +9,15 @@ GeoTask documentation is organized by purpose. Start with the white paper for th
 - [GeoTask White Paper v0.1](whitepaper/GeoTask_White_Paper_v0.1.md) — why GeoTask exists, its architecture, trust model, application patterns, and public boundary. See the [build guide](whitepaper/README.md) for HTML, DOCX, and PDF commands.
 - [GeoTask Language and Execution Specification v1.0](spec/geotask-language-spec-v1.0.md) — the normative profile implemented by the current public Core.
 - [GeoTask Execution Result v1.0](spec/geotask-result-v1.0.md) — the `GeotaskResult.to_dict()` contract, public result JSON Schema, and `geotask result validate` command.
-- [GeoTask Artifact Registry v1.0](spec/geotask-artifact-registry-v1.0.md) — `geotask inspect schemas` discovery for task documents, execution results, control results, schemas, versions, and operating commands.
+- [GeoTask Artifact Registry v1.0](spec/geotask-artifact-registry-v1.0.md) — `geotask inspect schemas` discovery for task documents, execution results, control results, validation reports, schemas, versions, and operating commands.
+- [GeoTask Artifact Validation v1.0](spec/geotask-artifact-validation-v1.0.md) — one `geotask artifact validate` entry point for validating all four registered public artifacts, including validation reports themselves, by stable Artifact ID.
 - [GeoTask Versioned Payload Validation v1.0](spec/geotask-versioned-payload-validation-v1.0.md) — shared strict loading, schema metadata, diagnostics, and text/JSON reports for execution and control results.
 - [GeoTask Control Extension Profile v1.0](spec/geotask-control-extension-profile-v1.0.md) — versioned validation for evidence requests, evidence conflicts, decision rules, and task gates.
 - [GeoTask Control Expression Language v1.0](spec/geotask-control-expression-language-v1.0.md) — the safe finite grammar, three-valued logic, comparison semantics, and public parser/evaluator API.
 - [GeoTask Control Evaluation Result v1.0](spec/geotask-control-evaluation-v1.0.md) — read-only binding of assertion results and explicit domain state into gate status, unknown identifiers, and still-blocked outputs.
 - [Quickstart](tutorials/quickstart.md) — install, validate, execute, inspect, and extend a first task.
 - [GT01–GT20 Cookbook](cookbook/gt01-gt20.md) — progressive examples from distance calculation to evidence governance, object-specific feasibility, emergency dispatch, equipment capability, and high-risk action gating.
+- [v0.2.0 artifact-contract release notes](release_v0_2_0.md) — adds the Artifact Registry, offline Schema Bundle, unified Artifact validation, and validation-report self-validation.
 - [v0.1.1 PyPI hotfix release notes](release_v0_1_1.md) — fixes package/runtime version consistency and records clean-environment installation verification.
 - [v0.1.0 Public Preview release notes](release_v0_1_0.md) — fixed-version capabilities, assets, and verification status.
 - [Public roadmap](../ROADMAP.md) — planned protocol, Core, tooling, and ecosystem directions.
@@ -29,7 +31,7 @@ GeoTask documentation is organized by purpose. Start with the white paper for th
 - [CLI Usage](cli_usage.md)
 - [Architecture](architecture.md)
 - [Operator Extension Guide](operator-guide.md)
-- Machine-readable schemas: [artifact registry](../schemas/geotask-artifact-registry-v1.0.schema.json), [task document](../schemas/geotask-v1.0.schema.json), [execution result](../schemas/geotask-result-v1.0.schema.json), and [control evaluation result](../schemas/geotask-control-evaluation-v1.0.schema.json)
+- Machine-readable schemas: [artifact registry](../schemas/geotask-artifact-registry-v1.0.schema.json), [artifact validation report](../schemas/geotask-artifact-validation-v1.0.schema.json), [task document](../schemas/geotask-v1.0.schema.json), [execution result](../schemas/geotask-result-v1.0.schema.json), and [control evaluation result](../schemas/geotask-control-evaluation-v1.0.schema.json)
 
 ## Specification layers
 

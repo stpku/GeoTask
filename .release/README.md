@@ -9,6 +9,8 @@ Tools for exporting, verifying, and scanning a public release of GeoTask Core.
 | `public-manifest.yaml` | Central manifest — include/exclude/required/forbidden rules |
 | `export_public.py` | Copies public files to an output directory per manifest |
 | `verify_public_export.py` | Checks whitelist, required files, internal imports |
+| `verify_release_preflight.py` | Verifies version, date, tag text, release notes, Quickstarts, and optional wheel/sdist metadata |
+| `verify_schema_distribution.py` | Verifies wheel/sdist Schema Bundle manifests, digests, source parity, and CLI entry point |
 | `scan_public_export.py` | Scans for secrets, internal paths, binary files |
 | `release_public.py` | Full pipeline: boundary check → export → verify → scan |
 
@@ -26,6 +28,18 @@ python .release/export_public.py ../geotask-public-v1.0 --clean
 
 # Verify an existing export
 python .release/verify_public_export.py ../geotask-public-v1.0
+
+# Verify source release identity before building
+python .release/verify_release_preflight.py --expected-version 0.2.0
+
+# Verify built wheel and sdist against release metadata
+python .release/verify_release_preflight.py --expected-version 0.2.0 --expected-tag v0.2.0 --artifacts dist --format json
+
+# Verify the built Schema Bundle
+python .release/verify_schema_distribution.py dist --format json
+
+# PyPI workflow dispatch: select tag v0.2.0 and enter version 0.2.0.
+# Branch refs and mismatched tags fail before package build/upload.
 
 # Scan for secrets and internal paths
 python .release/scan_public_export.py ../geotask-public-v1.0

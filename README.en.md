@@ -26,7 +26,7 @@ GeoTask turns spatial, temporal, evidential, resource, and action constraints in
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
-- [v0.1.1 PyPI hotfix release notes](docs/release_v0_1_1.md)
+- [v0.2.0 artifact-contract release notes](docs/release_v0_2_0.md)
 - [Public roadmap](ROADMAP.md)
 - [Documentation index](docs/README.en.md)
 
@@ -167,7 +167,7 @@ geotask inspect operators
 
 | Artifact | Current version | Meaning |
 |---|---:|---|
-| GeoTask Core package | `0.1.1` | Python implementation version |
+| GeoTask Core package | `0.2.0` | Python implementation version |
 | GeoTask document schema | `1.0` | YAML/JSON document format |
 | Language specification | `1.0` | Implemented public normative profile |
 | White paper | `0.1` | Public conceptual draft |

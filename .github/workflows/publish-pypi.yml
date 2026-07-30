@@ -2,6 +2,11 @@ name: Publish geotask-core to PyPI
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: Expected package version, for example 0.2.0
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -21,9 +26,55 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+      - name: Verify workflow release tag
+        shell: bash
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+          RELEASE_REF_TYPE: ${{ github.ref_type }}
+          RELEASE_REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$RELEASE_REF_TYPE" != "tag" ]; then
+            echo "PyPI publication must be dispatched from a Git tag." >&2
+            exit 1
+          fi
+          if [ "$RELEASE_REF_NAME" != "v$EXPECTED_VERSION" ]; then
+            echo "Release tag must be v$EXPECTED_VERSION, got $RELEASE_REF_NAME." >&2
+            exit 1
+          fi
       - run: python -m pip install --upgrade build twine
       - run: python -m build
       - run: python -m twine check dist/*
+      - name: Verify release identity and distribution versions
+        shell: bash
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+        run: >-
+          python .release/verify_release_preflight.py
+          --expected-version "$EXPECTED_VERSION"
+          --expected-tag "v$EXPECTED_VERSION"
+          --artifacts dist
+          --format json
+      - name: Verify Schema Bundle distributions
+        run: python .release/verify_schema_distribution.py dist --format json
+      - name: Smoke-test package selected for publication
+        shell: bash
+        run: |
+          python -m venv .venv-schema-smoke
+          .venv-schema-smoke/bin/python -m pip install dist/*.whl
+          .venv-schema-smoke/bin/geotask schema verify --format json > schema-verification.json
+          .venv-schema-smoke/bin/geotask schema export geotask.execution-result --compact > execution-result.schema.json
+          .venv-schema-smoke/bin/geotask inspect schemas geotask.execution-result --verify --format json > schema-inspection.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.document examples/core/uav_arrival_ground_clearance_release.yaml --format json > document-validation.json
+          .venv-schema-smoke/bin/geotask run examples/core/uav_arrival_ground_clearance_release.yaml --format v1-json --output execution-result.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.execution-result execution-result.json --format json > result-validation.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.artifact-validation-report result-validation.json --format json > validation-report-validation.json
+          printf 'ground_zone_clear: false\nclearance_evidence_age_seconds: 8\n' > control-state.yaml
+          .venv-schema-smoke/bin/geotask control evaluate examples/core/uav_arrival_ground_clearance_release.yaml --result execution-result.json --state control-state.yaml --output control-evaluation.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.control-evaluation control-evaluation.json --format json > control-validation.json
+          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("schema-verification.json", encoding="utf-8"))["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 5'
+          .venv-schema-smoke/bin/python -c 'import json; schema=json.load(open("execution-result.schema.json", encoding="utf-8")); assert schema["$id"].endswith("geotask-result-v1.0.schema.json")'
+          .venv-schema-smoke/bin/python -c 'import json; payload=json.load(open("schema-inspection.json", encoding="utf-8")); assert payload["artifact_registry"]["artifact_count"] == 1; report=payload["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 1'
+          .venv-schema-smoke/bin/python -c 'import json; files=("document-validation.json","result-validation.json","control-validation.json","validation-report-validation.json"); reports=[json.load(open(path, encoding="utf-8"))["artifact_validation"] for path in files]; assert [r["artifact_id"] for r in reports] == ["geotask.document","geotask.execution-result","geotask.control-evaluation","geotask.artifact-validation-report"]; assert all(r["valid"] is True and r["schema_verified"] is True for r in reports)'
       - id: package-version
         name: Read package version
         shell: bash

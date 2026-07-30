@@ -11,7 +11,7 @@ def test_cli_version_flag_reports_package_version() -> None:
     proc = _run_cli("--version")
 
     assert proc.returncode == 0
-    assert proc.stdout.strip() == "geotask-core 0.1.1"
+    assert proc.stdout.strip() == "geotask-core 0.2.0"
     assert proc.stderr == ""
 
 
@@ -19,7 +19,7 @@ def test_cli_version_command_reports_package_version() -> None:
     proc = _run_cli("version")
 
     assert proc.returncode == 0
-    assert proc.stdout.strip() == "geotask-core 0.1.1"
+    assert proc.stdout.strip() == "geotask-core 0.2.0"
     assert proc.stderr == ""
 
 

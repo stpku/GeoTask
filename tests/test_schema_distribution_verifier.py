@@ -16,6 +16,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 VERIFIER_PATH = ROOT / ".release" / "verify_schema_distribution.py"
 SCHEMA_FILENAMES = (
+    "geotask-agent-generation-preparation-v0.1.schema.json",
+    "geotask-agent-integration-v0.1.schema.json",
+    "geotask-agent-revision-retry-v0.1.schema.json",
+    "geotask-agent-revision-verification-v0.1.schema.json",
     "geotask-artifact-registry-v1.0.schema.json",
     "geotask-artifact-validation-v1.0.schema.json",
     "geotask-control-evaluation-v1.0.schema.json",
@@ -88,7 +92,7 @@ def _create_distribution(
     if tamper_wheel_schema:
         wheel_schemas["geotask-result-v1.0.schema.json"] += b"\n"
 
-    wheel_path = dist_dir / "geotask_core-0.2.0-py3-none-any.whl"
+    wheel_path = dist_dir / "geotask_core-0.3.0-py3-none-any.whl"
     with zipfile.ZipFile(wheel_path, mode="w") as archive:
         archive.writestr(
             "geotask_core/schemas/schema-bundle-manifest-v1.0.json",
@@ -97,12 +101,12 @@ def _create_distribution(
         for filename, raw in wheel_schemas.items():
             archive.writestr(f"geotask_core/schemas/{filename}", raw)
         archive.writestr(
-            "geotask_core-0.2.0.dist-info/entry_points.txt",
+            "geotask_core-0.3.0.dist-info/entry_points.txt",
             "[console_scripts]\ngeotask = geotask_core.cli:main\n",
         )
 
-    sdist_path = dist_dir / "geotask_core-0.2.0.tar.gz"
-    prefix = "geotask_core-0.2.0"
+    sdist_path = dist_dir / "geotask_core-0.3.0.tar.gz"
+    prefix = "geotask_core-0.3.0"
     required_sources = {
         "MANIFEST.in": (ROOT / "MANIFEST.in").read_bytes(),
         "pyproject.toml": (ROOT / "pyproject.toml").read_bytes(),
@@ -140,7 +144,7 @@ def test_distribution_verifier_accepts_matching_wheel_and_sdist(tmp_path: Path) 
 
     assert report["valid"] is True
     assert report["bundle_version"] == "1.0"
-    assert report["schema_count"] == 5
+    assert report["schema_count"] == 9
     assert all(item["valid"] for item in report["schemas"])
     assert report["errors"] == []
 
@@ -199,7 +203,7 @@ def test_distribution_verifier_cli_emits_machine_readable_report(tmp_path: Path)
     assert result.stderr == ""
     report = json.loads(result.stdout)["schema_distribution_verification"]
     assert report["valid"] is True
-    assert report["schema_count"] == 5
+    assert report["schema_count"] == 9
 
 
 def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
@@ -220,11 +224,15 @@ def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
             "geotask.document",
             "geotask.execution-result",
             "geotask.control-evaluation",
+            "geotask.agent-generation-preparation",
+            "geotask.agent-revision-verification",
+            "geotask.agent-revision-retry",
+            "geotask.agent-evidence-recovery",
             "geotask.artifact-validation-report",
         ):
             assert f"artifact validate {artifact_id}" in workflow
         assert "artifact_validation" in workflow
-        assert "checked_count\"] == 5" in workflow
+        assert "checked_count\"] == 9" in workflow
         assert "checked_count\"] == 1" in workflow
 
     assert "pip wheel --no-deps --wheel-dir dist-from-sdist" in ci

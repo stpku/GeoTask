@@ -1,0 +1,11 @@
+# Fictional evidence used by the GT08 recovery demo.
+# It confirms that the provisional restricted interval already embedded in the
+# GeoTask document has been checked against an authoritative source.
+restricted_schedule_verified: true
+issuing_authority: "Fictional Airspace Coordination Office"
+effective_date: "2026-08-01"
+start_time: "08:30"
+end_time: "10:00"
+document_version: "2026-08-01-r1"
+source_reference: "fictional://restricted-schedule/2026-08-01-r1"
+verified_at: "2026-07-30T06:30:00Z"

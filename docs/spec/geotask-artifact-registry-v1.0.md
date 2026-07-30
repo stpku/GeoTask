@@ -10,12 +10,16 @@ GeoTask publishes several machine-readable artifacts with different producers,
 wrappers, JSON Schemas, and validation commands. The Artifact Registry provides
 one stable public discovery surface for those contracts.
 
-The registry currently contains exactly four artifacts:
+The registry currently contains exactly eight artifacts:
 
 1. GeoTask Document v1.0;
 2. GeoTask Execution Result v1.0;
 3. GeoTask Control Evaluation Result v1.0;
-4. GeoTask Artifact Validation Report v1.0.
+4. GeoTask Agent Generation Preparation Report v0.1;
+5. GeoTask Agent Revision Verification Report v0.1;
+6. GeoTask Agent Revision Retry Report v0.1;
+7. GeoTask Agent Evidence Recovery Report v0.1;
+8. GeoTask Artifact Validation Report v1.0.
 
 It does not scan the filesystem, discover private modules, or infer unpublished
 contracts. New entries require an explicit public contract and compatibility
@@ -53,7 +57,7 @@ geotask inspect schemas geotask.execution-result --verify --format json
 ```
 
 `--verify` appends a sibling `schema_bundle_verification` object. Full discovery
-checks the registry Schema plus all four registered artifact Schemas; exact
+checks the registry Schema plus all eight registered artifact Schemas; exact
 lookup checks only the selected artifact Schema. An invalid Bundle still emits
 the composite JSON or YAML report and exits non-zero. Without `--verify`, output
 remains the original Artifact Registry v1.0 payload and continues to validate
@@ -78,6 +82,19 @@ from geotask_core import (
     GEOTASK_DOCUMENT_SCHEMA_VERSION,
     ARTIFACT_VALIDATION_SCHEMA_ID,
     ARTIFACT_VALIDATION_SCHEMA_VERSION,
+    AGENT_GENERATION_PREPARATION_SCHEMA_ID,
+    AGENT_GENERATION_PREPARATION_SCHEMA_VERSION,
+    AGENT_REVISION_VERIFICATION_SCHEMA_ID,
+    AGENT_REVISION_VERIFICATION_SCHEMA_VERSION,
+    AGENT_REVISION_RETRY_SCHEMA_ID,
+    AGENT_REVISION_RETRY_SCHEMA_VERSION,
+    AGENT_EVIDENCE_RECOVERY_SCHEMA_ID,
+    AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION,
+    AgentArtifactFormatError,
+    load_agent_generation_preparation_report,
+    load_agent_revision_verification_report,
+    load_agent_revision_retry_report,
+    load_agent_evidence_recovery_report,
     ArtifactDescriptor,
     list_artifact_descriptors,
     get_artifact_descriptor,
@@ -103,8 +120,8 @@ The same names are exported from `geotask_core.v1`.
 
 ### 3.1 Installed Schema Bundle
 
-The wheel and source distribution include all five public JSON Schemas needed to
-interpret the registry and its four registered artifacts. Callers can load them
+The wheel and source distribution include all nine public JSON Schemas needed to
+interpret the registry and its eight registered artifacts. Callers can load them
 without network access:
 
 ```python
@@ -198,7 +215,7 @@ and non-execution boundary.
   "artifact_registry": {
     "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-artifact-registry-v1.0.schema.json",
     "registry_version": "1.0",
-    "artifact_count": 4,
+    "artifact_count": 8,
     "artifacts": [
       {
         "artifact_id": "geotask.document",
@@ -220,7 +237,7 @@ and non-execution boundary.
 }
 ```
 
-The complete payload contains all four descriptors in stable display order.
+The complete payload contains all eight descriptors in stable display order.
 
 ## 5. Descriptor fields
 
@@ -291,7 +308,82 @@ Validation:
 Control evaluation and validation never execute `next_action` or release
 outputs.
 
-### 6.4 Artifact Validation Report
+### 6.4 Agent Generation Preparation Report
+
+```text
+Artifact ID: geotask.agent-generation-preparation
+Schema: schemas/geotask-agent-generation-preparation-v0.1.schema.json
+Version: 0.1
+Wrapper: agent_generation_preparation
+Generation:
+  geotask agent prepare <generated.yaml> --output <preparation-report.json>
+Validation:
+  geotask artifact validate geotask.agent-generation-preparation
+    <preparation-report.json>
+```
+
+A structurally valid report may record `state=blocked`. Artifact validation checks
+the serialized trace and its cross-field invariants without preparing or executing
+the embedded document.
+
+### 6.5 Agent Revision Verification Report
+
+```text
+Artifact ID: geotask.agent-revision-verification
+Schema: schemas/geotask-agent-revision-verification-v0.1.schema.json
+Version: 0.1
+Wrapper: agent_revision_verification
+Generation:
+  geotask agent retry <blocked-report.json> <revised.yaml>
+    --verification-output <revision-verification.json>
+Validation:
+  geotask artifact validate geotask.agent-revision-verification
+    <revision-verification.json>
+```
+
+A structurally valid report may record `state=rejected`. Validation does not repeat
+the changed-path comparison and never executes a task.
+
+### 6.6 Agent Revision Retry Report
+
+```text
+Artifact ID: geotask.agent-revision-retry
+Schema: schemas/geotask-agent-revision-retry-v0.1.schema.json
+Version: 0.1
+Wrapper: agent_revision_retry
+Generation:
+  geotask agent retry <blocked-report.json> <revised.yaml>
+    --output <retry-report.json>
+Validation:
+  geotask artifact validate geotask.agent-revision-retry <retry-report.json>
+```
+
+The report composes a revision-verification report with an optional preparation
+report. A valid Artifact may record `accepted`, `rejected`, or `blocked`; validation
+does not repeat revision verification, preparation, or deterministic execution.
+
+### 6.7 Agent Evidence Recovery Report
+
+```text
+Artifact ID: geotask.agent-evidence-recovery
+Schema: schemas/geotask-agent-integration-v0.1.schema.json
+Version: 0.1
+Wrapper: agent_integration
+Generation:
+  geotask agent recover <task.yaml> --evidence <state.yaml>
+    --output <recovery-report.json>
+Validation:
+  geotask artifact validate geotask.agent-evidence-recovery
+    <recovery-report.json>
+```
+
+The report contains the initial execution and control evaluation, the supplied
+evidence completeness decision, the resume control evaluation, and—only after all
+checks pass—the resumed execution and final control evaluation. A structurally
+valid Artifact may record `state=blocked`; validation does not reacquire evidence,
+repeat recovery, execute `next_action`, or release outputs.
+
+### 6.8 Artifact Validation Report
 
 ```text
 Artifact ID: geotask.artifact-validation-report
@@ -319,6 +411,10 @@ The Artifact Registry is a discovery layer. It does not replace:
 - GeoTask document validation;
 - `GeotaskResult.from_dict()`;
 - `load_control_evaluation()`;
+- `load_agent_generation_preparation_report()`;
+- `load_agent_revision_verification_report()`;
+- `load_agent_revision_retry_report()`;
+- `load_agent_evidence_recovery_report()`;
 - `load_artifact_validation_report()`;
 - the Versioned Payload Validation framework;
 - artifact-specific JSON Schemas.
@@ -334,7 +430,7 @@ Registry v1.0 guarantees:
 - the self-describing `schema_id`;
 - `registry_version` and `artifact_count`;
 - the descriptor field set documented above;
-- stable artifact IDs for the four current entries;
+- stable artifact IDs for the eight current entries;
 - deterministic registry ordering.
 
 Adding a backward-compatible public artifact may keep registry version `1.0`.

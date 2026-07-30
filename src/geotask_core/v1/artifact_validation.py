@@ -16,6 +16,13 @@ from typing import Any
 
 import yaml
 
+from geotask_core.v1.agent_artifacts import (
+    AgentArtifactFormatError,
+    load_agent_evidence_recovery_report,
+    load_agent_generation_preparation_report,
+    load_agent_revision_retry_report,
+    load_agent_revision_verification_report,
+)
 from geotask_core.v1.artifact_registry import (
     ARTIFACT_VALIDATION_SCHEMA_ID,
     ARTIFACT_VALIDATION_SCHEMA_VERSION,
@@ -454,6 +461,92 @@ def _validate_artifact_validation_report_payload(
     )
 
 
+def _validate_agent_report_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    loaders = {
+        "geotask.agent-generation-preparation": (
+            load_agent_generation_preparation_report,
+            "agent_generation_preparation",
+        ),
+        "geotask.agent-revision-verification": (
+            load_agent_revision_verification_report,
+            "agent_revision_verification",
+        ),
+        "geotask.agent-revision-retry": (
+            load_agent_revision_retry_report,
+            "agent_revision_retry",
+        ),
+        "geotask.agent-evidence-recovery": (
+            load_agent_evidence_recovery_report,
+            "agent_integration",
+        ),
+    }
+    loader, wrapper = loaders[descriptor.artifact_id]
+    try:
+        loaded = loader(payload)
+    except AgentArtifactFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_agent_report",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Regenerate the report with its declared GeoTask Agent command."
+                    ),
+                ),
+            ),
+        )
+
+    body = loaded[wrapper]
+    if descriptor.artifact_id == "geotask.agent-generation-preparation":
+        summary = {
+            "report_state": body["state"],
+            "final_valid": body["final_validation"]["valid"],
+            "repair_count": body["summary"]["repair_count"],
+            "task_executed": body["summary"]["task_executed"],
+        }
+    elif descriptor.artifact_id == "geotask.agent-revision-verification":
+        summary = {
+            "report_state": body["state"],
+            "accepted": body["summary"]["accepted"],
+            "changed_path_count": body["summary"]["changed_path_count"],
+            "violation_count": body["summary"]["violation_count"],
+        }
+    elif descriptor.artifact_id == "geotask.agent-revision-retry":
+        summary = {
+            "report_state": body["state"],
+            "revision_accepted": body["summary"]["revision_accepted"],
+            "task_executed": body["summary"]["task_executed"],
+            "preparation_state": body["summary"]["preparation_state"],
+        }
+    else:
+        summary = {
+            "report_state": body["state"],
+            "evidence_complete": body["request"]["evidence_complete"],
+            "task_reexecuted": body["materialization"]["task_reexecuted"],
+            "decision_value": body["summary"]["decision_value"],
+            "blocked_output_count": len(body["summary"]["blocked_outputs"]),
+            "eligible_output_count": len(body["summary"]["eligible_outputs"]),
+            "diagnostic_count": len(body["diagnostics"]),
+        }
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary=summary,
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -476,6 +569,13 @@ def _validate_verified_payload(
             file=file,
             contract=CONTROL_EVALUATION_VALIDATION_CONTRACT,
         )
+    if descriptor.artifact_id in {
+        "geotask.agent-generation-preparation",
+        "geotask.agent-revision-verification",
+        "geotask.agent-revision-retry",
+        "geotask.agent-evidence-recovery",
+    }:
+        return _validate_agent_report_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.artifact-validation-report":
         return _validate_artifact_validation_report_payload(
             descriptor,

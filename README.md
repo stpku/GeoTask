@@ -30,6 +30,9 @@ GeoTask把自然语言中的空间、时间、证据、资源和行动约束转�
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [GT01—GT20中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)
 - [当前实现语言与执行规范v1.0](docs/spec/geotask-language-spec-v1.0.md)
+- [Agent集成Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
+- [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
+- [v0.3.0 Agent集成版发布说明](docs/release_v0_3_0.md)
 - [v0.2.0制品契约版发布说明](docs/release_v0_2_0.md)
 - [公共路线图](ROADMAP.md)
 - [中文文档导航](docs/README.md)
@@ -163,6 +166,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - 结果汇总和Assurance等级；
 - 模型输出归一化；
 - 模型结果与本地结果比较；
+- Agent工具契约发现、生成草稿机械修复、结构化修订请求、差异约束重试、四类报告Artifact离线验证与GT08补证据恢复；
 - CLI、JSON Schema、案例和一致性测试。
 
 ## 案例扩展语义
@@ -179,7 +183,7 @@ resume_when
 next_action
 ```
 
-这些主要属于案例层或工作流扩展语义，通常放在`extensions`中；它们不能被误写为当前Core已经全部实现的基础枚举。
+这些仍是`extensions`中的控制与工作流语义，而不是基础`ClaimStatus`枚举。当前公共Core已经通过`geotask.control/1.0`对其进行严格校验和只读评估，并支持单一命名条件的补证据后重新执行；恢复过程可输出并离线验证`geotask.agent-evidence-recovery` Artifact。真实证据获取、审批和动作执行仍属于外部Runtime或Domain Pack。
 
 ## 当前不包含什么
 
@@ -202,15 +206,21 @@ geotask run <file.yaml>
 geotask normalize <model-output.txt>
 geotask eval <file.yaml> <model-output.txt>
 geotask inspect operators
+geotask agent inspect --format json
+geotask agent prepare <generated.yaml> --repaired-output <prepared.yaml>
+geotask agent retry <blocked-report.json> <revised.yaml> --verification-output <verification.json> --prepared-output <prepared.yaml>
+geotask agent recover <task.yaml> --evidence <verified-state.yaml> --output <recovery-report.json>
+geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json> --format json
 ```
 
 ## 版本说明
 
 | 名称 | 当前版本 | 含义 |
 |---|---:|---|
-| GeoTask Core包 | `0.2.0` | Python实现版本 |
+| GeoTask Core包 | `0.3.0` | Python实现版本 |
 | GeoTask文档Schema | `1.0` | YAML/JSON任务格式版本 |
 | 语言与执行规范 | `1.0` | 当前公共实现规范 |
+| Agent Integration Profile | `0.1` | 模型无关工具契约、补证据恢复与恢复报告Artifact |
 | 白皮书 | `0.1` | 公开概念草案 |
 
 ## 文档

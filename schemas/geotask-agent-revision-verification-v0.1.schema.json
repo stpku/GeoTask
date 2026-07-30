@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-agent-revision-verification-v0.1.schema.json",
+  "title": "GeoTask Agent Revision Verification Report v0.1",
+  "type": "object",
+  "required": ["agent_revision_verification"],
+  "additionalProperties": false,
+  "properties": {
+    "agent_revision_verification": {"$ref": "#/$defs/report"}
+  },
+  "$defs": {
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "policy": {
+      "type": "object",
+      "required": ["requested_paths_only", "candidate_values_are_inventory_only", "coordinates_immutable_unless_requested", "evidence_immutable_unless_requested", "domain_policy_immutable_unless_requested", "model_called", "automatic_revision_applied", "task_executed"],
+      "additionalProperties": false,
+      "properties": {
+        "requested_paths_only": {"const": true},
+        "candidate_values_are_inventory_only": {"const": true},
+        "coordinates_immutable_unless_requested": {"const": true},
+        "evidence_immutable_unless_requested": {"const": true},
+        "domain_policy_immutable_unless_requested": {"const": true},
+        "model_called": {"const": false},
+        "automatic_revision_applied": {"const": false},
+        "task_executed": {"const": false}
+      }
+    },
+    "allowedPath": {
+      "type": "object",
+      "required": ["path", "scope", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {"$ref": "#/$defs/nonEmptyString"},
+        "scope": {"enum": ["exact", "subtree"]},
+        "reason": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "resolvedChange": {
+      "type": "object",
+      "required": ["code", "path", "action", "before_present", "before", "after", "candidate_inventory_used", "selected_by_core"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"$ref": "#/$defs/nonEmptyString"},
+        "path": {"$ref": "#/$defs/nonEmptyString"},
+        "action": {"$ref": "#/$defs/nonEmptyString"},
+        "before_present": {"type": "boolean"},
+        "before": true,
+        "after": true,
+        "candidate_inventory_used": {"type": "boolean"},
+        "selected_by_core": {"const": false}
+      }
+    },
+    "violation": {
+      "type": "object",
+      "required": ["code", "path", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"$ref": "#/$defs/nonEmptyString"},
+        "path": {"type": "string"},
+        "message": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["changed_path_count", "resolved_change_count", "violation_count", "accepted"],
+      "additionalProperties": false,
+      "properties": {
+        "changed_path_count": {"type": "integer", "minimum": 0},
+        "resolved_change_count": {"type": "integer", "minimum": 0},
+        "violation_count": {"type": "integer", "minimum": 0},
+        "accepted": {"type": "boolean"}
+      }
+    },
+    "report": {
+      "type": "object",
+      "required": ["report_version", "state", "revision_base_sha256", "revised_document_sha256", "policy", "changed_paths", "allowed_paths", "resolved_changes", "violations", "summary"],
+      "additionalProperties": false,
+      "properties": {
+        "report_version": {"const": "0.1"},
+        "state": {"enum": ["accepted", "rejected"]},
+        "revision_base_sha256": {"$ref": "#/$defs/sha256"},
+        "revised_document_sha256": {"$ref": "#/$defs/sha256"},
+        "policy": {"$ref": "#/$defs/policy"},
+        "changed_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "allowed_paths": {"type": "array", "items": {"$ref": "#/$defs/allowedPath"}},
+        "resolved_changes": {"type": "array", "items": {"$ref": "#/$defs/resolvedChange"}},
+        "violations": {"type": "array", "items": {"$ref": "#/$defs/violation"}},
+        "summary": {"$ref": "#/$defs/summary"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "accepted"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "violations": {"maxItems": 0},
+              "summary": {"properties": {"accepted": {"const": true}, "violation_count": {"const": 0}}}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"state": {"const": "rejected"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "violations": {"minItems": 1},
+              "summary": {"properties": {"accepted": {"const": false}, "violation_count": {"minimum": 1}}}
+            }
+          }
+        }
+      ]
+    }
+  }
+}

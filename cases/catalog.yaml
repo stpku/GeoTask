@@ -77,10 +77,10 @@ cases:
     slug: gt08
     stage: evidence_governance
     title_zh: AI知道自己不知道以后，下一步做什么？
-    summary_zh: 生成结构化补证据任务、阻断输出和恢复条件。
+    summary_zh: 生成结构化补证据任务，并在证据补齐后重新执行受影响断言。
     page: site/gt08/index.html
     example: examples/core/evidence_request_plan.yaml
-    lastmod: "2026-07-27"
+    lastmod: "2026-07-30"
   - id: GT09
     slug: gt09
     stage: evidence_governance

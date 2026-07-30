@@ -29,7 +29,10 @@ GeoTask turns spatial, temporal, evidential, resource, and action constraints in
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
+- [GeoTask Agent Integration Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
+- [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
+- [v0.3.0 Agent Integration release notes](docs/release_v0_3_0.md)
 - [v0.2.0 artifact-contract release notes](docs/release_v0_2_0.md)
 - [Public roadmap](ROADMAP.md)
 - [Documentation index](docs/README.en.md)
@@ -140,11 +143,11 @@ See the [Cookbook](docs/cookbook/gt01-gt20.md) for all cases and source files.
 parse YAML → canonicalize → validate → execute → GeotaskResult
 ```
 
-The public Core includes YAML parsing, Canonical IR, structured diagnostics, deterministic execution, result assembly, assurance metadata, model-output normalization, local verification, CLI commands, JSON Schema, examples, and conformance tests.
+The public Core includes YAML parsing, Canonical IR, structured diagnostics, deterministic execution, result assembly, assurance metadata, model-output normalization, local verification, Agent tool-contract discovery, mechanical preparation of generated drafts, structured revision requests, guarded revision-diff retries, offline validation of four registered Agent report Artifacts, deterministic GT08 evidence recovery, CLI commands, JSON Schema, examples, and conformance tests.
 
 ## Workflow semantics in the weekly cases
 
-The cases also demonstrate `unverifiable`, `conflicted`, `blocked`, `evidence_request`, `blocked_outputs`, `resume_when`, and `next_action`. These are application or workflow semantics carried through `extensions`; they must not be confused with every current Core enum.
+The cases also demonstrate `unverifiable`, `conflicted`, `blocked`, `evidence_request`, `blocked_outputs`, `resume_when`, and `next_action`. These remain control and workflow semantics under `extensions`, not base `ClaimStatus` enum values. The public Core strictly validates and read-only evaluates them through `geotask.control/1.0`, and can recover one single-named condition by rerunning the affected deterministic assertion. The recovery trace is available as the offline-verifiable `geotask.agent-evidence-recovery` Artifact. Real evidence retrieval, approval, and action execution remain outside Core in a Runtime or Domain Pack.
 
 ## Not included in the public Core
 
@@ -165,15 +168,21 @@ geotask run <file.yaml>
 geotask normalize <model-output.txt>
 geotask eval <file.yaml> <model-output.txt>
 geotask inspect operators
+geotask agent inspect --format json
+geotask agent prepare <generated.yaml> --repaired-output <prepared.yaml>
+geotask agent retry <blocked-report.json> <revised.yaml> --verification-output <verification.json> --prepared-output <prepared.yaml>
+geotask agent recover <task.yaml> --evidence <verified-state.yaml> --output <recovery-report.json>
+geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json> --format json
 ```
 
 ## Version map
 
 | Artifact | Current version | Meaning |
 |---|---:|---|
-| GeoTask Core package | `0.2.0` | Python implementation version |
+| GeoTask Core package | `0.3.0` | Python implementation version |
 | GeoTask document schema | `1.0` | YAML/JSON document format |
 | Language specification | `1.0` | Implemented public normative profile |
+| Agent Integration Profile | `0.1` | Model-neutral tool contract, evidence recovery, and recovery-report Artifact |
 | White paper | `0.1` | Public conceptual draft |
 
 ## Documentation

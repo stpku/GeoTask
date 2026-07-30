@@ -37,6 +37,10 @@ The Artifact Registry uses the unified command as its canonical
 | `geotask.document` | YAML | strict YAML loading, raw document validation, canonicalization, and canonical validation |
 | `geotask.execution-result` | JSON | duplicate/non-finite JSON rejection and `GeotaskResult.from_dict()` semantic validation |
 | `geotask.control-evaluation` | JSON | duplicate/non-finite JSON rejection and `load_control_evaluation()` semantic validation |
+| `geotask.agent-generation-preparation` | JSON | strict `agent_generation_preparation/0.1` state, diagnostic, repair, revision-request, summary, and execution cross-field validation |
+| `geotask.agent-revision-verification` | JSON | strict requested-path decision, fingerprint, count, policy, resolved-change, and violation validation |
+| `geotask.agent-revision-retry` | JSON | strict composition of revision verification, optional preparation, retry state, and summary validation |
+| `geotask.agent-evidence-recovery` | JSON | strict nested execution/control loading, evidence-completeness, task identity, state transition, output-gating, and safety-flag validation |
 | `geotask.artifact-validation-report` | JSON | duplicate/non-finite JSON rejection, Registry identity checks, report cross-field validation, and `load_artifact_validation_report()` |
 
 Every validation first checks the corresponding installed Schema against the
@@ -70,6 +74,35 @@ geotask artifact validate \
   control-evaluation.json \
   --format json
 ```
+
+Validate Agent preparation and guarded-retry reports without repeating their work:
+
+```bash
+geotask artifact validate \
+  geotask.agent-generation-preparation \
+  blocked-preparation.json \
+  --format json
+
+geotask artifact validate \
+  geotask.agent-revision-verification \
+  revision-verification.json \
+  --format json
+
+geotask artifact validate \
+  geotask.agent-revision-retry \
+  revision-retry.json \
+  --format json
+
+geotask artifact validate \
+  geotask.agent-evidence-recovery \
+  recovery-report.json \
+  --format json
+```
+
+A preparation or recovery report with `state=blocked`, or retry report with
+`state=rejected`, can still be structurally valid. Artifact validity describes
+the serialized contract, not whether the Agent workflow reached an accepted or
+recovered business outcome.
 
 Generate and then validate an Artifact Validation Report:
 
@@ -190,6 +223,14 @@ Execution-result summaries include `task_id` and `check_count`.
 
 Control-evaluation summaries include `task_id` and `evaluation_count`.
 
+Agent preparation summaries include `report_state`, `final_valid`, `repair_count`,
+and `task_executed`. Revision-verification summaries include `report_state`,
+`accepted`, `changed_path_count`, and `violation_count`. Revision-retry summaries
+include `report_state`, `revision_accepted`, `task_executed`, and
+`preparation_state`. Evidence-recovery summaries include `report_state`,
+`evidence_complete`, `task_reexecuted`, `decision_value`, blocked/eligible output
+counts, and `diagnostic_count`.
+
 Artifact Validation Report summaries include `validated_artifact_id`,
 `validated_artifact_valid`, and `diagnostic_count`. These describe the inner
 report without copying its diagnostics into the outer validation result.
@@ -201,6 +242,7 @@ Unified Artifact validation is intentionally non-executing:
 - it does not call the deterministic executor;
 - it does not invoke Runtime or Domain Packs;
 - it does not reevaluate control expressions;
+- it does not reacquire evidence or repeat evidence recovery;
 - it does not execute `next_action`;
 - it does not release blocked outputs;
 - it does not access the network.

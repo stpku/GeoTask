@@ -16,8 +16,16 @@ patent-sensitive workflows.
   combined by an explicit public-safe `AND` decision rule.
 - `examples/core/unverifiable_constraint.yaml`: two verified assertions and one
   unverifiable required condition combined with three-valued unknown propagation.
+- `examples/core/agent_generated_distance_draft.yaml`: a fictional native v1 draft with
+  mechanical protocol omissions repaired by `geotask agent prepare` before deterministic execution.
+- `examples/core/agent_generated_distance_blocked.yaml`: a generated draft with an unregistered
+  operator and unknown object binding; Core emits a revision request but selects no candidate.
+- `examples/core/agent_generated_distance_revised.yaml`: the explicit Agent revision of that blocked
+  draft, which passes `geotask agent retry` changed-path verification and produces the deterministic five-meter result.
 - `examples/core/evidence_request_plan.yaml`: an unverifiable required condition
   converted into a structured evidence request with blocked outputs and a resume condition.
+- `examples/core/evidence_request_verified_state.yaml`: fictional complete evidence used by
+  `geotask agent recover` to satisfy GT08's resume condition and rerun the temporal assertion.
 - `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
   incompatible results trigger a structured conflict review task.
 - `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes

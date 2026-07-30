@@ -7,6 +7,7 @@ All notable public changes to GeoTask Core are documented here.
 ### Fixed
 
 - Make manual PyPI publication web-compatible by dispatching from the default branch, checking out the requested `v<version>` tag, and verifying that HEAD matches the tag before building.
+- Replace the brittle nested-quote package-version command with a shell-safe Python heredoc that writes a valid `version=<value>` record to `GITHUB_OUTPUT`.
 
 ## [0.2.0] - 2026-07-30
 

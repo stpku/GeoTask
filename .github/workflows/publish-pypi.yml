@@ -93,7 +93,13 @@ jobs:
       - id: package-version
         name: Read package version
         shell: bash
-        run: echo "version=$(python -c \"import runpy; print(runpy.run_path('src/geotask_core/_version.py')['__version__'])\")" >> "$GITHUB_OUTPUT"
+        run: |
+          package_version="$(python - <<'PY'
+          import runpy
+          print(runpy.run_path("src/geotask_core/_version.py")["__version__"])
+          PY
+          )"
+          printf 'version=%s\n' "$package_version" >> "$GITHUB_OUTPUT"
       - id: pypi-check
         name: Check whether version already exists on PyPI
         shell: bash

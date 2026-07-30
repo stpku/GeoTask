@@ -6,7 +6,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 
 ## 中文路线图
 
-### v0.1：公共预览（当前）
+### v0.1：公共预览 ✅
 
 - 六类Canonical对象与六个本地确定性算子；
 - YAML任务解析、规范化、结构验证与执行；
@@ -16,7 +16,18 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 中文项目门户、白皮书、Quickstart和Cookbook；
 - Python 3.10—3.13持续集成与公共导出安全检查。
 
-### v0.2：扩展空间对象与开发体验
+### v0.2.0：制品契约（当前稳定） 🏷️
+
+- 公共Artifact Registry——Agent可在运行时发现四类注册制品；
+- 离线Schema Bundle——五份公共JSON Schema及SHA-256 manifest随发行包分发；
+- 统一制品校验入口——`geotask artifact validate`按Artifact ID分发验证；
+- 验证报告自验证——报告自身作为注册制品可被再次校验，闭合信任环；
+- 公共Python API——`geotask_core`与`geotask_core.v1`统一导出；
+- 发布身份预检——版本溯源、Git标签、CHANGELOG、README导航与包元数据交叉核对。
+
+> ⏳ **稳定观察期：至 2026-08-06。** 无真实缺陷不发布 v0.2.1。
+
+### v0.3：扩展空间对象与开发体验（规划中）
 
 - 增加polygon、multi-polyline等通用空间对象；
 - 明确CRS、单位和边界语义的跨任务约束；
@@ -25,7 +36,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 建立公共算子一致性与性能基准；
 - 扩充`good first issue`和贡献者文档。
 
-### v0.3：Runtime接口与模型适配
+### v0.4：Runtime接口与模型适配
 
 - 发布稳定的Runtime接口约定；
 - 提供至少两种模型适配参考实现；
@@ -33,7 +44,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 完善来源、证据和审计元数据接口；
 - 建立模型生成路径与确定性验证路径的联合评测。
 
-### v0.4：Domain Pack规范与生态
+### v0.5：Domain Pack规范与生态
 
 - 发布可复用的Domain Pack规范；
 - 提供机器人、低空或交通方向的参考Pack；
@@ -50,7 +61,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 
 ## English Roadmap
 
-### v0.1: Public Preview (current)
+### v0.1: Public Preview ✅
 
 - Six canonical object types and six deterministic local operators;
 - YAML parsing, canonicalization, validation, and execution;
@@ -60,7 +71,18 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - project portal, white paper, Quickstart, and Cookbook;
 - CI on Python 3.10–3.13 and public-export safety checks.
 
-### v0.2: Extended Spatial Objects and Developer Experience
+### v0.2.0: Artifact Contracts (current stable) 🏷️
+
+- Public Artifact Registry — agents discover registered artifacts at runtime;
+- Offline Schema Bundle — five public JSON Schemas distributed with SHA-256 manifest;
+- Unified artifact validation — `geotask artifact validate` dispatches by Artifact ID;
+- Self-validating reports — validation reports are registered artifacts, closing the trust loop;
+- Public Python API — unified exports from `geotask_core` and `geotask_core.v1`;
+- Release identity preflight — version source, tag, CHANGELOG, README, and metadata cross-check.
+
+> ⏳ **Stability observation window through 2026-08-06.** No v0.2.1 unless a real defect is reported.
+
+### v0.3: Extended Spatial Objects and Developer Experience (planned)
 
 - Add common objects such as polygon and multi-polyline;
 - define CRS, units, and boundary semantics across tasks;
@@ -69,7 +91,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - establish public conformance and performance benchmarks;
 - expand newcomer-friendly issues and contributor documentation.
 
-### v0.3: Runtime Interfaces and Model Adapters
+### v0.4: Runtime Interfaces and Model Adapters
 
 - Publish stable Runtime interface contracts;
 - provide at least two reference model adapters;
@@ -77,7 +99,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - improve provenance, evidence, and audit metadata interfaces;
 - evaluate model-generation and deterministic-verification paths together.
 
-### v0.4: Domain Pack Specification and Ecosystem
+### v0.5: Domain Pack Specification and Ecosystem
 
 - Publish a reusable Domain Pack specification;
 - provide reference Packs for robotics, low-altitude, or transportation use cases;

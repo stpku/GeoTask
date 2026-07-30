@@ -11,6 +11,10 @@
 [![Release](https://img.shields.io/github/v/release/stpku/GeoTask?include_prereleases&label=release)](https://github.com/stpku/GeoTask/releases)
 [![PyPI](https://img.shields.io/pypi/v/geotask-core)](https://pypi.org/project/geotask-core/)
 
+```bash
+pip install geotask-core
+```
+
 GeoTask turns spatial, temporal, evidential, resource, and action constraints into explicit YAML tasks that both models and programs can read. GeoTask Core then recomputes supported claims with local deterministic operators, so a fluent model response is not mistaken for a verified result.
 
 - **Models propose:** objects, assertions, explanations, and candidate actions.

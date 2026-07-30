@@ -11,6 +11,10 @@
 [![Release](https://img.shields.io/github/v/release/stpku/GeoTask?include_prereleases&label=release)](https://github.com/stpku/GeoTask/releases)
 [![PyPI](https://img.shields.io/pypi/v/geotask-core)](https://pypi.org/project/geotask-core/)
 
+```bash
+pip install geotask-core
+```
+
 GeoTask把自然语言中的空间、时间、证据、资源和行动约束转换为结构化任务，并通过本地确定性计算验证模型结果。
 
 - **模型负责提出：** 对象、断言、解释和候选动作；

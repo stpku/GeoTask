@@ -29,6 +29,24 @@ def _excluded_dir(dirname: str) -> bool:
     return dirname in EXCLUDE_DIRS or dirname.endswith(".egg-info")
 
 
+def _canonical_bytes(path: Path) -> bytes:
+    """Return cross-platform bytes for hashing.
+
+    UTF-8 text is normalized to LF so a Windows CRLF export and a Git checkout
+    governed by ``* text=auto eol=lf`` produce the same manifest. Binary or
+    non-UTF-8 content remains byte-for-byte unchanged.
+    """
+
+    raw = path.read_bytes()
+    if b"\x00" in raw:
+        return raw
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+
+
 def generate_manifest(export_dir: Path, output_path: Path) -> dict:
     """Generate SHA-256 manifest for all files in export_dir."""
     manifest: list[dict] = []
@@ -39,8 +57,9 @@ def generate_manifest(export_dir: Path, output_path: Path) -> dict:
             rel = fp.relative_to(export_dir).as_posix()
             if _excluded(rel):
                 continue
-            sha = hashlib.sha256(fp.read_bytes()).hexdigest()
-            size = fp.stat().st_size
+            canonical = _canonical_bytes(fp)
+            sha = hashlib.sha256(canonical).hexdigest()
+            size = len(canonical)
             manifest.append({"path": rel, "size": size, "sha256": sha})
 
     with open(output_path, "w", encoding="utf-8") as fh:
@@ -70,10 +89,11 @@ def verify_manifest(export_dir: Path, manifest_path: Path) -> bool:
         if not fp.exists():
             errors.append(f"Missing file: {entry['path']}")
             continue
-        actual_sha = hashlib.sha256(fp.read_bytes()).hexdigest()
+        canonical = _canonical_bytes(fp)
+        actual_sha = hashlib.sha256(canonical).hexdigest()
         if actual_sha != entry["sha256"]:
             errors.append(f"SHA-256 mismatch: {entry['path']}")
-        actual_size = fp.stat().st_size
+        actual_size = len(canonical)
         if actual_size != entry["size"]:
             errors.append(
                 f"Size mismatch: {entry['path']} "

@@ -36,6 +36,36 @@ jobs:
       - run: pip install build twine
       - run: python -m build
       - run: python -m twine check dist/*
+      - name: Verify release identity and distribution versions
+        run: python .release/verify_release_preflight.py --artifacts dist --format json
+      - name: Verify built Schema Bundle distributions
+        run: python .release/verify_schema_distribution.py dist --format json
+      - name: Rebuild wheel from sdist and verify it
+        shell: bash
+        run: |
+          mkdir dist-from-sdist
+          python -m pip wheel --no-deps --wheel-dir dist-from-sdist dist/*.tar.gz
+          cp dist/*.tar.gz dist-from-sdist/
+          python .release/verify_schema_distribution.py dist-from-sdist
+      - name: Smoke-test installed Schema Bundle CLI
+        shell: bash
+        run: |
+          python -m venv .venv-schema-smoke
+          .venv-schema-smoke/bin/python -m pip install dist-from-sdist/*.whl
+          .venv-schema-smoke/bin/geotask schema verify --format json > schema-verification.json
+          .venv-schema-smoke/bin/geotask schema export geotask.execution-result --compact > execution-result.schema.json
+          .venv-schema-smoke/bin/geotask inspect schemas geotask.execution-result --verify --format json > schema-inspection.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.document examples/core/uav_arrival_ground_clearance_release.yaml --format json > document-validation.json
+          .venv-schema-smoke/bin/geotask run examples/core/uav_arrival_ground_clearance_release.yaml --format v1-json --output execution-result.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.execution-result execution-result.json --format json > result-validation.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.artifact-validation-report result-validation.json --format json > validation-report-validation.json
+          printf 'ground_zone_clear: false\nclearance_evidence_age_seconds: 8\n' > control-state.yaml
+          .venv-schema-smoke/bin/geotask control evaluate examples/core/uav_arrival_ground_clearance_release.yaml --result execution-result.json --state control-state.yaml --output control-evaluation.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.control-evaluation control-evaluation.json --format json > control-validation.json
+          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("schema-verification.json", encoding="utf-8"))["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 5'
+          .venv-schema-smoke/bin/python -c 'import json; schema=json.load(open("execution-result.schema.json", encoding="utf-8")); assert schema["$id"].endswith("geotask-result-v1.0.schema.json")'
+          .venv-schema-smoke/bin/python -c 'import json; payload=json.load(open("schema-inspection.json", encoding="utf-8")); assert payload["artifact_registry"]["artifact_count"] == 1; report=payload["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 1'
+          .venv-schema-smoke/bin/python -c 'import json; files=("document-validation.json","result-validation.json","control-validation.json","validation-report-validation.json"); reports=[json.load(open(path, encoding="utf-8"))["artifact_validation"] for path in files]; assert [r["artifact_id"] for r in reports] == ["geotask.document","geotask.execution-result","geotask.control-evaluation","geotask.artifact-validation-report"]; assert all(r["valid"] is True and r["schema_verified"] is True for r in reports)'
 
   scan:
     runs-on: ubuntu-latest

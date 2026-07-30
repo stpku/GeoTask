@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import subprocess
@@ -12,11 +13,14 @@ import pytest
 import yaml
 from jsonschema import Draft202012Validator
 
+import geotask_core.cli as cli_module
 from geotask_core.v1.artifact_registry import (
     ARTIFACT_REGISTRY_SCHEMA_ID,
     ARTIFACT_REGISTRY_VERSION,
     GEOTASK_DOCUMENT_SCHEMA_ID,
     GEOTASK_DOCUMENT_SCHEMA_VERSION,
+    ARTIFACT_VALIDATION_SCHEMA_ID,
+    ARTIFACT_VALIDATION_SCHEMA_VERSION,
     ArtifactDescriptor,
     artifact_registry_payload,
     get_artifact_descriptor,
@@ -24,6 +28,25 @@ from geotask_core.v1.artifact_registry import (
 )
 from geotask_core.v1.control_evaluation import CONTROL_EVALUATION_SCHEMA_ID
 from geotask_core.v1.result import GEOTASK_RESULT_SCHEMA_ID
+import geotask_core.v1.schema_bundle as schema_bundle_module
+from geotask_core.v1.schema_bundle import (
+    SCHEMA_BUNDLE_VERSION,
+    SCHEMA_BUNDLE_MANIFEST_FILENAME,
+    BUNDLED_SCHEMA_IDS,
+    list_bundled_schema_ids,
+    schema_bundle_manifest,
+    load_artifact_schema,
+    load_bundled_schema,
+    verify_schema_bundle,
+)
+from geotask_core.v1.artifact_validation import (
+    ARTIFACT_VALIDATION_REPORT_VERSION,
+    ArtifactValidationFormatError,
+    ArtifactValidationReport,
+    load_artifact_validation_report,
+    validate_artifact_payload,
+    validate_artifact_file,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -42,7 +65,7 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def test_registry_contains_exactly_three_stable_public_artifacts() -> None:
+def test_registry_contains_exactly_four_stable_public_artifacts() -> None:
     artifacts = list_artifact_descriptors()
     payload = artifact_registry_payload()["artifact_registry"]
 
@@ -57,9 +80,10 @@ def test_registry_contains_exactly_three_stable_public_artifacts() -> None:
         "geotask.document",
         "geotask.execution-result",
         "geotask.control-evaluation",
+        "geotask.artifact-validation-report",
     ]
     assert len({item.artifact_id for item in artifacts}) == len(artifacts)
-    assert artifact_registry_payload()["artifact_registry"]["artifact_count"] == 3
+    assert artifact_registry_payload()["artifact_registry"]["artifact_count"] == 4
 
 
 def test_registry_payload_matches_its_public_json_schema() -> None:
@@ -80,6 +104,7 @@ def test_registry_schema_metadata_matches_published_json_schemas() -> None:
         "geotask.document": GEOTASK_DOCUMENT_SCHEMA_ID,
         "geotask.execution-result": GEOTASK_RESULT_SCHEMA_ID,
         "geotask.control-evaluation": CONTROL_EVALUATION_SCHEMA_ID,
+        "geotask.artifact-validation-report": ARTIFACT_VALIDATION_SCHEMA_ID,
     }
 
     assert GEOTASK_DOCUMENT_SCHEMA_VERSION == "1.0"
@@ -95,23 +120,201 @@ def test_registry_schema_metadata_matches_published_json_schemas() -> None:
         assert specification_path.stat().st_size > 500
 
 
+def test_schema_bundle_exposes_all_public_schema_ids_offline() -> None:
+    expected_ids = (
+        ARTIFACT_REGISTRY_SCHEMA_ID,
+        GEOTASK_DOCUMENT_SCHEMA_ID,
+        GEOTASK_RESULT_SCHEMA_ID,
+        CONTROL_EVALUATION_SCHEMA_ID,
+        ARTIFACT_VALIDATION_SCHEMA_ID,
+    )
+
+    assert BUNDLED_SCHEMA_IDS == expected_ids
+    assert list_bundled_schema_ids() == expected_ids
+    for schema_id in expected_ids:
+        schema = load_bundled_schema(schema_id)
+        assert schema["$id"] == schema_id
+        assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema"
+
+
+def test_artifact_schema_loader_uses_registry_schema_ids() -> None:
+    for descriptor in list_artifact_descriptors():
+        first = load_artifact_schema(descriptor.artifact_id)
+        second = load_artifact_schema(descriptor.artifact_id)
+
+        assert first["$id"] == descriptor.schema_id
+        assert first == second
+        assert first is not second
+
+    with pytest.raises(KeyError, match="unknown bundled GeoTask schema"):
+        load_bundled_schema("https://example.invalid/unknown.schema.json")
+    with pytest.raises(KeyError, match="unknown GeoTask artifact"):
+        load_artifact_schema("geotask.unknown")
+
+
+def test_schema_bundle_manifest_matches_authoritative_schema_bytes() -> None:
+    manifest = schema_bundle_manifest()["schema_bundle"]
+
+    assert SCHEMA_BUNDLE_VERSION == "1.0"
+    assert SCHEMA_BUNDLE_MANIFEST_FILENAME == "schema-bundle-manifest-v1.0.json"
+    assert manifest["bundle_version"] == SCHEMA_BUNDLE_VERSION
+    assert manifest["schema_count"] == 5
+    assert len(manifest["schemas"]) == 5
+
+    for entry in manifest["schemas"]:
+        raw = (REPO_ROOT / "schemas" / entry["filename"]).read_bytes()
+        assert entry["schema_id"] in BUNDLED_SCHEMA_IDS
+        assert entry["size_bytes"] == len(raw)
+        assert entry["sha256"] == hashlib.sha256(raw).hexdigest()
+
+
+def test_schema_bundle_verification_supports_all_and_one_artifact() -> None:
+    all_report = verify_schema_bundle()["schema_bundle_verification"]
+    one_report = verify_schema_bundle(
+        "geotask.execution-result"
+    )["schema_bundle_verification"]
+
+    assert all_report["valid"] is True
+    assert all_report["bundle_version"] == SCHEMA_BUNDLE_VERSION
+    assert all_report["checked_count"] == 5
+    assert all(item["valid"] for item in all_report["schemas"])
+    assert all_report["diagnostics"] == []
+
+    assert one_report["valid"] is True
+    assert one_report["checked_count"] == 1
+    assert one_report["schemas"][0]["schema_id"] == GEOTASK_RESULT_SCHEMA_ID
+    assert one_report["schemas"][0]["expected_sha256"] == (
+        one_report["schemas"][0]["actual_sha256"]
+    )
+
+    with pytest.raises(KeyError, match="unknown GeoTask artifact"):
+        verify_schema_bundle("geotask.unknown")
+
+
+def test_schema_bundle_verification_detects_tampered_bytes(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original_manifest = schema_bundle_manifest()
+    original_reader = schema_bundle_module._schema_bytes
+
+    def tampered_reader(schema_id: str) -> bytes:
+        raw = original_reader(schema_id)
+        if schema_id == GEOTASK_RESULT_SCHEMA_ID:
+            return raw + b"\n"
+        return raw
+
+    monkeypatch.setattr(
+        schema_bundle_module,
+        "schema_bundle_manifest",
+        lambda: original_manifest,
+    )
+    monkeypatch.setattr(schema_bundle_module, "_schema_bytes", tampered_reader)
+
+    report = verify_schema_bundle(
+        "geotask.execution-result"
+    )["schema_bundle_verification"]
+
+    assert report["valid"] is False
+    assert report["checked_count"] == 1
+    assert report["schemas"][0]["valid"] is False
+    assert report["schemas"][0]["expected_sha256"] != (
+        report["schemas"][0]["actual_sha256"]
+    )
+    assert report["diagnostics"][0]["code"] == "invalid_bundled_schema"
+    assert "mismatch" in report["diagnostics"][0]["message"]
+
+
+def test_installed_bundle_missing_manifest_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        schema_bundle_module,
+        "_source_checkout_schema_root",
+        lambda: None,
+    )
+
+    with pytest.raises(
+        FileNotFoundError,
+        match="installed Schema Bundle Manifest is unavailable",
+    ):
+        schema_bundle_manifest()
+
+    report = verify_schema_bundle(
+        "geotask.execution-result"
+    )["schema_bundle_verification"]
+
+    assert report["valid"] is False
+    assert report["checked_count"] == 1
+    assert report["diagnostics"][0]["code"] == "invalid_schema_bundle_manifest"
+    assert "Manifest is unavailable" in report["diagnostics"][0]["message"]
+
+
+def test_schema_bundle_build_configuration_is_public_and_complete() -> None:
+    pyproject = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    manifest = (REPO_ROOT / "MANIFEST.in").read_text(encoding="utf-8")
+    expected_files = {
+        "geotask-artifact-registry-v1.0.schema.json",
+        "geotask-artifact-validation-v1.0.schema.json",
+        "geotask-v1.0.schema.json",
+        "geotask-result-v1.0.schema.json",
+        "geotask-control-evaluation-v1.0.schema.json",
+    }
+
+    assert 'build_py = "geotask_build_support.BuildPy"' in pyproject
+    assert "include src/geotask_build_support.py" in manifest
+    assert "recursive-include schemas *.schema.json" in manifest
+    assert (REPO_ROOT / "src" / "geotask_build_support.py").is_file()
+    assert {path.name for path in (REPO_ROOT / "schemas").glob("*.schema.json")} == expected_files
+
+
 def test_registry_generation_and_validation_guidance_is_explicit() -> None:
     document = get_artifact_descriptor("geotask.document")
     execution = get_artifact_descriptor("geotask.execution-result")
     control = get_artifact_descriptor("geotask.control-evaluation")
+    validation_report = get_artifact_descriptor(
+        "geotask.artifact-validation-report"
+    )
 
     assert document.generation_command is None
     assert "does not synthesize" in document.generation_note
-    assert document.validation_command == "geotask validate <task.yaml>"
+    assert document.validation_command == (
+        "geotask artifact validate geotask.document <task.yaml>"
+    )
 
     assert "--format v1-json" in str(execution.generation_command)
-    assert execution.validation_command.startswith("geotask result validate")
+    assert execution.validation_command.startswith(
+        "geotask artifact validate geotask.execution-result"
+    )
     assert execution.wrapper_key == "geotask_result"
 
     assert "geotask control evaluate" in str(control.generation_command)
-    assert control.validation_command.startswith("geotask control validate")
+    assert control.validation_command.startswith(
+        "geotask artifact validate geotask.control-evaluation"
+    )
     assert control.wrapper_key == "control_evaluation"
     assert "never execute next_action" in control.execution_boundary
+
+    assert "artifact validate <artifact-id>" in str(
+        validation_report.generation_command
+    )
+    assert validation_report.validation_command.startswith(
+        "geotask artifact validate geotask.artifact-validation-report"
+    )
+    assert validation_report.wrapper_key == "artifact_validation"
+    assert validation_report.schema_id == ARTIFACT_VALIDATION_SCHEMA_ID
+
+
+def test_registry_payload_can_filter_by_stable_artifact_id() -> None:
+    payload = artifact_registry_payload("geotask.execution-result")
+    registry = payload["artifact_registry"]
+
+    assert registry["artifact_count"] == 1
+    assert [item["artifact_id"] for item in registry["artifacts"]] == [
+        "geotask.execution-result"
+    ]
+
+    with pytest.raises(KeyError, match="unknown GeoTask artifact"):
+        artifact_registry_payload("geotask.unknown")
 
 
 def test_registry_is_public_core_only_and_lookup_is_strict() -> None:
@@ -139,11 +342,23 @@ def test_public_manifest_requires_artifact_registry_assets() -> None:
     required = set(manifest["required"])
 
     assert "tests/test_artifact_registry.py" in included
+    assert "tests/test_artifact_validation.py" in included
+    assert "tests/test_release_preflight.py" in included
     for path in (
+        "src/geotask_build_support.py",
+        "src/geotask_core/schemas/__init__.py",
         "src/geotask_core/v1/artifact_registry.py",
+        "src/geotask_core/v1/schema_bundle.py",
+        "src/geotask_core/v1/artifact_validation.py",
+        ".release/verify_release_preflight.py",
+        ".release/verify_schema_distribution.py",
         "docs/spec/geotask-artifact-registry-v1.0.md",
+        "docs/spec/geotask-artifact-validation-v1.0.md",
         "schemas/geotask-artifact-registry-v1.0.schema.json",
+        "schemas/geotask-artifact-validation-v1.0.schema.json",
         "tests/test_artifact_registry.py",
+        "tests/test_artifact_validation.py",
+        "tests/test_release_preflight.py",
     ):
         assert path in required
 
@@ -157,10 +372,176 @@ def test_public_namespaces_export_artifact_registry() -> None:
         assert namespace.ARTIFACT_REGISTRY_VERSION == "1.0"
         assert namespace.GEOTASK_DOCUMENT_SCHEMA_ID == GEOTASK_DOCUMENT_SCHEMA_ID
         assert namespace.GEOTASK_DOCUMENT_SCHEMA_VERSION == "1.0"
+        assert namespace.ARTIFACT_VALIDATION_SCHEMA_ID == (
+            ARTIFACT_VALIDATION_SCHEMA_ID
+        )
+        assert namespace.ARTIFACT_VALIDATION_SCHEMA_VERSION == (
+            ARTIFACT_VALIDATION_SCHEMA_VERSION
+        )
         assert namespace.ArtifactDescriptor is ArtifactDescriptor
         assert namespace.list_artifact_descriptors is list_artifact_descriptors
         assert namespace.get_artifact_descriptor is get_artifact_descriptor
         assert namespace.artifact_registry_payload is artifact_registry_payload
+        assert namespace.SCHEMA_BUNDLE_VERSION == SCHEMA_BUNDLE_VERSION
+        assert namespace.SCHEMA_BUNDLE_MANIFEST_FILENAME == (
+            SCHEMA_BUNDLE_MANIFEST_FILENAME
+        )
+        assert namespace.BUNDLED_SCHEMA_IDS == BUNDLED_SCHEMA_IDS
+        assert namespace.list_bundled_schema_ids is list_bundled_schema_ids
+        assert namespace.schema_bundle_manifest is schema_bundle_manifest
+        assert namespace.load_bundled_schema is load_bundled_schema
+        assert namespace.load_artifact_schema is load_artifact_schema
+        assert namespace.verify_schema_bundle is verify_schema_bundle
+        assert namespace.ARTIFACT_VALIDATION_REPORT_VERSION == (
+            ARTIFACT_VALIDATION_REPORT_VERSION
+        )
+        assert namespace.ArtifactValidationFormatError is (
+            ArtifactValidationFormatError
+        )
+        assert namespace.ArtifactValidationReport is ArtifactValidationReport
+        assert namespace.load_artifact_validation_report is (
+            load_artifact_validation_report
+        )
+        assert namespace.validate_artifact_payload is validate_artifact_payload
+        assert namespace.validate_artifact_file is validate_artifact_file
+
+
+def test_schema_export_writes_clean_formatted_json_to_stdout() -> None:
+    result = _run_cli("schema", "export", "geotask.document")
+
+    assert result.returncode == 0
+    assert result.stderr == ""
+    schema = json.loads(result.stdout)
+    assert schema["$id"] == GEOTASK_DOCUMENT_SCHEMA_ID
+    assert result.stdout.startswith("{\n  ")
+
+
+def test_schema_export_supports_compact_stdout() -> None:
+    result = _run_cli(
+        "schema",
+        "export",
+        "geotask.execution-result",
+        "--compact",
+    )
+
+    assert result.returncode == 0
+    assert result.stderr == ""
+    assert result.stdout.count("\n") == 1
+    assert json.loads(result.stdout)["$id"] == GEOTASK_RESULT_SCHEMA_ID
+
+
+def test_schema_export_writes_file_without_stdout(tmp_path: Path) -> None:
+    output_path = tmp_path / "control-evaluation.schema.json"
+    result = _run_cli(
+        "schema",
+        "export",
+        "geotask.control-evaluation",
+        "--output",
+        str(output_path),
+    )
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+    assert result.stderr == ""
+    assert json.loads(output_path.read_text(encoding="utf-8"))["$id"] == (
+        CONTROL_EVALUATION_SCHEMA_ID
+    )
+
+
+def test_schema_verify_supports_text_json_and_exact_artifact() -> None:
+    text_result = _run_cli("schema", "verify")
+    json_result = _run_cli("schema", "verify", "--format", "json")
+    exact_result = _run_cli(
+        "schema",
+        "verify",
+        "geotask.control-evaluation",
+        "--format",
+        "json",
+    )
+
+    assert text_result.returncode == 0
+    assert text_result.stderr == ""
+    assert "Schema Bundle valid: 5 schema(s), version 1.0" in text_result.stdout
+    assert text_result.stdout.count("sha256=") == 5
+
+    assert json_result.returncode == 0
+    assert json_result.stderr == ""
+    all_report = json.loads(json_result.stdout)["schema_bundle_verification"]
+    assert all_report["valid"] is True
+    assert all_report["checked_count"] == 5
+    assert all_report["diagnostics"] == []
+
+    assert exact_result.returncode == 0
+    assert exact_result.stderr == ""
+    one_report = json.loads(exact_result.stdout)["schema_bundle_verification"]
+    assert one_report["valid"] is True
+    assert one_report["checked_count"] == 1
+    assert one_report["schemas"][0]["schema_id"] == CONTROL_EVALUATION_SCHEMA_ID
+
+
+def test_schema_help_and_invalid_arguments_are_stable() -> None:
+    top_help = _run_cli("--help")
+    help_result = _run_cli("schema", "--help")
+
+    assert top_help.returncode == 0
+    assert "schema" in top_help.stdout
+    assert help_result.returncode == 0
+    assert help_result.stderr == ""
+    assert "schema export <artifact-id>" in help_result.stdout
+    assert "schema verify [artifact-id]" in help_result.stdout
+    assert "--output <file>|-" in help_result.stdout
+    assert "--compact" in help_result.stdout
+    assert "--format text|json" in help_result.stdout
+
+    export_cases = (
+        ("schema", "export"),
+        ("schema", "export", "geotask.unknown"),
+        ("schema", "export", "geotask.document", "extra"),
+        ("schema", "export", "geotask.document", "--output"),
+        (
+            "schema",
+            "export",
+            "geotask.document",
+            "--output",
+            "one.json",
+            "--output",
+            "two.json",
+        ),
+        ("schema", "export", "geotask.document", "--compact", "--compact"),
+        ("schema", "export", "geotask.document", "--unknown"),
+    )
+    verify_cases = (
+        ("schema", "verify", "geotask.unknown"),
+        ("schema", "verify", "geotask.document", "extra"),
+        ("schema", "verify", "--format"),
+        ("schema", "verify", "--format", "yaml"),
+        (
+            "schema",
+            "verify",
+            "--format",
+            "json",
+            "--format",
+            "text",
+        ),
+        ("schema", "verify", "--unknown"),
+    )
+
+    for args in export_cases:
+        result = _run_cli(*args)
+        assert result.returncode != 0
+        assert "schema_export_failed" in result.stderr
+        assert "Traceback" not in result.stderr
+
+    for args in verify_cases:
+        result = _run_cli(*args)
+        assert result.returncode != 0
+        assert "schema_verify_failed" in result.stderr
+        assert "Traceback" not in result.stderr
+
+    unknown = _run_cli("schema", "unknown", "geotask.document")
+    assert unknown.returncode != 0
+    assert "schema_failed" in unknown.stderr
+    assert "Traceback" not in unknown.stderr
 
 
 def test_inspect_schemas_default_yaml_is_parseable() -> None:
@@ -171,7 +552,7 @@ def test_inspect_schemas_default_yaml_is_parseable() -> None:
     payload = yaml.safe_load(result.stdout)
     registry = payload["artifact_registry"]
     assert registry["registry_version"] == "1.0"
-    assert registry["artifact_count"] == 3
+    assert registry["artifact_count"] == 4
     assert registry["artifacts"][0]["artifact_id"] == "geotask.document"
     assert registry["artifacts"][0]["generation_command"] is None
 
@@ -187,8 +568,103 @@ def test_inspect_schemas_json_is_stable_machine_readable_output() -> None:
     for artifact in payload["artifact_registry"]["artifacts"]:
         assert artifact["schema_id"].startswith("https://")
         assert artifact["schema_version"] == "1.0"
-        assert artifact["validation_command"].startswith("geotask ")
+        assert artifact["validation_command"].startswith(
+            "geotask artifact validate "
+        )
         assert "execution_boundary" in artifact
+
+
+def test_inspect_schemas_can_query_one_artifact_by_stable_id() -> None:
+    result = _run_cli(
+        "inspect",
+        "schemas",
+        "geotask.control-evaluation",
+        "--format",
+        "json",
+    )
+
+    assert result.returncode == 0
+    assert result.stderr == ""
+    registry = json.loads(result.stdout)["artifact_registry"]
+    assert registry["artifact_count"] == 1
+    assert registry["artifacts"][0]["artifact_id"] == "geotask.control-evaluation"
+    assert registry["artifacts"][0]["wrapper_key"] == "control_evaluation"
+
+
+def test_inspect_schemas_can_include_bundle_integrity_results() -> None:
+    all_result = _run_cli(
+        "inspect",
+        "schemas",
+        "--verify",
+        "--format",
+        "json",
+    )
+    exact_result = _run_cli(
+        "inspect",
+        "schemas",
+        "geotask.execution-result",
+        "--verify",
+    )
+
+    assert all_result.returncode == 0
+    assert all_result.stderr == ""
+    all_payload = json.loads(all_result.stdout)
+    assert all_payload["artifact_registry"]["artifact_count"] == 4
+    all_verification = all_payload["schema_bundle_verification"]
+    assert all_verification["valid"] is True
+    assert all_verification["checked_count"] == 5
+    assert all_verification["diagnostics"] == []
+
+    assert exact_result.returncode == 0
+    assert exact_result.stderr == ""
+    exact_payload = yaml.safe_load(exact_result.stdout)
+    assert exact_payload["artifact_registry"]["artifact_count"] == 1
+    assert exact_payload["artifact_registry"]["artifacts"][0]["artifact_id"] == (
+        "geotask.execution-result"
+    )
+    exact_verification = exact_payload["schema_bundle_verification"]
+    assert exact_verification["valid"] is True
+    assert exact_verification["checked_count"] == 1
+    assert exact_verification["schemas"][0]["schema_id"] == GEOTASK_RESULT_SCHEMA_ID
+
+
+def test_inspect_schemas_verify_emits_json_before_nonzero_exit(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    invalid_report = {
+        "schema_bundle_verification": {
+            "valid": False,
+            "bundle_version": "1.0",
+            "checked_count": 5,
+            "schemas": [],
+            "diagnostics": [
+                {
+                    "code": "invalid_bundled_schema",
+                    "schema_id": GEOTASK_RESULT_SCHEMA_ID,
+                    "message": "digest mismatch",
+                }
+            ],
+        }
+    }
+    monkeypatch.setattr(
+        cli_module,
+        "verify_schema_bundle",
+        lambda artifact_id=None: invalid_report,
+    )
+
+    with pytest.raises(SystemExit) as exc_info:
+        cli_module.cmd_inspect(["schemas", "--verify", "--format", "json"])
+
+    captured = capsys.readouterr()
+    assert exc_info.value.code == 1
+    assert captured.err == ""
+    payload = json.loads(captured.out)
+    assert payload["artifact_registry"]["artifact_count"] == 4
+    assert payload["schema_bundle_verification"]["valid"] is False
+    assert payload["schema_bundle_verification"]["diagnostics"][0]["code"] == (
+        "invalid_bundled_schema"
+    )
 
 
 def test_inspect_help_lists_singular_and_plural_schema_targets() -> None:
@@ -199,7 +675,10 @@ def test_inspect_help_lists_singular_and_plural_schema_targets() -> None:
     assert "schema|schemas" in top.stdout
     assert schemas.returncode == 0
     assert "inspect schemas" in schemas.stdout
+    assert "[artifact-id]" in schemas.stdout
     assert "--format yaml|json" in schemas.stdout
+    assert "--verify" in schemas.stdout
+    assert "integrity results" in schemas.stdout
     assert "generation guidance" in schemas.stdout
 
 
@@ -216,7 +695,9 @@ def test_inspect_schemas_rejects_invalid_options_without_traceback() -> None:
             "yaml",
         ),
         ("inspect", "schemas", "--unknown"),
-        ("inspect", "schemas", "unexpected"),
+        ("inspect", "schemas", "--verify", "--verify"),
+        ("inspect", "schemas", "geotask.unknown"),
+        ("inspect", "schemas", "geotask.document", "extra"),
     )
 
     for args in cases:

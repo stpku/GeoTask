@@ -25,7 +25,7 @@ Or on Windows PowerShell:
 Install the exact Public Preview release from PyPI and check the CLI:
 
 ```bash
-python -m pip install --no-cache-dir geotask-core==0.1.1
+python -m pip install --no-cache-dir geotask-core==0.2.0
 geotask --help
 geotask inspect operators
 ```
@@ -36,7 +36,7 @@ Check the installed distribution version:
 python -c "from importlib.metadata import version; print(version('geotask-core'))"
 ```
 
-The expected version is `0.1.1`. The public Core does not require a model key, network service, GIS database, or external geometry library.
+The expected version is `0.2.0`. The public Core does not require a model key, network service, GIS database, or external geometry library.
 
 ## 2. Create a Task
 

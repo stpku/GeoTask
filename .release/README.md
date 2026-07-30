@@ -39,8 +39,8 @@ python .release/verify_release_preflight.py --expected-version 0.2.0 --expected-
 # Verify the built Schema Bundle
 python .release/verify_schema_distribution.py dist --format json
 
-# PyPI workflow dispatch: select tag v0.2.0 and enter version 0.2.0.
-# Branch refs and mismatched tags fail before package build/upload.
+# PyPI workflow dispatch: select the default branch (main) and enter version 0.2.0.
+# The workflow checks out tag v0.2.0 and verifies HEAD before package build/upload.
 
 # Scan for secrets and internal paths
 python .release/scan_public_export.py ../geotask-public-v1.0

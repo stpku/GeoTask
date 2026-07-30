@@ -4,7 +4,9 @@ All notable public changes to GeoTask Core are documented here.
 
 ## [Unreleased]
 
-No public changes yet.
+### Fixed
+
+- Make manual PyPI publication web-compatible by dispatching from the default branch, checking out the requested `v<version>` tag, and verifying that HEAD matches the tag before building.
 
 ## [0.2.0] - 2026-07-30
 
@@ -58,7 +60,7 @@ No public changes yet.
 - Make `OperatorContract` the single source of truth for public operator metadata, eliminating the separate hand-maintained registry table.
 - Enforce operator output types, assertion `expected_type`, and executable basic invariants before granting deterministic assurance.
 - Return explicit `unverifiable` checks for `hybrid`, `shadow_compare`, and non-`local` executors instead of substituting local execution.
-- Serialize PyPI publishing workflows, require manual publication to run from the exact `v<version>` Git tag, and skip the publish job when the package version already exists, preventing branch-based or duplicate releases.
+- Serialize PyPI publishing workflows, require dispatch from the default branch, explicitly check out the requested `v<version>` tag, and skip the publish job when the package version already exists, preventing branch-content or duplicate releases.
 - Ensure subprocess-based CLI tests execute the current source tree rather than an older installed package.
 
 ### Fixed

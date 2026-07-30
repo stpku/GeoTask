@@ -1,7 +1,8 @@
 # GeoTask Artifact Validation v1.0
 
-Status: implemented public contract  
-Report version: `1.0`  
+Status: implemented public contract
+
+Report version: `1.0`
 JSON Schema: [`schemas/geotask-artifact-validation-v1.0.schema.json`](../../schemas/geotask-artifact-validation-v1.0.schema.json)
 
 ## 1. Purpose

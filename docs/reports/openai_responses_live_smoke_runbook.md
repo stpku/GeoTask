@@ -2,7 +2,7 @@
 
 ## 状态
 
-当前状态：`harness_verified_live_request_not_executed`。
+当前状态：`single_use_authorization_verified_live_request_not_executed`。
 
 本手册对应`examples/runtime/openai_responses_live_smoke.py`。脚本、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
 
@@ -20,7 +20,10 @@
 ## 不可绕过的边界
 
 - 默认只执行预检，不导入OpenAI SDK，不解析认证材料，也不发起网络请求；
-- 真实执行必须同时提供`--execute-live`和精确确认变量；
+- 授权票据必须写在仓库外，默认有效15分钟，硬上限60分钟；
+- 票据绑定模型、请求SHA-256、输出预算、超时、零重试和一次调用约束；
+- 票据使用排他文件创建，执行前原子认领，同一票据不得复用；
+- 真实执行必须同时提供`--execute-live`、精确确认变量、服务器侧认证材料和未认领票据；
 - 模型必须是以`YYYY-MM-DD`结尾的固定快照；
 - 输出预算默认2048，硬上限4096；
 - 超时默认60秒，硬上限120秒；
@@ -62,16 +65,17 @@ python examples/runtime/openai_responses_live_smoke.py `
     "automatic_retries_allowed": 0,
     "tools_allowed": false,
     "response_storage_allowed": false,
-    "live_request_executed": false
+    "live_request_executed": false,
+    "release_gate_state": "authorization_pending"
   }
 }
 ```
 
 任何预检失败都必须先修复，不得通过修改脚本常量、放宽模型格式或删除安全检查来绕过。
 
-## 第二步：显式授权一次线上请求
+## 第二步：签发一次性授权票据
 
-报告必须写入仓库外，例如系统临时目录：
+票据必须写入仓库外，例如系统临时目录：
 
 ```powershell
 $env:GEOTASK_OPENAI_LIVE_SMOKE_ACK="I_ACCEPT_ONE_PAID_OPENAI_REQUEST"
@@ -80,13 +84,27 @@ python examples/runtime/openai_responses_live_smoke.py `
   --model <PINNED_MODEL_SNAPSHOT> `
   --max-output-tokens 2048 `
   --timeout-seconds 60 `
+  --authorization-valid-minutes 15 `
+  --issue-authorization "$env:TEMP\geotask-openai-live-authorization.json"
+```
+
+签发过程不读取服务器认证材料，也不发起网络请求。票据文件不包含API密钥或确认字符串，只包含授权ID、固定约束、签发时间和到期时间。已存在的票据路径不会被覆盖。
+
+## 第三步：认领票据并执行一次请求
+
+```powershell
+python examples/runtime/openai_responses_live_smoke.py `
+  --model <PINNED_MODEL_SNAPSHOT> `
+  --max-output-tokens 2048 `
+  --timeout-seconds 60 `
+  --authorization-ticket "$env:TEMP\geotask-openai-live-authorization.json" `
   --report "$env:TEMP\geotask-openai-live-smoke.json" `
   --execute-live
 
 Remove-Item Env:GEOTASK_OPENAI_LIVE_SMOKE_ACK
 ```
 
-脚本最多允许一次Provider调用，且SDK重试数为0。失败后不得在未阅读审计引用和诊断代码的情况下直接重复执行。
+执行前会原子创建`geotask-openai-live-authorization.json.claimed`。客户端或Adapter初始化失败时不认领票据；进入Runtime提交阶段后，无论成功、失败还是结果未知，票据都不可复用。认领文件会更新为脱敏最终状态。脚本最多允许一次Provider调用，且SDK重试数为0。
 
 ## 成功判据
 
@@ -94,6 +112,8 @@ Remove-Item Env:GEOTASK_OPENAI_LIVE_SMOKE_ACK
 
 ```text
 valid = true
+release_gate_state = live_smoke_verified
+authorization_id = <issued-ticket-id>
 runtime_state = completed
 side_effects_executed = true
 live_request_executed = true
@@ -106,6 +126,20 @@ output_artifact_ids = [geotask.execution-result]
 ```
 
 即使结果为`completed`，输出仍然只是`model_generated`，不得提升为`verified`或`local_deterministic`。
+
+## 发布门禁状态
+
+```text
+authorization_pending   默认预检通过，尚未签发票据
+live_execution_pending  一次性票据已签发，尚未执行
+preflight_blocked       本地约束、确认声明、凭据环境或票据检查未通过
+live_execution_blocked  客户端或Adapter初始化失败，未进入提交阶段
+live_smoke_indeterminate 已认领票据，但提交未返回结构化结果
+live_smoke_failed       已返回结构化结果，但未满足成功判据
+live_smoke_verified     单次线上冒烟全部判据通过
+```
+
+只有`live_smoke_verified`允许关闭“线上兼容性待验证”门禁；它仍不代表生产就绪。
 
 ## 失败处理
 
@@ -122,8 +156,9 @@ output_artifact_ids = [geotask.execution-result]
 ## 结束后
 
 1. 删除确认变量；
-2. 确认报告位于仓库外；
-3. 只保留脱敏报告中的状态、版本和审计引用；
-4. 不提交报告；
-5. 记录实际模型快照、运行时间和最终状态；
-6. 线上冒烟成功后，仍需独立评估模型输出质量和成本，不能直接标记为生产可用。
+2. 确认授权票据、`.claimed`认领记录和报告均位于仓库外；
+3. 保留三份脱敏证据，核对其授权ID一致；
+4. 不修改或复用已认领票据；
+5. 不提交票据、认领记录或报告；
+6. 记录实际模型快照、运行时间和发布门禁状态；
+7. 线上冒烟成功后，仍需独立评估模型输出质量和成本，不能直接标记为生产可用。

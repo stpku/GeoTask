@@ -113,13 +113,22 @@
       "properties": {
         "crs": {"$ref": "#/$defs/crs"},
         "axes": {"type": "object", "additionalProperties": {"type": "string"}},
-        "horizontal_unit": {"type": "string"},
-        "vertical_unit": {"type": "string"},
-        "unit": {"type": "string"},
+        "horizontal_unit": {"type": "string", "minLength": 1},
+        "vertical_unit": {"type": "string", "minLength": 1},
+        "unit": {"type": "string", "minLength": 1},
         "coordinate_order": {
           "type": "array",
+          "prefixItems": [
+            {"type": "string", "minLength": 1},
+            {"type": "string", "minLength": 1}
+          ],
           "minItems": 2,
-          "items": {"type": "string"}
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "boundary_semantics": {
+          "enum": ["closed", "open"],
+          "default": "closed"
         },
         "precision": {"type": "object", "additionalProperties": true}
       }

@@ -136,6 +136,7 @@ space:
   horizontal_unit: "meter"
   vertical_unit: "meter"
   coordinate_order: ["x", "y"]
+  boundary_semantics: "closed"
   precision:
     decimal_places: 3
     tolerance: 0.01
@@ -158,15 +159,19 @@ Supported descriptive CRS types include:
 - `geographic`
 - `unknown`
 
-The current Core does not perform CRS transformations. All objects used in one assertion MUST already be expressed in a compatible coordinate system.
+The current Core does not perform CRS transformations. Planar operators (`distance_2d`, rectangle topology, polygon containment, and point-to-line distance) MUST use `local_cartesian` or `projected`; `projected` additionally requires a non-empty identifier. `geographic` and `unknown` are rejected for planar execution instead of treating longitude/latitude or unidentified coordinates as Euclidean values. Pure temporal tasks MAY still declare a geographic CRS because they do not consume planar coordinates.
+
+For every planar operator, `coordinate_order` MUST be exactly `["x", "y"]`. Reordering longitude/latitude, northing/easting, or other axes is an external transformation and is not inferred by Core.
 
 ### 5.2 Units
 
-`horizontal_unit` and `vertical_unit` are descriptive contract fields. The current Core does not automatically convert units. Inputs to one operator MUST use compatible units.
+`horizontal_unit` and `vertical_unit` are document-wide execution contracts. Core does not convert units. Numeric distance assertions inherit `horizontal_unit`; an explicit assertion unit MUST be equivalent to it. Altitude objects inherit `vertical_unit` when no unit is present, and any explicit altitude unit MUST be equivalent to the shared vertical unit. Common spelling aliases such as `meter`, `metre`, `meters`, `metres`, and `m` are treated as the same label, but no numeric conversion is performed. Altitude intervals compared by `altitude_overlap` MUST also use the same declared vertical datum when both datums are present.
 
 ### 5.3 Boundary Semantics
 
-Core interval, rectangle, polygon, and multi-polyline topology operators use closed boundaries unless an operator contract states otherwise. Touching the boundary therefore counts as intersection, containment, or overlap.
+`space.boundary_semantics` defaults to `closed`. Core rectangle, polygon, multi-polyline, time-overlap, and altitude-overlap operators currently implement closed boundaries only: touching an edge, vertex, or interval endpoint counts as intersection, containment, or overlap. A document that declares `open` while using one of these operators fails validation; Core does not silently substitute closed-boundary results.
+
+The CRS, coordinate order, units, and boundary semantics apply to every task in one document. Tasks cannot override them independently.
 
 ---
 

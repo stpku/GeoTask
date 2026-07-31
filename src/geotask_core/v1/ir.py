@@ -60,6 +60,7 @@ class SpaceDefinition:
     horizontal_unit: str = "meter"
     vertical_unit: str = "meter"
     coordinate_order: list = field(default_factory=lambda: ["x", "y"])
+    boundary_semantics: str = "closed"
     precision: dict = field(default_factory=dict)
 
 

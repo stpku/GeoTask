@@ -140,6 +140,10 @@ See the [Cookbook](docs/cookbook/gt01-gt20.md) for all cases and source files.
 | `time_overlap` | time interval, time interval | boolean |
 | `altitude_overlap` | altitude interval, altitude interval | boolean |
 
+### Cross-task space contract
+
+All tasks in one document share one CRS, coordinate order, horizontal/vertical unit, and boundary contract. Planar operators accept only `local_cartesian` or an identified `projected` CRS and require `[x, y]`; Core does not treat longitude/latitude as Euclidean coordinates or convert units. Distance assertions and altitude objects must match the document units. Current boundary-sensitive operators support `closed` only and fail closed when `open` is declared. Pure temporal tasks are not blocked by the planar CRS gate.
+
 ### Execution chain
 
 ```text

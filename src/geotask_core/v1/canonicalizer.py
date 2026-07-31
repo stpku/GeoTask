@@ -196,6 +196,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         horizontal_unit=str(space_raw.get("unit", space_raw.get("horizontal_unit", "meter"))),
         vertical_unit=str(space_raw.get("vertical_unit", "meter")),
         coordinate_order=list(space_raw.get("coordinate_order", ["x", "y"])),
+        boundary_semantics=str(space_raw.get("boundary_semantics", "closed")),
         precision=dict(space_raw.get("precision", {})),
     )
 
@@ -391,6 +392,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         horizontal_unit=str(sp.get("horizontal_unit", sp.get("unit", "meter"))),
         vertical_unit=str(sp.get("vertical_unit", "meter")),
         coordinate_order=list(sp.get("coordinate_order", ["x", "y"])),
+        boundary_semantics=str(sp.get("boundary_semantics", "closed")),
         precision=dict(sp.get("precision", {})),
     )
 
@@ -742,6 +744,7 @@ def _space_to_dict(sp: SpaceDefinition) -> dict[str, Any]:
         "horizontal_unit": sp.horizontal_unit,
         "vertical_unit": sp.vertical_unit,
         "coordinate_order": list(sp.coordinate_order),
+        "boundary_semantics": sp.boundary_semantics,
         "precision": dict(sp.precision),
     }
 

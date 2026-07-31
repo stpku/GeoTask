@@ -16,6 +16,7 @@ from geotask_core.v1.result import GeotaskResult
 REPO_ROOT = Path(__file__).resolve().parent.parent
 GT19 = REPO_ROOT / "examples" / "core" / "uav_arrival_ground_clearance_release.yaml"
 OBJECT_EXTENSIONS = REPO_ROOT / "examples" / "core" / "v1_polygon_multi_polyline.yaml"
+SPACE_CONTRACT = REPO_ROOT / "examples" / "core" / "v1_cross_task_space_contract.yaml"
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -100,6 +101,29 @@ def test_run_v1_json_executes_polygon_and_multi_polyline_example() -> None:
         "point_in_polygon",
         "multi_polyline_intersects_rect",
     }
+    assert payload["overall"]["status"] == "verified"
+
+
+def test_run_v1_json_executes_cross_task_space_contract() -> None:
+    result = _run_cli(
+        "run",
+        str(SPACE_CONTRACT),
+        "--format",
+        "v1-json",
+        "--compact",
+    )
+
+    assert result.returncode == 0
+    assert result.stderr == ""
+    payload = json.loads(result.stdout)["geotask_result"]
+    assert payload["task_id"] == "cross-task-space-contract-v1"
+    assert payload["outputs"] == {
+        "distance_check": 5.0,
+        "intersection_check": True,
+        "altitude_check": True,
+    }
+    checks = {check["assertion_id"]: check for check in payload["checks"]}
+    assert checks["distance_check"]["unit"] == "meter"
     assert payload["overall"]["status"] == "verified"
 
 

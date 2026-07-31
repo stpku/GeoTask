@@ -12,6 +12,8 @@ patent-sensitive workflows.
   overlap example.
 - `examples/core/v1_polygon_multi_polyline.yaml`: native v1 polygon containment and
   grouped-route rectangle intersection with explicit closed-boundary semantics.
+- `examples/core/v1_cross_task_space_contract.yaml`: three native v1 tasks sharing one
+  CRS, coordinate order, horizontal/vertical unit, vertical datum, and closed-boundary contract.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

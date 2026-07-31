@@ -1,0 +1,107 @@
+geotask:
+  id: "cross-task-space-contract-v1"
+  name: "Cross-Task Space Contract v1.0"
+  description: "Demonstrate one CRS, unit, coordinate-order, and boundary contract shared by multiple tasks."
+  schema_version: "1.0"
+  language: "en"
+  domain: "general_spatial"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "fictional_local_xy_m"
+  axes:
+    x: "east"
+    y: "north"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+  coordinate_order: ["x", "y"]
+  boundary_semantics: "closed"
+
+objects:
+  point_a:
+    type: "point"
+    coordinates: [0, 0]
+  point_b:
+    type: "point"
+    coordinates: [3, 4]
+  route:
+    type: "polyline"
+    coordinates:
+      - [-2, 5]
+      - [12, 5]
+  window:
+    type: "rect"
+    bbox: [0, 0, 10, 10]
+  flight_band:
+    type: "altitude_interval"
+    min: 100
+    max: 150
+    unit: "meter"
+    datum: "fictional_local_datum"
+  restricted_band:
+    type: "altitude_interval"
+    min: 120
+    max: 180
+    unit: "metre"
+    datum: "fictional_local_datum"
+
+operator_set:
+  - distance_2d
+  - line_intersects_rect
+  - altitude_overlap
+
+tasks:
+  - id: "measurement_task"
+    family: "measurement"
+    goal: "Measure distance under the shared horizontal unit."
+    assertions:
+      - id: "distance_check"
+        operator: "distance_2d"
+        object_refs: ["point_a", "point_b"]
+        expected_type: "number"
+        unit: "metre"
+  - id: "topology_task"
+    family: "topology"
+    goal: "Evaluate route intersection under closed-boundary semantics."
+    assertions:
+      - id: "intersection_check"
+        operator: "line_intersects_rect"
+        object_refs: ["route", "window"]
+        expected_type: "boolean"
+  - id: "vertical_task"
+    family: "vertical"
+    goal: "Evaluate altitude overlap under one vertical unit and datum."
+    assertions:
+      - id: "altitude_check"
+        operator: "altitude_overlap"
+        object_refs: ["flight_band", "restricted_band"]
+        expected_type: "boolean"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "evaluate_shared_contract"
+      executor: "local"
+      assertion_refs:
+        - "distance_check"
+        - "intersection_check"
+        - "altitude_check"
+      depends_on: []
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "distance_check"
+    - "intersection_check"
+    - "altitude_check"
+  allow_additional_fields: true
+
+expected_results:
+  - name: "distance_check"
+    value: 5.0
+    unit: "meter"
+  - name: "intersection_check"
+    value: true
+  - name: "altitude_check"
+    value: true

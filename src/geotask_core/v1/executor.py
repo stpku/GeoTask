@@ -1014,8 +1014,6 @@ def _resolve_unit(
     doc: CanonicalDocument,
 ) -> str:
     """Resolve the unit string for a check result."""
-    if assertion.unit:
-        return assertion.unit
     if contract is not None:
         output_type = contract.output.get("type", "")
         if output_type == "boolean":
@@ -1023,6 +1021,8 @@ def _resolve_unit(
         unit_behavior = contract.output.get("unit_behavior", "")
         if unit_behavior == "inherit_horizontal_unit":
             return doc.space.horizontal_unit
+    if assertion.unit:
+        return assertion.unit
     return ""
 
 

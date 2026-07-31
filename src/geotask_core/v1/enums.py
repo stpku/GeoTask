@@ -121,6 +121,7 @@ INVALID_GEOMETRY        = "invalid_geometry"
 INVALID_INTERVAL        = "invalid_interval"
 INVALID_CRS             = "invalid_crs"
 UNIT_MISMATCH           = "unit_mismatch"
+BOUNDARY_SEMANTICS_MISMATCH = "boundary_semantics_mismatch"
 
 # Operator / reference errors
 INVALID_OPERATOR        = "invalid_operator"

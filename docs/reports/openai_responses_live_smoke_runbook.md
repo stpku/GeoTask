@@ -2,9 +2,9 @@
 
 ## 状态
 
-当前状态：`official_sdk_mock_transport_verified_server_readiness_blocked_external_authorization_pending_live_request_not_executed`。
+当前状态：`closure_manifest_writer_verified_server_readiness_blocked_external_authorization_pending_live_request_not_executed`。
 
-本手册对应`examples/runtime/openai_responses_live_smoke.py`、`examples/runtime/openai_responses_live_smoke_audit.py`和`examples/runtime/openai_responses_live_smoke_evidence.py`。执行器、只读审计器、证据校验器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
+本手册对应`examples/runtime/openai_responses_live_smoke.py`、`examples/runtime/openai_responses_live_smoke_audit.py`、`examples/runtime/openai_responses_live_smoke_evidence.py`和`examples/runtime/openai_responses_live_smoke_closure.py`。执行器、只读就绪审计器、证据校验器、显式闭环凭证写入器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
 
 ## 目的
 
@@ -172,6 +172,22 @@ Runtime状态为completed
 
 校验成功输出`release_gate_state=live_smoke_verified`、三份文件SHA-256及一个组合证据摘要；任何不一致均输出`evidence_invalid`，不得人工覆盖。
 
+## 第六步：写入一次性闭环凭证
+
+不要只依赖第五步的标准输出。证据验证通过后，将脱敏摘要写入仓库外的独立闭环文件：
+
+```powershell
+python examples/runtime/openai_responses_live_smoke_audit.py write-closure `
+  --repository-root . `
+  --authorization-ticket "$env:TEMP\geotask-openai-live-authorization.json" `
+  --report "$env:TEMP\geotask-openai-live-smoke.json" `
+  --output "$env:TEMP\geotask-openai-live-smoke-closure.json"
+```
+
+`write-closure`会重新执行全部证据校验，只有`live_smoke_verified`才写文件。闭环文件采用仓库外路径、私有权限和同目录硬链接原子发布，目标已存在、与票据/认领记录/报告碰撞或位于仓库内时均失败且不覆盖原文件。
+
+闭环文件只保留：格式和校验器版本、授权ID、固定模型快照、服务端审计引用、验证时间、三份证据SHA-256、组合证据摘要以及`credential_data_retained=false`。它不保留证据正文、请求正文、模型正文、文件路径或认证材料。成功输出`release_gate_state=live_smoke_closure_recorded`和闭环文件自身SHA-256。
+
 ## 成功判据
 
 同时满足以下条件才算线上冒烟成功：
@@ -206,9 +222,11 @@ live_smoke_indeterminate 已认领票据，但提交未返回结构化结果
 live_smoke_failed       已返回结构化结果，但未满足成功判据
 evidence_invalid        三份脱敏证据缺失、冲突、被篡改或位于仓库内
 live_smoke_verified     单次线上冒烟与脱敏证据包全部判据通过
+closure_not_recorded    证据未通过或闭环输出路径、权限、原子发布门禁失败
+live_smoke_closure_recorded 已验证证据的脱敏闭环凭证已一次性写入
 ```
 
-只有`live_smoke_verified`允许关闭“线上兼容性待验证”门禁；它仍不代表生产就绪。
+只有`live_smoke_verified`允许关闭“线上兼容性待验证”门禁；运行记录的操作闭环还要求`live_smoke_closure_recorded`。两者均不代表生产就绪。
 
 ## 失败处理
 
@@ -225,9 +243,9 @@ live_smoke_verified     单次线上冒烟与脱敏证据包全部判据通过
 ## 结束后
 
 1. 删除确认变量；
-2. 确认授权票据、`.claimed`认领记录和报告均位于仓库外；
-3. 保留三份脱敏证据，核对其授权ID一致；
-4. 不修改或复用已认领票据；
-5. 不提交票据、认领记录或报告；
-6. 记录实际模型快照、运行时间和发布门禁状态；
+2. 确认授权票据、`.claimed`认领记录、报告和闭环凭证均位于仓库外；
+3. 保留三份脱敏证据及一次性闭环凭证，核对其授权ID和组合证据摘要一致；
+4. 不修改或复用已认领票据，不覆盖或重写闭环凭证；
+5. 不提交票据、认领记录、报告或闭环凭证；
+6. 记录实际模型快照、运行时间、`live_smoke_verified`和`live_smoke_closure_recorded`状态；
 7. 线上冒烟成功后，仍需独立评估模型输出质量和成本，不能直接标记为生产可用。

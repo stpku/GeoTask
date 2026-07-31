@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib
 import json
+import os
+import stat
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -17,6 +20,7 @@ if str(RUNTIME_DIR) not in sys.path:
     sys.path.insert(0, str(RUNTIME_DIR))
 
 SMOKE = importlib.import_module("openai_responses_live_smoke")
+CLOSURE = importlib.import_module("openai_responses_live_smoke_closure")
 AUDIT = importlib.import_module("openai_responses_live_smoke_audit")
 
 
@@ -358,6 +362,249 @@ def test_evidence_inside_repository_or_path_collision_is_rejected(
     assert "evidence_inside_repository" in codes
 
 
+def test_verified_evidence_can_be_recorded_as_write_once_closure(
+    tmp_path: Path,
+) -> None:
+    ticket_path, claim_path, report_path, authorization_id = _write_verified_bundle(
+        tmp_path
+    )
+    output_path = tmp_path.parent / f"{tmp_path.name}-live-smoke-closure.json"
+    output_path.unlink(missing_ok=True)
+
+    provider_modules = (
+        "openai",
+        "geotask_core",
+        "geotask_openai_responses_adapter",
+    )
+    original = {name: sys.modules.pop(name, None) for name in provider_modules}
+    try:
+        result = AUDIT.write_closure_manifest(
+            ticket_path,
+            claim_path,
+            report_path,
+            output_path,
+            repository_root=tmp_path,
+            now=FIXED + timedelta(minutes=3),
+        )
+        assert all(name not in sys.modules for name in provider_modules)
+    finally:
+        for name, value in original.items():
+            if value is not None:
+                sys.modules[name] = value
+
+    body = result["openai_live_smoke_closure_write"]
+    assert body["valid"] is True
+    assert body["release_gate_state"] == "live_smoke_closure_recorded"
+    assert body["authorization_id"] == authorization_id
+    assert body["model"] == MODEL
+    assert body["audit_ref"] == AUDIT_REF
+    assert body["verified_at"] == "2026-07-31T08:03:00Z"
+    assert body["live_request_executed"] is True
+    assert body["provider_modules_imported"] is False
+    assert body["credential_presence_checked"] is False
+    assert body["credential_value_exposed"] is False
+    assert body["output_created"] is True
+    assert all(item["passed"] for item in body["checks"])
+
+    raw = output_path.read_bytes()
+    closure = json.loads(raw.decode("utf-8"))["openai_live_smoke_closure"]
+    assert set(closure) == {
+        "format_version",
+        "verifier_version",
+        "release_gate_state",
+        "verified_at",
+        "authorization_id",
+        "model",
+        "audit_ref",
+        "file_hashes",
+        "evidence_bundle_sha256",
+        "live_request_executed",
+        "credential_data_retained",
+    }
+    assert closure["format_version"] == "1.0"
+    assert closure["verifier_version"] == "1.0"
+    assert closure["release_gate_state"] == "live_smoke_verified"
+    assert closure["authorization_id"] == authorization_id
+    assert closure["model"] == MODEL
+    assert closure["audit_ref"] == AUDIT_REF
+    assert closure["credential_data_retained"] is False
+    verified = AUDIT.verify_evidence_bundle(
+        ticket_path,
+        claim_path,
+        report_path,
+        repository_root=tmp_path,
+    )["openai_live_smoke_evidence"]
+    assert closure["file_hashes"] == verified["file_hashes"]
+    assert closure["evidence_bundle_sha256"] == verified["evidence_bundle_sha256"]
+    assert body["closure_manifest_sha256"] == hashlib.sha256(raw).hexdigest()
+    assert str(ticket_path) not in raw.decode("utf-8")
+    assert "REDACTED_SECRET" not in raw.decode("utf-8")
+    if os.name != "nt":
+        assert stat.S_IMODE(output_path.stat().st_mode) == 0o600
+
+    before = raw
+    replay = AUDIT.write_closure_manifest(
+        ticket_path,
+        claim_path,
+        report_path,
+        output_path,
+        repository_root=tmp_path,
+        now=FIXED + timedelta(minutes=4),
+    )["openai_live_smoke_closure_write"]
+    assert replay["valid"] is False
+    assert replay["release_gate_state"] == "closure_not_recorded"
+    assert replay["output_created"] is False
+    assert any(
+        item["code"] == "closure_already_exists" and not item["passed"]
+        for item in replay["checks"]
+    )
+    assert output_path.read_bytes() == before
+    assert list(output_path.parent.glob(f"{output_path.name}.*.tmp")) == []
+
+
+def test_invalid_evidence_or_unsafe_output_cannot_record_closure(
+    tmp_path: Path,
+) -> None:
+    ticket_path, claim_path, report_path, _authorization_id = _write_verified_bundle(
+        tmp_path
+    )
+    output_path = tmp_path.parent / f"{tmp_path.name}-invalid-closure.json"
+    output_path.unlink(missing_ok=True)
+
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    report["openai_live_smoke"]["audit_ref"] = (
+        "openai://responses/client-local/unknown-response"
+    )
+    SMOKE._write_report(report_path, report)
+    invalid = AUDIT.write_closure_manifest(
+        ticket_path,
+        claim_path,
+        report_path,
+        output_path,
+        repository_root=tmp_path,
+        now=FIXED + timedelta(minutes=3),
+    )["openai_live_smoke_closure_write"]
+    assert invalid["valid"] is False
+    assert invalid["output_created"] is False
+    assert output_path.exists() is False
+    assert any(item["code"] == "evidence_not_verified" for item in invalid["checks"])
+
+    ticket_path, claim_path, report_path, _authorization_id = _write_verified_bundle(
+        tmp_path
+    )
+    inside_repository = tmp_path / "closure.json"
+    inside = AUDIT.write_closure_manifest(
+        ticket_path,
+        claim_path,
+        report_path,
+        inside_repository,
+        repository_root=tmp_path,
+        now=FIXED + timedelta(minutes=3),
+    )["openai_live_smoke_closure_write"]
+    assert inside["valid"] is False
+    assert inside_repository.exists() is False
+    assert any(
+        item["code"] == "evidence_inside_repository" for item in inside["checks"]
+    )
+
+    invalid_suffix = tmp_path.parent / f"{tmp_path.name}-closure.txt"
+    invalid_suffix.unlink(missing_ok=True)
+    suffix_result = AUDIT.write_closure_manifest(
+        ticket_path,
+        claim_path,
+        report_path,
+        invalid_suffix,
+        repository_root=tmp_path,
+        now=FIXED + timedelta(minutes=3),
+    )["openai_live_smoke_closure_write"]
+    assert suffix_result["valid"] is False
+    assert invalid_suffix.exists() is False
+    assert any(
+        item["code"] == "invalid_closure_output"
+        for item in suffix_result["checks"]
+    )
+
+    report_before = report_path.read_bytes()
+    collision = AUDIT.write_closure_manifest(
+        ticket_path,
+        claim_path,
+        report_path,
+        report_path,
+        repository_root=tmp_path,
+        now=FIXED + timedelta(minutes=3),
+    )["openai_live_smoke_closure_write"]
+    assert collision["valid"] is False
+    assert any(
+        item["code"] == "evidence_path_collision" for item in collision["checks"]
+    )
+    assert report_path.read_bytes() == report_before
+
+
+def test_post_publish_permission_failure_rolls_back_new_closure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    ticket_path, claim_path, report_path, _authorization_id = _write_verified_bundle(
+        tmp_path
+    )
+    output_path = tmp_path.parent / f"{tmp_path.name}-rollback-closure.json"
+    output_path.unlink(missing_ok=True)
+    monkeypatch.setattr(CLOSURE, "_is_private_file", lambda _path: False)
+
+    result = AUDIT.write_closure_manifest(
+        ticket_path,
+        claim_path,
+        report_path,
+        output_path,
+        repository_root=tmp_path,
+        now=FIXED + timedelta(minutes=3),
+    )["openai_live_smoke_closure_write"]
+
+    assert result["valid"] is False
+    assert result["output_created"] is False
+    assert any(
+        item["code"] == "insecure_closure_permissions"
+        for item in result["checks"]
+    )
+    assert output_path.exists() is False
+    assert list(output_path.parent.glob(f"{output_path.name}.*.tmp")) == []
+
+
+def test_cli_write_closure_records_once_without_exposing_paths(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    ticket_path, _claim_path, report_path, _authorization_id = _write_verified_bundle(
+        tmp_path
+    )
+    output_path = tmp_path.parent / f"{tmp_path.name}-cli-closure.json"
+    output_path.unlink(missing_ok=True)
+    arguments = [
+        "write-closure",
+        "--repository-root",
+        str(tmp_path),
+        "--authorization-ticket",
+        str(ticket_path),
+        "--report",
+        str(report_path),
+        "--output",
+        str(output_path),
+    ]
+
+    assert AUDIT.main(arguments) == 0
+    output = capsys.readouterr().out
+    body = json.loads(output)["openai_live_smoke_closure_write"]
+    assert body["release_gate_state"] == "live_smoke_closure_recorded"
+    assert body["output_created"] is True
+    assert str(output_path) not in output
+    assert output_path.is_file()
+
+    assert AUDIT.main(arguments) == 2
+    replay = json.loads(capsys.readouterr().out)["openai_live_smoke_closure_write"]
+    assert replay["release_gate_state"] == "closure_not_recorded"
+    assert replay["output_created"] is False
+
+
 def test_cli_readiness_and_evidence_are_read_only(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -552,4 +799,5 @@ def test_private_auditor_and_tests_are_excluded_from_public_export() -> None:
     }
     assert "examples/runtime/openai_responses_live_smoke_audit.py" not in exported
     assert "examples/runtime/openai_responses_live_smoke_evidence.py" not in exported
+    assert "examples/runtime/openai_responses_live_smoke_closure.py" not in exported
     assert "tests/test_openai_responses_live_smoke_audit.py" not in exported

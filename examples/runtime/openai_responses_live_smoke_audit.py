@@ -1,9 +1,10 @@
-"""Read-only readiness and evidence auditing for the private live smoke.
+"""Private readiness, evidence auditing, and explicit closure retention.
 
+The readiness and evidence commands are read-only. The explicit ``write-closure``
+command can atomically retain one redacted closure manifest after evidence passes.
 This module never imports the OpenAI SDK, emits credential values, creates an
-authorization claim, or sends a network request. It only checks whether the
-required server-side credential variable is present and non-empty. It remains
-outside the public export and normal public CI.
+authorization claim, or sends a network request. It remains outside the public
+export and normal public CI.
 """
 
 from __future__ import annotations
@@ -27,6 +28,7 @@ try:  # Package import when loaded through examples.runtime.
         _load_request,
         _validate_authorization_ticket,
     )
+    from .openai_responses_live_smoke_closure import write_closure_manifest
     from .openai_responses_live_smoke_evidence import verify_evidence_bundle
 except ImportError:  # Direct script execution from examples/runtime.
     from openai_responses_live_smoke import (  # type: ignore[no-redef]
@@ -37,6 +39,9 @@ except ImportError:  # Direct script execution from examples/runtime.
         _credential_environment_variable,
         _load_request,
         _validate_authorization_ticket,
+    )
+    from openai_responses_live_smoke_closure import (  # type: ignore[no-redef]
+        write_closure_manifest,
     )
     from openai_responses_live_smoke_evidence import (  # type: ignore[no-redef]
         verify_evidence_bundle,
@@ -223,7 +228,9 @@ def audit_readiness(
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Audit private OpenAI live-smoke readiness or retained evidence."
+        description=(
+            "Audit private OpenAI live-smoke readiness, retained evidence, or closure."
+        )
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -248,6 +255,16 @@ def _parser() -> argparse.ArgumentParser:
     evidence.add_argument("--authorization-ticket", required=True)
     evidence.add_argument("--authorization-claim")
     evidence.add_argument("--report", required=True)
+
+    closure = subparsers.add_parser(
+        "write-closure",
+        help="Verify retained evidence and record one redacted closure manifest.",
+    )
+    closure.add_argument("--repository-root", default=".")
+    closure.add_argument("--authorization-ticket", required=True)
+    closure.add_argument("--authorization-claim")
+    closure.add_argument("--report", required=True)
+    closure.add_argument("--output", required=True)
     return parser
 
 
@@ -274,10 +291,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             if args.authorization_claim
             else ticket_path.with_suffix(ticket_path.suffix + ".claimed")
         )
+        report_path = Path(args.report).resolve()
+        if args.command == "write-closure":
+            payload = write_closure_manifest(
+                ticket_path,
+                claim_path,
+                report_path,
+                Path(args.output).resolve(),
+                repository_root=Path(args.repository_root),
+            )
+            print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+            return (
+                0
+                if payload["openai_live_smoke_closure_write"]["valid"]
+                else 2
+            )
+
         payload = verify_evidence_bundle(
             ticket_path,
             claim_path,
-            Path(args.report).resolve(),
+            report_path,
             repository_root=Path(args.repository_root),
         )
         print(json.dumps(payload, ensure_ascii=False, sort_keys=True))

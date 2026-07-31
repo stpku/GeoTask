@@ -1,10 +1,10 @@
-"""Private readiness, evidence auditing, and closure retention or verification.
+"""Private environment/readiness auditing and evidence closure operations.
 
-The readiness, evidence, and closure verification commands are read-only. The
-explicit ``write-closure`` command can atomically retain one redacted closure
-manifest after evidence passes. This module never imports the OpenAI SDK, emits
-credential values, creates an authorization claim, or sends a network request.
-It remains outside the public export and normal public CI.
+Environment inspection, readiness, evidence verification, and closure verification
+are read-only. The explicit ``write-closure`` command can atomically retain one
+redacted closure manifest after evidence passes. This module never imports the
+OpenAI SDK, emits credential values, creates an authorization claim, or sends a
+network request. It remains outside the public export and normal public CI.
 """
 
 from __future__ import annotations
@@ -32,6 +32,7 @@ try:  # Package import when loaded through examples.runtime.
     from .openai_responses_live_smoke_closure_verifier import (
         verify_closure_manifest,
     )
+    from .openai_responses_live_smoke_environment import inspect_environment
     from .openai_responses_live_smoke_evidence import verify_evidence_bundle
 except ImportError:  # Direct script execution from examples/runtime.
     from openai_responses_live_smoke import (  # type: ignore[no-redef]
@@ -48,6 +49,9 @@ except ImportError:  # Direct script execution from examples/runtime.
     )
     from openai_responses_live_smoke_closure_verifier import (  # type: ignore[no-redef]
         verify_closure_manifest,
+    )
+    from openai_responses_live_smoke_environment import (  # type: ignore[no-redef]
+        inspect_environment,
     )
     from openai_responses_live_smoke_evidence import (  # type: ignore[no-redef]
         verify_evidence_bundle,
@@ -235,10 +239,16 @@ def audit_readiness(
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Audit private OpenAI live-smoke readiness, retained evidence, or closure."
+            "Inspect private live-smoke environment/readiness or retained closure evidence."
         )
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    environment = subparsers.add_parser(
+        "inspect-environment",
+        help="Inspect source and installed compatibility without a ticket or network.",
+    )
+    environment.add_argument("--repository-root", default=".")
 
     readiness = subparsers.add_parser(
         "readiness", help="Check live execution prerequisites without side effects."
@@ -288,6 +298,11 @@ def _parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     try:
         args = _parser().parse_args(argv)
+        if args.command == "inspect-environment":
+            payload = inspect_environment(Path(args.repository_root))
+            print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+            return 0 if payload["openai_live_smoke_environment"]["valid"] else 2
+
         if args.command == "readiness":
             ticket_path = Path(args.authorization_ticket)
             plan = LiveSmokePlan(

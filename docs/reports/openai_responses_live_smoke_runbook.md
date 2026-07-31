@@ -2,9 +2,9 @@
 
 ## 状态
 
-当前状态：`closure_manifest_verifier_verified_server_readiness_blocked_external_authorization_pending_live_request_not_executed`。
+当前状态：`environment_inspector_verified_source_checkout_ready_formal_release_blocked_external_authorization_pending_live_request_not_executed`。
 
-本手册对应`examples/runtime/openai_responses_live_smoke.py`、`examples/runtime/openai_responses_live_smoke_audit.py`、`examples/runtime/openai_responses_live_smoke_evidence.py`、`examples/runtime/openai_responses_live_smoke_closure.py`和`examples/runtime/openai_responses_live_smoke_closure_verifier.py`。执行器、只读就绪审计器、证据校验器、显式闭环凭证写入器、只读闭环复核器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
+本手册对应`examples/runtime/openai_responses_live_smoke.py`、`examples/runtime/openai_responses_live_smoke_audit.py`、`examples/runtime/openai_responses_live_smoke_environment.py`、`examples/runtime/openai_responses_live_smoke_evidence.py`、`examples/runtime/openai_responses_live_smoke_closure.py`和`examples/runtime/openai_responses_live_smoke_closure_verifier.py`。执行器、只读环境与就绪审计器、证据校验器、显式闭环凭证写入器、只读闭环复核器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
 
 ## 目的
 
@@ -46,6 +46,30 @@
 5. 确认`OPENAI_LOG`未设置；
 6. 选择当前项目实际可访问、并已完成兼容性检查的固定模型快照；
 7. 确认接受一次可能计费的API请求。
+
+## 第零步：只读环境审计
+
+在签发票据或配置真实执行前，先运行不需要模型、票据或网络的环境审计：
+
+```bash
+python3 examples/runtime/openai_responses_live_smoke_audit.py \
+  inspect-environment \
+  --repository-root .
+```
+
+该命令不导入OpenAI SDK、GeoTask Core或两个Adapter，只读取模块发现位置、分发元数据、仓库内版本声明和环境变量存在性。结果明确区分：
+
+```text
+source_checkout_ready          Core和两个Adapter从当前仓库源码加载，SDK版本兼容
+installed_package_ready        四个组件均为非editable正式安装形态
+formal_release_compatible      正式安装形态且全部版本合同兼容
+live_execution_environment_ready 环境、确认声明和凭据存在性均通过，但尚未检查票据
+live_execution_ready           固定为false，因为本命令不检查授权票据
+```
+
+当前私有源码联调允许Core `>=0.3.0,<0.5.0`；正式Provider Adapter发布合同仍要求Core `>=0.4.0,<0.5.0`。因此`source_checkout_ready=true`不得解释为`formal_release_compatible=true`。editable安装会被标记为`editable_install`，也不得冒充正式包安装。
+
+输出同时提供`source_checkout_blockers`、`formal_release_blockers`和`live_execution_blockers`。它只报告凭据与确认声明是否存在，不输出变量名、变量值、模块路径或认证材料；`authorization_ticket_checked=false`、`provider_modules_imported=false`、`network_called=false`必须保持不变。
 
 ## 第一步：离线预检
 
@@ -229,6 +253,10 @@ output_artifact_ids = [geotask.execution-result]
 ## 发布门禁状态
 
 ```text
+environment_blocked     环境安全配置、模块发现或源码合同未满足
+source_checkout_ready   私有源码联调环境通过，但不代表正式包兼容
+installed_package_version_blocked 四个组件已正式安装，但至少一个版本合同不兼容
+formal_release_compatible 非editable正式安装及全部版本合同通过
 authorization_pending   默认预检通过，尚未签发票据
 live_execution_pending  一次性票据已签发，尚未执行
 readiness_blocked       只读就绪审计至少一项未通过

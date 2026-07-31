@@ -44,6 +44,19 @@ _HASH_KEYS = {
     "claim_sha256",
     "report_sha256",
 }
+_CLOSURE_FIELDS = {
+    "format_version",
+    "verifier_version",
+    "release_gate_state",
+    "verified_at",
+    "authorization_id",
+    "model",
+    "audit_ref",
+    "file_hashes",
+    "evidence_bundle_sha256",
+    "live_request_executed",
+    "credential_data_retained",
+}
 
 
 class ClosureWriteError(ValueError):

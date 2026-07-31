@@ -2,9 +2,9 @@
 
 ## 状态
 
-当前状态：`closure_manifest_writer_verified_server_readiness_blocked_external_authorization_pending_live_request_not_executed`。
+当前状态：`closure_manifest_verifier_verified_server_readiness_blocked_external_authorization_pending_live_request_not_executed`。
 
-本手册对应`examples/runtime/openai_responses_live_smoke.py`、`examples/runtime/openai_responses_live_smoke_audit.py`、`examples/runtime/openai_responses_live_smoke_evidence.py`和`examples/runtime/openai_responses_live_smoke_closure.py`。执行器、只读就绪审计器、证据校验器、显式闭环凭证写入器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
+本手册对应`examples/runtime/openai_responses_live_smoke.py`、`examples/runtime/openai_responses_live_smoke_audit.py`、`examples/runtime/openai_responses_live_smoke_evidence.py`、`examples/runtime/openai_responses_live_smoke_closure.py`和`examples/runtime/openai_responses_live_smoke_closure_verifier.py`。执行器、只读就绪审计器、证据校验器、显式闭环凭证写入器、只读闭环复核器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
 
 ## 目的
 
@@ -186,7 +186,24 @@ python examples/runtime/openai_responses_live_smoke_audit.py write-closure `
 
 `write-closure`会重新执行全部证据校验，只有`live_smoke_verified`才写文件。闭环文件采用仓库外路径、私有权限和同目录硬链接原子发布，目标已存在、与票据/认领记录/报告碰撞或位于仓库内时均失败且不覆盖原文件。
 
-闭环文件只保留：格式和校验器版本、授权ID、固定模型快照、服务端审计引用、验证时间、三份证据SHA-256、组合证据摘要以及`credential_data_retained=false`。它不保留证据正文、请求正文、模型正文、文件路径或认证材料。成功输出`release_gate_state=live_smoke_closure_recorded`和闭环文件自身SHA-256。
+闭环文件只保留：格式和校验器版本、授权ID、固定模型快照、服务端审计引用、验证时间、三份证据SHA-256、组合证据摘要以及`credential_data_retained=false`。它不保留证据正文、请求正文、模型正文、文件路径或认证材料。成功输出`release_gate_state=live_smoke_closure_recorded`和闭环文件自身SHA-256。该SHA-256必须保存在闭环文件之外，不能写回同一文件自证完整性。
+
+## 第七步：只读复核闭环凭证
+
+使用第六步输出并外部留存的`closure_manifest_sha256`，重新验证闭环文件的精确身份和当前三份源证据：
+
+```powershell
+python examples/runtime/openai_responses_live_smoke_audit.py verify-closure `
+  --repository-root . `
+  --authorization-ticket "$env:TEMP\geotask-openai-live-authorization.json" `
+  --report "$env:TEMP\geotask-openai-live-smoke.json" `
+  --closure "$env:TEMP\geotask-openai-live-smoke-closure.json" `
+  --expected-closure-sha256 <CLOSURE_MANIFEST_SHA256>
+```
+
+`verify-closure`完全只读，不创建文件、不修改证据，也不导入Provider模块。它首先重新执行票据、认领记录和报告的严格校验，再验证闭环文件的外部SHA-256锚点、精确字段合同、私有权限、验证时间不得早于认领最终化、授权ID、模型快照、服务端审计引用、三份文件哈希和组合证据摘要；结束前再次复核源证据绑定，防止验证过程中发生替换。
+
+成功输出`release_gate_state=live_smoke_closure_verified`和`closure_digest_anchored=true`。如果闭环文件被改写、外部摘要错误、源证据发生变化、时间回退、字段增删、权限放宽或任一文件进入仓库，均输出`closure_invalid`。摘要不匹配时会返回当前文件的实际SHA-256以支持脱敏排障，但不输出文件路径或正文。
 
 ## 成功判据
 
@@ -224,9 +241,11 @@ evidence_invalid        三份脱敏证据缺失、冲突、被篡改或位于�
 live_smoke_verified     单次线上冒烟与脱敏证据包全部判据通过
 closure_not_recorded    证据未通过或闭环输出路径、权限、原子发布门禁失败
 live_smoke_closure_recorded 已验证证据的脱敏闭环凭证已一次性写入
+closure_invalid         闭环外部摘要、合同、时间、权限或当前源证据绑定不一致
+live_smoke_closure_verified 闭环精确身份与当前源证据已只读复核通过
 ```
 
-只有`live_smoke_verified`允许关闭“线上兼容性待验证”门禁；运行记录的操作闭环还要求`live_smoke_closure_recorded`。两者均不代表生产就绪。
+只有`live_smoke_verified`允许关闭“线上兼容性待验证”门禁；运行记录的完整操作闭环要求先`live_smoke_closure_recorded`，再达到`live_smoke_closure_verified`。这些状态均不代表生产就绪。
 
 ## 失败处理
 
@@ -244,8 +263,8 @@ live_smoke_closure_recorded 已验证证据的脱敏闭环凭证已一次性写�
 
 1. 删除确认变量；
 2. 确认授权票据、`.claimed`认领记录、报告和闭环凭证均位于仓库外；
-3. 保留三份脱敏证据及一次性闭环凭证，核对其授权ID和组合证据摘要一致；
+3. 保留三份脱敏证据、一次性闭环凭证及其外部SHA-256锚点，核对授权ID和组合证据摘要一致；
 4. 不修改或复用已认领票据，不覆盖或重写闭环凭证；
-5. 不提交票据、认领记录、报告或闭环凭证；
-6. 记录实际模型快照、运行时间、`live_smoke_verified`和`live_smoke_closure_recorded`状态；
+5. 不提交票据、认领记录、报告、闭环凭证或外部摘要记录；
+6. 执行`verify-closure`并记录实际模型快照、运行时间、`live_smoke_verified`、`live_smoke_closure_recorded`和`live_smoke_closure_verified`状态；
 7. 线上冒烟成功后，仍需独立评估模型输出质量和成本，不能直接标记为生产可用。

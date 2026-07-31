@@ -1,10 +1,10 @@
-"""Private readiness, evidence auditing, and explicit closure retention.
+"""Private readiness, evidence auditing, and closure retention or verification.
 
-The readiness and evidence commands are read-only. The explicit ``write-closure``
-command can atomically retain one redacted closure manifest after evidence passes.
-This module never imports the OpenAI SDK, emits credential values, creates an
-authorization claim, or sends a network request. It remains outside the public
-export and normal public CI.
+The readiness, evidence, and closure verification commands are read-only. The
+explicit ``write-closure`` command can atomically retain one redacted closure
+manifest after evidence passes. This module never imports the OpenAI SDK, emits
+credential values, creates an authorization claim, or sends a network request.
+It remains outside the public export and normal public CI.
 """
 
 from __future__ import annotations
@@ -29,6 +29,9 @@ try:  # Package import when loaded through examples.runtime.
         _validate_authorization_ticket,
     )
     from .openai_responses_live_smoke_closure import write_closure_manifest
+    from .openai_responses_live_smoke_closure_verifier import (
+        verify_closure_manifest,
+    )
     from .openai_responses_live_smoke_evidence import verify_evidence_bundle
 except ImportError:  # Direct script execution from examples/runtime.
     from openai_responses_live_smoke import (  # type: ignore[no-redef]
@@ -42,6 +45,9 @@ except ImportError:  # Direct script execution from examples/runtime.
     )
     from openai_responses_live_smoke_closure import (  # type: ignore[no-redef]
         write_closure_manifest,
+    )
+    from openai_responses_live_smoke_closure_verifier import (  # type: ignore[no-redef]
+        verify_closure_manifest,
     )
     from openai_responses_live_smoke_evidence import (  # type: ignore[no-redef]
         verify_evidence_bundle,
@@ -265,6 +271,17 @@ def _parser() -> argparse.ArgumentParser:
     closure.add_argument("--authorization-claim")
     closure.add_argument("--report", required=True)
     closure.add_argument("--output", required=True)
+
+    closure_verification = subparsers.add_parser(
+        "verify-closure",
+        help="Verify exact closure identity and current source evidence binding.",
+    )
+    closure_verification.add_argument("--repository-root", default=".")
+    closure_verification.add_argument("--authorization-ticket", required=True)
+    closure_verification.add_argument("--authorization-claim")
+    closure_verification.add_argument("--report", required=True)
+    closure_verification.add_argument("--closure", required=True)
+    closure_verification.add_argument("--expected-closure-sha256", required=True)
     return parser
 
 
@@ -304,6 +321,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             return (
                 0
                 if payload["openai_live_smoke_closure_write"]["valid"]
+                else 2
+            )
+
+        if args.command == "verify-closure":
+            payload = verify_closure_manifest(
+                ticket_path,
+                claim_path,
+                report_path,
+                Path(args.closure).resolve(),
+                expected_closure_sha256=args.expected_closure_sha256,
+                repository_root=Path(args.repository_root),
+            )
+            print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+            return (
+                0
+                if payload["openai_live_smoke_closure_verification"]["valid"]
                 else 2
             )
 

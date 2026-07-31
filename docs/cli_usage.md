@@ -422,9 +422,21 @@ response to a Request that violated the advertised operation contract.
 For a real external transport example, see
 [`examples/adapters/http_json_runtime_adapter.py`](../examples/adapters/http_json_runtime_adapter.py).
 It keeps `describe()` offline, performs one explicit HTTP JSON POST, rejects redirects,
-embedded URL credentials, non-JSON and oversized responses, and leaves authentication,
-retries, model calls, evidence access, and production actions outside `geotask_core`.
-HTTP failures remain transport errors rather than being converted into Runtime states.
+embedded URL credentials, duplicate keys, non-finite JSON, non-JSON and oversized
+responses, and leaves authentication, retries, model calls, evidence access, and
+production actions outside `geotask_core`. HTTP failures remain transport errors
+rather than being converted into Runtime states.
+
+The paired loopback-only Endpoint can be started separately:
+
+```bash
+python examples/endpoints/reference_runtime_http_server.py
+```
+
+It accepts only `POST /runtime`. Malformed transport input returns non-2xx Problem
+JSON, while a valid Request Artifact refused by the Runtime returns HTTP `200` with
+a contract-valid `rejected` Runtime Response. It does not expose online Descriptor
+discovery, credentials, remote binding, hosted models, external evidence, or actions.
 
 The three registered Runtime Artifacts are:
 

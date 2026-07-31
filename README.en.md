@@ -179,7 +179,7 @@ geotask runtime check examples/core/runtime_reference_descriptor.json examples/c
 geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json
 ```
 
-The public repository also includes [`examples/adapters/http_json_runtime_adapter.py`](examples/adapters/http_json_runtime_adapter.py), showing how an offline-inspected Descriptor can be bound to an independently hosted HTTP Runtime outside `geotask_core`. The example performs one explicit JSON transport only: it does not fetch the Descriptor, manage credentials, retry, call a model, or execute production actions, and the returned Response still passes Core's Descriptor / Request / Response three-way contract validation.
+The public repository also includes [`examples/adapters/http_json_runtime_adapter.py`](examples/adapters/http_json_runtime_adapter.py), showing how an offline-inspected Descriptor can be bound to an independently hosted HTTP Runtime outside `geotask_core`. The paired [`examples/endpoints/reference_runtime_http_server.py`](examples/endpoints/reference_runtime_http_server.py) starts a real loopback HTTP Endpoint and completes the Adapter-to-Endpoint path. Neither example fetches the Descriptor online, manages credentials, retries, calls a model, or executes production actions; transport errors remain separate from Runtime states, and the returned Response still passes Core's Descriptor / Request / Response three-way contract validation.
 
 ## Version map
 

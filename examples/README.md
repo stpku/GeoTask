@@ -36,6 +36,11 @@ patent-sensitive workflows.
   Runtime Response, and leaves credentials, retries, models, and production actions outside Core.
 - `examples/adapters/README.md`: the external Adapter workflow, transport/error boundary, and
   production-extension guidance.
+- `examples/endpoints/reference_runtime_http_server.py`: a loopback-only HTTP Runtime service
+  that accepts strict Runtime Request JSON, dispatches only to the fail-closed reference Runtime,
+  and returns validated Runtime Responses without credentials, model calls, or production actions.
+- `examples/endpoints/README.md`: the endpoint startup workflow, HTTP/Runtime-state distinction,
+  defensive transport behavior, and production-service boundary.
 - `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
   incompatible results trigger a structured conflict review task.
 - `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes

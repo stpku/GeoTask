@@ -54,6 +54,12 @@ geotask runtime check \
   --format json
 ```
 
+Start the paired public-safe endpoint in a separate terminal:
+
+```bash
+python examples/endpoints/reference_runtime_http_server.py
+```
+
 Then construct the transport adapter outside Core and submit through the public
 SDK helper:
 
@@ -88,10 +94,13 @@ print(response.to_dict())
 ```
 
 The endpoint must return a UTF-8 JSON `geotask.runtime-response` Artifact with a
-2xx HTTP transport status. Operation outcomes such as `completed`, `rejected`,
+2xx HTTP transport status. The Adapter rejects redirects, duplicate object keys,
+non-finite JSON values, non-JSON media types, and oversized responses before Core
+contract validation. Operation outcomes such as `completed`, `rejected`,
 `blocked`, or `failed` belong in the Runtime Response body. HTTP transport
 failure remains a `RuntimeTransportError` and is never reinterpreted as a Runtime
-operation result.
+operation result. See the paired
+[`reference endpoint`](../endpoints/README.md) for the server-side boundary.
 
 ### Production boundary
 

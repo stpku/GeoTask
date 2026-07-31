@@ -77,6 +77,17 @@ def _reject_nonfinite_json(value: str) -> None:
     raise ValueError(f"non-finite JSON number {value!r} is not allowed")
 
 
+def _reject_duplicate_object_keys(
+    pairs: list[tuple[str, object]],
+) -> dict[str, object]:
+    normalized: dict[str, object] = {}
+    for key, value in pairs:
+        if key in normalized:
+            raise ValueError(f"duplicate JSON object key {key!r} is not allowed")
+        normalized[key] = value
+    return normalized
+
+
 def _is_json_content_type(value: str | None) -> bool:
     if value is None:
         return False
@@ -196,7 +207,11 @@ class HttpJsonRuntimeAdapter(RuntimeAdapter):
                 "Runtime Response must be UTF-8 encoded JSON"
             ) from exc
         try:
-            payload = json.loads(response_text, parse_constant=_reject_nonfinite_json)
+            payload = json.loads(
+                response_text,
+                parse_constant=_reject_nonfinite_json,
+                object_pairs_hook=_reject_duplicate_object_keys,
+            )
         except (json.JSONDecodeError, ValueError) as exc:
             raise RuntimeTransportError(
                 f"Runtime endpoint returned invalid strict JSON: {exc}"

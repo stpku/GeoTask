@@ -165,7 +165,7 @@ def test_http_adapter_keeps_transport_failure_separate_from_runtime_state() -> N
             adapter.submit(load_runtime_request(_request_payload()))
 
 
-def test_http_adapter_rejects_redirects_and_nonfinite_json() -> None:
+def test_http_adapter_rejects_redirects_nonfinite_and_duplicate_json() -> None:
     def redirect(_body: bytes) -> tuple[int, str, bytes]:
         return 307, "application/json", b"{}"
 
@@ -187,6 +187,17 @@ def test_http_adapter_rejects_redirects_and_nonfinite_json() -> None:
             endpoint=endpoint,
         )
         with pytest.raises(RuntimeTransportError, match="non-finite JSON"):
+            adapter.submit(load_runtime_request(_request_payload()))
+
+    def duplicate(_body: bytes) -> tuple[int, str, bytes]:
+        return 200, "application/json", b'{"runtime_response": {}, "runtime_response": {}}'
+
+    with _runtime_server(duplicate) as (endpoint, _state):
+        adapter = HttpJsonRuntimeAdapter(
+            descriptor=reference_runtime_descriptor(),
+            endpoint=endpoint,
+        )
+        with pytest.raises(RuntimeTransportError, match="duplicate JSON object key"):
             adapter.submit(load_runtime_request(_request_payload()))
 
 

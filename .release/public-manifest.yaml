@@ -38,6 +38,7 @@ include:
   - "tests/test_agent_generated_document_revision.py"
   - "tests/test_runtime_interface.py"
   - "tests/test_http_json_runtime_adapter_example.py"
+  - "tests/test_reference_runtime_http_endpoint_example.py"
   - "tests/test_cli_inspect.py"
   - "tests/test_core_examples_v0_2.py"
   - "tests/test_mobile_experience_page.py"
@@ -117,6 +118,7 @@ include:
   - "examples/eval_expected_result.yaml"
   - "examples/model_outputs/**"
   - "examples/adapters/**"
+  - "examples/endpoints/**"
   - "examples/README.md"
 
   # Public Agent skill
@@ -263,6 +265,8 @@ required:
   - "examples/core/runtime_validate_artifact_request.json"
   - "examples/adapters/README.md"
   - "examples/adapters/http_json_runtime_adapter.py"
+  - "examples/endpoints/README.md"
+  - "examples/endpoints/reference_runtime_http_server.py"
   - ".github/workflows/ci.yml"
   - ".release/export_public.py"
   - ".release/release_public.py"
@@ -333,6 +337,7 @@ required:
   - "tests/test_agent_generated_document_revision.py"
   - "tests/test_runtime_interface.py"
   - "tests/test_http_json_runtime_adapter_example.py"
+  - "tests/test_reference_runtime_http_endpoint_example.py"
   - "tests/test_version_consistency.py"
   - "tests/test_release_pipeline_regression.py"
   - "tests/test_release_preflight.py"

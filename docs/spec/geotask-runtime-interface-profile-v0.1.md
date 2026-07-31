@@ -251,3 +251,21 @@ The example preserves these boundaries:
 - callers still use `submit_runtime_request()` so the returned Response is strictly loaded and validated against both the inspected Descriptor and submitted Request.
 
 This example proves the external transport seam without publishing a production Runtime implementation. Authentication, endpoint discovery, TLS policy, retries, asynchronous polling, observability, and production action logic belong in a separate adapter or Runtime package outside Core.
+
+## 14. Reference HTTP Endpoint example
+
+The public repository also includes `examples/endpoints/reference_runtime_http_server.py`, a non-normative loopback-only service that completes the transport path with the HTTP Adapter. It hosts only `FailClosedMockRuntime` and therefore supports only the Descriptor-advertised read-only Artifact validation operation.
+
+The Endpoint preserves these rules:
+
+- it binds only to `127.0.0.1` or `localhost` and accepts only `POST /runtime`;
+- Descriptor discovery remains offline; the service exposes no Descriptor-fetch or production-readiness endpoint;
+- strict JSON parsing rejects invalid UTF-8, non-finite values, duplicate object keys, non-object roots, and invalid Runtime Request Artifacts;
+- fixed `Content-Length` and a configurable request-size limit are required; chunked bodies are rejected;
+- credential-bearing headers are rejected and request-line logging is suppressed;
+- malformed transport or Artifact input returns `application/problem+json` with a non-2xx HTTP status and no Runtime Response;
+- a structurally valid Runtime Request that the reference Runtime refuses returns HTTP `200` with a contract-valid `rejected` Runtime Response;
+- supported validation requests return HTTP `200` with a `completed` Runtime Response;
+- responses are marked `no-store` and do not expose the Python runtime version.
+
+This distinction is normative for the example boundary: transport failures must not be represented as Runtime states, while Runtime operation outcomes must remain inside a strictly loaded Runtime Response Artifact. The service is not remotely deployable by default and is not a production authentication, authorization, rate-limiting, audit, or action-execution implementation.

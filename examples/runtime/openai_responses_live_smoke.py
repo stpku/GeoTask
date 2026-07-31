@@ -304,11 +304,11 @@ def issue_authorization_ticket(
     }
 
 
-def _claim_authorization_ticket(
+def _validate_authorization_ticket(
     plan: LiveSmokePlan,
     *,
     now: datetime | None = None,
-) -> str:
+) -> tuple[str, bytes, datetime]:
     if plan.authorization_ticket_path is None:
         raise LiveSmokePreflightError(
             "live execution requires --authorization-ticket outside the repository"
@@ -375,6 +375,17 @@ def _claim_authorization_ticket(
     if current >= expires_at:
         raise LiveSmokePreflightError("authorization ticket has expired")
 
+    return authorization_id, raw, current
+
+
+def _claim_authorization_ticket(
+    plan: LiveSmokePlan,
+    *,
+    now: datetime | None = None,
+) -> str:
+    authorization_id, raw, current = _validate_authorization_ticket(plan, now=now)
+    assert plan.authorization_ticket_path is not None
+    ticket_path = plan.authorization_ticket_path
     claim_path = ticket_path.with_suffix(ticket_path.suffix + ".claimed")
     claim_payload = {
         "authorization_claim": {

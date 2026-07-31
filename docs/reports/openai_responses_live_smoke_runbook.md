@@ -2,9 +2,9 @@
 
 ## 状态
 
-当前状态：`single_use_authorization_verified_live_request_not_executed`。
+当前状态：`readiness_and_evidence_auditor_verified_live_request_not_executed`。
 
-本手册对应`examples/runtime/openai_responses_live_smoke.py`。脚本、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
+本手册对应`examples/runtime/openai_responses_live_smoke.py`和`examples/runtime/openai_responses_live_smoke_audit.py`。执行器、只读审计器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
 
 ## 目的
 
@@ -33,6 +33,8 @@
 - 要求`OPENAI_LOG`完全未设置；
 - 不配置工具、对话状态或生产动作；
 - Provider Adapter固定使用`store=false`；
+- 只读审计器只检查凭据变量是否存在且非空，不输出其值，不导入Provider模块，不创建认领记录；
+- 授权票据、`.claimed`认领记录和报告必须是三个不同文件，全部位于仓库外；
 - 报告不得写入仓库内部，只记录状态、审计引用、诊断代码和版本，不记录请求正文、模型正文或认证材料。
 
 ## 运行前检查
@@ -90,7 +92,32 @@ python examples/runtime/openai_responses_live_smoke.py `
 
 签发过程不读取服务器认证材料，也不发起网络请求。票据文件不包含API密钥或确认字符串，只包含授权ID、固定约束、签发时间和到期时间。已存在的票据路径不会被覆盖。
 
-## 第三步：认领票据并执行一次请求
+## 第三步：执行只读就绪审计
+
+```powershell
+python examples/runtime/openai_responses_live_smoke_audit.py readiness `
+  --repository-root . `
+  --model <PINNED_MODEL_SNAPSHOT> `
+  --max-output-tokens 2048 `
+  --timeout-seconds 60 `
+  --authorization-ticket "$env:TEMP\geotask-openai-live-authorization.json"
+```
+
+只有结果同时满足以下条件才允许进入真实执行：
+
+```text
+valid = true
+release_gate_state = live_execution_ready
+provider_calls_allowed = 0
+live_request_executed = false
+provider_modules_imported = false
+authorization_claim_created = false
+credential_value_exposed = false
+```
+
+审计器会一次性列出确认声明、服务器凭据存在性、替代端点、SDK日志、OpenAI SDK、GeoTask Core、Provider-neutral Adapter、OpenAI Responses Adapter、固定请求摘要以及票据有效性等全部检查项。审计只读，不会创建`.claimed`文件；任何检查失败都返回`readiness_blocked`。
+
+## 第四步：认领票据并执行一次请求
 
 ```powershell
 python examples/runtime/openai_responses_live_smoke.py `
@@ -105,6 +132,30 @@ Remove-Item Env:GEOTASK_OPENAI_LIVE_SMOKE_ACK
 ```
 
 执行前会原子创建`geotask-openai-live-authorization.json.claimed`。客户端或Adapter初始化失败时不认领票据；进入Runtime提交阶段后，无论成功、失败还是结果未知，票据都不可复用。认领文件会更新为脱敏最终状态。脚本最多允许一次Provider调用，且SDK重试数为0。
+
+## 第五步：校验脱敏证据包
+
+```powershell
+python examples/runtime/openai_responses_live_smoke_audit.py verify-evidence `
+  --repository-root . `
+  --authorization-ticket "$env:TEMP\geotask-openai-live-authorization.json" `
+  --report "$env:TEMP\geotask-openai-live-smoke.json"
+```
+
+默认读取与票据同目录、同文件名追加`.claimed`的认领记录。校验器要求三份文件互不相同且全部位于仓库外，并交叉验证：
+
+```text
+授权ID一致
+认领记录绑定原票据SHA-256
+认领时间位于票据有效期内
+服务端request-id与response-id真实存在
+Runtime状态为completed
+唯一输出为geotask.execution-result
+预算、超时、零重试、无工具、store=false约束一致
+三份文件均为严格JSON且使用私有权限
+```
+
+校验成功输出`release_gate_state=live_smoke_verified`、三份文件SHA-256及一个组合证据摘要；任何不一致均输出`evidence_invalid`，不得人工覆盖。
 
 ## 成功判据
 
@@ -132,11 +183,14 @@ output_artifact_ids = [geotask.execution-result]
 ```text
 authorization_pending   默认预检通过，尚未签发票据
 live_execution_pending  一次性票据已签发，尚未执行
-preflight_blocked       本地约束、确认声明、凭据环境或票据检查未通过
+readiness_blocked       只读就绪审计至少一项未通过
+live_execution_ready    所有执行前条件满足，但尚未调用Provider
+preflight_blocked       执行器本地约束、确认声明、凭据环境或票据检查未通过
 live_execution_blocked  客户端或Adapter初始化失败，未进入提交阶段
 live_smoke_indeterminate 已认领票据，但提交未返回结构化结果
 live_smoke_failed       已返回结构化结果，但未满足成功判据
-live_smoke_verified     单次线上冒烟全部判据通过
+evidence_invalid        三份脱敏证据缺失、冲突、被篡改或位于仓库内
+live_smoke_verified     单次线上冒烟与脱敏证据包全部判据通过
 ```
 
 只有`live_smoke_verified`允许关闭“线上兼容性待验证”门禁；它仍不代表生产就绪。

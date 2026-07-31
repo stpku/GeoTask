@@ -104,6 +104,18 @@ Never:
 
 10. Use the final decision only after the affected assertion has been rerun and the control evaluation no longer blocks the output.
 
+11. Route nonlocal execution, external evidence, or production actions only through an explicitly inspected external Runtime:
+
+    ```bash
+    geotask runtime inspect --profile --format json
+    geotask runtime inspect runtime-descriptor.json --format json
+    geotask artifact validate geotask.runtime-descriptor runtime-descriptor.json --format json
+    geotask artifact validate geotask.runtime-request runtime-request.json --format json
+    geotask runtime check runtime-descriptor.json runtime-request.json --format json
+    ```
+
+    Read the Runtime Descriptor before constructing a Request. Do not assume that a standard operation ID is supported. Treat `runtime check` as an offline compatibility preflight only: it must report `submitted=false` and `side_effects_executed=false`, and it does not prove reachability, authorization, or trustworthiness. After submission, require the Response to remain bound to the inspected Descriptor and submitted Request: IDs must match, completed outputs must exactly match the declared output contract, a synchronous operation cannot return `accepted`, and side-effect or audit claims must not contradict the Descriptor. The public `geotask.reference.fail-closed` Runtime is not production ready and supports only read-only Artifact validation. Never place passwords, bearer tokens, private keys, or connector credentials in `authorization_ref`, metadata, diagnostics, or audit references. A `rejected`, `blocked`, or `failed` Runtime Response may be a structurally valid Artifact; inspect its state and diagnostics instead of treating Artifact validity as operation success.
+
 ## Status Handling
 
 - `verified`: use the computed value subject to control gates.

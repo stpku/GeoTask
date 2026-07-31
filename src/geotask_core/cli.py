@@ -15,6 +15,9 @@ Usage:
     geotask agent prepare <generated.yaml> [--format text|json]
     geotask agent retry <blocked-report.json> <revised.yaml> [--format text|json]
     geotask agent recover <task.yaml> --evidence <state.yaml> [--format text|json]
+    geotask runtime inspect [runtime-descriptor.json] [--profile] [--format text|json]
+    geotask runtime check <runtime-descriptor.json> <runtime-request.json> [--format text|json]
+    geotask runtime mock <runtime-request.json> [--format text|json]
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
     python -m geotask_core.cli normalize <file.txt> [--geotask <file.yaml>]
@@ -72,6 +75,16 @@ from geotask_core.v1.agent_generation import (
     AgentGenerationError,
     prepare_generated_document,
     retry_generated_document,
+)
+from geotask_core.v1.runtime_interface import (
+    FailClosedMockRuntime,
+    RuntimeInterfaceFormatError,
+    load_runtime_descriptor,
+    load_runtime_request,
+    reference_runtime_descriptor,
+    runtime_interface_profile_payload,
+    submit_runtime_request,
+    validate_runtime_request_contract,
 )
 
 
@@ -1833,6 +1846,293 @@ def cmd_agent(args: list[str]):
         sys.exit(1)
 
 
+def _print_runtime_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask runtime inspect [runtime-descriptor.json] "
+        "[--profile] [--format text|json]",
+        file=out,
+    )
+    print(
+        "       geotask runtime check <runtime-descriptor.json> "
+        "<runtime-request.json> [--format text|json]",
+        file=out,
+    )
+    print(
+        "       geotask runtime mock <runtime-request.json> "
+        "[--format text|json] [--output <runtime-response.json>|-] [--compact]",
+        file=out,
+    )
+    print(
+        "The public reference Runtime performs read-only Artifact validation only. "
+        "It never calls a model, resolves external evidence, or executes actions.",
+        file=out,
+    )
+
+
+def _parse_runtime_inspect_args(args: list[str]) -> dict[str, object]:
+    parsed: dict[str, object] = {
+        "format": "text",
+        "profile": False,
+        "descriptor_path": None,
+    }
+    seen_format = False
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_runtime_usage()
+            return {"help": True}
+        if arg == "--profile":
+            if parsed["profile"]:
+                raise ValueError("--profile may be provided only once")
+            parsed["profile"] = True
+            index += 1
+            continue
+        if arg == "--format":
+            if seen_format:
+                raise ValueError("--format may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--format requires a value")
+            seen_format = True
+            parsed["format"] = args[index + 1]
+            index += 2
+            continue
+        if not arg.startswith("-"):
+            if parsed["descriptor_path"] is not None:
+                raise ValueError("runtime inspect accepts at most one descriptor file")
+            parsed["descriptor_path"] = arg
+            index += 1
+            continue
+        raise ValueError(f"unknown runtime inspect option: {arg}")
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("runtime inspect --format must be text or json")
+    if parsed["profile"] and parsed["descriptor_path"] is not None:
+        raise ValueError("runtime inspect --profile cannot be combined with a descriptor file")
+    return parsed
+
+
+def _parse_runtime_check_args(args: list[str]) -> dict[str, object]:
+    if len(args) < 2 or args[0].startswith("-") or args[1].startswith("-"):
+        raise ValueError(
+            "runtime check requires a Runtime Descriptor JSON file and Runtime Request JSON file"
+        )
+    parsed: dict[str, object] = {
+        "descriptor_path": args[0],
+        "request_path": args[1],
+        "format": "text",
+    }
+    seen_format = False
+    index = 2
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_runtime_usage()
+            return {"help": True}
+        if arg == "--format":
+            if seen_format:
+                raise ValueError("--format may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--format requires a value")
+            seen_format = True
+            parsed["format"] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown runtime check option: {arg}")
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("runtime check --format must be text or json")
+    return parsed
+
+
+def _parse_runtime_mock_args(args: list[str]) -> dict[str, object]:
+    if not args or args[0].startswith("-"):
+        raise ValueError("runtime mock requires a Runtime Request JSON file")
+    parsed: dict[str, object] = {
+        "request_path": args[0],
+        "format": "json",
+        "output_path": None,
+        "compact": False,
+    }
+    seen: set[str] = set()
+    index = 1
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_runtime_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in {"--format", "--output"}:
+            if arg in seen:
+                raise ValueError(f"{arg} may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a value")
+            seen.add(arg)
+            parsed["format" if arg == "--format" else "output_path"] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown runtime mock option: {arg}")
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("runtime mock --format must be text or json")
+    if parsed["compact"] and parsed["format"] != "json":
+        raise ValueError("--compact is supported only with --format json")
+    if parsed["format"] == "text" and parsed["output_path"] is not None:
+        raise ValueError("--output is supported only with --format json")
+    return parsed
+
+
+def _cmd_runtime_inspect(args: list[str]):
+    parsed = _parse_runtime_inspect_args(args)
+    if parsed.get("help"):
+        return None
+    if parsed["profile"]:
+        payload = runtime_interface_profile_payload()
+        body = payload["runtime_interface_profile"]
+        if parsed["format"] == "text":
+            print(
+                f"GeoTask Runtime Interface Profile "
+                f"{body['profile_id']}/{body['profile_version']}"
+            )
+            print(f"  Reference Runtime: {body['reference_runtime_id']}")
+            print("  Standard operations:")
+            for operation_id in body["standard_operation_ids"]:
+                print(f"    {operation_id}")
+            print("  Private implementation excluded: true")
+        else:
+            sys.stdout.write(_render_json(payload, compact=False))
+        return payload
+
+    descriptor_path = parsed["descriptor_path"]
+    if descriptor_path is None:
+        payload = reference_runtime_descriptor().to_dict()
+    else:
+        payload = load_runtime_descriptor(
+            _load_json_mapping(str(descriptor_path), "Runtime Descriptor")
+        ).to_dict()
+    body = payload["runtime_descriptor"]
+    if parsed["format"] == "json":
+        sys.stdout.write(_render_json(payload, compact=False))
+    else:
+        print(f"Runtime {body['runtime_id']} v{body['runtime_version']}")
+        print(f"  Interface: {body['interface_version']}")
+        print(f"  Kind: {body['implementation_kind']}")
+        print(f"  Production ready: {str(body['production_ready']).lower()}")
+        print(
+            "  External side effects allowed: "
+            f"{str(body['external_side_effects_allowed']).lower()}"
+        )
+        print("  Operations:")
+        for operation in body["operations"]:
+            print(f"    {operation['operation_id']} ({operation['side_effect']})")
+    return payload
+
+
+def _cmd_runtime_check(args: list[str]):
+    parsed = _parse_runtime_check_args(args)
+    if parsed.get("help"):
+        return None
+    descriptor_path = str(parsed["descriptor_path"])
+    request_path = str(parsed["request_path"])
+    descriptor = load_runtime_descriptor(
+        _load_json_mapping(descriptor_path, "Runtime Descriptor")
+    )
+    request = load_runtime_request(_load_json_mapping(request_path, "Runtime Request"))
+    operation = validate_runtime_request_contract(descriptor, request)
+    payload = {
+        "runtime_contract_check": {
+            "valid": True,
+            "runtime_id": descriptor.runtime_id,
+            "runtime_version": descriptor.runtime_version,
+            "request_id": request.request_id,
+            "operation_id": operation.operation_id,
+            "input_artifact_ids": [
+                artifact.artifact_id for artifact in request.input_artifacts
+            ],
+            "expected_output_artifact_ids": list(
+                request.expected_output_artifact_ids
+            ),
+            "requires_authorization": operation.requires_authorization,
+            "authorization_supplied": request.authorization_ref is not None,
+            "side_effect": operation.side_effect,
+            "submitted": False,
+            "side_effects_executed": False,
+        }
+    }
+    if parsed["format"] == "json":
+        sys.stdout.write(_render_json(payload, compact=False))
+    else:
+        body = payload["runtime_contract_check"]
+        print(f"Runtime contract valid: {body['request_id']}")
+        print(f"  Runtime: {body['runtime_id']} v{body['runtime_version']}")
+        print(f"  Operation: {body['operation_id']}")
+        print(f"  Side effect: {body['side_effect']}")
+        print("  Submitted: false")
+        print("  Side effects executed: false")
+    return payload
+
+
+def _cmd_runtime_mock(args: list[str]):
+    parsed = _parse_runtime_mock_args(args)
+    if parsed.get("help"):
+        return None
+    request_path = str(parsed["request_path"])
+    request_payload = _load_json_mapping(request_path, "Runtime Request")
+    response = submit_runtime_request(FailClosedMockRuntime(), request_payload)
+    payload = response.to_dict()
+    body = payload["runtime_response"]
+    if parsed["format"] == "json":
+        _write_or_print_output(
+            _render_json(payload, compact=bool(parsed["compact"])),
+            output_path=parsed["output_path"],
+            input_paths=[Path(request_path)],
+        )
+    else:
+        print(f"Runtime request {body['request_id']}: {body['state']}")
+        print(f"  Runtime: {body['runtime_id']}")
+        print(f"  Operation: {body['operation_id']}")
+        print(f"  Output Artifacts: {len(body['output_artifacts'])}")
+        print(
+            "  Side effects executed: "
+            f"{str(body['side_effects_executed']).lower()}"
+        )
+        for diagnostic in body["diagnostics"]:
+            print(
+                f"  {diagnostic['severity']} {diagnostic['code']}: "
+                f"{diagnostic['message']}"
+            )
+    if body["state"] in {"blocked", "rejected", "failed"}:
+        sys.exit(2)
+    return payload
+
+
+def cmd_runtime(args: list[str]):
+    """Inspect the public Runtime SDK or invoke the fail-closed reference adapter."""
+
+    try:
+        if not args or args[0] in ("--help", "-h"):
+            _print_runtime_usage()
+            return None
+        if args[0] == "inspect":
+            return _cmd_runtime_inspect(args[1:])
+        if args[0] == "check":
+            return _cmd_runtime_check(args[1:])
+        if args[0] == "mock":
+            return _cmd_runtime_mock(args[1:])
+        raise ValueError(
+            f"unknown runtime command {args[0]!r}; "
+            "available commands: inspect, check, mock"
+        )
+    except SystemExit:
+        raise
+    except (RuntimeInterfaceFormatError, ValueError, TypeError, OSError) as exc:
+        print(f"runtime_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
 def print_result(result: dict):
     """Print a result dict as YAML."""
     import yaml
@@ -1858,12 +2158,12 @@ def main():
 
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -1901,6 +2201,11 @@ def main():
             f"  {cmd_name} agent recover examples/core/evidence_request_plan.yaml "
             "--evidence examples/core/evidence_request_verified_state.yaml"
         )
+        print(f"  {cmd_name} runtime inspect --profile --format json")
+        print(
+            f"  {cmd_name} runtime mock "
+            "examples/core/runtime_validate_artifact_request.json"
+        )
         print()
         print(f"  python -m geotask_core.cli validate examples/geotask_core_lite.yaml")
         print(f"  python -m geotask_core.cli run examples/geotask_core_lite.yaml")
@@ -1922,6 +2227,10 @@ def main():
 
     if command == "agent":
         cmd_agent(sys.argv[2:])
+        return
+
+    if command == "runtime":
+        cmd_runtime(sys.argv[2:])
         return
 
     if command == "result":
@@ -1975,7 +2284,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, normalize, eval, version")
+        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

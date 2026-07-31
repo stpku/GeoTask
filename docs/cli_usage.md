@@ -162,16 +162,17 @@ python -m geotask_core.cli inspect examples
 
 - `inspect operators` lists public-safe Core operator registry metadata.
 - `inspect schema` summarizes the minimal GeoTask document structure.
-- `inspect schemas` lists the public Artifact Registry: task document,
-  execution-result, control-evaluation, and Artifact Validation Report contracts
-  with Schema IDs, versions, repository paths, generation guidance, validation
-  commands, and execution boundaries. YAML is the default; `--format json` emits
-  clean machine-readable JSON. Supplying one stable Artifact ID returns a
-  one-entry registry envelope; unknown IDs fail explicitly. `--verify` appends a
-  sibling `schema_bundle_verification` report to the inspection output. With no
-  Artifact ID it verifies the registry Schema and all four artifact Schemas; with
-  an Artifact ID it verifies only that artifact's Schema. Without `--verify`, the
-  original Artifact Registry v1.0 payload remains structurally compatible.
+- `inspect schemas` lists the public Artifact Registry: the GeoTask document,
+  execution result, control evaluation, four Agent reports, three Runtime
+  interface messages, and Artifact Validation Report. Each entry includes Schema
+  identity, repository paths, generation guidance, validation commands, and
+  execution boundaries. YAML is the default; `--format json` emits clean
+  machine-readable JSON. Supplying one stable Artifact ID returns a one-entry
+  registry envelope; unknown IDs fail explicitly. `--verify` appends a sibling
+  `schema_bundle_verification` report. With no Artifact ID it verifies the Registry
+  Schema and all eleven Artifact Schemas; with an Artifact ID it verifies only that
+  Artifact's Schema. Without `--verify`, the Artifact Registry v1.0 envelope remains
+  structurally compatible.
 - `schema export <artifact-id>` writes the installed JSON Schema for one
   registered artifact. Output is formatted JSON on stdout by default;
   `--output <file>` saves it without status text, and `--compact` emits one-line
@@ -180,7 +181,7 @@ python -m geotask_core.cli inspect examples
   generated manifest before returning JSON.
 - `schema verify` checks the versioned Bundle Manifest, expected filenames,
   byte sizes, SHA-256 digests, JSON parsing, and published Schema `$id` values.
-  With no Artifact ID it checks all five bundled Schemas; supplying one stable
+  With no Artifact ID it checks all twelve bundled Schemas; supplying one stable
   Artifact ID checks only that artifact. Text is the default and `--format json`
   emits a machine-readable report with stable non-zero failure behavior.
 - `inspect examples` lists repository examples and marks public-safe Core
@@ -354,6 +355,79 @@ The output is the registered `geotask.agent-evidence-recovery` Artifact backed b
 `geotask-agent-integration-v0.1.schema.json`. Validating that file is read-only and
 does not reacquire evidence or repeat recovery. A structurally valid file may still
 record `state=blocked`.
+
+## Runtime Interface
+
+Inspect the public fail-closed reference Runtime or the machine-readable interface
+profile:
+
+```bash
+geotask runtime inspect
+geotask runtime inspect --format json > runtime-descriptor.json
+geotask runtime inspect --profile --format json > runtime-profile.json
+geotask runtime inspect \
+  examples/core/runtime_reference_descriptor.json \
+  --format json
+```
+
+Validate the Runtime Descriptor and example Request without connecting to a
+Runtime, then check that the Request matches the Descriptor contract:
+
+```bash
+geotask artifact validate \
+  geotask.runtime-descriptor \
+  examples/core/runtime_reference_descriptor.json \
+  --format json
+
+geotask artifact validate \
+  geotask.runtime-request \
+  examples/core/runtime_validate_artifact_request.json \
+  --format json
+
+geotask runtime check \
+  examples/core/runtime_reference_descriptor.json \
+  examples/core/runtime_validate_artifact_request.json \
+  --format json
+```
+
+`runtime check` reports `submitted=false` and `side_effects_executed=false`. It
+compares Runtime ID, operation, input Artifact inventory, expected outputs, and
+authorization requirements without invoking the adapter.
+
+Submit the example to the public reference adapter:
+
+```bash
+geotask runtime mock \
+  examples/core/runtime_validate_artifact_request.json \
+  --output runtime-response.json \
+  --compact
+
+geotask artifact validate \
+  geotask.runtime-response runtime-response.json --format json
+```
+
+The reference Runtime performs only the existing read-only Artifact validation
+operation. It never calls a model, resolves external evidence, accesses connector
+credentials, or executes a production action. Unsupported operations return a
+structured `rejected` response with `side_effects_executed=false` and CLI exit code
+`2`. Malformed messages and invalid CLI arguments return exit code `1`.
+
+After any adapter returns, `submit_runtime_request()` applies the three-way exchange
+contract across the inspected Descriptor, submitted Request, and returned Response.
+It rejects missing or unexpected completed outputs, asynchronous acceptance from a
+synchronous operation, side-effect claims that contradict the Descriptor, audit
+references from a Runtime that declared no audit support, and any non-rejected
+response to a Request that violated the advertised operation contract.
+
+The three registered Runtime Artifacts are:
+
+- `geotask.runtime-descriptor`;
+- `geotask.runtime-request`;
+- `geotask.runtime-response`.
+
+Validating these files never invokes a Runtime or repeats an external side effect.
+The full contract is defined in
+[`geotask-runtime-interface-profile-v0.1.md`](spec/geotask-runtime-interface-profile-v0.1.md).
 
 ## Normalize And Eval
 

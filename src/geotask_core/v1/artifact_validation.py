@@ -29,6 +29,12 @@ from geotask_core.v1.artifact_registry import (
     ArtifactDescriptor,
     get_artifact_descriptor,
 )
+from geotask_core.v1.runtime_interface import (
+    RuntimeInterfaceFormatError,
+    load_runtime_descriptor,
+    load_runtime_request,
+    load_runtime_response,
+)
 from geotask_core.v1.schema_bundle import verify_schema_bundle
 from geotask_core.v1.serialized_validation import (
     CONTROL_EVALUATION_VALIDATION_CONTRACT,
@@ -547,6 +553,76 @@ def _validate_agent_report_payload(
     )
 
 
+def _validate_runtime_artifact_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    loaders = {
+        "geotask.runtime-descriptor": load_runtime_descriptor,
+        "geotask.runtime-request": load_runtime_request,
+        "geotask.runtime-response": load_runtime_response,
+    }
+    loader = loaders[descriptor.artifact_id]
+    try:
+        loaded = loader(payload)
+    except RuntimeInterfaceFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_runtime_artifact",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Regenerate or revise the Runtime artifact according to the "
+                        "GeoTask Runtime Interface Profile v0.1."
+                    ),
+                ),
+            ),
+        )
+
+    if descriptor.artifact_id == "geotask.runtime-descriptor":
+        summary = {
+            "runtime_id": loaded.runtime_id,
+            "runtime_version": loaded.runtime_version,
+            "operation_count": len(loaded.operations),
+            "production_ready": loaded.production_ready,
+            "external_side_effects_allowed": loaded.external_side_effects_allowed,
+        }
+    elif descriptor.artifact_id == "geotask.runtime-request":
+        summary = {
+            "request_id": loaded.request_id,
+            "runtime_id": loaded.runtime_id,
+            "operation_id": loaded.operation_id,
+            "input_artifact_count": len(loaded.input_artifacts),
+            "expected_output_count": len(loaded.expected_output_artifact_ids),
+            "authorization_present": loaded.authorization_ref is not None,
+        }
+    else:
+        summary = {
+            "request_id": loaded.request_id,
+            "runtime_id": loaded.runtime_id,
+            "operation_id": loaded.operation_id,
+            "response_state": loaded.state,
+            "output_artifact_count": len(loaded.output_artifacts),
+            "diagnostic_count": len(loaded.diagnostics),
+            "side_effects_executed": loaded.side_effects_executed,
+            "retryable": loaded.retryable,
+        }
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary=summary,
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -576,6 +652,12 @@ def _validate_verified_payload(
         "geotask.agent-evidence-recovery",
     }:
         return _validate_agent_report_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id in {
+        "geotask.runtime-descriptor",
+        "geotask.runtime-request",
+        "geotask.runtime-response",
+    }:
+        return _validate_runtime_artifact_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.artifact-validation-report":
         return _validate_artifact_validation_report_payload(
             descriptor,

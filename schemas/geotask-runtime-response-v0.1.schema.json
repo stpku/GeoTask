@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-runtime-response-v0.1.schema.json",
+  "title": "GeoTask Runtime Response v0.1",
+  "description": "Versioned response envelope returned by a GeoTask RuntimeAdapter.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["runtime_response"],
+  "properties": {
+    "runtime_response": {
+      "$ref": "#/$defs/response"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifactId": {
+      "type": "string",
+      "pattern": "^geotask\\.[a-z0-9][a-z0-9.-]*$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "payload"],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/artifactId"
+        },
+        "payload": {
+          "type": "object"
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "path", "message", "severity", "suggested_fix"],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "path": {
+          "type": "string"
+        },
+        "message": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "severity": {
+          "enum": ["error", "warning"]
+        },
+        "suggested_fix": {
+          "type": "string"
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface_version",
+        "request_id",
+        "runtime_id",
+        "operation_id",
+        "state",
+        "output_artifacts",
+        "diagnostics",
+        "audit_ref",
+        "side_effects_executed",
+        "retryable",
+        "next_poll_after_ms"
+      ],
+      "properties": {
+        "interface_version": {
+          "const": "0.1"
+        },
+        "request_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "runtime_id": {
+          "type": "string",
+          "pattern": "^geotask\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "operation_id": {
+          "type": "string",
+          "pattern": "^geotask\\.runtime\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "state": {
+          "enum": ["accepted", "completed", "blocked", "rejected", "failed"]
+        },
+        "output_artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic"
+          }
+        },
+        "audit_ref": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/nonEmptyString"
+            }
+          ]
+        },
+        "side_effects_executed": {
+          "type": "boolean"
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "next_poll_after_ms": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 1
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "accepted"
+              }
+            },
+            "required": ["state"]
+          },
+          "then": {
+            "properties": {
+              "output_artifacts": {
+                "maxItems": 0
+              },
+              "side_effects_executed": {
+                "const": false
+              },
+              "next_poll_after_ms": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "diagnostics": {
+                "items": {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/diagnostic"
+                    },
+                    {
+                      "properties": {
+                        "severity": {
+                          "const": "warning"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "completed"
+              }
+            },
+            "required": ["state"]
+          },
+          "then": {
+            "properties": {
+              "retryable": {
+                "const": false
+              },
+              "next_poll_after_ms": {
+                "type": "null"
+              },
+              "diagnostics": {
+                "items": {
+                  "allOf": [
+                    {
+                      "$ref": "#/$defs/diagnostic"
+                    },
+                    {
+                      "properties": {
+                        "severity": {
+                          "const": "warning"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": ["blocked", "rejected", "failed"]
+              }
+            },
+            "required": ["state"]
+          },
+          "then": {
+            "properties": {
+              "next_poll_after_ms": {
+                "type": "null"
+              },
+              "diagnostics": {
+                "contains": {
+                  "properties": {
+                    "severity": {
+                      "const": "error"
+                    }
+                  },
+                  "required": ["severity"]
+                },
+                "minContains": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": ["blocked", "rejected"]
+              }
+            },
+            "required": ["state"]
+          },
+          "then": {
+            "properties": {
+              "side_effects_executed": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "side_effects_executed": {
+                "const": true
+              }
+            },
+            "required": ["side_effects_executed"]
+          },
+          "then": {
+            "properties": {
+              "audit_ref": {
+                "$ref": "#/$defs/nonEmptyString"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

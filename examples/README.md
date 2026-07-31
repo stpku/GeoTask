@@ -26,6 +26,11 @@ patent-sensitive workflows.
   converted into a structured evidence request with blocked outputs and a resume condition.
 - `examples/core/evidence_request_verified_state.yaml`: fictional complete evidence used by
   `geotask agent recover` to satisfy GT08's resume condition and rerun the temporal assertion.
+- `examples/core/runtime_reference_descriptor.json`: the public fail-closed Runtime capability
+  descriptor used for offline discovery and request-contract checks.
+- `examples/core/runtime_validate_artifact_request.json`: a public Runtime Request that asks the
+  fail-closed reference adapter to validate one embedded GeoTask Document without model calls,
+  external credentials, or side effects.
 - `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
   incompatible results trigger a structured conflict review task.
 - `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes

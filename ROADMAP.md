@@ -35,9 +35,11 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 保持unknown、blocked和`next_action`的失败关闭语义；
 - 增加Agent生成路径与确定性验证路径的联合测试。
 
-### v0.4：Runtime接口、模型适配与对象扩展
+### v0.4：Runtime接口、模型适配与对象扩展（进行中）
 
-- 发布稳定的Runtime接口约定；
+- 发布Runtime Interface Profile v0.1，定义Descriptor、Request、Response、输入基数、授权、幂等、审计及副作用边界；
+- 提供Runtime Descriptor离线发现、Request无副作用预检和Descriptor/Request/Response三方交换校验；
+- 提供仅执行只读Artifact验证的失败关闭参考Runtime，明确不调用模型、不解析外部证据、不执行生产动作；
 - 提供至少两种模型适配参考实现；
 - 增加polygon、multi-polyline等通用空间对象与可组合确定性算子；
 - 明确CRS、单位和边界语义的跨任务约束；
@@ -90,9 +92,11 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - preserve fail-closed semantics for unknown, blocked outputs, and `next_action`;
 - add joint tests for Agent generation paths and deterministic verification paths.
 
-### v0.4: Runtime Interfaces, Model Adapters, and Object Extensions
+### v0.4: Runtime Interfaces, Model Adapters, and Object Extensions (in progress)
 
-- Publish stable Runtime interface contracts;
+- Publish Runtime Interface Profile v0.1 for Descriptor, Request, Response, input cardinality, authorization, idempotency, audit, and side-effect boundaries;
+- provide offline Runtime Descriptor discovery, side-effect-free Request preflight, and three-way Descriptor/Request/Response exchange validation;
+- provide a fail-closed reference Runtime that performs only read-only Artifact validation and never calls a model, resolves external evidence, or executes production actions;
 - provide at least two reference model adapters;
 - add common spatial objects such as polygon and multi-polyline plus composable deterministic operators;
 - define CRS, units, and boundary semantics across tasks;

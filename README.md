@@ -31,6 +31,7 @@ GeoTask把自然语言中的空间、时间、证据、资源和行动约束转�
 - [GT01—GT20中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)
 - [当前实现语言与执行规范v1.0](docs/spec/geotask-language-spec-v1.0.md)
 - [Agent集成Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
+- [Runtime接口Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
 - [v0.3.0 Agent集成版发布说明](docs/release_v0_3_0.md)
 - [v0.2.0制品契约版发布说明](docs/release_v0_2_0.md)
@@ -211,6 +212,9 @@ geotask agent prepare <generated.yaml> --repaired-output <prepared.yaml>
 geotask agent retry <blocked-report.json> <revised.yaml> --verification-output <verification.json> --prepared-output <prepared.yaml>
 geotask agent recover <task.yaml> --evidence <verified-state.yaml> --output <recovery-report.json>
 geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json> --format json
+geotask runtime inspect examples/core/runtime_reference_descriptor.json --format json
+geotask runtime check examples/core/runtime_reference_descriptor.json examples/core/runtime_validate_artifact_request.json --format json
+geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json
 ```
 
 ## 版本说明
@@ -221,6 +225,7 @@ geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json>
 | GeoTask文档Schema | `1.0` | YAML/JSON任务格式版本 |
 | 语言与执行规范 | `1.0` | 当前公共实现规范 |
 | Agent Integration Profile | `0.1` | 模型无关工具契约、补证据恢复与恢复报告Artifact |
+| Runtime Interface Profile | `0.1` | Core与外部Runtime之间的Descriptor、Request、Response契约 |
 | 白皮书 | `0.1` | 公开概念草案 |
 
 ## 文档

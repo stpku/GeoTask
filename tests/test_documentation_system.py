@@ -36,6 +36,9 @@ CONTROL_EVALUATION_SCHEMA = ROOT / "schemas" / "geotask-control-evaluation-v1.0.
 AGENT_INTEGRATION_SPEC = (
     ROOT / "docs" / "spec" / "geotask-agent-integration-profile-v0.1.md"
 )
+RUNTIME_INTERFACE_SPEC = (
+    ROOT / "docs" / "spec" / "geotask-runtime-interface-profile-v0.1.md"
+)
 AGENT_SKILL = ROOT / "skills" / "geotask-core" / "SKILL.md"
 TARGET_SPEC_STATUS = ROOT / "docs" / "spec" / "target-specification-status.md"
 QUICKSTART_EN = ROOT / "docs" / "tutorials" / "quickstart.md"
@@ -74,6 +77,7 @@ DOCUMENTS = (
     CONTROL_EVALUATION_SPEC,
     CONTROL_EVALUATION_SCHEMA,
     AGENT_INTEGRATION_SPEC,
+    RUNTIME_INTERFACE_SPEC,
     AGENT_SKILL,
     TARGET_SPEC_STATUS,
     QUICKSTART_EN,
@@ -217,6 +221,7 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "spec/geotask-control-expression-language-v1.0.md",
         "spec/geotask-control-evaluation-v1.0.md",
         "spec/geotask-agent-integration-profile-v0.1.md",
+        "spec/geotask-runtime-interface-profile-v0.1.md",
         "../skills/geotask-core/SKILL.md",
         "tutorials/quickstart.md",
         "tutorials/quickstart.zh-CN.md",
@@ -331,8 +336,11 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.agent-revision-verification",
         "geotask.agent-revision-retry",
         "geotask.agent-evidence-recovery",
-        "exactly eight artifacts",
-        "all nine public JSON Schemas",
+        "geotask.runtime-descriptor",
+        "geotask.runtime-request",
+        "geotask.runtime-response",
+        "exactly eleven artifacts",
+        "all twelve public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text
@@ -458,6 +466,11 @@ def test_agent_integration_profile_and_skill_define_safe_recovery() -> None:
         "artifact validate geotask.agent-generation-preparation",
         "artifact validate geotask.agent-revision-retry",
         "geotask agent recover",
+        "geotask runtime inspect runtime-descriptor.json",
+        "geotask runtime check runtime-descriptor.json runtime-request.json",
+        "submitted=false",
+        "side_effects_executed=false",
+        "completed outputs must exactly match",
         "Do not answer `full_conflict=true`",
         "next_action_executed = false",
         "model_guess_used = false",
@@ -466,6 +479,43 @@ def test_agent_integration_profile_and_skill_define_safe_recovery() -> None:
 
     assert "execute production actions" not in skill.lower()
     assert "Public Core examples must use fictional evidence" in skill
+
+
+def test_runtime_interface_profile_defines_public_fail_closed_boundary() -> None:
+    specification = RUNTIME_INTERFACE_SPEC.read_text(encoding="utf-8")
+
+    for fragment in (
+        "GeoTask Runtime Interface Profile v0.1",
+        "geotask.runtime-interface",
+        "RuntimeAdapter",
+        "geotask.runtime-descriptor",
+        "geotask.runtime-request",
+        "geotask.runtime-response",
+        "geotask.runtime.validate-artifact",
+        "geotask.runtime.execute-nonlocal",
+        "geotask.runtime.resolve-evidence",
+        "geotask.runtime.execute-action",
+        "geotask.reference.fail-closed",
+        "geotask runtime inspect <runtime-descriptor.json>",
+        "geotask runtime check",
+        "submitted=false",
+        "min_input_artifacts",
+        "max_input_artifacts",
+        "validate_runtime_response_contract",
+        "structurally valid but contract-inconsistent",
+        "side_effects_executed=false",
+        "authorization_ref",
+        "idempotency_key",
+        "audit_ref",
+        "never contain a password",
+        "not a production Runtime",
+    ):
+        assert fragment in specification
+
+    assert "model/provider routing" in specification
+    assert "token and cost governance" in specification
+    assert "outside Core" in specification
+    assert "src/geotask_runtime" not in specification
 
 
 def test_legacy_compatibility_docs_match_distributed_package() -> None:
@@ -507,6 +557,10 @@ def test_root_readmes_match_current_capabilities() -> None:
             assert f"`{object_type}`" in text
         assert "geotask agent prepare" in text
         assert "geotask agent retry" in text
+        assert "geotask runtime inspect" in text
+        assert "geotask runtime check" in text
+        assert "geotask runtime mock" in text
+        assert "Runtime Interface Profile" in text or "Runtime接口Profile" in text
 
 
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
@@ -594,20 +648,28 @@ def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
         "docs/spec/geotask-artifact-registry-v1.0.md",
         "docs/spec/geotask-versioned-payload-validation-v1.0.md",
         "docs/spec/geotask-agent-integration-profile-v0.1.md",
+        "docs/spec/geotask-runtime-interface-profile-v0.1.md",
         "skills/geotask-core/SKILL.md",
         "src/geotask_core/v1/agent_generation.py",
         "src/geotask_core/v1/agent_artifacts.py",
+        "src/geotask_core/v1/runtime_interface.py",
         "examples/core/agent_generated_distance_draft.yaml",
         "examples/core/agent_generated_distance_blocked.yaml",
         "examples/core/agent_generated_distance_revised.yaml",
+        "examples/core/runtime_reference_descriptor.json",
+        "examples/core/runtime_validate_artifact_request.json",
         "tests/test_agent_generated_document_preparation.py",
         "tests/test_agent_generated_document_revision.py",
         "tests/test_agent_artifacts.py",
         "tests/test_agent_evidence_recovery_artifact.py",
+        "tests/test_runtime_interface.py",
         "schemas/geotask-agent-generation-preparation-v0.1.schema.json",
         "schemas/geotask-agent-integration-v0.1.schema.json",
         "schemas/geotask-agent-revision-verification-v0.1.schema.json",
         "schemas/geotask-agent-revision-retry-v0.1.schema.json",
+        "schemas/geotask-runtime-descriptor-v0.1.schema.json",
+        "schemas/geotask-runtime-request-v0.1.schema.json",
+        "schemas/geotask-runtime-response-v0.1.schema.json",
         "schemas/geotask-artifact-registry-v1.0.schema.json",
         "schemas/geotask-result-v1.0.schema.json",
         "CONTRIBUTING.zh-CN.md",

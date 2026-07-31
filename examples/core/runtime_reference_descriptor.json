@@ -1,0 +1,34 @@
+{
+  "runtime_descriptor": {
+    "interface_version": "0.1",
+    "runtime_id": "geotask.reference.fail-closed",
+    "runtime_version": "0.1",
+    "title": "GeoTask Fail-Closed Reference Runtime",
+    "implementation_kind": "mock",
+    "production_ready": false,
+    "capabilities": [
+      "artifact_validation",
+      "deterministic_fail_closed"
+    ],
+    "operations": [
+      {
+        "operation_id": "geotask.runtime.validate-artifact",
+        "title": "Validate a registered GeoTask Artifact",
+        "description": "Run the public Core's read-only Registry-driven Artifact validation and return an Artifact Validation Report.",
+        "input_artifact_ids": [],
+        "accepts_any_registered_artifact": true,
+        "min_input_artifacts": 1,
+        "max_input_artifacts": 1,
+        "output_artifact_ids": [
+          "geotask.artifact-validation-report"
+        ],
+        "side_effect": "none",
+        "requires_authorization": false,
+        "synchronous": true
+      }
+    ],
+    "audit_supported": false,
+    "credentials_managed_externally": true,
+    "external_side_effects_allowed": false
+  }
+}

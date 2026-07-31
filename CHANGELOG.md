@@ -4,6 +4,12 @@ All notable public changes to GeoTask Core are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Add the public GeoTask Runtime Interface Profile v0.1 with `RuntimeAdapter`, versioned Runtime Descriptor, Request, and Response Artifacts, strict loaders, model-neutral operation identifiers, and three-way Descriptor/Request/Response exchange validation.
+- Add file-based `geotask runtime inspect`, side-effect-free `geotask runtime check`, explicit operation input cardinality, and a fail-closed `geotask runtime mock` reference adapter. Offline checks never submit a request; post-submission validation rejects input-count, output, synchrony, audit, authorization, and side-effect claims that contradict the inspected Descriptor or submitted Request.
+- Register `geotask.runtime-descriptor`, `geotask.runtime-request`, and `geotask.runtime-response` as offline-verifiable public Artifacts. The development Registry now exposes eleven Artifacts and the Schema Bundle contains twelve Schemas.
+
 ## [0.3.0] - 2026-07-31
 
 ### Added

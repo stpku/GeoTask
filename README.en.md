@@ -30,6 +30,7 @@ GeoTask turns spatial, temporal, evidential, resource, and action constraints in
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
 - [GeoTask Agent Integration Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
+- [GeoTask Runtime Interface Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
 - [v0.3.0 Agent Integration release notes](docs/release_v0_3_0.md)
@@ -173,6 +174,9 @@ geotask agent prepare <generated.yaml> --repaired-output <prepared.yaml>
 geotask agent retry <blocked-report.json> <revised.yaml> --verification-output <verification.json> --prepared-output <prepared.yaml>
 geotask agent recover <task.yaml> --evidence <verified-state.yaml> --output <recovery-report.json>
 geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json> --format json
+geotask runtime inspect examples/core/runtime_reference_descriptor.json --format json
+geotask runtime check examples/core/runtime_reference_descriptor.json examples/core/runtime_validate_artifact_request.json --format json
+geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json
 ```
 
 ## Version map
@@ -183,6 +187,7 @@ geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json>
 | GeoTask document schema | `1.0` | YAML/JSON document format |
 | Language specification | `1.0` | Implemented public normative profile |
 | Agent Integration Profile | `0.1` | Model-neutral tool contract, evidence recovery, and recovery-report Artifact |
+| Runtime Interface Profile | `0.1` | Descriptor, Request, and Response contracts between Core and an external Runtime |
 | White paper | `0.1` | Public conceptual draft |
 
 ## Documentation

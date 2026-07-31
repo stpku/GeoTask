@@ -95,7 +95,9 @@ A conforming Agent MUST:
 5. rerun affected deterministic assertions after evidence recovery;
 6. treat `next_action` as a routing instruction unless a separate authorized Runtime executes it;
 7. preserve source references, versions, authorities, and verification times supplied by evidence;
-8. distinguish model-generated summaries from original evidence.
+8. distinguish model-generated summaries from original evidence;
+9. inspect a Runtime Descriptor before routing nonlocal execution, evidence resolution, or production actions;
+10. validate Runtime Request and Response Artifacts without treating Artifact validity as operation success.
 
 A conforming Agent MUST NOT:
 
@@ -103,7 +105,9 @@ A conforming Agent MUST NOT:
 - replace a deterministic operator result with model judgment;
 - treat an Artifact Validation Report as proof that the underlying real-world evidence is authentic;
 - release a blocked output through prose, fallback fields, or a second tool path;
-- execute production actions merely because a control block names `next_action`.
+- execute production actions merely because a control block names `next_action`;
+- treat the public fail-closed reference Runtime as production ready;
+- place passwords, bearer tokens, private keys, or connector credentials in Runtime Artifacts.
 
 ## 4. Outcome Handling
 

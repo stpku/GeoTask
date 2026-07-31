@@ -9,12 +9,14 @@ It is intentionally separate from the public implemented profile.
 For the current public Core, use:
 
 1. [GeoTask Language and Execution Specification v1.0](geotask-language-spec-v1.0.md)
-2. [GeoTask Artifact Registry v1.0](geotask-artifact-registry-v1.0.md) and `geotask inspect schemas`
-3. machine-readable task, execution-result, control-result, and registry JSON Schemas
-4. public source code and tests
-5. [Operator Registry](../operator_registry.md)
+2. [GeoTask Agent Integration Profile v0.1](geotask-agent-integration-profile-v0.1.md)
+3. [GeoTask Runtime Interface Profile v0.1](geotask-runtime-interface-profile-v0.1.md)
+4. [GeoTask Artifact Registry v1.0](geotask-artifact-registry-v1.0.md) and `geotask inspect schemas`
+5. machine-readable task, execution-result, control-result, Agent-report, Runtime-message, validation-report, and registry JSON Schemas
+6. public source code and tests
+7. [Operator Registry](../operator_registry.md)
 
-These sources describe what the current repository can parse, validate, and execute.
+These sources describe what the current repository can parse, validate, and execute. The Runtime Interface currently covers offline Descriptor discovery, side-effect-free Request preflight, strict Runtime message validation, a three-way Descriptor/Request/Response exchange guard, and one fail-closed read-only reference adapter. It does not include a production Runtime, hosted model adapter, external evidence connector, credential resolver, approval engine, or production action executor.
 
 ## Why the Target Draft Is Separate
 

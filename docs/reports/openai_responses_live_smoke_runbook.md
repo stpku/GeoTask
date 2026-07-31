@@ -2,9 +2,11 @@
 
 ## 状态
 
-当前状态：`environment_inspector_verified_source_checkout_ready_formal_release_blocked_external_authorization_pending_live_request_not_executed`。
+当前状态：`private_test_suite_split_environment_inspector_verified_source_checkout_ready_formal_release_blocked_external_authorization_pending_live_request_not_executed`。
 
 本手册对应`examples/runtime/openai_responses_live_smoke.py`、`examples/runtime/openai_responses_live_smoke_audit.py`、`examples/runtime/openai_responses_live_smoke_environment.py`、`examples/runtime/openai_responses_live_smoke_evidence.py`、`examples/runtime/openai_responses_live_smoke_closure.py`和`examples/runtime/openai_responses_live_smoke_closure_verifier.py`。执行器、只读环境与就绪审计器、证据校验器、显式闭环凭证写入器、只读闭环复核器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
+
+私有测试按职责位于`tests/private_openai_live_smoke/`：局部fixture工厂统一构造虚构票据、认领记录、报告和闭环；readiness、evidence、closure write、closure verify、SDK transport和公共边界分别测试。根目录原审计测试仅保留结构门禁，禁止重新形成超大单体测试文件。
 
 ## 目的
 

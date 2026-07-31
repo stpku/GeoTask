@@ -49,7 +49,8 @@ _UniqueKeyLoader.add_constructor(
 VALID_OBJECT_TYPES = (
     "point", "line", "rect", "time", "altitude",
     # v1.0 object types
-    "polyline", "time_interval", "altitude_interval", "feature_collection",
+    "polyline", "multi_polyline", "polygon", "time_interval",
+    "altitude_interval", "feature_collection",
 )
 ALLOWED_TOP_LEVEL_KEYS = (
     "geotask", "stir", "space", "objects", "ops", "task",
@@ -66,6 +67,8 @@ ALLOWED_OBJECT_FIELDS = {
     "altitude": {"type", "range"},
     # v1.0 object fields
     "polyline": {"type", "coordinates", "points"},
+    "multi_polyline": {"type", "coordinates", "lines"},
+    "polygon": {"type", "coordinates", "points"},
     "time_interval": {"type", "interval", "start", "end"},
     "altitude_interval": {"type", "range", "min", "max", "unit", "datum"},
     "feature_collection": {"type", "feature_type", "features"},
@@ -236,6 +239,88 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
                             f"object '{name}' ({obj_type}): points[{i}] must be [x, y].",
                             "Use exactly two numeric coordinate values for each point.",
                         ))
+
+        elif obj_type == "multi_polyline":
+            lines = obj.get("lines") or obj.get("coordinates")
+            if lines is None:
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.coordinates",
+                    "missing_field",
+                    f"object '{name}' (multi_polyline): missing coordinates/lines.",
+                    "Add coordinates: [[[x1, y1], [x2, y2]], ...].",
+                ))
+            elif not isinstance(lines, list) or not lines:
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.coordinates",
+                    "invalid_coordinates",
+                    f"object '{name}' (multi_polyline): must contain at least one polyline.",
+                    "Provide one or more polylines, each containing at least two points.",
+                ))
+            else:
+                for line_index, line in enumerate(lines):
+                    if not isinstance(line, list) or len(line) < 2:
+                        diagnostics.append(_diagnostic(
+                            f"objects.{name}.coordinates[{line_index}]",
+                            "invalid_coordinates",
+                            f"object '{name}' (multi_polyline): member {line_index} must contain at least 2 points.",
+                            "Use [[x1, y1], [x2, y2], ...] for every member.",
+                        ))
+                        continue
+                    for point_index, point in enumerate(line):
+                        if not isinstance(point, list) or len(point) != 2:
+                            diagnostics.append(_diagnostic(
+                                f"objects.{name}.coordinates[{line_index}][{point_index}]",
+                                "invalid_coordinates",
+                                f"object '{name}' (multi_polyline): each point must be [x, y].",
+                                "Use exactly two numeric coordinate values per point.",
+                            ))
+
+        elif obj_type == "polygon":
+            ring = obj.get("points") or obj.get("coordinates")
+            if ring is None:
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.coordinates",
+                    "missing_field",
+                    f"object '{name}' (polygon): missing coordinates/points.",
+                    "Add a closed ring with at least four coordinate pairs.",
+                ))
+            elif not isinstance(ring, list) or len(ring) < 4:
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.coordinates",
+                    "invalid_coordinates",
+                    f"object '{name}' (polygon): ring must contain at least 4 points.",
+                    "Provide at least three vertices and repeat the first point at the end.",
+                ))
+            else:
+                valid_shape = True
+                for point_index, point in enumerate(ring):
+                    if not isinstance(point, list) or len(point) != 2:
+                        valid_shape = False
+                        diagnostics.append(_diagnostic(
+                            f"objects.{name}.coordinates[{point_index}]",
+                            "invalid_coordinates",
+                            f"object '{name}' (polygon): each point must be [x, y].",
+                            "Use exactly two numeric coordinate values per point.",
+                        ))
+                if valid_shape and ring[0] != ring[-1]:
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}.coordinates",
+                        "invalid_geometry",
+                        f"object '{name}' (polygon): ring is not closed.",
+                        "Repeat the first coordinate as the final coordinate.",
+                    ))
+                unique_vertices = []
+                if valid_shape:
+                    for point in ring[:-1]:
+                        if point not in unique_vertices:
+                            unique_vertices.append(point)
+                if valid_shape and len(unique_vertices) < 3:
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}.coordinates",
+                        "invalid_geometry",
+                        f"object '{name}' (polygon): requires at least 3 distinct vertices.",
+                        "Provide at least three distinct vertices before the closing point.",
+                    ))
 
         elif obj_type == "rect":
             bbox = obj.get("bbox")

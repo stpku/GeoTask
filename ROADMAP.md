@@ -41,7 +41,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 提供Runtime Descriptor离线发现、Request无副作用预检和Descriptor/Request/Response三方交换校验；
 - 提供仅执行只读Artifact验证的失败关闭参考Runtime，明确不调用模型、不解析外部证据、不执行生产动作；
 - 提供至少两种模型适配参考实现；
-- 增加polygon、multi-polyline等通用空间对象与可组合确定性算子；
+- ✅ 已增加polygon、multi-polyline通用空间对象，以及point-in-polygon和multi-polyline/rect确定性算子；
 - 明确CRS、单位和边界语义的跨任务约束；
 - 完善来源、证据、审计元数据和IDE Schema映射；
 - 建立公共一致性与性能基准。
@@ -101,7 +101,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - provide an independently buildable provider-neutral model Adapter package skeleton with a no-network Mock Provider, opaque authorization/audit mapping, registered input/output Artifact validation, and model-output truthfulness guards;
 - provide the first provider-specific OpenAI Responses Adapter with externally injected authenticated client, one no-retry strict Structured Outputs call, disabled storage/tools, audit binding, and fully offline contract tests;
 - add a second provider-specific model Adapter only after installed-package compatibility and one explicitly authorized live smoke test are stable;
-- add common spatial objects such as polygon and multi-polyline plus composable deterministic operators;
+- ✅ Added polygon and multi-polyline objects plus deterministic point-in-polygon and multi-polyline/rectangle operators;
 - define CRS, units, and boundary semantics across tasks;
 - improve provenance, evidence, audit metadata, and IDE Schema mappings;
 - establish public conformance and performance benchmarks.

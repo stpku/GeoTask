@@ -18,9 +18,9 @@ class PointObject:
 
 @dataclass
 class LineObject:
-    """A 2D line segment defined by two or more points.
+    """A 2D polyline defined by two or more points.
 
-    In GeoTask Core v0.1-lite, only the first two points are used as a segment.
+    Current deterministic polyline operators inspect all consecutive segments.
     """
 
     name: str
@@ -36,6 +36,26 @@ class RectObject:
 
 
 @dataclass
+class PolygonObject:
+    """A closed 2D polygon ring.
+
+    The first and last coordinate must be identical. Holes and multi-polygons
+    are intentionally outside this Core object contract.
+    """
+
+    name: str
+    coordinates: list[list[float]]
+
+
+@dataclass
+class MultiPolylineObject:
+    """A collection of independent 2D polylines."""
+
+    name: str
+    coordinates: list[list[list[float]]]
+
+
+@dataclass
 class StirDocument:
     """Top-level GeoTask (formerly STIR) document after parsing."""
 
@@ -45,7 +65,7 @@ class StirDocument:
     crs: str
     unit: str
     axes: dict
-    objects: dict  # name -> PointObject | LineObject | RectObject
+    objects: dict  # name -> supported lightweight object model
     ops: dict  # operation_name -> formula string
     task: dict  # raw task definition, including questions
     raw: dict = field(repr=False)  # original parsed YAML dict

@@ -27,6 +27,10 @@ REQUIRED_OPERATOR_METADATA_FIELDS = {
 _TYPE_SHAPES = {
     "point": "point.coordinates [x, y]",
     "polyline": "polyline.coordinates [[x1, y1], [x2, y2], ...]",
+    "multi_polyline": (
+        "multi_polyline.coordinates [[[x1, y1], [x2, y2], ...], ...]"
+    ),
+    "polygon": "polygon.coordinates [[x1, y1], ..., [x1, y1]]",
     "rect": "rect.bbox [min_x, min_y, max_x, max_y]",
     "time_interval": "time_interval [start, end] in HH:MM",
     "altitude_interval": "altitude_interval [min, max]",

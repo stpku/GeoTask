@@ -56,6 +56,22 @@ def _point_in_rect(p: list[float], bbox: list[float]) -> bool:
     return min_x <= x <= max_x and min_y <= y <= max_y
 
 
+def _point_on_segment(
+    point: list[float], start: list[float], end: list[float]
+) -> bool:
+    """Return whether *point* lies on the closed segment *start*→*end*."""
+    cross = (
+        (end[0] - start[0]) * (point[1] - start[1])
+        - (end[1] - start[1]) * (point[0] - start[0])
+    )
+    if abs(cross) > 1e-12:
+        return False
+    return (
+        min(start[0], end[0]) <= point[0] <= max(start[0], end[0])
+        and min(start[1], end[1]) <= point[1] <= max(start[1], end[1])
+    )
+
+
 def line_intersects_rect(
     line_points: list[list[float]], bbox: list[float]
 ) -> bool:
@@ -92,6 +108,50 @@ def line_intersects_rect(
                 return True
 
     return False
+
+
+def multi_polyline_intersects_rect(
+    multi_polyline: list[list[list[float]]], bbox: list[float]
+) -> bool:
+    """Check whether any member polyline intersects an axis-aligned rectangle.
+
+    Boundary contact counts as intersection. Empty collections return ``False``;
+    malformed members are rejected by document validation before execution.
+    """
+    return any(line_intersects_rect(polyline, bbox) for polyline in multi_polyline)
+
+
+def point_in_polygon(
+    point: list[float], polygon: list[list[float]]
+) -> bool:
+    """Check whether a point is inside or on the boundary of a closed polygon.
+
+    Uses the even-odd rule over the polygon ring. Validation requires a closed
+    ring with at least three distinct vertices; this operator deliberately does
+    not infer holes or repair self-intersections.
+    """
+    if len(polygon) < 4:
+        return False
+
+    inside = False
+    x, y = point
+    for index in range(len(polygon) - 1):
+        start = polygon[index]
+        end = polygon[index + 1]
+        if _point_on_segment(point, start, end):
+            return True
+
+        y_crosses = (start[1] > y) != (end[1] > y)
+        if not y_crosses:
+            continue
+        intersection_x = (
+            (end[0] - start[0]) * (y - start[1]) / (end[1] - start[1])
+            + start[0]
+        )
+        if x < intersection_x:
+            inside = not inside
+
+    return inside
 
 
 def _point_to_segment_distance(

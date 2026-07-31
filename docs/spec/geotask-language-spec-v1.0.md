@@ -166,13 +166,13 @@ The current Core does not perform CRS transformations. All objects used in one a
 
 ### 5.3 Boundary Semantics
 
-Core interval and rectangle operators use closed boundaries unless an operator contract states otherwise. Touching the boundary therefore counts as intersection, containment, or overlap.
+Core interval, rectangle, polygon, and multi-polyline topology operators use closed boundaries unless an operator contract states otherwise. Touching the boundary therefore counts as intersection, containment, or overlap.
 
 ---
 
 ## 6. `objects`
 
-`objects` is a mapping from object id to object definition. The public Canonical IR defines `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
+`objects` is a mapping from object id to object definition. The public Canonical IR defines `point`, `polyline`, `multi_polyline`, `polygon`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
 
 Native v1 objects MAY store fields inline:
 
@@ -228,7 +228,49 @@ Requirements:
 
 `line_intersects_rect` evaluates the polyline segments according to the registered operator implementation. Consumers MUST NOT assume that only the first segment is used in v1 examples.
 
-### 6.3 Rectangle
+### 6.3 Multi-Polyline
+
+```yaml
+route_group:
+  type: multi_polyline
+  coordinates:
+    - [[0, 0], [10, 0]]
+    - [[20, 20], [30, 30], [40, 20]]
+```
+
+Requirements:
+
+- at least one member polyline;
+- every member contains at least two coordinate pairs;
+- every coordinate pair contains exactly two finite numbers;
+- compatibility field `lines` is accepted and normalized to `coordinates`.
+
+`multi_polyline_intersects_rect` returns true when any member polyline touches or crosses the rectangle. Members are independent; Core does not join them into one continuous route.
+
+### 6.4 Polygon
+
+```yaml
+zone:
+  type: polygon
+  coordinates:
+    - [0, 0]
+    - [10, 0]
+    - [10, 10]
+    - [0, 10]
+    - [0, 0]
+```
+
+Requirements:
+
+- one exterior ring only;
+- at least three distinct vertices;
+- the closing coordinate MUST equal the first coordinate;
+- every coordinate pair contains exactly two finite numbers;
+- holes, multi-polygons, self-intersection repair, and implicit ring closure are not provided by this contract.
+
+`point_in_polygon` uses the even-odd rule. A point on an edge or vertex is contained because the registered boundary semantics are closed.
+
+### 6.5 Rectangle
 
 ```yaml
 restricted_zone:
@@ -238,7 +280,7 @@ restricted_zone:
 
 `bbox` MUST be `[min_x, min_y, max_x, max_y]`, with minimum values not greater than maximum values.
 
-### 6.4 Time Interval
+### 6.6 Time Interval
 
 Preferred native form:
 
@@ -264,7 +306,7 @@ Requirements:
 - current public operator treats the interval as closed;
 - legacy type `time` is accepted.
 
-### 6.5 Altitude Interval
+### 6.7 Altitude Interval
 
 Preferred native form:
 
@@ -292,7 +334,7 @@ Requirements:
 - both intervals compared by `altitude_overlap` MUST use compatible unit and datum;
 - legacy type `altitude` is accepted.
 
-### 6.6 Feature Collection
+### 6.8 Feature Collection
 
 ```yaml
 site_candidates:
@@ -323,6 +365,8 @@ The list declares operators used by the document. Every assertion operator SHOUL
 |---|---|---|---|
 | `distance_2d` | point, point | number | n/a |
 | `line_intersects_rect` | polyline, rect | bool | contact counts |
+| `multi_polyline_intersects_rect` | multi_polyline, rect | bool | any member; contact counts |
+| `point_in_polygon` | point, polygon | bool | edge and vertex contact count |
 | `point_to_line_distance_2d` | point, polyline | number | segment distance |
 | `rect_contains_point` | rect, point | bool | boundary counts |
 | `time_overlap` | time_interval, time_interval | bool | endpoint contact counts |

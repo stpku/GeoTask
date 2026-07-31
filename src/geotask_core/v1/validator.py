@@ -278,6 +278,10 @@ def _check_object_data(path: str, obj: GeoObject) -> list[dict]:
         return _check_point_data(path, data)
     elif obj_type == "polyline":
         return _check_polyline_data(path, data)
+    elif obj_type == "multi_polyline":
+        return _check_multi_polyline_data(path, data)
+    elif obj_type == "polygon":
+        return _check_polygon_data(path, data)
     elif obj_type == "rect":
         return _check_rect_data(path, data)
     elif obj_type == "time_interval":
@@ -389,6 +393,139 @@ def _check_polyline_data(path: str, data: dict) -> list[dict]:
                     )
                 )
 
+    return diags
+
+
+def _check_multi_polyline_data(path: str, data: dict) -> list[dict]:
+    diags: list[dict] = []
+    lines = data.get("coordinates") or data.get("lines")
+
+    if lines is None:
+        return [
+            _diagnostic(
+                f"{path}.data",
+                MISSING_DATA,
+                "Multi-polyline object missing coordinates or lines field.",
+                'Provide data with {"coordinates": [[[x1,y1], [x2,y2]], ...]}.',
+            )
+        ]
+    if not isinstance(lines, (list, tuple)) or not lines:
+        return [
+            _diagnostic(
+                f"{path}.data.coordinates",
+                INVALID_GEOMETRY,
+                "Multi-polyline coordinates must contain at least one polyline.",
+                "Provide one or more polylines, each containing at least two points.",
+            )
+        ]
+
+    for line_index, line in enumerate(lines):
+        line_path = f"{path}.data.coordinates[{line_index}]"
+        if not isinstance(line, (list, tuple)) or len(line) < 2:
+            diags.append(
+                _diagnostic(
+                    line_path,
+                    INVALID_GEOMETRY,
+                    f"Multi-polyline member[{line_index}] must contain at least 2 points.",
+                    "Provide at least two [x, y] points for every member polyline.",
+                )
+            )
+            continue
+        for point_index, point in enumerate(line):
+            point_path = f"{line_path}[{point_index}]"
+            if not isinstance(point, (list, tuple)) or len(point) != 2:
+                diags.append(
+                    _diagnostic(
+                        point_path,
+                        INVALID_GEOMETRY,
+                        f"Multi-polyline point[{line_index}][{point_index}] must be exactly 2 values.",
+                        "Each point must be [x, y] with two finite numbers.",
+                    )
+                )
+                continue
+            for coordinate_index, value in enumerate(point):
+                if not _is_finite_number(value):
+                    diags.append(
+                        _diagnostic(
+                            f"{point_path}[{coordinate_index}]",
+                            INVALID_COORDINATES,
+                            f"Multi-polyline coordinate is not finite: {value!r}.",
+                            "All coordinates must be finite numbers (not bool, NaN, or Inf).",
+                        )
+                    )
+    return diags
+
+
+def _check_polygon_data(path: str, data: dict) -> list[dict]:
+    diags: list[dict] = []
+    ring = data.get("coordinates") or data.get("points")
+
+    if ring is None:
+        return [
+            _diagnostic(
+                f"{path}.data",
+                MISSING_DATA,
+                "Polygon object missing coordinates or points field.",
+                'Provide a closed ring such as {"coordinates": [[0,0], [1,0], [1,1], [0,0]]}.',
+            )
+        ]
+    if not isinstance(ring, (list, tuple)) or len(ring) < 4:
+        return [
+            _diagnostic(
+                f"{path}.data.coordinates",
+                INVALID_GEOMETRY,
+                "Polygon ring must contain at least 4 points including closure.",
+                "Provide at least three vertices and repeat the first point at the end.",
+            )
+        ]
+
+    shape_valid = True
+    finite_valid = True
+    for point_index, point in enumerate(ring):
+        point_path = f"{path}.data.coordinates[{point_index}]"
+        if not isinstance(point, (list, tuple)) or len(point) != 2:
+            shape_valid = False
+            diags.append(
+                _diagnostic(
+                    point_path,
+                    INVALID_GEOMETRY,
+                    f"Polygon point[{point_index}] must be exactly 2 values.",
+                    "Each point must be [x, y] with two finite numbers.",
+                )
+            )
+            continue
+        for coordinate_index, value in enumerate(point):
+            if not _is_finite_number(value):
+                finite_valid = False
+                diags.append(
+                    _diagnostic(
+                        f"{point_path}[{coordinate_index}]",
+                        INVALID_COORDINATES,
+                        f"Polygon coordinate is not finite: {value!r}.",
+                        "All coordinates must be finite numbers (not bool, NaN, or Inf).",
+                    )
+                )
+
+    if shape_valid and finite_valid:
+        normalized_ring = [tuple(point) for point in ring]
+        if normalized_ring[0] != normalized_ring[-1]:
+            diags.append(
+                _diagnostic(
+                    f"{path}.data.coordinates",
+                    INVALID_GEOMETRY,
+                    "Polygon ring is not closed.",
+                    "Repeat the first coordinate as the final coordinate.",
+                )
+            )
+        if len(set(normalized_ring[:-1])) < 3:
+            diags.append(
+                _diagnostic(
+                    f"{path}.data.coordinates",
+                    INVALID_GEOMETRY,
+                    "Polygon ring must contain at least 3 distinct vertices.",
+                    "Provide at least three distinct vertices before the closing point.",
+                )
+            )
     return diags
 
 

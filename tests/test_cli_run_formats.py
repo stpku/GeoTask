@@ -15,6 +15,7 @@ from geotask_core.v1.result import GeotaskResult
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 GT19 = REPO_ROOT / "examples" / "core" / "uav_arrival_ground_clearance_release.yaml"
+OBJECT_EXTENSIONS = REPO_ROOT / "examples" / "core" / "v1_polygon_multi_polyline.yaml"
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -76,6 +77,30 @@ def test_run_v1_json_emits_clean_canonical_result() -> None:
     assert result_data["summary"]["total_checks"] == 4
     assert len(result_data["checks"]) == 4
     assert restored.to_dict() == payload
+
+
+def test_run_v1_json_executes_polygon_and_multi_polyline_example() -> None:
+    result = _run_cli(
+        "run",
+        str(OBJECT_EXTENSIONS),
+        "--format",
+        "v1-json",
+        "--compact",
+    )
+
+    assert result.returncode == 0
+    assert result.stderr == ""
+    payload = json.loads(result.stdout)["geotask_result"]
+    assert payload["task_id"] == "polygon-multi-polyline-v1"
+    assert payload["outputs"] == {
+        "point_contained": True,
+        "route_intersects": True,
+    }
+    assert {check["operator"] for check in payload["checks"]} == {
+        "point_in_polygon",
+        "multi_polyline_intersects_rect",
+    }
+    assert payload["overall"]["status"] == "verified"
 
 
 def test_run_v1_json_compact_is_single_line() -> None:

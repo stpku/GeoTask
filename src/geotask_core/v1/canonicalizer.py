@@ -31,9 +31,11 @@ from geotask_core.v1.ir import (
 # -- Operator → expected input type pairs (for auto-generating assertions)
 
 _OPERATOR_INPUT_TYPES: dict[str, list[str]] = {
-    "distance_2d":                ["point", "point"],
-    "line_intersects_rect":       ["polyline", "rect"],
-    "point_to_line_distance_2d":  ["point", "polyline"],
+    "distance_2d":                    ["point", "point"],
+    "line_intersects_rect":           ["polyline", "rect"],
+    "multi_polyline_intersects_rect": ["multi_polyline", "rect"],
+    "point_in_polygon":               ["point", "polygon"],
+    "point_to_line_distance_2d":      ["point", "polyline"],
     "rect_contains_point":        ["rect", "point"],
     "time_overlap":               ["time_interval", "time_interval"],
     "altitude_overlap":           ["altitude_interval", "altitude_interval"],
@@ -43,6 +45,7 @@ _OPERATOR_INPUT_TYPES: dict[str, list[str]] = {
 _LEGACY_OBJECT_FIELD_TO_DATA_KEY: dict[str, str] = {
     "xy":       "coordinates",
     "points":   "coordinates",
+    "lines":    "coordinates",
     "bbox":     "bbox",
     "interval": "interval",
     "range":    "range",

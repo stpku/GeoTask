@@ -157,6 +157,8 @@ class DiagnosticSeverity(str, Enum):
 
 OBJECT_TYPE_POINT              = "point"
 OBJECT_TYPE_POLYLINE           = "polyline"
+OBJECT_TYPE_MULTI_POLYLINE     = "multi_polyline"
+OBJECT_TYPE_POLYGON            = "polygon"
 OBJECT_TYPE_RECT               = "rect"
 OBJECT_TYPE_TIME_INTERVAL      = "time_interval"
 OBJECT_TYPE_ALTITUDE_INTERVAL  = "altitude_interval"
@@ -165,6 +167,8 @@ OBJECT_TYPE_FEATURE_COLLECTION = "feature_collection"
 VALID_OBJECT_TYPES: set[str] = {
     OBJECT_TYPE_POINT,
     OBJECT_TYPE_POLYLINE,
+    OBJECT_TYPE_MULTI_POLYLINE,
+    OBJECT_TYPE_POLYGON,
     OBJECT_TYPE_RECT,
     OBJECT_TYPE_TIME_INTERVAL,
     OBJECT_TYPE_ALTITUDE_INTERVAL,

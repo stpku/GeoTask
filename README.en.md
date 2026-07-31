@@ -123,7 +123,7 @@ See the [Cookbook](docs/cookbook/gt01-gt20.md) for all cases and source files.
 
 ### Canonical object types
 
-`point`, `polyline`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
+`point`, `polyline`, `multi_polyline`, `polygon`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
 
 `feature_collection` is represented in the Canonical IR; individual operators accept only combinations declared by the operator registry.
 
@@ -133,6 +133,8 @@ See the [Cookbook](docs/cookbook/gt01-gt20.md) for all cases and source files.
 |---|---|---|
 | `distance_2d` | point, point | number |
 | `line_intersects_rect` | polyline, rect | boolean |
+| `multi_polyline_intersects_rect` | multi-polyline, rect | boolean |
+| `point_in_polygon` | point, polygon | boolean |
 | `point_to_line_distance_2d` | point, polyline | number |
 | `rect_contains_point` | rect, point | boolean |
 | `time_overlap` | time interval, time interval | boolean |

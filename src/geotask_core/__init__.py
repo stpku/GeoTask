@@ -11,12 +11,22 @@ v1.0 modules are available under geotask_core.v1.*
 from geotask_core._version import __version__
 
 from geotask_core.models import (
-    PointObject, LineObject, RectObject, StirDocument,
+    PointObject,
+    LineObject,
+    RectObject,
+    PolygonObject,
+    MultiPolylineObject,
+    StirDocument,
 )
 from geotask_core.parser import (
     load_geotask, validate_geotask, load_stir, validate_stir,
 )
-from geotask_core.ops import distance_2d, line_intersects_rect
+from geotask_core.ops import (
+    distance_2d,
+    line_intersects_rect,
+    multi_polyline_intersects_rect,
+    point_in_polygon,
+)
 from geotask_core.runner import run_geotask, run_stir
 from geotask_core.normalizer import normalize_model_output
 from geotask_core.evaluator import evaluate_model_output
@@ -192,6 +202,8 @@ __all__ = [
     "PointObject",
     "LineObject",
     "RectObject",
+    "PolygonObject",
+    "MultiPolylineObject",
     "StirDocument",
     "load_geotask",
     "validate_geotask",
@@ -199,6 +211,8 @@ __all__ = [
     "validate_stir",
     "distance_2d",
     "line_intersects_rect",
+    "multi_polyline_intersects_rect",
+    "point_in_polygon",
     "run_geotask",
     "run_stir",
     "normalize_model_output",

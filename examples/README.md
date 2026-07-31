@@ -10,6 +10,8 @@ patent-sensitive workflows.
 - `examples/core/minimal_valid.yaml`: minimal point distance example.
 - `examples/core/time_altitude_overlap.yaml`: generic time and altitude interval
   overlap example.
+- `examples/core/v1_polygon_multi_polyline.yaml`: native v1 polygon containment and
+  grouped-route rectangle intersection with explicit closed-boundary semantics.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

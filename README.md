@@ -217,6 +217,8 @@ geotask runtime check examples/core/runtime_reference_descriptor.json examples/c
 geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json
 ```
 
+公共仓还提供[`examples/adapters/http_json_runtime_adapter.py`](examples/adapters/http_json_runtime_adapter.py)，演示如何在`geotask_core`之外把已离线检查的Descriptor绑定到独立HTTP Runtime。该示例只负责一次显式JSON传输，不获取Descriptor、不处理凭据、不重试、不调用模型，也不执行生产动作；返回结果仍由Core执行Descriptor / Request / Response三方合同校验。
+
 ## 版本说明
 
 | 名称 | 当前版本 | 含义 |

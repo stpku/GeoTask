@@ -31,6 +31,11 @@ patent-sensitive workflows.
 - `examples/core/runtime_validate_artifact_request.json`: a public Runtime Request that asks the
   fail-closed reference adapter to validate one embedded GeoTask Document without model calls,
   external credentials, or side effects.
+- `examples/adapters/http_json_runtime_adapter.py`: a public-safe external HTTP JSON transport
+  adapter that keeps Descriptor discovery offline, performs one explicit POST, strictly loads the
+  Runtime Response, and leaves credentials, retries, models, and production actions outside Core.
+- `examples/adapters/README.md`: the external Adapter workflow, transport/error boundary, and
+  production-extension guidance.
 - `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
   incompatible results trigger a structured conflict review task.
 - `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes

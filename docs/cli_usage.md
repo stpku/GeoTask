@@ -419,6 +419,13 @@ synchronous operation, side-effect claims that contradict the Descriptor, audit
 references from a Runtime that declared no audit support, and any non-rejected
 response to a Request that violated the advertised operation contract.
 
+For a real external transport example, see
+[`examples/adapters/http_json_runtime_adapter.py`](../examples/adapters/http_json_runtime_adapter.py).
+It keeps `describe()` offline, performs one explicit HTTP JSON POST, rejects redirects,
+embedded URL credentials, non-JSON and oversized responses, and leaves authentication,
+retries, model calls, evidence access, and production actions outside `geotask_core`.
+HTTP failures remain transport errors rather than being converted into Runtime states.
+
 The three registered Runtime Artifacts are:
 
 - `geotask.runtime-descriptor`;

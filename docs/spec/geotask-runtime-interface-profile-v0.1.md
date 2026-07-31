@@ -235,3 +235,19 @@ Credential resolution and access control remain outside Core. A Runtime that per
 Profile `0.1` is a public-preview contract. Additive capabilities should be advertised through descriptors. Breaking changes to message fields, wrappers, states, or cross-field semantics require a new profile and Schema version.
 
 GeoTask Document Schema `1.0`, Artifact Registry `1.0`, and Artifact Validation Report `1.0` remain independently versioned.
+
+## 13. External HTTP Adapter example
+
+The public repository includes `examples/adapters/http_json_runtime_adapter.py` as a non-normative transport example. It binds one caller-inspected `RuntimeDescriptor` to one HTTP or HTTPS endpoint and implements the structural `RuntimeAdapter` Protocol outside `geotask_core`.
+
+The example preserves these boundaries:
+
+- `describe()` is offline and returns only the Descriptor supplied by the caller;
+- `submit()` performs exactly one explicit HTTP POST with a strict JSON Runtime Request;
+- the endpoint must return a UTF-8 JSON Runtime Response with a 2xx transport status;
+- HTTP failures remain transport errors and are not converted into `completed`, `rejected`, `blocked`, or `failed` Runtime states;
+- redirects, embedded URL credentials, non-JSON bodies, non-finite JSON, and oversized responses fail closed;
+- the adapter does not resolve `authorization_ref`, add secrets, retry, poll, call a model, fetch evidence, or execute a production action;
+- callers still use `submit_runtime_request()` so the returned Response is strictly loaded and validated against both the inspected Descriptor and submitted Request.
+
+This example proves the external transport seam without publishing a production Runtime implementation. Authentication, endpoint discovery, TLS policy, retries, asynchronous polling, observability, and production action logic belong in a separate adapter or Runtime package outside Core.

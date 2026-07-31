@@ -1,0 +1,37 @@
+{
+  "runtime_descriptor": {
+    "interface_version": "0.1",
+    "runtime_id": "geotask.openai.responses",
+    "runtime_version": "0.1",
+    "title": "GeoTask OpenAI Responses Runtime Adapter",
+    "implementation_kind": "external",
+    "production_ready": false,
+    "capabilities": [
+      "provider_neutral_model_adapter",
+      "structured_artifact_output",
+      "provider:openai.responses"
+    ],
+    "operations": [
+      {
+        "operation_id": "geotask.runtime.execute-nonlocal",
+        "title": "Execute a GeoTask document through a structured model provider",
+        "description": "Submit one valid GeoTask document to an independently implemented provider and return one strictly validated execution-result Artifact.",
+        "input_artifact_ids": [
+          "geotask.document"
+        ],
+        "accepts_any_registered_artifact": false,
+        "min_input_artifacts": 1,
+        "max_input_artifacts": 1,
+        "output_artifact_ids": [
+          "geotask.execution-result"
+        ],
+        "side_effect": "external_read",
+        "requires_authorization": true,
+        "synchronous": true
+      }
+    ],
+    "audit_supported": true,
+    "credentials_managed_externally": true,
+    "external_side_effects_allowed": true
+  }
+}

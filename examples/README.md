@@ -45,6 +45,10 @@ patent-sensitive workflows.
   Adapter package skeleton with non-secret configuration, a structural Provider Protocol, a
   no-network Mock Provider, registered input/output Artifact validation, model-truthfulness guards,
   and Descriptor/Request/mock-result examples. It contains no real provider SDK or credentials.
+- `examples/model_adapters/openai_responses/`: the first provider-specific integration package. It
+  accepts an externally authenticated official OpenAI SDK client, performs one no-retry Responses API
+  call with strict Structured Outputs and `store=false`, preserves audit references, and still routes
+  the nested result through registered Artifact and model-truthfulness validation.
 - `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
   incompatible results trigger a structured conflict review task.
 - `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes

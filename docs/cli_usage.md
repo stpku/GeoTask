@@ -442,8 +442,14 @@ The independently buildable provider-neutral model Adapter skeleton is under
 [`examples/model_adapters/provider_neutral/`](../examples/model_adapters/provider_neutral/).
 Its Mock Provider performs no model call. The Adapter maps `execute-nonlocal`, validates
 registered input/output Artifacts, and rejects model output that claims deterministic
-or independently verified assurance. Real Provider SDKs and credentials are intentionally
-absent and must remain outside Core and the public skeleton.
+or independently verified assurance.
+
+The first provider-specific package is under
+[`examples/model_adapters/openai_responses/`](../examples/model_adapters/openai_responses/).
+Private startup code supplies an authenticated official SDK client by opaque authorization
+reference. The package performs one no-retry Responses API call with strict Structured
+Outputs, disabled storage, no tools or conversation state, and audit-bound failure handling.
+Repository tests use a fake SDK-shaped client and perform no live call.
 
 The three registered Runtime Artifacts are:
 

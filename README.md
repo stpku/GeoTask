@@ -219,7 +219,9 @@ geotask runtime mock examples/core/runtime_validate_artifact_request.json --outp
 
 公共仓还提供[`examples/adapters/http_json_runtime_adapter.py`](examples/adapters/http_json_runtime_adapter.py)，演示如何在`geotask_core`之外把已离线检查的Descriptor绑定到独立HTTP Runtime。配套的[`examples/endpoints/reference_runtime_http_server.py`](examples/endpoints/reference_runtime_http_server.py)可在回环地址启动一个真实HTTP Endpoint，形成Adapter—Endpoint端到端闭环。两者均不在线获取Descriptor、不处理凭据、不重试、不调用模型，也不执行生产动作；传输错误与Runtime状态严格分离，返回结果仍由Core执行Descriptor / Request / Response三方合同校验。
 
-[`examples/model_adapters/provider_neutral/`](examples/model_adapters/provider_neutral/)进一步提供一个可独立构建的Provider-neutral模型Adapter包骨架：定义非秘密配置、结构化Provider Protocol、Mock Provider和`execute-nonlocal`映射，并在调用前验证输入Artifact、调用后验证输出Artifact及模型真实性。它拒绝模型结果冒充`verified`、`local_deterministic`或确定性执行，但尚未接入任何真实Provider、密钥、付费模型、路由或成本治理。
+[`examples/model_adapters/provider_neutral/`](examples/model_adapters/provider_neutral/)进一步提供一个可独立构建的Provider-neutral模型Adapter包骨架：定义非秘密配置、结构化Provider Protocol、Mock Provider和`execute-nonlocal`映射，并在调用前验证输入Artifact、调用后验证输出Artifact及模型真实性。它拒绝模型结果冒充`verified`、`local_deterministic`或确定性执行。
+
+[`examples/model_adapters/openai_responses/`](examples/model_adapters/openai_responses/)在此基础上实现首个真实Provider集成：由私有启动代码注入已认证的官方OpenAI SDK客户端，公共包执行一次关闭重试、关闭存储、禁用工具的Responses API严格结构化输出调用，并将结果继续交给Artifact和真实性门禁。仓库测试仅使用模拟SDK客户端，不读取密钥，也不发起线上调用。
 
 ## 版本说明
 

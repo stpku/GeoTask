@@ -66,6 +66,46 @@ jobs:
           )
           assert all(any(name.endswith(item) for name in sdist_names) for item in required)
           PY
+      - name: Build OpenAI Responses model Adapter package
+        run: python -m build examples/model_adapters/openai_responses --outdir openai-adapter-dist
+      - name: Check OpenAI Responses model Adapter distributions
+        run: python -m twine check openai-adapter-dist/*
+      - name: Verify OpenAI Responses model Adapter distribution contents
+        shell: bash
+        run: |
+          python - <<'PY'
+          import glob
+          import tarfile
+          import zipfile
+
+          wheel = glob.glob("openai-adapter-dist/*.whl")[0]
+          sdist = glob.glob("openai-adapter-dist/*.tar.gz")[0]
+          wheel_names = zipfile.ZipFile(wheel).namelist()
+          sdist_names = tarfile.open(sdist).getnames()
+          assert not any(
+              name.startswith("geotask_core/")
+              or name.startswith("geotask_model_adapter_reference/")
+              for name in wheel_names
+          )
+          assert any(name.endswith(".dist-info/licenses/LICENSE") for name in wheel_names)
+          required = (
+              "/LICENSE",
+              "/README.md",
+              "/examples/openai_runtime_descriptor.json",
+              "/examples/openai_runtime_request.json",
+              "/examples/installed_smoke.py",
+              "/src/geotask_openai_responses_adapter/provider.py",
+              "/src/geotask_openai_responses_adapter/runtime.py",
+          )
+          assert all(any(name.endswith(item) for name in sdist_names) for item in required)
+          PY
+      - name: Smoke-test installed OpenAI Adapter stack
+        shell: bash
+        run: |
+          python -m venv .venv-openai-adapter-smoke
+          .venv-openai-adapter-smoke/bin/python -m pip install dist/*.whl
+          .venv-openai-adapter-smoke/bin/python -m pip install --no-deps model-adapter-dist/*.whl openai-adapter-dist/*.whl
+          .venv-openai-adapter-smoke/bin/python examples/model_adapters/openai_responses/examples/installed_smoke.py --repository-root .
       - name: Verify release identity and distribution versions
         run: python .release/verify_release_preflight.py --artifacts dist --format json
       - name: Verify built Schema Bundle distributions

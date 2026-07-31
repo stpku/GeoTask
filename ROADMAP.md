@@ -99,7 +99,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - provide a fail-closed reference Runtime that performs only read-only Artifact validation and never calls a model, resolves external evidence, or executes production actions;
 - provide a public-safe external HTTP JSON transport Adapter and paired loopback-only reference Endpoint outside Core, with offline Descriptor binding, strict Request/Response loading, and transport/operation failure separation;
 - provide an independently buildable provider-neutral model Adapter package skeleton with a no-network Mock Provider, opaque authorization/audit mapping, registered input/output Artifact validation, and model-output truthfulness guards;
-- provide at least two real provider-specific model adapters only after the package boundary, credential isolation, and installed compatibility tests are stable;
+- provide the first provider-specific OpenAI Responses Adapter with externally injected authenticated client, one no-retry strict Structured Outputs call, disabled storage/tools, audit binding, and fully offline contract tests;
+- add a second provider-specific model Adapter only after installed-package compatibility and one explicitly authorized live smoke test are stable;
 - add common spatial objects such as polygon and multi-polyline plus composable deterministic operators;
 - define CRS, units, and boundary semantics across tasks;
 - improve provenance, evidence, audit metadata, and IDE Schema mappings;

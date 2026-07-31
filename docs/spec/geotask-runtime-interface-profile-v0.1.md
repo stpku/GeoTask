@@ -291,3 +291,28 @@ The default Mock Provider advertises `implementation_kind=mock`, `side_effect=no
 A model-generated `geotask.execution-result` remains distinct from a verified result. Before accepting a provider output, the reference Adapter requires the output task ID to match the submitted document, `execution.mode=model_only`, `executor=model`, `deterministic=false`, and model-scoped or unverified assurance. A provider output that claims `verified`, `local_deterministic`, independent verification, human review, or deterministic execution is returned as `failed` with no output Artifact. Independent deterministic execution or another verifier must raise assurance in a separate workflow.
 
 Provider-native exceptions are not converted into invented Runtime states. When a provider cannot return a trustworthy `StructuredModelResult`, the Adapter raises a generic contract error without exposing provider-native exception text or claiming whether an external operation succeeded.
+
+## 16. OpenAI Responses provider package
+
+The public repository includes `examples/model_adapters/openai_responses/` as the first provider-specific implementation of the provider-neutral Protocol. It is an independently buildable package and remains outside `geotask_core`.
+
+The public package does not read an environment variable, resolve a raw key, or construct an authenticated SDK client. Private startup code constructs the official OpenAI client and binds that client object to an opaque `authorization_ref`. The provider package resolves only the client object.
+
+For each valid Runtime Request, the provider:
+
+- requires an externally authorized `geotask.runtime.execute-nonlocal` operation;
+- applies `with_options(max_retries=0)` before the call;
+- performs one synchronous `responses.create` request;
+- sends the complete GeoTask Document as text input;
+- configures strict JSON Schema Structured Outputs;
+- sets response storage to false and truncation to disabled;
+- supplies no tools, conversation state, provider metadata, or production action capability;
+- accepts only a fixed outer object containing one `artifact_json` string;
+- strictly parses the nested JSON with duplicate-key and non-finite-number rejection;
+- returns the nested object to the provider-neutral registered Artifact and truthfulness guards.
+
+The outer schema is intentionally narrow rather than duplicating the complete GeoTask execution-result Schema in provider request syntax. The inner value remains subject to the authoritative bundled GeoTask Schema and strict semantic loader after the provider call.
+
+A completed provider response uses the official SDK response request ID and response ID when available. A call exception without a server request ID receives a deterministic client-side audit reference derived from the Runtime request and idempotency key. This records an attempted external call without inventing a server acknowledgement.
+
+The provider does not copy provider-native exception text into Runtime diagnostics and never retries automatically. Retryability is limited to explicitly classified status or connection conditions. Repository tests use an SDK-shaped fake client and perform no live request. Therefore the package proves provider integration and failure semantics, but not account access, model availability, billing, quota, or production readiness.

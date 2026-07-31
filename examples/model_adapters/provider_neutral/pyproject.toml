@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=77.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geotask-provider-neutral-model-adapter"
+version = "0.1.0"
+description = "Public-safe provider-neutral model Adapter skeleton for GeoTask Runtime Interface v0.1"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [
+  { name = "GeoTask Contributors" },
+]
+dependencies = [
+  "geotask-core>=0.4.0,<0.5.0",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["geotask_model_adapter_reference*"]

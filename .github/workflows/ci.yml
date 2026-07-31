@@ -36,6 +36,36 @@ jobs:
       - run: pip install build twine
       - run: python -m build
       - run: python -m twine check dist/*
+      - name: Build provider-neutral model Adapter reference package
+        run: python -m build examples/model_adapters/provider_neutral --outdir model-adapter-dist
+      - name: Check provider-neutral model Adapter distributions
+        run: python -m twine check model-adapter-dist/*
+      - name: Verify provider-neutral model Adapter distribution contents
+        shell: bash
+        run: |
+          python - <<'PY'
+          import glob
+          import tarfile
+          import zipfile
+
+          wheel = glob.glob("model-adapter-dist/*.whl")[0]
+          sdist = glob.glob("model-adapter-dist/*.tar.gz")[0]
+          wheel_names = zipfile.ZipFile(wheel).namelist()
+          sdist_names = tarfile.open(sdist).getnames()
+          assert not any(name.startswith("geotask_core/") for name in wheel_names)
+          assert any(name.endswith(".dist-info/licenses/LICENSE") for name in wheel_names)
+          required = (
+              "/LICENSE",
+              "/README.md",
+              "/examples/model_runtime_descriptor.json",
+              "/examples/model_runtime_request.json",
+              "/examples/mock_model_execution_result.json",
+              "/src/geotask_model_adapter_reference/adapter.py",
+              "/src/geotask_model_adapter_reference/contracts.py",
+              "/src/geotask_model_adapter_reference/mock_provider.py",
+          )
+          assert all(any(name.endswith(item) for name in sdist_names) for item in required)
+          PY
       - name: Verify release identity and distribution versions
         run: python .release/verify_release_preflight.py --artifacts dist --format json
       - name: Verify built Schema Bundle distributions

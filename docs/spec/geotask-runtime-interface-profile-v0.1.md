@@ -269,3 +269,25 @@ The Endpoint preserves these rules:
 - responses are marked `no-store` and do not expose the Python runtime version.
 
 This distinction is normative for the example boundary: transport failures must not be represented as Runtime states, while Runtime operation outcomes must remain inside a strictly loaded Runtime Response Artifact. The service is not remotely deployable by default and is not a production authentication, authorization, rate-limiting, audit, or action-execution implementation.
+
+## 15. Provider-neutral model Adapter package skeleton
+
+The public repository includes `examples/model_adapters/provider_neutral/` as a non-normative, independently buildable package skeleton for `geotask.runtime.execute-nonlocal`. It depends on the Runtime Interface planned for GeoTask Core `0.4.x`, but it is not part of the `geotask-core` distribution and is not published in this stage.
+
+The package defines:
+
+- non-secret Adapter configuration with stable Runtime, model, input Artifact, and output Artifact references;
+- a structural `StructuredModelProvider` Protocol with explicit declarations for external calls, authorization, and audit support;
+- provider-neutral invocation, diagnostic, and result dataclasses;
+- a no-network Mock Provider;
+- a Runtime Adapter that checks the Request contract and validates the registered input Artifact before provider invocation;
+- explicit `model_only` / `executor=model` input gating and rejection of credential-like metadata keys before provider invocation;
+- registered output Artifact validation and model-output truthfulness checks before returning `completed`;
+- mapping of real external model calls to `side_effect=external_read`, opaque authorization references, `side_effects_executed`, and `audit_ref` without resolving credentials in Core or the public skeleton;
+- a requirement that any provider declaring external calls also declare audit support, so an executed call can be represented truthfully.
+
+The default Mock Provider advertises `implementation_kind=mock`, `side_effect=none`, `requires_authorization=false`, and `production_ready=false`. A separately implemented real provider may advertise `implementation_kind=external`, `side_effect=external_read`, external authorization, and audit support. The package contains no provider SDK, network client, credential resolver, prompt registry, model routing, token budget, cost governance, evidence connector, or production action logic.
+
+A model-generated `geotask.execution-result` remains distinct from a verified result. Before accepting a provider output, the reference Adapter requires the output task ID to match the submitted document, `execution.mode=model_only`, `executor=model`, `deterministic=false`, and model-scoped or unverified assurance. A provider output that claims `verified`, `local_deterministic`, independent verification, human review, or deterministic execution is returned as `failed` with no output Artifact. Independent deterministic execution or another verifier must raise assurance in a separate workflow.
+
+Provider-native exceptions are not converted into invented Runtime states. When a provider cannot return a trustworthy `StructuredModelResult`, the Adapter raises a generic contract error without exposing provider-native exception text or claiming whether an external operation succeeded.

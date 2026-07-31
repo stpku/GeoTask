@@ -181,6 +181,8 @@ geotask runtime mock examples/core/runtime_validate_artifact_request.json --outp
 
 The public repository also includes [`examples/adapters/http_json_runtime_adapter.py`](examples/adapters/http_json_runtime_adapter.py), showing how an offline-inspected Descriptor can be bound to an independently hosted HTTP Runtime outside `geotask_core`. The paired [`examples/endpoints/reference_runtime_http_server.py`](examples/endpoints/reference_runtime_http_server.py) starts a real loopback HTTP Endpoint and completes the Adapter-to-Endpoint path. Neither example fetches the Descriptor online, manages credentials, retries, calls a model, or executes production actions; transport errors remain separate from Runtime states, and the returned Response still passes Core's Descriptor / Request / Response three-way contract validation.
 
+[`examples/model_adapters/provider_neutral/`](examples/model_adapters/provider_neutral/) adds an independently buildable provider-neutral model Adapter package skeleton. It defines non-secret configuration, a structural Provider Protocol, a Mock Provider, and `execute-nonlocal` mapping, validates registered input and output Artifacts, and rejects model output that pretends to be `verified`, `local_deterministic`, or deterministic. It still contains no real provider SDK, credentials, paid-model call, routing, or cost governance.
+
 ## Version map
 
 | Artifact | Current version | Meaning |

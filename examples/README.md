@@ -41,6 +41,10 @@ patent-sensitive workflows.
   and returns validated Runtime Responses without credentials, model calls, or production actions.
 - `examples/endpoints/README.md`: the endpoint startup workflow, HTTP/Runtime-state distinction,
   defensive transport behavior, and production-service boundary.
+- `examples/model_adapters/provider_neutral/`: an independently buildable provider-neutral model
+  Adapter package skeleton with non-secret configuration, a structural Provider Protocol, a
+  no-network Mock Provider, registered input/output Artifact validation, model-truthfulness guards,
+  and Descriptor/Request/mock-result examples. It contains no real provider SDK or credentials.
 - `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
   incompatible results trigger a structured conflict review task.
 - `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes

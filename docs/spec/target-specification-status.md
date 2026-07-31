@@ -16,7 +16,7 @@ For the current public Core, use:
 6. public source code and tests
 7. [Operator Registry](../operator_registry.md)
 
-These sources describe what the current repository can parse, validate, and execute. The Runtime Interface currently covers offline Descriptor discovery, side-effect-free Request preflight, strict Runtime message validation, a three-way Descriptor/Request/Response exchange guard, one fail-closed read-only reference adapter, a public-safe external HTTP JSON transport Adapter, and a paired loopback-only reference Endpoint outside Core. It does not include a production Runtime, hosted model adapter, external evidence connector, credential resolver, approval engine, remote service deployment, or production action executor.
+These sources describe what the current repository can parse, validate, and execute. The Runtime Interface currently covers offline Descriptor discovery, side-effect-free Request preflight, strict Runtime message validation, a three-way Descriptor/Request/Response exchange guard, one fail-closed read-only reference adapter, a public-safe external HTTP JSON transport Adapter, a paired loopback-only reference Endpoint, and an independently buildable provider-neutral model Adapter package skeleton outside Core. The model skeleton includes only a no-network Mock Provider and truthfulness guards; it does not include a production Runtime, real hosted-model SDK, provider credentials, paid-model call, external evidence connector, approval engine, remote service deployment, routing or cost governance, or production action executor.
 
 ## Why the Target Draft Is Separate
 

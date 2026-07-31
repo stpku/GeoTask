@@ -438,6 +438,13 @@ JSON, while a valid Request Artifact refused by the Runtime returns HTTP `200` w
 a contract-valid `rejected` Runtime Response. It does not expose online Descriptor
 discovery, credentials, remote binding, hosted models, external evidence, or actions.
 
+The independently buildable provider-neutral model Adapter skeleton is under
+[`examples/model_adapters/provider_neutral/`](../examples/model_adapters/provider_neutral/).
+Its Mock Provider performs no model call. The Adapter maps `execute-nonlocal`, validates
+registered input/output Artifacts, and rejects model output that claims deterministic
+or independently verified assurance. Real Provider SDKs and credentials are intentionally
+absent and must remain outside Core and the public skeleton.
+
 The three registered Runtime Artifacts are:
 
 - `geotask.runtime-descriptor`;

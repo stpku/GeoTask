@@ -2,9 +2,9 @@
 
 ## 状态
 
-当前状态：`readiness_and_evidence_auditor_verified_live_request_not_executed`。
+当前状态：`official_sdk_mock_transport_verified_server_readiness_blocked_external_authorization_pending_live_request_not_executed`。
 
-本手册对应`examples/runtime/openai_responses_live_smoke.py`和`examples/runtime/openai_responses_live_smoke_audit.py`。执行器、只读审计器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
+本手册对应`examples/runtime/openai_responses_live_smoke.py`、`examples/runtime/openai_responses_live_smoke_audit.py`和`examples/runtime/openai_responses_live_smoke_evidence.py`。执行器、只读审计器、证据校验器、测试和本手册均位于私有边界，不进入公共导出，也不进入常规公共CI。
 
 ## 目的
 
@@ -40,7 +40,7 @@
 ## 运行前检查
 
 1. 确认Git工作区干净；
-2. 使用隔离Python环境安装GeoTask Core、Provider-neutral Adapter、OpenAI Responses Adapter和官方OpenAI SDK；
+2. 使用仓库外隔离Python环境准备官方OpenAI SDK、GeoTask Core、Provider-neutral Adapter和OpenAI Responses Adapter；在GeoTask Core v0.4.0正式标记前，只允许通过明确的源码路径加载两个Adapter，不得降低其未来Core依赖、使用`--no-deps`伪装可安装性或提前发布；
 3. 在服务器侧安全配置官方SDK认证材料，不要把认证材料写入命令行、源码、Runtime Artifact或报告；
 4. 确认`OPENAI_BASE_URL`未设置；
 5. 确认`OPENAI_LOG`未设置；
@@ -74,6 +74,21 @@ python examples/runtime/openai_responses_live_smoke.py `
 ```
 
 任何预检失败都必须先修复，不得通过修改脚本常量、放宽模型格式或删除安全检查来绕过。
+
+### 官方SDK离线传输兼容性门禁
+
+首次真实执行前，必须在目标隔离环境运行：
+
+```bash
+python -m pytest \
+  tests/test_openai_responses_live_smoke_audit.py \
+  -k official_sdk_mock_transport \
+  -q
+```
+
+该测试使用官方OpenAI SDK和`httpx.MockTransport`，实际经过`OpenAI.responses.create`的请求序列化与响应反序列化，但不会访问外网。通过条件包括：生成`POST /v1/responses`、`store=false`、严格JSON Schema、无工具、零自动重试，以及服务端请求ID和响应ID能够形成GeoTask审计引用。
+
+该门禁只证明当前SDK版本与Adapter传输合同兼容，不证明账户访问权限、模型可用性、余额、配额、计费状态或真实服务稳定性。
 
 ## 第二步：签发一次性授权票据
 

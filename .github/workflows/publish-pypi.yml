@@ -118,7 +118,7 @@ jobs:
         name: Read package version
         shell: bash
         run: |
-          package_version="$(python - <<'PY'
+          package_version="$(python3 - <<'PY'
           import runpy
           print(runpy.run_path("src/geotask_core/_version.py")["__version__"])
           PY

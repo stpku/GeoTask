@@ -35,9 +35,11 @@ def load_manifest() -> dict:
 
 
 def matches_any(name: str, patterns: list[str]) -> bool:
-    """Return True if *name* matches any fnmatch pattern in *patterns*."""
-    for pat in patterns:
-        if fnmatch.fnmatch(name, pat):
+    """Return True after normalizing Windows and POSIX path separators."""
+    normalized_name = name.replace("\\", "/")
+    for pattern in patterns:
+        normalized_pattern = pattern.replace("\\", "/")
+        if fnmatch.fnmatch(normalized_name, normalized_pattern):
             return True
     return False
 

@@ -83,17 +83,16 @@ def test_preflight_never_imports_provider_or_allows_a_call(tmp_path: Path) -> No
     }
     try:
         report = MODULE.execute_live_smoke(plan, environ={})
+        body = report["live_smoke_plan"]
+        assert body["valid"] is True
+        assert body["execute_live"] is False
+        assert body["provider_calls_allowed"] == 0
+        assert body["live_request_executed"] is False
+        assert all(name not in sys.modules for name in original)
     finally:
         for name, value in original.items():
             if value is not None:
                 sys.modules[name] = value
-
-    body = report["live_smoke_plan"]
-    assert body["valid"] is True
-    assert body["execute_live"] is False
-    assert body["provider_calls_allowed"] == 0
-    assert body["live_request_executed"] is False
-    assert "openai" not in sys.modules
 
 
 def test_model_budget_timeout_and_report_path_are_fail_closed(tmp_path: Path) -> None:

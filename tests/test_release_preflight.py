@@ -194,7 +194,7 @@ def test_ci_and_publish_workflows_enforce_release_preflight() -> None:
     assert 'if [ "$head_commit" != "$tag_commit" ]' in publish
     assert '--expected-version "$EXPECTED_VERSION"' in publish
     assert '--expected-tag "v$EXPECTED_VERSION"' in publish
-    assert "package_version=\"$(python - <<'PY'" in publish
+    assert "package_version=\"$(python3 - <<'PY'" in publish
     assert "--artifacts dist" in publish
 
 

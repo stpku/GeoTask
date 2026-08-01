@@ -33,6 +33,10 @@ from geotask_core.v1.core_benchmark_contract import CoreBenchmarkFormatError
 from geotask_core.v1.core_benchmark_report import load_core_benchmark_report
 from geotask_core.v1.observation import ObservationFormatError, load_observation
 from geotask_core.v1.world_state import WorldStateFormatError, load_world_state
+from geotask_core.v1.state_transition import (
+    StateTransitionFormatError,
+    load_state_transition,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -772,6 +776,63 @@ def _validate_world_state_payload(
     )
 
 
+def _validate_state_transition_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        transition = load_state_transition(payload)
+    except StateTransitionFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_state_transition",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask State Transition v0.1. "
+                        "Structural validity does not compare snapshots, apply changes, or authorize action."
+                    ),
+                ),
+            ),
+        )
+
+    relation_change_count = sum(
+        1 for item in transition.changes if item.kind == "relation"
+    )
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "transition_id": transition.transition_id,
+            "world_state_id": transition.from_state.world_state_id,
+            "from_revision": transition.from_state.revision,
+            "to_revision": transition.to_state.revision,
+            "change_count": len(transition.changes),
+            "relation_change_count": relation_change_count,
+            "action_eligibility_change_count": len(
+                transition.action_eligibility_changes
+            ),
+            "observation_ref_count": len(transition.observation_refs),
+            "evidence_ref_count": len(transition.evidence_refs),
+            "semantic_fingerprint": transition.semantic_fingerprint(),
+            "snapshot_bindings_verified": False,
+            "changes_applied": False,
+            "world_state_materialized": False,
+            "external_truth_verified": False,
+            "action_authorized": False,
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -784,6 +845,8 @@ def _validate_verified_payload(
         return _validate_observation_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.world-state":
         return _validate_world_state_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.state-transition":
+        return _validate_state_transition_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.execution-result":
         return _validate_serialized_payload(
             descriptor,

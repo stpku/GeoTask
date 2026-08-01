@@ -1,0 +1,80 @@
+{
+  "state_transition": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-state-transition-v0.1.schema.json",
+    "schema_version": "0.1",
+    "transition_id": "fictional-uav-separation-recheck-transition",
+    "occurred_at": "2026-07-16T10:01:00+08:00",
+    "recorded_at": "2026-07-16T10:01:03+08:00",
+    "from_state": {
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 1,
+      "as_of": "2026-07-16T10:00:40+08:00",
+      "semantic_fingerprint": "256b05cd81de380029f7815f0313bbf6497e2c9394ce2b5c11c54af332ac98ea"
+    },
+    "to_state": {
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "semantic_fingerprint": "7b432a7d6ee91a2e4bdaea0b4e1abc55bc93bf91a1cd5354ef57e1ac56b4725d"
+    },
+    "observation_refs": [
+      "obs-uav-b-delay-002"
+    ],
+    "evidence_refs": [
+      "telemetry:fictional/uav-b/delay-002",
+      "execution-result:fictional/gt16/temporal-recheck"
+    ],
+    "changes": [
+      {
+        "id": "change-uav-b-delay",
+        "kind": "attribute",
+        "operation": "replace",
+        "path": "/objects/uav-b/attributes/delay_seconds/value",
+        "before": 40,
+        "after": 60,
+        "basis": "direct_observation",
+        "verification_status": "asserted",
+        "reason": "A later fictional telemetry Observation reports a sixty-second delay.",
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-b/delay-002"
+        ]
+      },
+      {
+        "id": "change-temporal-separation",
+        "kind": "relation",
+        "operation": "replace",
+        "path": "/relations/uav-temporal-separation/value",
+        "before": 80,
+        "after": 60,
+        "basis": "derived",
+        "verification_status": "verified",
+        "reason": "The deterministic temporal recheck reduces the predicted separation to sixty seconds.",
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-b/delay-002",
+          "execution-result:fictional/gt16/temporal-recheck"
+        ]
+      }
+    ],
+    "action_eligibility_changes": [
+      {
+        "id": "eligibility-continue-without-recheck",
+        "output_ref": "continue_route_without_recheck",
+        "before": "eligible",
+        "after": "blocked",
+        "reason": "The declared sixty-second recheck threshold has been reached; continued operation now requires another explicit review.",
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "execution-result:fictional/gt16/temporal-recheck"
+        ]
+      }
+    ]
+  }
+}

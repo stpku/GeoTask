@@ -27,7 +27,8 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert "30秒看懂一次世界状态更新" in html
     assert "四个平面构成可验证时空世界模型" in html
     assert "六类能力共同维护智能体的世界" in html
-    assert "World State、Transition与Verification Session待实现" in html
+    assert "Observation v0.1、World State v0.1" in html
+    assert "Observation合并、State Transition、Verification Session" in html
     assert "保护商业运行层" not in html
     assert "商业边界" not in html
     assert "GT01—GT20渐进式案例" in html
@@ -75,6 +76,7 @@ def test_portal_links_primary_public_resources() -> None:
         "https://github.com/stpku/GeoTask",
         "docs/whitepaper/GeoTask_White_Paper_v0.1.md",
         "docs/spec/geotask-language-spec-v1.0.md",
+        "docs/spec/geotask-world-state-v0.1.md",
         "docs/tutorials/quickstart.zh-CN.md",
         "docs/cookbook/gt01-gt20.zh-CN.md",
         "schemas/geotask-v1.0.schema.json",

@@ -32,6 +32,7 @@ from geotask_core.v1.artifact_registry import (
 from geotask_core.v1.core_benchmark_contract import CoreBenchmarkFormatError
 from geotask_core.v1.core_benchmark_report import load_core_benchmark_report
 from geotask_core.v1.observation import ObservationFormatError, load_observation
+from geotask_core.v1.world_state import WorldStateFormatError, load_world_state
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -721,6 +722,56 @@ def _validate_observation_payload(
     )
 
 
+def _validate_world_state_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        world_state = load_world_state(payload)
+    except WorldStateFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_world_state",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask World State v0.1. "
+                        "Structural validity does not prove external truth or compute a transition."
+                    ),
+                ),
+            ),
+        )
+
+    attribute_count = sum(len(item.attributes) for item in world_state.objects)
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "world_state_id": world_state.world_state_id,
+            "revision": world_state.revision,
+            "as_of": world_state.as_of,
+            "object_count": len(world_state.objects),
+            "attribute_count": attribute_count,
+            "relation_count": len(world_state.relations),
+            "observation_ref_count": len(world_state.observation_refs),
+            "evidence_ref_count": len(world_state.evidence_refs),
+            "semantic_fingerprint": world_state.semantic_fingerprint(),
+            "external_truth_verified": False,
+            "state_transition_computed": False,
+            "action_eligibility_changed": False,
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -731,6 +782,8 @@ def _validate_verified_payload(
         return _validate_document_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.observation":
         return _validate_observation_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.world-state":
+        return _validate_world_state_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.execution-result":
         return _validate_serialized_payload(
             descriptor,

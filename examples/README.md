@@ -22,6 +22,11 @@ patent-sensitive workflows.
   CRS, coordinate order, horizontal/vertical unit, vertical datum, and closed-boundary contract.
 - `examples/core/v1_provenance_evidence_audit.yaml`: fictional source records, strict
   evidence-to-assertion bindings, authoring audit metadata, and propagated result evidence refs.
+- `examples/core/observation_uav_delay.json`: fictional source-bound UAV delay Observation with
+  producer identity, evidence, validity, uncertainty, and no truth or state-update claim.
+- `examples/core/world_state_uav_separation.json`: fictional World State v0.1 snapshot with two
+  UAV objects, versioned attributes and relations, as-of validity, uncertainty, closed
+  Observation/Evidence references, and no automatic transition or action authorization.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

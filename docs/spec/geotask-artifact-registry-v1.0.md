@@ -10,24 +10,24 @@ GeoTask publishes several machine-readable artifacts with different producers,
 wrappers, JSON Schemas, and validation commands. The Artifact Registry provides
 one stable public discovery surface for those contracts.
 
-The registry currently contains exactly thirteen artifacts:
+The registry currently contains exactly fourteen artifacts:
 
 1. GeoTask Document v1.0;
 2. GeoTask Observation v0.1;
-3. GeoTask Execution Result v1.0;
-4. GeoTask Control Evaluation Result v1.0;
-5. GeoTask Agent Generation Preparation Report v0.1;
-6. GeoTask Agent Revision Verification Report v0.1;
-7. GeoTask Agent Revision Retry Report v0.1;
-8. GeoTask Agent Evidence Recovery Report v0.1;
-9. GeoTask Runtime Descriptor v0.1;
-10. GeoTask Runtime Request v0.1;
-11. GeoTask Runtime Response v0.1;
-12. GeoTask Core Benchmark Report v0.1;
-13. GeoTask Artifact Validation Report v1.0.
+3. GeoTask World State v0.1;
+4. GeoTask Execution Result v1.0;
+5. GeoTask Control Evaluation Result v1.0;
+6. GeoTask Agent Generation Preparation Report v0.1;
+7. GeoTask Agent Revision Verification Report v0.1;
+8. GeoTask Agent Revision Retry Report v0.1;
+9. GeoTask Agent Evidence Recovery Report v0.1;
+10. GeoTask Runtime Descriptor v0.1;
+11. GeoTask Runtime Request v0.1;
+12. GeoTask Runtime Response v0.1;
+13. GeoTask Core Benchmark Report v0.1;
+14. GeoTask Artifact Validation Report v1.0.
 
-The world-model input contract uses the stable Artifact ID `geotask.observation`.
-It records structured claims but does not verify truth or update a WorldState.
+The world-model input contract uses `geotask.observation`; it records structured claims but does not verify truth or automatically update a World State. The snapshot contract uses `geotask.world-state`; it validates one explicit state snapshot but does not merge observations, compute a State Transition, or change action eligibility.
 
 It does not scan the filesystem, discover private modules, or infer unpublished
 contracts. New entries require an explicit public contract and compatibility
@@ -65,7 +65,7 @@ geotask inspect schemas geotask.execution-result --verify --format json
 ```
 
 `--verify` appends a sibling `schema_bundle_verification` object. Full discovery
-checks the registry Schema plus all thirteen registered Artifact Schemas; exact
+checks the Registry Schema plus all fourteen registered Artifact Schemas; exact
 lookup checks only the selected artifact Schema. An invalid Bundle still emits
 the composite JSON or YAML report and exits non-zero. Without `--verify`, output
 remains the original Artifact Registry v1.0 payload and continues to validate
@@ -91,6 +91,9 @@ from geotask_core import (
     OBSERVATION_SCHEMA_ID,
     OBSERVATION_SCHEMA_VERSION,
     load_observation,
+    WORLD_STATE_SCHEMA_ID,
+    WORLD_STATE_SCHEMA_VERSION,
+    load_world_state,
     ARTIFACT_VALIDATION_SCHEMA_ID,
     ARTIFACT_VALIDATION_SCHEMA_VERSION,
     AGENT_GENERATION_PREPARATION_SCHEMA_ID,
@@ -141,8 +144,8 @@ The same names are exported from `geotask_core.v1`.
 
 ### 3.1 Installed Schema Bundle
 
-The wheel and source distribution include all fourteen public JSON Schemas needed to
-interpret the Registry and its thirteen registered Artifacts. Callers can load them
+The wheel and source distribution include all fifteen public JSON Schemas needed to
+interpret the Registry and its fourteen registered Artifacts. Callers can load them
 without network access:
 
 ```python
@@ -236,7 +239,7 @@ and non-execution boundary.
   "artifact_registry": {
     "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-artifact-registry-v1.0.schema.json",
     "registry_version": "1.0",
-    "artifact_count": 13,
+    "artifact_count": 14,
     "artifacts": [
       {
         "artifact_id": "geotask.document",
@@ -259,7 +262,7 @@ and non-execution boundary.
 }
 ```
 
-The complete payload contains all thirteen descriptors in stable display order.
+The complete payload contains all fourteen descriptors in stable display order.
 
 ## 5. Descriptor fields
 

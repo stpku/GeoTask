@@ -65,6 +65,7 @@
           "enum": [
             "task_document",
             "world_observation",
+            "world_state_snapshot",
             "execution_result",
             "control_evaluation_result",
             "agent_generation_preparation_report",

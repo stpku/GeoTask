@@ -357,6 +357,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask inspect schemas --format json",
         "ArtifactDescriptor",
         "geotask.document",
+        "geotask.observation",
         "geotask.execution-result",
         "geotask.control-evaluation",
         "geotask.agent-generation-preparation",
@@ -367,8 +368,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-request",
         "geotask.runtime-response",
         "geotask.core-benchmark-report",
-        "exactly twelve artifacts",
-        "all thirteen public JSON Schemas",
+        "exactly thirteen artifacts",
+        "all fourteen public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text
@@ -759,7 +760,7 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "v0.4：Runtime接口、模型适配与对象扩展" in roadmap
     assert "v0.5：Verifiable World-State Cycle" in roadmap
     assert "v0.6：Local Verification Providers与Domain Pack生态" in roadmap
-    assert "Observation Artifact" in roadmap
+    assert "Observation v0.1 Artifact" in roadmap
     assert "World State Artifact" in roadmap
     assert "State Transition Artifact" in roadmap
     assert "VerificationSession" in roadmap

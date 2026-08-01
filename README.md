@@ -24,7 +24,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - **验证与控制机制负责维护世界：** 保留已证实事实，标记冲突和未知，限定纠偏范围，并管理行动资格；
 - **Runtime与Domain Pack负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
 
-> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。完整的Observation、World State、State Transition和增量重算仍在持续建设。
+> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。Observation v0.1已用于表达带来源和不确定性的世界命题，但World State、State Transition和增量重算仍在持续建设。
 
 ## 从这里开始
 
@@ -63,7 +63,7 @@ flowchart LR
   N[新观察到来] --> W
 ```
 
-当前公共Core已经实现世界对象与空间合同、来源与证据绑定、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。第一类`WorldState`、`Observation`、`VerificationSession`、`StateTransition`、影响图和增量重算仍属于后续路线图。
+当前公共Core已经实现世界对象与空间合同、来源与证据绑定、Observation v0.1、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。第一类`WorldState`、`VerificationSession`、`StateTransition`、影响图和增量重算仍属于后续路线图。
 
 ## 5分钟运行
 

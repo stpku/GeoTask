@@ -14,7 +14,7 @@
 
 GeoTask 将自身定位为面向智能体的显式、可验证时空世界模型。它把多模态模型、传感器、地图、权威数据和人工输入转化为世界对象、时空关系、状态、证据、约束与行动资格，使智能体依赖的现实事实能够被计算、验证、更新、追溯和纠偏。验错、补证、限定修订、状态复核和行动门控不是最高层定义，而是GeoTask维护可信世界状态的核心机制。
 
-GeoTask不是以视频生成或隐式神经动力学预测为核心的单体世界模型。公共 Core 提供可验证时空世界模型的状态契约、任务与Artifact表示、本地确定性验证、证据绑定、控制评估和Agent修订基础；Runtime与Domain Pack负责权威数据、行业规则、本地预测模型、人工复核和生产动作。“可验证时空任务协议”是当前工程实现形式，而Observation、World State、State Transition和增量复核是下一阶段公共抽象。
+GeoTask不是以视频生成或隐式神经动力学预测为核心的单体世界模型。公共 Core 提供可验证时空世界模型的状态契约、任务与Artifact表示、本地确定性验证、证据绑定、Observation v0.1、控制评估和Agent修订基础；Runtime与Domain Pack负责权威数据、行业规则、本地预测模型、人工复核和生产动作。“可验证时空任务协议”是当前工程实现形式，而World State、State Transition和增量复核是下一阶段公共抽象。
 
 ---
 
@@ -90,7 +90,7 @@ State Update / Bounded Correction ← New Observation
         Action Eligibility Gate
 ```
 
-当前公共 Core 已实现世界对象和空间合同、来源与证据绑定、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。第一类Observation、World State、State Transition、Verification Session、通用差异报告、影响图和增量重算仍是后续工程目标。
+当前公共 Core 已实现世界对象和空间合同、来源与证据绑定、Observation v0.1、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。第一类World State、State Transition、Verification Session、通用差异报告、影响图和增量重算仍是后续工程目标。
 
 ---
 
@@ -138,7 +138,7 @@ GeoTask更接近一种外显、符号—计算、组合式的世界模型：
 | 状态来源 | 主要来自训练与感知模型 | 模型、传感器、地图、权威数据和人工均可接入 |
 | 计算方式 | 神经预测或生成 | 确定性算子、规则、本地模型和人工复核组合 |
 | 可信机制 | 置信度或评测指标 | 来源、证据、验证状态、冲突、有效范围和审计链 |
-| 状态更新 | 更新上下文或隐状态 | 目标上通过Observation、World State、Transition和Recheck显式更新 |
+| 状态更新 | 更新上下文或隐状态 | Observation v0.1已显式记录变化输入；World State、Transition和Recheck仍在建设 |
 | 行动边界 | 通常由外围系统处理 | 行动资格和阻断条件是世界状态合同的一部分 |
 
 因此，GeoTask可以连接神经世界模型，将其输出作为带来源和不确定性的Observation；GeoTask负责把这些观察纳入共享世界状态，并与本地算法、规则和权威证据交叉验证。

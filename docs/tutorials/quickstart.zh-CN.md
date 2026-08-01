@@ -143,20 +143,21 @@ geotask artifact validate geotask.core-benchmark-report core-benchmark.json
 geotask inspect schemas --format json
 ```
 
-例如VS Code配合YAML扩展时，可将`geotask.document`返回的`schema_id`和`ide_file_patterns`转为：
+仓库已经提供可直接复用的[`.vscode/settings.json`](../../.vscode/settings.json)。例如VS Code配合YAML语言支持时，可将`geotask.document`返回的`schema_id`和`ide_file_patterns`转为：
 
 ```json
 {
   "yaml.schemas": {
-    "https://github.com/stpku/GeoTask/schemas/geotask-v1.0.schema.json": [
-      "*.geotask.yaml",
-      "*.geotask.yml",
-      "examples/core/**/*.yaml",
-      "examples/core/**/*.yml"
+    "./schemas/geotask-v1.0.schema.json": [
+      "**/*.geotask.yaml",
+      "**/*.geotask.yml",
+      "examples/core/v1_*.yaml"
     ]
   }
 }
 ```
+
+该配置仅使用本地Schema文件，不依赖远程Schema服务。旧版`0.2/0.3`示例未统一套用v1 Schema，避免编辑器产生误报。
 
 ## 6. 模型输出与本地验证
 

@@ -7,6 +7,7 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 ## 从这里开始
 
 - [GeoTask白皮书v0.1](whitepaper/GeoTask_White_Paper_v0.1.md)：为什么智能体需要显式、可验证的时空世界模型，GeoTask与隐式神经世界模型有何区别，以及当前实现和目标状态演化能力的边界。
+- [白皮书英文摘要](whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)：在同一份非规范性白皮书中提供结构一致的英文摘要与核心术语映射。
 - [白皮书构建说明](whitepaper/README.md)：从Markdown生成HTML、DOCX和可选PDF。
 - [中文快速入门](tutorials/quickstart.zh-CN.md)：安装、验证、执行和检查第一个任务。
 - [GT01—GT20中文案例手册](cookbook/gt01-gt20.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度、设备能力约束和高风险动作门控。
@@ -22,6 +23,7 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [Agent集成Profile v0.1](spec/geotask-agent-integration-profile-v0.1.md)：定义Agent调用四类公共工具、机械修复生成草稿、执行修订差异门禁、验证四类Agent报告Artifact、处理unknown/blocked状态以及补证据后重新执行的边界。
 - [Runtime接口Profile v0.1](spec/geotask-runtime-interface-profile-v0.1.md)：定义Core与外部Runtime之间的Descriptor、Request、Response、授权、幂等、审计及副作用边界，并提供公共安全的HTTP Adapter、回环Endpoint、Provider-neutral模型Adapter以及首个OpenAI Responses Provider包。
 - [GeoTask Core Agent Skill](../skills/geotask-core/SKILL.md)：可直接注入Agent的模型无关操作指令与安全约束。
+- [VS Code Schema配置示例](../.vscode/settings.json)：将本地任务文件关联到仓库内JSON Schema。
 - [v0.3.0 Agent集成版发布说明](release_v0_3_0.md)：新增Agent生成任务准备、受约束修订、补证据恢复、四类Agent报告Artifact及8类Artifact/9份Schema统一验证。
 - [v0.2.0制品契约版发布说明](release_v0_2_0.md)：新增Artifact Registry、离线Schema Bundle、统一制品校验和验证报告自验证。
 - [v0.1.1 PyPI修正版发布说明](release_v0_1_1.md)：修正发行元数据与模块版本不一致，并完成PyPI安装验证。

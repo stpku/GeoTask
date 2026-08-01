@@ -1,0 +1,72 @@
+geotask:
+  id: "point-to-line-distance-minimal-en"
+  name: "Point-to-Line Distance Minimal Example"
+  description: "Measure a point offset from a route and a point exactly on its boundary."
+  schema_version: "1.0"
+  language: "en"
+  domain: "general_spatial"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  axes:
+    x: "east"
+    y: "north"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+
+objects:
+  off_route_point:
+    type: "point"
+    coordinates: [3, 4]
+  on_route_point:
+    type: "point"
+    coordinates: [5, 0]
+  route:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [10, 0]
+
+operator_set:
+  - point_to_line_distance_2d
+
+tasks:
+  - id: "measure_route_distance"
+    family: "measurement"
+    goal: "Measure the shortest distance from each point to the route."
+    assertions:
+      - id: "off_route_distance"
+        operator: "point_to_line_distance_2d"
+        object_refs: ["off_route_point", "route"]
+        expected_type: "number"
+        unit: "meter"
+      - id: "on_route_distance"
+        operator: "point_to_line_distance_2d"
+        object_refs: ["on_route_point", "route"]
+        expected_type: "number"
+        unit: "meter"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "measure"
+      executor: "local"
+      assertion_refs: ["off_route_distance", "on_route_distance"]
+      depends_on: []
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "off_route_distance"
+    - "on_route_distance"
+  allow_additional_fields: true
+
+expected_results:
+  - name: "off_route_distance"
+    value: 4.0
+    unit: "meter"
+  - name: "on_route_distance"
+    value: 0.0
+    unit: "meter"

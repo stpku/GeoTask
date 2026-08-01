@@ -6,6 +6,9 @@ All notable public changes to GeoTask Core are documented here.
 
 ### Added
 
+- Add matching English and Chinese native-v1 `point_to_line_distance_2d` examples with deterministic four-meter and zero-distance boundary checks, plus regression coverage that keeps their machine contracts identical.
+- Add a repository-local VS Code YAML Schema association for native v1 GeoTask files and document it in both Quickstarts without requiring a remote Schema service.
+- Add an English abstract and core terminology map inside the existing non-normative white paper, with bilingual README and documentation-index navigation.
 - Add the public GeoTask Runtime Interface Profile v0.1 with `RuntimeAdapter`, versioned Runtime Descriptor, Request, and Response Artifacts, strict loaders, model-neutral operation identifiers, and three-way Descriptor/Request/Response exchange validation.
 - Add file-based `geotask runtime inspect`, side-effect-free `geotask runtime check`, explicit operation input cardinality, and a fail-closed `geotask runtime mock` reference adapter. Offline checks never submit a request; post-submission validation rejects input-count, output, synchrony, audit, authorization, and side-effect claims that contradict the inspected Descriptor or submitted Request.
 - Register `geotask.runtime-descriptor`, `geotask.runtime-request`, and `geotask.runtime-response` as offline-verifiable public Artifacts. The development Registry now exposes eleven Artifacts and the Schema Bundle contains twelve Schemas.

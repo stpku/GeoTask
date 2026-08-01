@@ -1,0 +1,9 @@
+{
+  "yaml.schemas": {
+    "./schemas/geotask-v1.0.schema.json": [
+      "**/*.geotask.yaml",
+      "**/*.geotask.yml",
+      "examples/core/v1_*.yaml"
+    ]
+  }
+}

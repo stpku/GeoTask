@@ -604,6 +604,38 @@ def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -
         assert "geotask validate my_distance.yaml" in text
         assert "geotask run my_distance.yaml" in text
         assert "schemas/geotask-v1.0.schema.json" in text
+        assert ".vscode/settings.json" in text
+        assert '"yaml.schemas"' in text
+        assert '"examples/core/v1_*.yaml"' in text
+
+
+def test_vscode_schema_example_uses_local_native_v1_contract() -> None:
+    settings_path = ROOT / ".vscode" / "settings.json"
+    settings = json.loads(settings_path.read_text(encoding="utf-8"))
+
+    assert settings == {
+        "yaml.schemas": {
+            "./schemas/geotask-v1.0.schema.json": [
+                "**/*.geotask.yaml",
+                "**/*.geotask.yml",
+                "examples/core/v1_*.yaml",
+            ]
+        }
+    }
+
+
+def test_whitepaper_embeds_one_english_abstract_and_terminology_map() -> None:
+    text = WHITEPAPER.read_text(encoding="utf-8")
+
+    assert text.count("## English Abstract") == 1
+    assert "explicit and verifiable spatiotemporal world model for AI agents" in text
+    assert "| 世界状态 | world state |" in text
+    assert "| 限定修订 | bounded revision |" in text
+    assert "| 行动资格 | action eligibility |" in text
+
+    for path in (ROOT_README_ZH, ROOT_README_EN, DOC_INDEX_ZH, DOC_INDEX_EN):
+        navigation = path.read_text(encoding="utf-8")
+        assert "GeoTask_White_Paper_v0.1.md#english-abstract" in navigation
 
 
 def test_status_and_evidence_references_keep_core_and_workflow_states_separate() -> None:
@@ -679,6 +711,9 @@ def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
         "docs/spec/geotask-agent-integration-profile-v0.1.md",
         "docs/spec/geotask-runtime-interface-profile-v0.1.md",
         "skills/geotask-core/SKILL.md",
+        ".vscode/settings.json",
+        "examples/core/v1_point_to_line_distance_minimal.en.yaml",
+        "examples/core/v1_point_to_line_distance_minimal.zh-CN.yaml",
         "src/geotask_core/v1/agent_generation.py",
         "src/geotask_core/v1/agent_artifacts.py",
         "src/geotask_core/v1/runtime_interface.py",

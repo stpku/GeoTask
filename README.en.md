@@ -144,6 +144,12 @@ See the [Cookbook](docs/cookbook/gt01-gt20.md) for all cases and source files.
 
 All tasks in one document share one CRS, coordinate order, horizontal/vertical unit, and boundary contract. Planar operators accept only `local_cartesian` or an identified `projected` CRS and require `[x, y]`; Core does not treat longitude/latitude as Euclidean coordinates or convert units. Distance assertions and altitude objects must match the document units. Current boundary-sensitive operators support `closed` only and fail closed when `open` is declared. Pure temporal tasks are not blocked by the planar CRS gate.
 
+### Provenance, evidence, and audit
+
+Documents may optionally declare `provenance.sources`, `evidence_bindings`, and `audit`. Core strictly validates source identity, kind, URI/Artifact identity, SHA-256, timezone-aware timestamps, assertion bindings, and audit references. Valid bindings are copied to the corresponding `CheckResult.evidence_refs`. Core does not fetch sources, recompute external digests, or raise assurance merely because provenance metadata exists.
+
+`geotask inspect schemas --format json` also returns portable `ide_file_patterns` for every public Artifact, suitable for VS Code YAML, JetBrains, and other IDEs that associate files with JSON Schemas.
+
 ### Execution chain
 
 ```text

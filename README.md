@@ -158,6 +158,12 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 
 同一文档中的全部任务共享一套CRS、坐标顺序、水平/垂直单位和边界语义。平面算子只接受`local_cartesian`或带标识的`projected`坐标，且坐标顺序必须为`[x, y]`；Core不会把经纬度直接当作欧氏坐标，也不会自动换算单位。距离断言与高度对象必须匹配文档单位；当前边界敏感算子只支持`closed`，声明`open`会失败关闭。纯时间任务不受平面CRS门禁影响。
 
+### 来源、证据与审计
+
+文档可选声明`provenance.sources`、`evidence_bindings`和`audit`。Core严格校验来源ID、类型、URI/Artifact身份、SHA-256、带时区时间、断言绑定和审计引用；通过后将声明的来源ID写入对应`CheckResult.evidence_refs`。该机制不联网获取来源、不重算外部摘要，也不会仅因存在来源元数据而提升Assurance等级。
+
+`geotask inspect schemas --format json`还会为每类公共Artifact返回`ide_file_patterns`，可直接用于VS Code YAML、JetBrains或其他支持JSON Schema文件匹配的IDE配置。
+
 ### 执行主链
 
 ```text

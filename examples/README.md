@@ -14,6 +14,8 @@ patent-sensitive workflows.
   grouped-route rectangle intersection with explicit closed-boundary semantics.
 - `examples/core/v1_cross_task_space_contract.yaml`: three native v1 tasks sharing one
   CRS, coordinate order, horizontal/vertical unit, vertical datum, and closed-boundary contract.
+- `examples/core/v1_provenance_evidence_audit.yaml`: fictional source records, strict
+  evidence-to-assertion bindings, authoring audit metadata, and propagated result evidence refs.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

@@ -67,6 +67,7 @@ tasks:
 execution:            # optional, defaults to local execution behavior
 verification:         # optional
 output_contract:      # optional
+provenance:           # optional
 extensions:           # optional
 expected_results:     # optional
 ```
@@ -592,6 +593,35 @@ output_contract:
 | `ordering` | Optional deterministic ordering requirements. |
 
 Output contracts constrain result shape. They do not alter operator values.
+
+### 13.1 `provenance`
+
+`provenance` is an optional document-level contract for source identity, assertion evidence, and authoring audit metadata:
+
+```yaml
+provenance:
+  sources:
+    - id: survey_dataset
+      kind: dataset
+      title: Fictional Local Survey Coordinates
+      uri: urn:geotask:fictional:survey-dataset:2026-07-31
+      version: "1.0"
+      sha256: 1111111111111111111111111111111111111111111111111111111111111111
+      verified_at: 2026-07-31T08:10:00+00:00
+  evidence_bindings:
+    - assertion_id: survey_distance
+      source_refs: [survey_dataset]
+  audit:
+    generated_by: fictional-geotask-authoring-tool
+    generator_version: 0.1.0
+    generated_at: 2026-07-31T08:15:00+00:00
+    audit_ref: audit:fictional:provenance-evidence-audit-v1
+    source_refs: [survey_dataset]
+```
+
+Each source MUST have a unique GeoTask identifier, a supported `kind`, a title, and either `artifact_id` or `uri`. Optional SHA-256 values MUST be lowercase 64-character digests. Source and audit timestamps MUST be ISO 8601 values with an explicit timezone. Evidence bindings MUST reference one existing assertion and one or more declared source IDs; one assertion may have at most one binding. Audit `source_refs` MUST also resolve to declared sources.
+
+After successful validation, Core copies the binding for each assertion into `CheckResult.evidence_refs`. This proves only that the task document declared and passed the provenance contract; Core does not fetch the source, verify the URI, recompute a supplied digest, or promote the evidence to independent or human assurance. Invalid provenance blocks execution instead of dropping or inventing evidence metadata.
 
 ---
 

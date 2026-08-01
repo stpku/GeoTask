@@ -238,6 +238,7 @@ and non-execution boundary.
         "schema_version": "1.0",
         "schema_path": "schemas/geotask-v1.0.schema.json",
         "specification_path": "docs/spec/geotask-language-spec-v1.0.md",
+        "ide_file_patterns": ["*.geotask.yaml", "*.geotask.yml", "examples/core/**/*.yaml", "examples/core/**/*.yml"],
         "wrapper_key": null,
         "generation_command": null,
         "generation_note": "Authored input. GeoTask Core does not synthesize task documents; public case starters may be created with tools/scaffold_case.py.",
@@ -265,6 +266,7 @@ Each `ArtifactDescriptor` contains:
 | `schema_version` | Artifact schema version |
 | `schema_path` | Repository-relative Schema file |
 | `specification_path` | Repository-relative normative specification |
+| `ide_file_patterns` | Portable glob patterns for IDE Schema association |
 | `wrapper_key` | Top-level JSON wrapper, or `null` for the task document |
 | `generation_command` | CLI producer command, or `null` for authored input |
 | `generation_note` | Producer and authorship explanation |

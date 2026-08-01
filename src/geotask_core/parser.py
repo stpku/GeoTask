@@ -56,7 +56,7 @@ ALLOWED_TOP_LEVEL_KEYS = (
     "geotask", "stir", "space", "objects", "ops", "task",
     "assertions", "expected_results",
     # v1.0 top-level fields
-    "tasks", "execution", "output_contract", "verification",
+    "tasks", "execution", "output_contract", "verification", "provenance",
     "operator_set", "operator_contracts", "extensions",
 )
 ALLOWED_OBJECT_FIELDS = {

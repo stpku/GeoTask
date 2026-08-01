@@ -192,6 +192,17 @@ class OutputContract:
     ordering: dict = field(default_factory=dict)
 
 
+# ── Provenance ───────────────────────────────────────────────────────────────
+
+
+@dataclass
+class ProvenanceDefinition:
+    """Document-level source, evidence-binding, and audit metadata."""
+    sources: list = field(default_factory=list)
+    evidence_bindings: list = field(default_factory=list)
+    audit: dict = field(default_factory=dict)
+
+
 # ── Canonical Document ──────────────────────────────────────────────────────
 
 
@@ -211,6 +222,7 @@ class CanonicalDocument:
     execution: ExecutionDefinition = field(default_factory=lambda: ExecutionDefinition())
     verification: VerificationDefinition = field(default_factory=lambda: VerificationDefinition())
     output_contract: OutputContract = field(default_factory=lambda: OutputContract())
+    provenance: ProvenanceDefinition | None = None
     extensions: dict = field(default_factory=dict)
     expected_results: list = field(default_factory=list)
     _source_schema_version: str = "0.x"                   # Track original format

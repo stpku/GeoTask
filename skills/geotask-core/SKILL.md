@@ -13,13 +13,14 @@ GeoTask Core is the deterministic protocol and validation layer. You are respons
 
 Never:
 
-- invent coordinates, schedules, authorities, document versions, source references, or verification times;
+- invent coordinates, schedules, authorities, document versions, source references, source digests, audit references, or verification times;
 - treat geographic longitude/latitude or unknown-CRS coordinates as planar Euclidean coordinates;
 - reorder axes, convert units, reconcile vertical datums, or change open/closed boundary semantics implicitly;
 - convert `unverifiable`, `need_data`, or unknown into `true` or `false`;
 - bypass `blocked_outputs` in prose or another tool call;
 - execute `next_action` unless a separate authorized Runtime explicitly supports it;
-- replace deterministic operator output with model judgment.
+- replace deterministic operator output with model judgment;
+- treat declared provenance or `evidence_refs` as proof that a source was fetched, authenticated, independently verified, or human-reviewed.
 
 ## Required Workflow
 

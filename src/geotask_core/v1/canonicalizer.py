@@ -21,6 +21,7 @@ from geotask_core.v1.ir import (
     GeoObject,
     OperatorContract,
     OutputContract,
+    ProvenanceDefinition,
     SpaceCRS,
     SpaceDefinition,
     Task,
@@ -306,6 +307,15 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         ordering=dict(oc_raw.get("ordering", {})),
     )
 
+    provenance_raw = data.get("provenance")
+    provenance = None
+    if isinstance(provenance_raw, dict):
+        provenance = ProvenanceDefinition(
+            sources=list(provenance_raw.get("sources", [])),
+            evidence_bindings=list(provenance_raw.get("evidence_bindings", [])),
+            audit=dict(provenance_raw.get("audit", {})),
+        )
+
     # -- Expected results 
     expected_results: list[Any] = list(data.get("expected_results", []))
 
@@ -322,6 +332,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         execution=execution,
         verification=verification,
         output_contract=output_contract,
+        provenance=provenance,
         extensions=extensions,
         expected_results=expected_results,
         _source_schema_version="1.0",   # Mark as canonicalised for idempotency
@@ -493,6 +504,15 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         ordering=dict(oc_d.get("ordering", {})),
     )
 
+    provenance_raw = data.get("provenance")
+    provenance = None
+    if isinstance(provenance_raw, dict):
+        provenance = ProvenanceDefinition(
+            sources=list(provenance_raw.get("sources", [])),
+            evidence_bindings=list(provenance_raw.get("evidence_bindings", [])),
+            audit=dict(provenance_raw.get("audit", {})),
+        )
+
     # -- Remaining top-level fields 
     expected_results: list[Any] = list(data.get("expected_results", []))
     extensions: dict[str, Any] = dict(data.get("extensions", {}))
@@ -507,6 +527,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         execution=execution,
         verification=verification,
         output_contract=output_contract,
+        provenance=provenance,
         extensions=extensions,
         expected_results=expected_results,
         _source_schema_version="1.0",
@@ -713,7 +734,7 @@ def _parse_execution(raw: dict[str, Any]) -> ExecutionDefinition:
 
 def _canonical_document_to_dict(doc: CanonicalDocument) -> dict[str, Any]:
     """Convert a CanonicalDocument to a plain dict for round-tripping."""
-    return {
+    payload = {
         "metadata": _dataclass_to_dict(doc.metadata),
         "space": _space_to_dict(doc.space),
         "objects": {
@@ -735,6 +756,9 @@ def _canonical_document_to_dict(doc: CanonicalDocument) -> dict[str, Any]:
         "expected_results": list(doc.expected_results),
         "_source_schema_version": doc._source_schema_version,
     }
+    if doc.provenance is not None:
+        payload["provenance"] = _dataclass_to_dict(doc.provenance)
+    return payload
 
 
 def _space_to_dict(sp: SpaceDefinition) -> dict[str, Any]:

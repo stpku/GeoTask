@@ -54,6 +54,31 @@ ARTIFACT_VALIDATION_SCHEMA_ID = (
 ARTIFACT_VALIDATION_SCHEMA_VERSION = "1.0"
 
 
+_IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
+    "geotask.document": (
+        "*.geotask.yaml",
+        "*.geotask.yml",
+        "examples/core/**/*.yaml",
+        "examples/core/**/*.yml",
+    ),
+    "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
+    "geotask.control-evaluation": ("*control-evaluation*.json",),
+    "geotask.agent-generation-preparation": ("*preparation-report*.json",),
+    "geotask.agent-revision-verification": ("*revision-verification*.json",),
+    "geotask.agent-revision-retry": ("*retry-report*.json",),
+    "geotask.agent-evidence-recovery": ("*recovery-report*.json",),
+    "geotask.runtime-descriptor": ("*runtime-descriptor*.json",),
+    "geotask.runtime-request": ("*runtime-request*.json",),
+    "geotask.runtime-response": ("*runtime-response*.json",),
+    "geotask.artifact-validation-report": ("*artifact-validation*.json",),
+}
+
+
+def _ide_file_patterns(artifact_id: str) -> list[str]:
+    """Return portable glob patterns suitable for IDE Schema association."""
+    return list(_IDE_FILE_PATTERNS.get(artifact_id, ()))
+
+
 @dataclass(frozen=True)
 class ArtifactDescriptor:
     """Metadata needed to discover and operate on one public artifact type."""
@@ -81,6 +106,7 @@ class ArtifactDescriptor:
             "schema_version": self.schema_version,
             "schema_path": self.schema_path,
             "specification_path": self.specification_path,
+            "ide_file_patterns": _ide_file_patterns(self.artifact_id),
             "wrapper_key": self.wrapper_key,
             "generation_command": self.generation_command,
             "generation_note": self.generation_note,

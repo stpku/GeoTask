@@ -43,7 +43,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 提供至少两种模型适配参考实现；
 - ✅ 已增加polygon、multi-polyline通用空间对象，以及point-in-polygon和multi-polyline/rect确定性算子；
 - ✅ 已建立CRS、坐标顺序、水平/垂直单位和闭边界语义的跨任务失败关闭门禁；
-- 完善来源、证据、审计元数据和IDE Schema映射；
+- ✅ 已增加文档级来源、证据绑定与审计元数据，并通过Artifact Registry输出IDE Schema文件匹配；
 - 建立公共一致性与性能基准。
 
 ### v0.5：Domain Pack规范与生态
@@ -103,7 +103,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - add a second provider-specific model Adapter only after installed-package compatibility and one explicitly authorized live smoke test are stable;
 - ✅ Added polygon and multi-polyline objects plus deterministic point-in-polygon and multi-polyline/rectangle operators;
 - ✅ Added fail-closed cross-task gates for CRS, coordinate order, horizontal/vertical units, and closed-boundary semantics;
-- improve provenance, evidence, audit metadata, and IDE Schema mappings;
+- ✅ Added document-level source, evidence-binding, and audit metadata plus Artifact Registry IDE Schema file mappings;
 - establish public conformance and performance benchmarks.
 
 ### v0.5: Domain Pack Specification and Ecosystem

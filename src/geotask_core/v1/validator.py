@@ -54,6 +54,7 @@ from geotask_core.v1.ir import (
 )
 from geotask_core.v1.extension_profiles import validate_extension_profiles
 from geotask_core.v1.operator_contracts import default_registry
+from geotask_core.v1.provenance import validate_provenance
 
 if TYPE_CHECKING:
     pass
@@ -1581,7 +1582,20 @@ def validate_canonical(doc: CanonicalDocument) -> list[dict]:
             )
         )
 
-    # (c) Objects
+    # (c) Provenance
+    try:
+        diagnostics.extend(validate_provenance(doc.provenance, doc.tasks))
+    except Exception as exc:
+        diagnostics.append(
+            _diagnostic(
+                "provenance",
+                EXECUTION_ERROR,
+                f"Unexpected error validating provenance: {exc}",
+                severity="error",
+            )
+        )
+
+    # (d) Objects
     try:
         diagnostics.extend(_check_objects(doc.objects))
     except Exception as exc:

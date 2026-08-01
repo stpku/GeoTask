@@ -782,7 +782,7 @@ def _print_inspect_schemas_usage(stream=None) -> None:
     )
     print(
         "Lists the stable public artifact registry, including schema IDs, "
-        "versions, generation guidance, and validation commands. --verify "
+        "versions, IDE file patterns, generation guidance, and validation commands. --verify "
         "adds local Schema Bundle integrity results.",
         file=out,
     )

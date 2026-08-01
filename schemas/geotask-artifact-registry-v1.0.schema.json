@@ -45,6 +45,7 @@
         "schema_version",
         "schema_path",
         "specification_path",
+        "ide_file_patterns",
         "wrapper_key",
         "generation_command",
         "generation_note",
@@ -90,6 +91,12 @@
         "specification_path": {
           "type": "string",
           "pattern": "^docs/spec/[A-Za-z0-9._-]+\\.md$"
+        },
+        "ide_file_patterns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/nonEmptyString"},
+          "uniqueItems": true
         },
         "wrapper_key": {
           "type": ["string", "null"]

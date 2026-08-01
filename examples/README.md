@@ -14,8 +14,10 @@ patent-sensitive workflows.
   example with identical objects, assertions, and deterministic expected results.
 - `examples/core/time_altitude_overlap.yaml`: generic time and altitude interval
   overlap example.
-- `examples/core/v1_polygon_multi_polyline.yaml`: native v1 polygon containment and
+- `examples/core/v1_polygon_multi_polyline.yaml`: native v1 point-first polygon containment and
   grouped-route rectangle intersection with explicit closed-boundary semantics.
+- `examples/core/v1_polygon_contains_point.yaml`: container-first polygon containment with
+  interior, boundary, and exterior points and deterministic expected results.
 - `examples/core/v1_cross_task_space_contract.yaml`: three native v1 tasks sharing one
   CRS, coordinate order, horizontal/vertical unit, vertical datum, and closed-boundary contract.
 - `examples/core/v1_provenance_evidence_audit.yaml`: fictional source records, strict

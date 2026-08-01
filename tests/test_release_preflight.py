@@ -216,6 +216,28 @@ def test_github_actions_major_versions_are_synchronized() -> None:
 
     assert ci.count("actions/checkout@v7") == 4
     assert ci.count("actions/setup-python@v7") == 4
+    assert ci.count("actions/upload-artifact@v7") == 1
+    assert ci.count("actions/download-artifact@v8") == 1
+
+    ci_workflow = yaml.safe_load(ci)
+    roundtrip_steps = ci_workflow["jobs"]["artifact-roundtrip"]["steps"]
+    upload_step = next(
+        step for step in roundtrip_steps if step.get("uses") == "actions/upload-artifact@v7"
+    )
+    download_step = next(
+        step for step in roundtrip_steps if step.get("uses") == "actions/download-artifact@v8"
+    )
+    assert upload_step["with"] == {
+        "name": "geotask-release-artifact-roundtrip",
+        "path": "artifact-source/",
+        "if-no-files-found": "error",
+        "retention-days": 1,
+    }
+    assert download_step["with"] == {
+        "name": "geotask-release-artifact-roundtrip",
+        "path": "artifact-download",
+    }
+
     assert "actions/checkout@v7" in pages
     assert "actions/setup-python@v7" in pages
     assert "actions/upload-pages-artifact@v5" in pages

@@ -36,6 +36,10 @@ from geotask_core.v1.world_state import (
     WORLD_STATE_SCHEMA_ID,
     WORLD_STATE_SCHEMA_VERSION,
 )
+from geotask_core.v1.state_transition import (
+    STATE_TRANSITION_SCHEMA_ID,
+    STATE_TRANSITION_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -83,6 +87,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "world-state*.json",
         "world_state*.json",
         "examples/core/world_state*.json",
+    ),
+    "geotask.state-transition": (
+        "*.geotask-state-transition.json",
+        "state-transition*.json",
+        "state_transition*.json",
+        "examples/core/state_transition*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -214,6 +224,32 @@ _ARTIFACTS = (
         execution_boundary=(
             "Validation does not fetch evidence, verify external truth, merge observations, "
             "compute a State Transition, rerun tasks, or authorize action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.state-transition",
+        title="GeoTask State Transition v0.1",
+        kind="world_state_transition",
+        schema_id=STATE_TRANSITION_SCHEMA_ID,
+        schema_version=STATE_TRANSITION_SCHEMA_VERSION,
+        schema_path="schemas/geotask-state-transition-v0.1.schema.json",
+        specification_path="docs/spec/geotask-state-transition-v0.1.md",
+        wrapper_key="state_transition",
+        generation_command=None,
+        generation_note=(
+            "Authored or materialized by an Agent or Runtime after explicit state comparison. "
+            "Core validates transition records and snapshot bindings but does not compute or apply changes."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.state-transition <state-transition.json>"
+        ),
+        description=(
+            "Auditable binding between two World State snapshots with Observation-traced "
+            "object, attribute, relation, and action-eligibility changes."
+        ),
+        execution_boundary=(
+            "Validation does not compare snapshots, apply changes, materialize a World State, "
+            "verify external truth, rerun tasks, or authorize action."
         ),
     ),
     ArtifactDescriptor(
@@ -577,6 +613,8 @@ __all__ = [
     "OBSERVATION_SCHEMA_VERSION",
     "WORLD_STATE_SCHEMA_ID",
     "WORLD_STATE_SCHEMA_VERSION",
+    "STATE_TRANSITION_SCHEMA_ID",
+    "STATE_TRANSITION_SCHEMA_VERSION",
     "ARTIFACT_VALIDATION_SCHEMA_ID",
     "ARTIFACT_VALIDATION_SCHEMA_VERSION",
     "AGENT_GENERATION_PREPARATION_SCHEMA_ID",

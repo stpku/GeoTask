@@ -24,7 +24,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - **Verification and control maintain the world:** preserve supported facts, expose conflict and unknown states, constrain correction, and manage action eligibility.
 - **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local predictive models, human review, and production actions.
 
-> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. Observation v0.1 carries source-bound world claims with declared uncertainty, and World State v0.1 records explicit versioned snapshots; Observation merging, State Transition, and incremental reevaluation remain under development.
+> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. Observation v0.1 carries source-bound world claims with declared uncertainty, World State v0.1 records explicit versioned snapshots, and State Transition v0.1 binds before/after snapshots to explicit path, relation, and eligibility changes; automatic diff computation, Observation merging, state materialization, and incremental reevaluation remain under development.
 
 ## Start here
 
@@ -35,6 +35,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [Implemented Language and Execution Specification v1.0](docs/spec/geotask-language-spec-v1.0.md)
 - [GeoTask Observation v0.1](docs/spec/geotask-observation-v0.1.md)
 - [GeoTask World State v0.1](docs/spec/geotask-world-state-v0.1.md)
+- [GeoTask State Transition v0.1](docs/spec/geotask-state-transition-v0.1.md)
 - [GeoTask Agent Integration Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
 - [GeoTask Runtime Interface Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
@@ -67,7 +68,7 @@ flowchart LR
   N[New observation arrives] --> W
 ```
 
-The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation v0.1, World State v0.1, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. `VerificationSession`, `StateTransition`, impact graphs, Observation merging, and incremental reevaluation remain roadmap capabilities.
+The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation v0.1, World State v0.1, State Transition v0.1, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. `VerificationSession`, automatic diff computation, impact graphs, Observation merging, state materialization, and incremental reevaluation remain roadmap capabilities.
 
 ## Five-minute quickstart
 

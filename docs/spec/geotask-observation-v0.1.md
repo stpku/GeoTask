@@ -130,7 +130,7 @@ The contract records declared uncertainty. It does not calibrate, normalize, com
 
 An Observation may list earlier Observation IDs in `supersedes`. This records an author-declared replacement relationship. The current Observation cannot supersede itself, and duplicate IDs are rejected.
 
-Supersession does not delete prior evidence, merge claims, or update a World State. Those behaviors belong to a future State Transition and materialization workflow; the published World State v0.1 contract validates snapshots but does not perform this merge.
+Supersession does not delete prior evidence, merge claims, or update a World State. The published State Transition v0.1 contract can record an explicit change between two already materialized snapshots, but automatic Observation merging and state materialization remain future workflow responsibilities.
 
 ## 8. Trust and execution boundary
 
@@ -150,8 +150,8 @@ The published snapshot contract and next intended processing layers are:
 ```text
 Observation
 → World State v0.1 snapshot
-→ future Observation materialization / State Transition
-→ future VerificationSession / recheck
+→ State Transition v0.1 audit record
+→ future automatic materialization / VerificationSession / recheck
 → action eligibility
 ```
 

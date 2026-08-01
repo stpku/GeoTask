@@ -1,0 +1,127 @@
+{
+  "world_state": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+    "schema_version": "0.1",
+    "world_state_id": "fictional-uav-separation-state",
+    "revision": 2,
+    "as_of": "2026-07-16T10:01:00+08:00",
+    "materialized_at": "2026-07-16T10:01:02+08:00",
+    "observation_refs": [
+      "obs-uav-b-delay-002"
+    ],
+    "evidence_refs": [
+      "telemetry:fictional/uav-b/delay-002",
+      "execution-result:fictional/gt16/spatial-separation",
+      "execution-result:fictional/gt16/temporal-recheck"
+    ],
+    "objects": [
+      {
+        "id": "uav-a",
+        "type": "uav",
+        "verification_status": "verified",
+        "valid_from": "2026-07-16T09:59:00+08:00",
+        "valid_until": "2026-07-16T10:02:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "execution-result:fictional/gt16/spatial-separation"
+        ],
+        "attributes": [
+          {
+            "name": "route_id",
+            "value": "route-alpha",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "execution-result:fictional/gt16/spatial-separation"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "uav-b",
+        "type": "uav",
+        "verification_status": "asserted",
+        "valid_from": "2026-07-16T09:59:00+08:00",
+        "valid_until": "2026-07-16T10:02:00+08:00",
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-b/delay-002"
+        ],
+        "attributes": [
+          {
+            "name": "route_id",
+            "value": "route-bravo",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "execution-result:fictional/gt16/spatial-separation"
+            ]
+          },
+          {
+            "name": "delay_seconds",
+            "value": 60,
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "valid_from": "2026-07-16T10:01:00+08:00",
+            "valid_until": "2026-07-16T10:01:30+08:00",
+            "uncertainty": {
+              "kind": "standard_deviation",
+              "value": 2,
+              "unit": "second"
+            },
+            "observation_refs": [
+              "obs-uav-b-delay-002"
+            ],
+            "evidence_refs": [
+              "telemetry:fictional/uav-b/delay-002"
+            ]
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "id": "uav-route-crossing",
+        "subject_ref": "uav-a",
+        "predicate": "route_intersects",
+        "object_ref": "uav-b",
+        "value": true,
+        "basis": "derived",
+        "verification_status": "verified",
+        "valid_from": "2026-07-16T09:59:00+08:00",
+        "valid_until": "2026-07-16T10:02:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "execution-result:fictional/gt16/spatial-separation"
+        ]
+      },
+      {
+        "id": "uav-temporal-separation",
+        "subject_ref": "uav-a",
+        "predicate": "temporal_separation_seconds",
+        "object_ref": "uav-b",
+        "value": 60,
+        "basis": "derived",
+        "verification_status": "verified",
+        "valid_from": "2026-07-16T10:01:00+08:00",
+        "valid_until": "2026-07-16T10:01:30+08:00",
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 2,
+          "unit": "second"
+        },
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-b/delay-002",
+          "execution-result:fictional/gt16/temporal-recheck"
+        ]
+      }
+    ]
+  }
+}

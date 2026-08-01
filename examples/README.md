@@ -24,9 +24,13 @@ patent-sensitive workflows.
   evidence-to-assertion bindings, authoring audit metadata, and propagated result evidence refs.
 - `examples/core/observation_uav_delay.json`: fictional source-bound UAV delay Observation with
   producer identity, evidence, validity, uncertainty, and no truth or state-update claim.
-- `examples/core/world_state_uav_separation.json`: fictional World State v0.1 snapshot with two
-  UAV objects, versioned attributes and relations, as-of validity, uncertainty, closed
-  Observation/Evidence references, and no automatic transition or action authorization.
+- `examples/core/world_state_uav_separation.json`: fictional World State v0.1 revision 1 with two
+  UAV objects, versioned attributes and relations, as-of validity, uncertainty, and closed references.
+- `examples/core/world_state_uav_separation_recheck.json`: the paired fictional revision 2 snapshot,
+  where a later telemetry Observation changes delay and temporal separation to sixty seconds.
+- `examples/core/state_transition_uav_separation_recheck.json`: State Transition v0.1 binding both
+  snapshot fingerprints and recording two state changes plus one blocked eligibility change, without
+  calculating the diff, applying changes, materializing state, or authorizing action.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

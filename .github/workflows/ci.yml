@@ -185,6 +185,36 @@ jobs:
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("agent-validation-report-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.artifact-validation-report" and report["valid"] is True and report["summary"]["validated_artifact_id"] == "geotask.agent-revision-retry"'
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("recovery-validation-report-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.artifact-validation-report" and report["valid"] is True and report["summary"]["validated_artifact_id"] == "geotask.agent-evidence-recovery"'
 
+  artifact-roundtrip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release artifact fixture
+        shell: bash
+        run: |
+          mkdir artifact-source
+          printf 'geotask-release-artifact-roundtrip\n' > artifact-source/payload.txt
+          sha256sum artifact-source/payload.txt > expected.sha256
+      - name: Upload release artifact fixture
+        uses: actions/upload-artifact@v7
+        with:
+          name: geotask-release-artifact-roundtrip
+          path: artifact-source/
+          if-no-files-found: error
+          retention-days: 1
+      - name: Remove source fixture
+        run: rm -rf artifact-source
+      - name: Download release artifact fixture
+        uses: actions/download-artifact@v8
+        with:
+          name: geotask-release-artifact-roundtrip
+          path: artifact-download
+      - name: Verify release artifact roundtrip
+        shell: bash
+        run: |
+          actual="$(sha256sum artifact-download/payload.txt | cut -d ' ' -f1)"
+          expected="$(cut -d ' ' -f1 expected.sha256)"
+          test "$actual" = "$expected"
+
   scan:
     runs-on: ubuntu-latest
     needs: build

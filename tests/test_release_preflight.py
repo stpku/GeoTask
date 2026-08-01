@@ -198,6 +198,33 @@ def test_ci_and_publish_workflows_enforce_release_preflight() -> None:
     assert "--artifacts dist" in publish
 
 
+def test_github_actions_major_versions_are_synchronized() -> None:
+    ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    pages = (ROOT / ".github" / "workflows" / "pages.yml").read_text(
+        encoding="utf-8"
+    )
+    publish = (ROOT / ".github" / "workflows" / "publish-pypi.yml").read_text(
+        encoding="utf-8"
+    )
+    combined = "\n".join((ci, pages, publish))
+
+    assert "actions/checkout@v6" not in combined
+    assert "actions/setup-python@v6" not in combined
+    assert "actions/upload-pages-artifact@v4" not in combined
+    assert "actions/upload-artifact@v4" not in combined
+    assert "actions/download-artifact@v4" not in combined
+
+    assert ci.count("actions/checkout@v7") == 4
+    assert ci.count("actions/setup-python@v7") == 4
+    assert "actions/checkout@v7" in pages
+    assert "actions/setup-python@v7" in pages
+    assert "actions/upload-pages-artifact@v5" in pages
+    assert "actions/checkout@v7" in publish
+    assert "actions/setup-python@v7" in publish
+    assert "actions/upload-artifact@v7" in publish
+    assert "actions/download-artifact@v8" in publish
+
+
 def test_publish_workflow_package_version_step_executes(tmp_path: Path) -> None:
     workflow = yaml.safe_load(
         (ROOT / ".github" / "workflows" / "publish-pypi.yml").read_text(

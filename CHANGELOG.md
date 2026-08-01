@@ -25,6 +25,7 @@ All notable public changes to GeoTask Core are documented here.
 
 ### Changed
 
+- Upgrade the public GitHub Actions workflow stack to `actions/checkout@v7`, `actions/setup-python@v7`, `actions/upload-pages-artifact@v5`, `actions/upload-artifact@v7`, and `actions/download-artifact@v8`, with regression coverage that keeps CI, Pages, and PyPI workflow majors synchronized.
 - Fix the wheel/sdist Schema distribution release gate and installed-package smoke workflows to recognize all fourteen public Schemas and validate the newly registered Observation and Core Benchmark Artifacts.
 - Reframe the architecture documentation from a single execution pipeline into four explicit planes: perception/open reasoning, explicit spatiotemporal world state, verification/state evolution, and control/real-world action. The document now distinguishes the implemented Core and Observation foundation from planned `WorldState`, `StateTransition`, `VerificationSession`, discrepancy, impact, provider, and reevaluation abstractions.
 - Upgrade GT16 from a static route-crossing question into a world-state update replay. The initial snapshot contains a 120-second separation; a fictional telemetry Observation records a 40-second delay; the predicted relation changes to 80 seconds; and the action gate preserves valid findings while requiring continued monitoring and recheck at the 60-second threshold.

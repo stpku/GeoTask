@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, the deterministic baseline of plane 3, and read-only control semantics of plane 4. First-class WorldState, StateTransition, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
+GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1 and World State v0.1, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Observation merging, StateTransition, VerificationSession, impact propagation, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -295,13 +295,14 @@ Observation
 → repeat
 ```
 
-Observation v0.1 is now implemented as the first public world-model Artifact. It carries source-bound, timestamped world claims with producer identity, evidence references, declared uncertainty, validity windows, and optional supersession links. Its validation does not verify truth or update a WorldState.
+Observation v0.1 carries source-bound, timestamped world claims with producer identity, evidence references, declared uncertainty, validity windows, and optional supersession links. Its validation does not verify truth or update a World State.
+
+World State v0.1 is now implemented as a second public world-model Artifact. It records one versioned, point-in-time snapshot of objects, attributes, relations, validity, uncertainty, and closed Observation/Evidence references. Its validation does not ingest Observations, fetch evidence, verify external truth, compute a State Transition, rerun tasks, or change action eligibility.
 
 Remaining planned public abstractions:
 
 | Planned abstraction | Purpose | Reuses existing capability |
 |---|---|---|
-| `WorldState` | Represent one explicit, versioned snapshot of objects, attributes, relations, evidence, and validity time | Canonical IR, objects, space, provenance, Observation v0.1 |
 | `StateTransition` | Record which observations changed which world-state paths and why | diagnostics, changed paths, provenance |
 | `VerificationSession` | Provide an auditable verification snapshot for one WorldState, binding observations, tasks, results, controls, discrepancies, eligibility, and recheck triggers | Artifact Registry, Agent reports, control evaluation |
 | `DiscrepancyReport` | Explain which world claim differs, why, impact, mutable scope, and immutable paths | execution result, evaluator, revision request |

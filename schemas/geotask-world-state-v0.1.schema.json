@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+  "title": "GeoTask World State v0.1",
+  "description": "One explicit, versioned world-state snapshot. Schema validity does not ingest observations, verify external truth, compute a State Transition, or authorize action.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["world_state"],
+  "properties": {
+    "world_state": {
+      "$ref": "#/$defs/worldState"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "uniqueStringArray": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/nonEmptyString"},
+      "uniqueItems": true
+    },
+    "verificationStatus": {
+      "enum": [
+        "asserted",
+        "verified",
+        "contradicted",
+        "unverifiable",
+        "need_data",
+        "unknown"
+      ]
+    },
+    "claimBasis": {
+      "enum": [
+        "direct_observation",
+        "model_inference",
+        "derived",
+        "external_assertion",
+        "human_judgment"
+      ]
+    },
+    "uncertainty": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": {"enum": ["probability_of_error", "confidence"]},
+            "value": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": {"enum": ["standard_deviation", "interval_width"]},
+            "value": {"type": "number", "minimum": 0},
+            "unit": {"$ref": "#/$defs/nonEmptyString"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": {"const": "qualitative"},
+            "value": {"enum": ["low", "medium", "high", "unknown"]}
+          }
+        }
+      ]
+    },
+    "attribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value", "basis", "verification_status"],
+      "properties": {
+        "name": {"$ref": "#/$defs/nonEmptyString"},
+        "value": true,
+        "basis": {"$ref": "#/$defs/claimBasis"},
+        "verification_status": {"$ref": "#/$defs/verificationStatus"},
+        "valid_from": {"$ref": "#/$defs/timestamp"},
+        "valid_until": {"$ref": "#/$defs/timestamp"},
+        "uncertainty": {"$ref": "#/$defs/uncertainty"},
+        "observation_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "evidence_refs": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "worldObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "verification_status", "attributes"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "type": {"$ref": "#/$defs/nonEmptyString"},
+        "verification_status": {"$ref": "#/$defs/verificationStatus"},
+        "valid_from": {"$ref": "#/$defs/timestamp"},
+        "valid_until": {"$ref": "#/$defs/timestamp"},
+        "uncertainty": {"$ref": "#/$defs/uncertainty"},
+        "observation_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "evidence_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "attributes": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/attribute"}
+        }
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "subject_ref",
+        "predicate",
+        "object_ref",
+        "value",
+        "basis",
+        "verification_status"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "predicate": {"$ref": "#/$defs/nonEmptyString"},
+        "object_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "value": true,
+        "basis": {"$ref": "#/$defs/claimBasis"},
+        "verification_status": {"$ref": "#/$defs/verificationStatus"},
+        "valid_from": {"$ref": "#/$defs/timestamp"},
+        "valid_until": {"$ref": "#/$defs/timestamp"},
+        "uncertainty": {"$ref": "#/$defs/uncertainty"},
+        "observation_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "evidence_refs": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "worldState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version",
+        "world_state_id",
+        "revision",
+        "as_of",
+        "materialized_at",
+        "observation_refs",
+        "evidence_refs",
+        "objects",
+        "relations"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json"
+        },
+        "schema_version": {"const": "0.1"},
+        "world_state_id": {"$ref": "#/$defs/nonEmptyString"},
+        "revision": {"type": "integer", "minimum": 1},
+        "as_of": {"$ref": "#/$defs/timestamp"},
+        "materialized_at": {"$ref": "#/$defs/timestamp"},
+        "observation_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "evidence_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "objects": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/worldObject"}
+        },
+        "relations": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/relation"}
+        }
+      }
+    }
+  }
+}

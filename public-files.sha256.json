@@ -6,13 +6,13 @@
   },
   {
     "path": ".gitignore",
-    "size": 226,
-    "sha256": "7932e39d3e5d1b05f7dd12d8b8f0b751880f5345d2a3f05623a2a98fe4795684"
+    "size": 250,
+    "sha256": "ce93012420ce5bc251b6f4ce0226d2be57f4a31f964bf42fad2f284497117db2"
   },
   {
     "path": "CHANGELOG.md",
-    "size": 22226,
-    "sha256": "00cc50c15d7c4ffd218412d2d28799222e80483b0228de188d320af0a554ab8d"
+    "size": 22764,
+    "sha256": "a69fedee2b157ba41cffe47350330d57920956a7982d55b2e093cb1013ba641c"
   },
   {
     "path": "CITATION.cff",
@@ -51,13 +51,13 @@
   },
   {
     "path": "README.en.md",
-    "size": 16623,
-    "sha256": "514ed3bbd1583a4b2c21222b42497b85db8ff959c09063f3016845686fba8ad4"
+    "size": 16780,
+    "sha256": "76dcc3efda24cb93a2950406f8d725de78ca51b821b24c1cf609e9c8812975d1"
   },
   {
     "path": "README.md",
-    "size": 15511,
-    "sha256": "035be38cb90f2f5a4e5da58a88d12043d1303d505aefce8368c1591a26bb33d5"
+    "size": 15653,
+    "sha256": "089489de830ec0aa76a81a7221977c57ff1e8c41df56ffcea91698d92f062928"
   },
   {
     "path": "ROADMAP.md",
@@ -211,13 +211,13 @@
   },
   {
     "path": "tests/test_core_examples_v0_2.py",
-    "size": 4724,
-    "sha256": "b06dd33e09f70747ce17dc4d91d5f9b9b68fa40b2c5fc53762cf0059e1f11912"
+    "size": 4885,
+    "sha256": "4fc45ac838dc5eab127a0d8c81e653eaac740af696f316cd1de441cd97cebb26"
   },
   {
     "path": "tests/test_documentation_system.py",
-    "size": 32934,
-    "sha256": "7d37329a231c0497164693a335fa5169a338a7ed03818c8a6f067f3f3da07947"
+    "size": 34335,
+    "sha256": "668d770e2c5a2f2817d507ad476c64fb78f761df9b6a1ab4a19a4982ef8aaf9d"
   },
   {
     "path": "tests/test_evaluator.py",
@@ -575,6 +575,11 @@
     "sha256": "42185bddf632eaeff7d55bf1f990e1f19a7841e089809fcfd04224fcf8135501"
   },
   {
+    "path": "tests/v1/test_point_to_line_distance_examples.py",
+    "size": 1939,
+    "sha256": "4919be0c363d4fc1c6f1d7516f0d459d0bac4165a15d8523ed32d6138f35fce4"
+  },
+  {
     "path": "tests/v1/test_provenance_ide_mappings_v0_4.py",
     "size": 9318,
     "sha256": "d3d245f85110a81ceb8007a886725cef563780eb9ea726567082a148ba787950"
@@ -666,8 +671,8 @@
   },
   {
     "path": "examples/README.md",
-    "size": 7077,
-    "sha256": "1c209f1b93df8ea06d44cff82fc91282278e2d7b4eef2e1e1160ad4f54434e0d"
+    "size": 7431,
+    "sha256": "2bf3b122f30508558d6f3df9a74e4e9c6b77d531cd328b930bf096f60b16a133"
   },
   {
     "path": "examples/basic_distance.yaml",
@@ -823,6 +828,16 @@
     "path": "examples/core/v1_multi_operator.yaml",
     "size": 1570,
     "sha256": "a19396a0916011c9c1051d167db5a77afe920b701ef24da38e659815267ae1bb"
+  },
+  {
+    "path": "examples/core/v1_point_to_line_distance_minimal.en.yaml",
+    "size": 1663,
+    "sha256": "02fd64f67db8d614d33f02a5c914622e194f4c6f76d5b240ec0bab314f85f23f"
+  },
+  {
+    "path": "examples/core/v1_point_to_line_distance_minimal.zh-CN.yaml",
+    "size": 1653,
+    "sha256": "5d8adbf69785c075909d723ed3d8180bf3905e44417963cdb6817177fb6754e6"
   },
   {
     "path": "examples/core/v1_polygon_multi_polyline.yaml",
@@ -1380,19 +1395,24 @@
     "sha256": "7c6281fa5ac6934fdb4a74edb835f59211e9f21c2bda4a5d3628012c4da686a4"
   },
   {
+    "path": ".vscode/settings.json",
+    "size": 163,
+    "sha256": "0d6d3069cab3ea1b791aa932b80aba0914b292d5cbbe15409f2378a1a0d8b5a2"
+  },
+  {
     "path": "cases/catalog.yaml",
     "size": 7312,
     "sha256": "ac33dc397938a600d296a1ca62c7620f3c92249a981f6d9ae03a17c8e0529ecb"
   },
   {
     "path": "docs/README.en.md",
-    "size": 7759,
-    "sha256": "feddccd283387480c05481f58c53eb2aa3594d6b599afab5d2e4e6fcbe5fad01"
+    "size": 8072,
+    "sha256": "2726a8e118726f0125b3afff351595a0e515b3203687243a4c9420621bb8e82b"
   },
   {
     "path": "docs/README.md",
-    "size": 6953,
-    "sha256": "c50da9a8a1cb8561a1158e50b0db6ee64c3f8d1eaac51f9d88ac2080823fa5c4"
+    "size": 7245,
+    "sha256": "0ed4d46e20e7fcd02521f6758ba9c17fb0946c77b834485303f9eef00d0bac9c"
   },
   {
     "path": "docs/architecture.md",
@@ -1476,8 +1496,8 @@
   },
   {
     "path": "docs/whitepaper/GeoTask_White_Paper_v0.1.md",
-    "size": 23396,
-    "sha256": "ed80c13e7b8933ae0ddba0b44cb57bfe5819304b63446b7647483f07c5b7a6c8"
+    "size": 25685,
+    "sha256": "ca256dc0e50f6b70a3a7884c821a2a1ae0a645115500a1d6a2ba6de3b109cecf"
   },
   {
     "path": "docs/whitepaper/README.md",
@@ -1526,13 +1546,13 @@
   },
   {
     "path": "docs/tutorials/quickstart.md",
-    "size": 7673,
-    "sha256": "7634fd84314744c0d2bab243c1ff88174f03779e9fdc9d767ef9e42d8e1710c4"
+    "size": 8039,
+    "sha256": "5209f594f78b9752edbd151836ee9c83adef8f546632124c4f4b17630c8c18de"
   },
   {
     "path": "docs/tutorials/quickstart.zh-CN.md",
-    "size": 5734,
-    "sha256": "9a91e045be4fb7847f522fbb06e8209671c84a717d42d71637a1175aff4d5323"
+    "size": 5925,
+    "sha256": "11db7fbf7cd64b9fba156fe6244d8152fc1e8e04076ad9500a7639a4b14371a6"
   },
   {
     "path": "docs/spec/geotask-agent-integration-profile-v0.1.md",
@@ -1616,8 +1636,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 17223,
-    "sha256": "85a01bd10f5cfe73d55dfca2f694900e251ab1824fd068bdbff2abaee3e4ebb3"
+    "size": 17533,
+    "sha256": "ab40597d4a8a9616e11b159c956888a2304426ed4ef8421913fe3702c97282b9"
   },
   {
     "path": ".release/release_public.py",

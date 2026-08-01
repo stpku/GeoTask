@@ -16,6 +16,25 @@ GeoTask 将自身定位为面向智能体的显式、可验证时空世界模型
 
 GeoTask不是以视频生成或隐式神经动力学预测为核心的单体世界模型。公共 Core 提供可验证时空世界模型的状态契约、任务与Artifact表示、本地确定性验证、证据绑定、Observation v0.1、控制评估和Agent修订基础；Runtime与Domain Pack负责权威数据、行业规则、本地预测模型、人工复核和生产动作。“可验证时空任务协议”是当前工程实现形式，而World State、State Transition和增量复核是下一阶段公共抽象。
 
+## English Abstract
+
+Multimodal foundation models are moving from answering questions to interpreting scenes, proposing plans, and influencing real-world action. Their understanding of the world, however, is usually implicit in prompts, vectors, or model parameters. It is therefore difficult to maintain stable answers about which objects exist, where and when they exist, which relations have been verified, which evidence has expired, which conclusions are affected by a state change, and whether an action is currently eligible. As model capability and action chains grow, agents need an explicit, shared, and verifiable world state.
+
+GeoTask is an **explicit and verifiable spatiotemporal world model for AI agents**. It converts multimodal-model outputs, sensor observations, maps, authoritative data, and human input into explicit world objects, spatiotemporal relations, state, evidence, constraints, and action eligibility. This makes operational facts computable, verifiable, updateable, traceable, and correctable. Error detection, evidence recovery, bounded revision, state reevaluation, and action gating are mechanisms for maintaining a trustworthy world state rather than the complete definition of GeoTask.
+
+GeoTask is not a monolithic neural world model centered on video generation or implicit dynamics prediction. The public Core provides state and Artifact contracts, task representation, deterministic local verification, provenance and evidence binding, Observation v0.1, control evaluation, and guarded Agent revision. External Runtimes and Domain Packs remain responsible for authoritative sources, domain rules, local predictive models, human review, credentials, and production actions. The verifiable spatiotemporal task protocol is the current engineering form; first-class World State, State Transition, and incremental reevaluation remain the next public abstractions.
+
+| 中文核心术语 | English term |
+|---|---|
+| 显式、可验证时空世界模型 | explicit and verifiable spatiotemporal world model |
+| 世界状态 | world state |
+| 观察 | Observation |
+| 状态转换 | State Transition |
+| 证据绑定 | evidence binding |
+| 限定修订 | bounded revision |
+| 增量复核 | incremental reevaluation |
+| 行动资格 | action eligibility |
+
 ---
 
 ## 1. 问题背景

@@ -145,7 +145,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 
 其中`feature_collection`已经进入Canonical IR，但具体算子只接受算子注册表中声明的对象组合。
 
-### 八个本地确定性算子
+### 九个本地确定性算子
 
 | 算子 | 输入 | 输出 |
 |---|---|---|
@@ -153,6 +153,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 | `line_intersects_rect` | 折线、矩形 | 布尔值 |
 | `multi_polyline_intersects_rect` | 多折线、矩形 | 布尔值 |
 | `point_in_polygon` | 点、多边形 | 布尔值 |
+| `polygon_contains_point` | 多边形、点 | 布尔值 |
 | `point_to_line_distance_2d` | 点、折线 | 数值 |
 | `rect_contains_point` | 矩形、点 | 布尔值 |
 | `time_overlap` | 时间区间、时间区间 | 布尔值 |

@@ -36,6 +36,7 @@ _OPERATOR_INPUT_TYPES: dict[str, list[str]] = {
     "line_intersects_rect":           ["polyline", "rect"],
     "multi_polyline_intersects_rect": ["multi_polyline", "rect"],
     "point_in_polygon":               ["point", "polygon"],
+    "polygon_contains_point":         ["polygon", "point"],
     "point_to_line_distance_2d":      ["point", "polyline"],
     "rect_contains_point":        ["rect", "point"],
     "time_overlap":               ["time_interval", "time_interval"],

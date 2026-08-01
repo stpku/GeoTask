@@ -274,7 +274,7 @@ Requirements:
 - every coordinate pair contains exactly two finite numbers;
 - holes, multi-polygons, self-intersection repair, and implicit ring closure are not provided by this contract.
 
-`point_in_polygon` uses the even-odd rule. A point on an edge or vertex is contained because the registered boundary semantics are closed.
+`point_in_polygon(point, polygon)` and `polygon_contains_point(polygon, point)` use the same even-odd rule. The names expose opposite, explicit object orders; implementations MUST return identical boolean values for the same polygon and point. A point on an edge or vertex is contained because the registered boundary semantics are closed. Both objects use the document CRS and coordinate order; the predicate is dimensionless and performs no unit conversion.
 
 ### 6.5 Rectangle
 
@@ -373,6 +373,7 @@ The list declares operators used by the document. Every assertion operator SHOUL
 | `line_intersects_rect` | polyline, rect | bool | contact counts |
 | `multi_polyline_intersects_rect` | multi_polyline, rect | bool | any member; contact counts |
 | `point_in_polygon` | point, polygon | bool | edge and vertex contact count |
+| `polygon_contains_point` | polygon, point | bool | same predicate with container-first object order |
 | `point_to_line_distance_2d` | point, polyline | number | segment distance |
 | `rect_contains_point` | rect, point | bool | boundary counts |
 | `time_overlap` | time_interval, time_interval | bool | endpoint contact counts |

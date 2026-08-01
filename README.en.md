@@ -148,6 +148,7 @@ See the [Cookbook](docs/cookbook/gt01-gt20.md) for all cases and source files.
 | `line_intersects_rect` | polyline, rect | boolean |
 | `multi_polyline_intersects_rect` | multi-polyline, rect | boolean |
 | `point_in_polygon` | point, polygon | boolean |
+| `polygon_contains_point` | polygon, point | boolean |
 | `point_to_line_distance_2d` | point, polyline | number |
 | `rect_contains_point` | rect, point | boolean |
 | `time_overlap` | time interval, time interval | boolean |

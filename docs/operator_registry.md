@@ -25,7 +25,8 @@ invariants.
 | `distance_2d` | `float` | point + point | Euclidean distance in local 2D coordinates. |
 | `line_intersects_rect` | `bool` | polyline + rect | Boundary contact counts as intersection. |
 | `multi_polyline_intersects_rect` | `bool` | multi-polyline + rect | True when any member touches or crosses the rectangle. |
-| `point_in_polygon` | `bool` | point + polygon | Uses one closed exterior ring; boundary contact counts as containment. |
+| `point_in_polygon` | `bool` | point + polygon | Point-first predicate; one closed exterior ring and boundary contact counts as containment. |
+| `polygon_contains_point` | `bool` | polygon + point | Container-first equivalent of `point_in_polygon`; object order is explicit and boundary contact counts. |
 | `point_to_line_distance_2d` | `float` | point + polyline | Shortest distance to a polyline. |
 | `rect_contains_point` | `bool` | rect + point | Boundary contact counts as containment. |
 | `time_overlap` | `bool` | time interval + time interval | Boundary contact counts as overlap. |

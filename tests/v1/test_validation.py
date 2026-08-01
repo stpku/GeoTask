@@ -355,6 +355,7 @@ def test_operator_registry_has_builtin_operators() -> None:
         "line_intersects_rect",
         "multi_polyline_intersects_rect",
         "point_in_polygon",
+        "polygon_contains_point",
         "point_to_line_distance_2d",
         "rect_contains_point",
         "time_overlap",

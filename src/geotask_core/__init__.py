@@ -26,6 +26,7 @@ from geotask_core.ops import (
     line_intersects_rect,
     multi_polyline_intersects_rect,
     point_in_polygon,
+    polygon_contains_point,
 )
 from geotask_core.runner import run_geotask, run_stir
 from geotask_core.normalizer import normalize_model_output
@@ -239,6 +240,7 @@ __all__ = [
     "line_intersects_rect",
     "multi_polyline_intersects_rect",
     "point_in_polygon",
+    "polygon_contains_point",
     "run_geotask",
     "run_stir",
     "normalize_model_output",

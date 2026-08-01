@@ -154,6 +154,19 @@ def point_in_polygon(
     return inside
 
 
+def polygon_contains_point(
+    polygon: list[list[float]], point: list[float]
+) -> bool:
+    """Check whether a closed polygon contains a point.
+
+    This predicate has the same deterministic even-odd and closed-boundary
+    semantics as :func:`point_in_polygon`, but exposes the container-first
+    argument order used by ``rect_contains_point`` and GeoTask assertions with
+    ``object_refs: [polygon, point]``.
+    """
+    return point_in_polygon(point, polygon)
+
+
 def _point_to_segment_distance(
     px: float, py: float,
     x1: float, y1: float, x2: float, y2: float,

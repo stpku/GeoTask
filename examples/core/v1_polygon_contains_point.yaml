@@ -1,0 +1,82 @@
+geotask:
+  id: "polygon-contains-point-v1"
+  name: "Polygon Contains Point"
+  description: "Demonstrate container-first polygon containment with closed-boundary semantics."
+  schema_version: "1.0"
+  language: "en"
+  domain: "general_spatial"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  axes:
+    x: "east"
+    y: "north"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+  boundary_semantics: "closed"
+
+objects:
+  service_zone:
+    type: "polygon"
+    coordinates:
+      - [0, 0]
+      - [10, 0]
+      - [10, 10]
+      - [0, 10]
+      - [0, 0]
+  inside_point:
+    type: "point"
+    coordinates: [5, 5]
+  edge_point:
+    type: "point"
+    coordinates: [0, 5]
+  outside_point:
+    type: "point"
+    coordinates: [15, 5]
+
+operator_set:
+  - polygon_contains_point
+
+tasks:
+  - id: "evaluate_containment"
+    family: "topology"
+    goal: "Evaluate interior, boundary, and exterior point containment."
+    assertions:
+      - id: "inside_contained"
+        operator: "polygon_contains_point"
+        object_refs: ["service_zone", "inside_point"]
+        expected_type: "boolean"
+      - id: "edge_contained"
+        operator: "polygon_contains_point"
+        object_refs: ["service_zone", "edge_point"]
+        expected_type: "boolean"
+      - id: "outside_contained"
+        operator: "polygon_contains_point"
+        object_refs: ["service_zone", "outside_point"]
+        expected_type: "boolean"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "evaluate"
+      executor: "local"
+      assertion_refs: ["inside_contained", "edge_contained", "outside_contained"]
+      depends_on: []
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "inside_contained"
+    - "edge_contained"
+    - "outside_contained"
+  allow_additional_fields: true
+
+expected_results:
+  - name: "inside_contained"
+    value: true
+  - name: "edge_contained"
+    value: true
+  - name: "outside_contained"
+    value: false

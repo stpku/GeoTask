@@ -74,7 +74,9 @@
     },
     "operatorName": {
       "type": "string",
-      "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+      "description": "A registered Core or extension operator name. Built-in containment predicates include point_in_polygon(point, polygon) and polygon_contains_point(polygon, point).",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+      "examples": ["point_in_polygon", "polygon_contains_point", "rect_contains_point"]
     },
     "metadata": {
       "type": "object",

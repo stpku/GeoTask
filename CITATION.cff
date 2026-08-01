@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use GeoTask in research, software, or technical reports, please cite this software."
-title: "GeoTask: Verifiable Spatiotemporal Task Protocol for AI Agents"
+title: "GeoTask: Explicit and Verifiable Spatiotemporal World Model for AI Agents"
 type: software
 authors:
   - family-names: Huang
@@ -13,13 +13,15 @@ url: "https://stpku.github.io/GeoTask/"
 license: MIT
 keywords:
   - AI agents
-  - spatiotemporal tasks
+  - world models
+  - embodied AI
+  - spatiotemporal state
   - spatial reasoning
   - deterministic verification
   - geospatial
   - robotics
 abstract: >-
-  GeoTask is an open, verifiable spatiotemporal task protocol for AI agents.
-  It represents spatial, temporal, evidential, resource, and action constraints
-  as structured tasks and uses deterministic local operators to verify
-  model-generated proposals.
+  GeoTask is an open foundation for explicit and verifiable spatiotemporal
+  world models for AI agents. It represents world objects, relations, state,
+  evidence, constraints, and action eligibility through structured contracts
+  and uses deterministic local operators to verify model-generated claims.

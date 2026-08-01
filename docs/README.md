@@ -2,11 +2,11 @@
 
 **简体中文** | [English](README.en.md)
 
-GeoTask文档按照“理解定位、开始使用、查阅规范、扩展验证循环”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“时空验错与纠偏层”的产业定位，再通过中文快速入门和GT01—GT20案例掌握当前公共Core的实际能力边界。
+GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和GT01—GT20案例掌握当前公共Core已经实现的世界模型基础与能力边界。
 
 ## 从这里开始
 
-- [GeoTask白皮书v0.1](whitepaper/GeoTask_White_Paper_v0.1.md)：为什么多模态模型越强越需要时空验错、纠偏与行动门控，以及当前实现和目标验证循环的边界。
+- [GeoTask白皮书v0.1](whitepaper/GeoTask_White_Paper_v0.1.md)：为什么智能体需要显式、可验证的时空世界模型，GeoTask与隐式神经世界模型有何区别，以及当前实现和目标状态演化能力的边界。
 - [白皮书构建说明](whitepaper/README.md)：从Markdown生成HTML、DOCX和可选PDF。
 - [中文快速入门](tutorials/quickstart.zh-CN.md)：安装、验证、执行和检查第一个任务。
 - [GT01—GT20中文案例手册](cookbook/gt01-gt20.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度、设备能力约束和高风险动作门控。

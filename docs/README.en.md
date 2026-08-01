@@ -2,11 +2,11 @@
 
 [简体中文](README.md) | **English**
 
-GeoTask documentation is organized from product positioning to implemented contracts and future verification-cycle extensions. Start with the white paper to understand the spatiotemporal error-checking and correction layer, then use the specifications and tutorials to distinguish current public capabilities from roadmap abstractions.
+GeoTask documentation is organized from world-model positioning to implemented contracts and future state-evolution extensions. Start with the white paper to understand the explicit and verifiable spatiotemporal world model, then use the specifications and tutorials to distinguish the current public foundation from roadmap abstractions.
 
 ## Start here
 
-- [GeoTask White Paper v0.1](whitepaper/GeoTask_White_Paper_v0.1.md) — why stronger multimodal models increase the need for spatiotemporal error detection, correction, and action gating, plus the boundary between implemented Core capabilities and the target verification cycle. See the [build guide](whitepaper/README.md) for HTML, DOCX, and PDF commands.
+- [GeoTask White Paper v0.1](whitepaper/GeoTask_White_Paper_v0.1.md) — why agents need an explicit and verifiable spatiotemporal world model, how GeoTask differs from implicit neural world models, and where the current Core foundation ends before first-class state evolution. See the [build guide](whitepaper/README.md) for HTML, DOCX, and PDF commands.
 - [GeoTask Language and Execution Specification v1.0](spec/geotask-language-spec-v1.0.md) — the normative profile implemented by the current public Core.
 - [GeoTask Execution Result v1.0](spec/geotask-result-v1.0.md) — the `GeotaskResult.to_dict()` contract, public result JSON Schema, and `geotask result validate` command.
 - [GeoTask Artifact Registry v1.0](spec/geotask-artifact-registry-v1.0.md) — `geotask inspect schemas` discovery for all twelve public Artifacts, their schemas, versions, and operating commands.

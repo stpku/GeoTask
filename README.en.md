@@ -2,9 +2,9 @@
 
 [简体中文](README.md) | **English**
 
-**Spatiotemporal error-checking and correction layer for multimodal agents.**
+**Explicit and verifiable spatiotemporal world model for AI agents.**
 
-> Let foundation models reason openly; let GeoTask protect spatiotemporal facts and action boundaries.
+> Let foundation models understand the world; let GeoTask verify and maintain it.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
@@ -17,14 +17,14 @@
 pip install geotask-core
 ```
 
-GeoTask connects open multimodal reasoning to local spatiotemporal verification. It turns model-produced observations, objects, claims, plans, and candidate actions into explicit tasks, checks for omitted constraints and violations of geometric or temporal facts, tracks whether evidence is still current, and exposes bounded paths for blocking, evidence requests, or revision when a conclusion does not hold.
+GeoTask turns multimodal models, sensors, maps, authoritative data, and human input into explicit world objects, spatiotemporal relations, state, evidence, and action constraints. It builds a world state that is computable, verifiable, updatable, and traceable. Rather than hiding the whole world inside a neural representation, GeoTask makes the facts an agent depends on inspectable, recomputable, correctable, and maintainable.
 
-- **Multimodal models understand and propose:** observations, hypotheses, explanations, and plans from text, maps, imagery, video, and state data.
-- **GeoTask Core structures and verifies:** objects, coordinate contracts, units, evidence bindings, operator contracts, and local deterministic results.
-- **The control layer corrects and gates:** contradictions, missing evidence, bounded revisions, blocked outputs, and eligibility.
-- **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local models, human review, and production actions.
+- **Multimodal models perceive and reason openly:** observations, hypotheses, explanations, and plans from text, maps, imagery, video, and state data.
+- **GeoTask Core provides world-state contracts and a verification kernel:** explicit objects, coordinates, time, relations, evidence, and claims with local deterministic verification.
+- **Verification and control maintain the world:** preserve supported facts, expose conflict and unknown states, constrain correction, and manage action eligibility.
+- **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local predictive models, human review, and production actions.
 
-> **The technical definition remains:** GeoTask is a verifiable spatiotemporal task protocol for AI agents. The protocol is the implementation form; error detection, correction, and action gating are the primary value.
+> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. First-class Observation, World State, State Transition, and incremental reevaluation remain under development.
 
 ## Start here
 
@@ -41,32 +41,29 @@ GeoTask connects open multimodal reasoning to local spatiotemporal verification.
 - [Public roadmap](ROADMAP.md)
 - [Documentation index](docs/README.en.md)
 
-## Why stronger models make GeoTask more valuable
+## Why agents need a verifiable world model
 
-Multimodal models are becoming better at understanding scenes, calling tools, and proposing plans. As that capability grows, the scarce questions shift from “can the model produce a spatial answer?” to:
+Multimodal models are becoming better at understanding scenes, calling tools, and proposing plans, but their “understanding of the world” is usually implicit in context, vectors, or parameters. Before real action, an agent still needs an explicit, shared, verifiable world state that continuously answers:
 
-- did generation omit coordinate, time, altitude, capability, or safety-margin constraints;
-- does the result satisfy geometric, topological, temporal, and physical facts;
-- does the conclusion remain valid after evidence or state changes;
-- can an error be localized to a claim, object, or permitted revision path;
-- can an unverified output cross into a real action without an explicit gate.
+- which objects exist, where and when they exist, and what state they are in;
+- which relations and constraints hold, remain unknown, conflict, or lack evidence;
+- which world states and conclusions must change when a new observation arrives;
+- which facts come from models, sensors, authoritative data, or human review;
+- which actions are currently permitted by the maintained world state.
 
-A tool call can compute one function, but it does not automatically preserve the complete task, evidence state, affected outputs, revision boundary, or recovery condition. GeoTask organizes those concerns into verifiable and auditable tasks and Artifacts:
+A tool call can compute one function, but it does not automatically maintain object identity, world snapshots, evidence state, change impact, or action boundaries. GeoTask organizes those concerns into verifiable and auditable world-model primitives and Artifacts:
 
 ```mermaid
 flowchart LR
-  M[Multimodal model proposes observations and plans] --> T[GeoTask materializes a task]
-  T --> V[Local spatiotemporal verification]
-  V --> S{Verification state}
-  S -->|verified| G[Action gate]
-  S -->|contradicted| C[Bounded correction]
-  S -->|unverifiable| E[Evidence request]
-  C --> T
-  E --> T
-  N[New state arrives] --> V
+  O[Multimodal observations and external state] --> W[Explicit spatiotemporal world state]
+  W --> R[Relations, constraints, and world claims]
+  R --> V[Local verification and evidence governance]
+  V --> U[State update, correction, and recheck]
+  U --> G[Action eligibility and external Runtime]
+  N[New observation arrives] --> W
 ```
 
-The current public Core implements task structuring, deterministic verification, evidence and control states, mechanical Agent repair, and bounded-path retry. A unified `VerificationSession`, general discrepancy reports, impact graphs, and incremental reevaluation remain roadmap capabilities.
+The current public Core implements world objects and spatial contracts, source and evidence bindings, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. First-class `WorldState`, `Observation`, `VerificationSession`, `StateTransition`, impact graphs, and incremental reevaluation remain roadmap capabilities.
 
 ## Five-minute quickstart
 

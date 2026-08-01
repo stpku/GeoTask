@@ -51,6 +51,7 @@ CONTRIBUTING_EN = ROOT / "CONTRIBUTING.md"
 CONTRIBUTING_ZH = ROOT / "CONTRIBUTING.zh-CN.md"
 CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
 CITATION = ROOT / "CITATION.cff"
+PYPROJECT = ROOT / "pyproject.toml"
 ROADMAP = ROOT / "ROADMAP.md"
 RELEASE_NOTES_010 = ROOT / "docs" / "release_v0_1_0.md"
 RELEASE_NOTES_011 = ROOT / "docs" / "release_v0_1_1.md"
@@ -202,29 +203,32 @@ def test_chinese_and_english_entrypoints_are_bidirectionally_linked() -> None:
     assert "[简体中文](README.md)" in root_en
     assert "[English](README.en.md)" in docs_zh
     assert "[简体中文](README.md)" in docs_en
-    assert "多模态智能体的时空验错与纠偏层" in root_zh
-    assert "面向AI智能体的可验证时空任务协议" in root_zh
-    assert "Spatiotemporal error-checking and correction layer" in root_en
-    assert "verifiable spatiotemporal task protocol for AI agents" in root_en
+    assert "面向智能体的可验证时空世界模型" in root_zh
+    assert "可验证时空任务协议" in root_zh
+    assert "Explicit and verifiable spatiotemporal world model" in root_en
+    assert "verifiable task protocol" in root_en
 
 
 def test_whitepaper_separates_positioning_implementation_and_roadmap() -> None:
     text = WHITEPAPER.read_text(encoding="utf-8")
 
     for fragment in (
-        "多模态智能体的时空验错、纠偏与行动门控框架",
+        "面向智能体的显式、可验证时空世界模型",
         "为什么是现在：从直接给答案到开放推理与后验验证",
-        "连接多模态大模型开放推理与本地时空验证框架的验错、纠偏和行动门控层",
-        "面向智能体的可验证时空任务协议",
+        "GeoTask通过显式描述世界对象、位置、时间、状态、关系、约束、证据及其变化",
+        "面向智能体的可验证时空任务协议、Canonical IR、Artifact体系和本地验证内核",
+        "与隐式神经世界模型的区别",
         "八类Canonical对象",
         "八个本地确定性算子",
-        "统一 Verification Session",
+        "World State",
+        "State Transition",
         "仍是后续工程目标",
     ):
         assert fragment in text
 
     assert "GeoTask 不负责提供完整地图、原始多模态识别、设备控制" in text
     assert "初始正确不代表后续持续正确" in text
+    assert "GeoTask可以连接神经世界模型" in text
 
 
 def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
@@ -270,8 +274,9 @@ def test_whitepaper_states_architecture_and_public_boundary() -> None:
     text = WHITEPAPER.read_text(encoding="utf-8")
 
     required_fragments = (
-        "多模态智能体的时空验错、纠偏与行动门控框架",
-        "面向智能体的可验证时空任务协议",
+        "面向智能体的显式、可验证时空世界模型",
+        "可验证时空任务协议",
+        "与隐式神经世界模型的区别",
         "对象、算子和命题显式绑定",
         "生成与验证分离",
         "证据冲突",
@@ -728,6 +733,7 @@ def test_bilingual_community_files_exist() -> None:
 
 def test_public_preview_release_assets_are_consistent() -> None:
     citation = yaml.safe_load(CITATION.read_text(encoding="utf-8"))
+    pyproject = PYPROJECT.read_text(encoding="utf-8")
     roadmap = ROADMAP.read_text(encoding="utf-8")
     release = RELEASE_NOTES.read_text(encoding="utf-8")
     codeowners = CODEOWNERS.read_text(encoding="utf-8")
@@ -739,13 +745,23 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert citation["repository-code"] == "https://github.com/stpku/GeoTask"
     assert citation["url"] == "https://stpku.github.io/GeoTask/"
     assert citation["license"] == "MIT"
+    assert "Explicit and Verifiable Spatiotemporal World Model" in citation["title"]
+    assert "world models" in citation["keywords"]
+    assert "explicit and verifiable spatiotemporal" in citation["abstract"]
+
+    assert "public contracts and deterministic kernel for explicit, verifiable spatiotemporal world models" in pyproject
+    assert '"world-model"' in pyproject
+    assert '"embodied-ai"' in pyproject
 
     assert "v0.1：公共预览" in roadmap
     assert "v0.2.0：制品契约" in roadmap
     assert "v0.3.0：Agent集成（当前稳定）" in roadmap
     assert "v0.4：Runtime接口、模型适配与对象扩展" in roadmap
-    assert "v0.5：Verification Cycle" in roadmap
+    assert "v0.5：Verifiable World-State Cycle" in roadmap
     assert "v0.6：Local Verification Providers与Domain Pack生态" in roadmap
+    assert "Observation Artifact" in roadmap
+    assert "World State Artifact" in roadmap
+    assert "State Transition Artifact" in roadmap
     assert "VerificationSession" in roadmap
     assert "geotask recheck" in roadmap
 

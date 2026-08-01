@@ -46,14 +46,15 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已增加文档级来源、证据绑定与审计元数据，并通过Artifact Registry输出IDE Schema文件匹配；
 - ✅ 已建立覆盖全部公共确定性算子的离线一致性与本机性能回归基准。
 
-### v0.5：Verification Cycle
+### v0.5：Verifiable World-State Cycle
 
-- 发布`VerificationSession`组合Artifact，串联模型方案、任务、执行结果、控制评估、差异、修订与复核状态；
-- 增加Proposal与Observation契约，使多模态结果以带来源、时间和不确定性的结构化观察进入验证链；
-- 发布通用Discrepancy Report与Correction Request，明确错误命题、影响输出、可修改范围和不可变路径；
-- 建立Impact Graph、受影响断言集合、失效输出集合与增量复核结果；
-- 提供`geotask verify`与`geotask recheck`高层命令，保持本地、显式、可复现的快照式验证；
-- 将GT21—GT28建设为推理后验错、限定纠偏、动态状态更新和行动门控案例。
+- 发布Observation Artifact，使模型、传感器、地图、权威数据和人工输入以带来源、时间、不确定性和世界命题的结构化观察进入系统；
+- 发布World State Artifact，表达某一时刻版本化的世界对象、属性、关系、证据、有效时间和不确定状态；
+- 发布State Transition Artifact，记录哪些Observation改变了哪些世界状态路径、关系和行动资格；
+- 将`VerificationSession`定义为针对一个World State的可审计验证快照，绑定观察、任务、结果、控制评估、差异、行动资格和复核触发条件；
+- 发布通用Discrepancy Report、Correction Request、Impact Graph和增量复核结果；
+- 提供`geotask verify`与`geotask recheck`高层命令，保持本地、显式、可复现的世界状态快照语义；
+- 将GT21—GT28建设为Observation接入、世界状态构建、状态变化、影响传播、限定纠偏和行动门控案例。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
 
@@ -116,14 +117,15 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Added document-level source, evidence-binding, and audit metadata plus Artifact Registry IDE Schema file mappings;
 - ✅ Established an offline conformance and local performance-regression benchmark covering every public deterministic operator.
 
-### v0.5: Verification Cycle
+### v0.5: Verifiable World-State Cycle
 
-- Publish a `VerificationSession` composite Artifact that binds model proposals, tasks, execution results, control evaluations, discrepancies, revisions, and recheck state;
-- add Proposal and Observation contracts so multimodal output enters the verification chain with source, time, and uncertainty metadata;
-- publish general Discrepancy Report and Correction Request contracts for failed claims, affected outputs, mutable scope, and immutable paths;
-- establish Impact Graph, affected-assertion, invalidated-output, and incremental-reevaluation contracts;
-- provide high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible snapshot semantics;
-- build GT21–GT28 around post-reasoning error detection, bounded correction, dynamic state changes, and action gating.
+- Publish an Observation Artifact so models, sensors, maps, authoritative data, and humans enter the system as structured observations with source, time, uncertainty, and world claims;
+- publish a World State Artifact for versioned objects, attributes, relations, evidence, validity time, and uncertainty at one snapshot;
+- publish a State Transition Artifact that records which observations changed which world-state paths, relations, and action eligibility;
+- define `VerificationSession` as an auditable verification snapshot for one World State, binding observations, tasks, results, control evaluations, discrepancies, eligibility, and recheck triggers;
+- publish general Discrepancy Report, Correction Request, Impact Graph, and incremental-reevaluation contracts;
+- provide high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible world-state snapshot semantics;
+- build GT21–GT28 around Observation ingestion, world-state construction, state change, impact propagation, bounded correction, and action gating.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem
 

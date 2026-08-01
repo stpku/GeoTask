@@ -2,45 +2,45 @@
 
 ## 1. Product Role
 
-GeoTask is the spatiotemporal error-detection, correction, and action-gating layer between open multimodal reasoning and local verification.
+GeoTask is an explicit and verifiable spatiotemporal world model for AI agents.
 
 ```text
-multimodal model proposes
-→ GeoTask structures the claim
-→ local spatial/temporal methods verify it
-→ discrepancies become bounded correction requests
-→ controls decide whether an output is eligible, blocked, or waiting for evidence
+multimodal models and external systems observe the world
+→ GeoTask represents objects, relations, state, evidence, and constraints
+→ local providers verify world claims and maintain uncertainty/conflict
+→ new observations update the affected world state
+→ controls derive current action eligibility
 ```
 
-The public Core does not replace a multimodal model, fetch real-world evidence, or execute production actions. It provides the public contracts and local deterministic baseline used by Agents, external Runtimes, and Domain Packs.
+The public Core does not replace a multimodal model, sensor stack, map platform, simulator, or production-control system. It provides the public state contracts, deterministic verification kernel, provenance, control semantics, and Artifact foundation used by Agents, external Runtimes, and Domain Packs.
 
-The original definition—"a verifiable spatiotemporal task protocol"—remains correct as the implementation form. The broader system value is the verification loop built on top of that protocol.
+"A verifiable spatiotemporal task protocol" remains correct as the current implementation form. Error detection, correction, and action gating are maintenance capabilities of the broader world model, not the complete product definition.
 
 ## 2. Four Architectural Planes
 
 ```text
 ┌────────────────────────────────────────────────────────────┐
-│ 1. Open reasoning plane                                    │
-│ Multimodal models interpret scenes, propose claims/plans   │
+│ 1. Perception and open-reasoning plane                      │
+│ Models, sensors, maps, and systems produce observations    │
 └─────────────────────────────┬──────────────────────────────┘
                               ↓
 ┌────────────────────────────────────────────────────────────┐
-│ 2. Spatiotemporal task plane                               │
-│ Objects, CRS, coordinates, time, altitude, evidence, tasks │
+│ 2. Explicit spatiotemporal world-state plane               │
+│ Objects, identity, CRS, time, state, relations, evidence   │
 └─────────────────────────────┬──────────────────────────────┘
                               ↓
 ┌────────────────────────────────────────────────────────────┐
-│ 3. Local verification and correction plane                 │
-│ Deterministic operators, validation, comparison, retry     │
+│ 3. Verification and state-evolution plane                   │
+│ Operators, rules, providers, discrepancy, transition      │
 └─────────────────────────────┬──────────────────────────────┘
                               ↓
 ┌────────────────────────────────────────────────────────────┐
-│ 4. Control and action plane                                │
-│ Block, request evidence, recheck, review, external action  │
+│ 4. Control and real-world action plane                      │
+│ Eligibility, block, evidence, review, authorized action    │
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core implements the public contracts for planes 2 and 3 and the read-only control semantics of plane 4. External Runtimes and Domain Packs provide connectors, industry policy, nonlocal models, authoritative data, human review, and production actions.
+GeoTask Core currently implements the foundational contracts of plane 2, the deterministic baseline of plane 3, and read-only control semantics of plane 4. First-class Observation, WorldState, StateTransition, and incremental reevaluation are target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -277,21 +277,21 @@ Blocked Result
 
 These flows are implemented independently. Users currently assemble them through related Artifacts and CLI commands.
 
-## 5. Target Evolution: Verification Cycle
+## 5. Target Evolution: Verifiable World-State Cycle
 
-The next architectural step is an upward composition layer, not a rewrite of the execution kernel.
+The next architectural step is an upward world-state composition layer, not a rewrite of the execution kernel.
 
 ```text
-Proposal
-→ task materialization
-→ local verification
-→ discrepancy detection
-→ correction request
-→ bounded revision
-→ affected-assertion analysis
+Observation
+→ world-state materialization
+→ relation and claim verification
+→ discrepancy / uncertainty detection
+→ bounded correction or evidence request
+→ state transition
+→ affected-claim analysis
 → incremental recheck
-→ action gate
-→ new state
+→ action eligibility
+→ next observation
 → repeat
 ```
 
@@ -299,41 +299,44 @@ Planned public abstractions:
 
 | Planned abstraction | Purpose | Reuses existing capability |
 |---|---|---|
-| `VerificationSession` | Bind proposal, task, results, controls, discrepancies, revisions, and state transitions | Artifact Registry, Agent reports, control evaluation |
-| `DiscrepancyReport` | Explain which claim differs, why, impact, mutable scope, and immutable paths | execution result, evaluator, revision request |
+| `Observation` | Carry multimodal or external observations with source, time, producer, uncertainty, and claims | provenance and evidence binding |
+| `WorldState` | Represent one explicit, versioned snapshot of objects, attributes, relations, evidence, and validity time | Canonical IR, objects, space, provenance |
+| `StateTransition` | Record which observations changed which world-state paths and why | diagnostics, changed paths, provenance |
+| `VerificationSession` | Provide an auditable verification snapshot for one WorldState, binding observations, tasks, results, controls, discrepancies, eligibility, and recheck triggers | Artifact Registry, Agent reports, control evaluation |
+| `DiscrepancyReport` | Explain which world claim differs, why, impact, mutable scope, and immutable paths | execution result, evaluator, revision request |
 | `CorrectionRequest` | Give an Agent an explicit bounded correction contract | Agent preparation and revision verification |
-| `ImpactGraph` | Map changed object/state paths to assertions and outputs | object refs, assertion refs, output contracts |
-| `ReevaluationResult` | Record preserved, invalidated, and recomputed findings | execution result and control evaluation |
-| `Observation` | Carry multimodal observations with source, time, producer, uncertainty, and claim | provenance and evidence binding |
+| `ImpactGraph` | Map changed world-state paths to claims, assertions, outputs, and action gates | object refs, assertion refs, output contracts |
+| `ReevaluationResult` | Record preserved, invalidated, and recomputed world findings | execution result and control evaluation |
 | `VerificationProvider` | Describe deterministic operators, rule engines, local predictive models, authoritative data, and human review | operator contracts and Runtime descriptors |
 
 These names describe the target architecture only. They are not yet implemented public APIs and must not be presented as completed capabilities until code, Schemas, tests, and release notes exist.
 
-## 6. Dynamic Recheck Without a Streaming Platform
+## 6. World-State Updates Without a Streaming Platform
 
-Core does not need to embed Kafka, a stream processor, or a real-time database to support continuous verification semantics.
+Core does not need to embed Kafka, a stream processor, or a real-time database to support explicit world-state evolution.
 
 The intended public interaction is snapshot based:
 
 ```text
-initial state
-→ verification snapshot
-→ changed state
+initial WorldState
+→ auditable VerificationSession
+→ new Observation
+→ StateTransition
 → impact analysis
 → local recheck
-→ new gate state
+→ updated WorldState and action eligibility
 ```
 
 A future high-level CLI may expose this as:
 
 ```text
-geotask verify  --proposal ... --task ... --state ...
-geotask recheck <verification-session> --state ...
+geotask verify  --observations ... --state ... --task ...
+geotask recheck <verification-session> --observations ...
 ```
 
-Each call should remain local, explicit, reproducible, and Artifact-producing. Long-running monitoring and event delivery remain Runtime responsibilities.
+Each call should remain local, explicit, reproducible, and Artifact-producing. Long-running observation delivery, storage, monitoring, and external action remain Runtime responsibilities.
 
-GT16 demonstrates the intended semantics today through a fictional static replay: an initial 120-second separation is verified; a 40-second delay reduces the predicted separation to 80 seconds; the system preserves the still-valid findings, invalidates the assumption of permanent safety, and keeps action eligibility behind a 60-second recheck threshold.
+GT16 demonstrates the intended semantics today through a fictional static replay: an initial WorldState contains a 120-second separation; a new telemetry Observation records a 40-second delay; the predicted relation changes to 80 seconds; the system preserves still-valid spatial findings, invalidates the assumption of permanent safety, and keeps action eligibility behind a 60-second recheck threshold.
 
 ## 7. Assurance Model
 

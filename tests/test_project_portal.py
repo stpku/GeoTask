@@ -20,14 +20,14 @@ MANIFEST = ROOT / ".release" / "public-manifest.yaml"
 def test_root_page_is_project_portal_not_gt01_experience() -> None:
     html = PORTAL.read_text(encoding="utf-8")
 
-    assert "多模态智能体的" in html
-    assert "时空验错与纠偏层" in html
-    assert "大模型负责开放推理，GeoTask守住时空事实与行动边界" in html
-    assert "多模态模型越强，越需要本地时空验错" in html
-    assert "30秒看懂一次时空纠偏" in html
-    assert "四个平面组成时空验证循环" in html
-    assert "四类能力覆盖推理到执行" in html
-    assert "Verification Session、Impact Graph与增量重算仍在路线图" in html
+    assert "智能体的可验证" in html
+    assert "时空世界模型" in html
+    assert "让大模型理解世界，让GeoTask验证并维护世界" in html
+    assert "智能体不只需要理解世界，更需要一个可以验证的世界模型" in html
+    assert "30秒看懂一次世界状态更新" in html
+    assert "四个平面构成可验证时空世界模型" in html
+    assert "六类能力共同维护智能体的世界" in html
+    assert "World State、Transition与Verification Session待实现" in html
     assert "保护商业运行层" not in html
     assert "商业边界" not in html
     assert "GT01—GT20渐进式案例" in html
@@ -41,15 +41,19 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert 'id: "minimal-distance-v1"' not in html
 
 
-def test_portal_exposes_gt16_dynamic_correction_demo() -> None:
+def test_portal_exposes_gt16_world_state_update_demo() -> None:
     html = PORTAL.read_text(encoding="utf-8")
 
     for fragment in (
+        "初始世界状态",
+        "新Observation",
+        "世界关系更新",
+        "行动资格更新",
         "计划间隔120秒",
-        "A机延误40秒",
+        "A机最新遥测显示延误40秒",
         "预测间隔缩至80秒",
         "间隔降至60秒",
-        "初始结论只对当时的对象、证据和状态快照成立",
+        "世界模型不是一次性结论",
         'href="gt16/"',
     ):
         assert fragment in html

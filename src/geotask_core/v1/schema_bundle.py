@@ -17,6 +17,7 @@ from geotask_core.v1.artifact_registry import (
     ARTIFACT_VALIDATION_SCHEMA_ID,
     GEOTASK_DOCUMENT_SCHEMA_ID,
     OBSERVATION_SCHEMA_ID,
+    WORLD_STATE_SCHEMA_ID,
     RUNTIME_DESCRIPTOR_SCHEMA_ID,
     RUNTIME_REQUEST_SCHEMA_ID,
     RUNTIME_RESPONSE_SCHEMA_ID,
@@ -33,6 +34,7 @@ _SCHEMA_FILENAME_BY_ID = {
     ARTIFACT_REGISTRY_SCHEMA_ID: "geotask-artifact-registry-v1.0.schema.json",
     GEOTASK_DOCUMENT_SCHEMA_ID: "geotask-v1.0.schema.json",
     OBSERVATION_SCHEMA_ID: "geotask-observation-v0.1.schema.json",
+    WORLD_STATE_SCHEMA_ID: "geotask-world-state-v0.1.schema.json",
     GEOTASK_RESULT_SCHEMA_ID: "geotask-result-v1.0.schema.json",
     CONTROL_EVALUATION_SCHEMA_ID: "geotask-control-evaluation-v1.0.schema.json",
     AGENT_GENERATION_PREPARATION_SCHEMA_ID: (

@@ -32,6 +32,10 @@ from geotask_core.v1.observation import (
     OBSERVATION_SCHEMA_ID,
     OBSERVATION_SCHEMA_VERSION,
 )
+from geotask_core.v1.world_state import (
+    WORLD_STATE_SCHEMA_ID,
+    WORLD_STATE_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -73,6 +77,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "*.geotask-observation.json",
         "observation*.json",
         "examples/core/observation*.json",
+    ),
+    "geotask.world-state": (
+        "*.geotask-world-state.json",
+        "world-state*.json",
+        "world_state*.json",
+        "examples/core/world_state*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -178,6 +188,32 @@ _ARTIFACTS = (
         execution_boundary=(
             "Validation does not verify claim truth, resolve references, update a "
             "WorldState, invoke a Provider, or authorize action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.world-state",
+        title="GeoTask World State v0.1",
+        kind="world_state_snapshot",
+        schema_id=WORLD_STATE_SCHEMA_ID,
+        schema_version=WORLD_STATE_SCHEMA_VERSION,
+        schema_path="schemas/geotask-world-state-v0.1.schema.json",
+        specification_path="docs/spec/geotask-world-state-v0.1.md",
+        wrapper_key="world_state",
+        generation_command=None,
+        generation_note=(
+            "Authored or materialized by an Agent or Runtime from explicit inputs. "
+            "Core validates snapshots but does not ingest observations or compute transitions."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.world-state <world-state.json>"
+        ),
+        description=(
+            "Versioned point-in-time snapshot of world objects, attributes, relations, "
+            "validity, uncertainty, and closed Observation/Evidence references."
+        ),
+        execution_boundary=(
+            "Validation does not fetch evidence, verify external truth, merge observations, "
+            "compute a State Transition, rerun tasks, or authorize action."
         ),
     ),
     ArtifactDescriptor(
@@ -539,6 +575,8 @@ __all__ = [
     "GEOTASK_DOCUMENT_SCHEMA_VERSION",
     "OBSERVATION_SCHEMA_ID",
     "OBSERVATION_SCHEMA_VERSION",
+    "WORLD_STATE_SCHEMA_ID",
+    "WORLD_STATE_SCHEMA_VERSION",
     "ARTIFACT_VALIDATION_SCHEMA_ID",
     "ARTIFACT_VALIDATION_SCHEMA_VERSION",
     "AGENT_GENERATION_PREPARATION_SCHEMA_ID",

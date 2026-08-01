@@ -96,6 +96,8 @@ def test_examples_readme_lists_core_examples():
     assert "examples/core/v1_point_to_line_distance_minimal.en.yaml" in readme
     assert "examples/core/v1_point_to_line_distance_minimal.zh-CN.yaml" in readme
     assert "examples/core/v1_polygon_contains_point.yaml" in readme
+    assert "examples/core/observation_uav_delay.json" in readme
+    assert "examples/core/world_state_uav_separation.json" in readme
     assert "examples/core/time_altitude_overlap.yaml" in readme
     assert "examples/core/assertions_expected_results.yaml" in readme
     assert "examples/core/multi_constraint_conflict.yaml" in readme

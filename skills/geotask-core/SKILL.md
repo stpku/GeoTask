@@ -21,6 +21,7 @@ Never:
 - execute `next_action` unless a separate authorized Runtime explicitly supports it;
 - replace deterministic operator output with model judgment;
 - treat declared provenance or `evidence_refs` as proof that a source was fetched, authenticated, independently verified, or human-reviewed;
+- treat a valid `geotask.world-state` Artifact as proof of external truth, an Observation merge, a State Transition, task re-execution, or action authorization;
 - compare benchmark timing from different hardware as a ranking, production SLA, or model-quality result.
 
 ## Required Workflow

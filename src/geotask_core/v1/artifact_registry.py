@@ -24,6 +24,10 @@ from geotask_core.v1.control_evaluation import (
     CONTROL_EVALUATION_SCHEMA_ID,
     CONTROL_EVALUATION_SCHEMA_VERSION,
 )
+from geotask_core.v1.core_benchmark_contract import (
+    CORE_BENCHMARK_SCHEMA_ID,
+    CORE_BENCHMARK_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -70,6 +74,7 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
     "geotask.runtime-descriptor": ("*runtime-descriptor*.json",),
     "geotask.runtime-request": ("*runtime-request*.json",),
     "geotask.runtime-response": ("*runtime-response*.json",),
+    "geotask.core-benchmark-report": ("*core-benchmark*.json",),
     "geotask.artifact-validation-report": ("*artifact-validation*.json",),
 }
 
@@ -393,6 +398,35 @@ _ARTIFACTS = (
         ),
         execution_boundary=(
             "Validating a response does not repeat the Runtime operation or side effects."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.core-benchmark-report",
+        title="GeoTask Core Benchmark Report v0.1",
+        kind="core_benchmark_report",
+        schema_id=CORE_BENCHMARK_SCHEMA_ID,
+        schema_version=CORE_BENCHMARK_SCHEMA_VERSION,
+        schema_path="schemas/geotask-core-benchmark-v0.1.schema.json",
+        specification_path="docs/spec/geotask-core-benchmark-v0.1.md",
+        wrapper_key="core_benchmark",
+        generation_command=(
+            "geotask benchmark core --format json --output core-benchmark.json"
+        ),
+        generation_note=(
+            "Produced offline from fixed fictional cases using production GeoTask Core "
+            "Parser, Canonical IR, Validator, Executor, and Result contracts."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.core-benchmark-report "
+            "<core-benchmark.json>"
+        ),
+        description=(
+            "Versioned conformance and local performance-regression report covering "
+            "all public deterministic operators, result round trips, and evidence bindings."
+        ),
+        execution_boundary=(
+            "The benchmark performs no model call, network access, external evidence read, "
+            "or production action. Timing values are not comparable across hardware."
         ),
     ),
     ArtifactDescriptor(

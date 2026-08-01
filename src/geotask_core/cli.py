@@ -18,6 +18,7 @@ Usage:
     geotask runtime inspect [runtime-descriptor.json] [--profile] [--format text|json]
     geotask runtime check <runtime-descriptor.json> <runtime-request.json> [--format text|json]
     geotask runtime mock <runtime-request.json> [--format text|json]
+    geotask benchmark core [--iterations N] [--enforce-performance]
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
     python -m geotask_core.cli normalize <file.txt> [--geotask <file.yaml>]
@@ -52,6 +53,8 @@ from geotask_core.v1.control_evaluation import (
     ControlContextError,
     evaluate_control_profile,
 )
+from geotask_core.v1.core_benchmark_cli import run_core_benchmark_command
+from geotask_core.v1.core_benchmark_contract import CoreBenchmarkFormatError
 from geotask_core.v1.result import GeotaskResult, ResultFormatError
 from geotask_core.v1.serialized_validation import (
     CONTROL_EVALUATION_VALIDATION_CONTRACT,
@@ -2133,6 +2136,28 @@ def cmd_runtime(args: list[str]):
         sys.exit(1)
 
 
+def cmd_benchmark(args: list[str]):
+    """Run public offline Core conformance and local performance checks."""
+    try:
+        if not args or args[0] in {"--help", "-h"}:
+            command_args = ["--help"]
+        elif args[0] == "core":
+            command_args = args[1:]
+        else:
+            raise ValueError(
+                f"unknown benchmark command {args[0]!r}; available commands: core"
+            )
+        report, exit_code = run_core_benchmark_command(command_args)
+    except SystemExit:
+        raise
+    except (CoreBenchmarkFormatError, OSError, TypeError, ValueError) as exc:
+        print(f"benchmark_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+    if exit_code:
+        sys.exit(exit_code)
+    return report
+
+
 def print_result(result: dict):
     """Print a result dict as YAML."""
     import yaml
@@ -2158,12 +2183,12 @@ def main():
 
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, benchmark, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, benchmark, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -2233,6 +2258,10 @@ def main():
         cmd_runtime(sys.argv[2:])
         return
 
+    if command == "benchmark":
+        cmd_benchmark(sys.argv[2:])
+        return
+
     if command == "result":
         cmd_result(sys.argv[2:])
         return
@@ -2284,7 +2313,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, normalize, eval, version")
+        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, benchmark, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

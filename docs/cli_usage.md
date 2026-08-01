@@ -170,7 +170,7 @@ python -m geotask_core.cli inspect examples
   machine-readable JSON. Supplying one stable Artifact ID returns a one-entry
   registry envelope; unknown IDs fail explicitly. `--verify` appends a sibling
   `schema_bundle_verification` report. With no Artifact ID it verifies the Registry
-  Schema and all eleven Artifact Schemas; with an Artifact ID it verifies only that
+  Schema and all twelve Artifact Schemas; with an Artifact ID it verifies only that
   Artifact's Schema. Without `--verify`, the Artifact Registry v1.0 envelope remains
   structurally compatible.
 - `schema export <artifact-id>` writes the installed JSON Schema for one
@@ -355,6 +355,37 @@ The output is the registered `geotask.agent-evidence-recovery` Artifact backed b
 `geotask-agent-integration-v0.1.schema.json`. Validating that file is read-only and
 does not reacquire evidence or repeat recovery. A structurally valid file may still
 record `state=blocked`.
+
+## Core Benchmark
+
+Run the public offline conformance and local performance-regression gate:
+
+```bash
+geotask benchmark core \
+  --iterations 30 \
+  --warmup 3 \
+  --max-p95-ms 100 \
+  --enforce-performance \
+  --format json \
+  --output core-benchmark.json
+```
+
+The five fixed fictional cases cover all eight public deterministic operators,
+strict Result round trips, replay semantic hashes, and Provenance evidence refs.
+Timing covers JSON decoding, Canonical construction, validation, production
+execution, and Result serialization. `--enforce-performance` makes a failed p95
+guardrail return exit code `2`; without it, the timing result remains observational.
+The guardrail is for controlled local regression checks only and does not support
+cross-hardware rankings or production latency claims.
+
+Validate a retained report without rerunning the benchmark:
+
+```bash
+geotask artifact validate \
+  geotask.core-benchmark-report \
+  core-benchmark.json \
+  --format json
+```
 
 ## Runtime Interface
 

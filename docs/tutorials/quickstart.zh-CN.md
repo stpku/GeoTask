@@ -128,6 +128,15 @@ schemas/geotask-v1.0.schema.json
 
 可以在IDE、CI或自己的工具中验证GeoTask YAML/JSON结构。仓库测试会使用该Schema检查公开v1案例，防止规范与示例漂移。
 
+发布前可运行离线Core门禁：
+
+```bash
+geotask benchmark core --enforce-performance --output core-benchmark.json
+geotask artifact validate geotask.core-benchmark-report core-benchmark.json
+```
+
+其中性能阈值只用于同一受控环境下的本机回归检查，不应将不同硬件上的报告作为性能排名。
+
 通过以下命令可获取全部公共Artifact的Schema及文件匹配模式：
 
 ```bash

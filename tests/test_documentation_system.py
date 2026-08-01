@@ -339,8 +339,9 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-descriptor",
         "geotask.runtime-request",
         "geotask.runtime-response",
-        "exactly eleven artifacts",
-        "all twelve public JSON Schemas",
+        "geotask.core-benchmark-report",
+        "exactly twelve artifacts",
+        "all thirteen public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

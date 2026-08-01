@@ -164,6 +164,14 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 
 `geotask inspect schemas --format json`还会为每类公共Artifact返回`ide_file_patterns`，可直接用于VS Code YAML、JetBrains或其他支持JSON Schema文件匹配的IDE配置。
 
+### 公共一致性与性能基准
+
+```bash
+geotask benchmark core --enforce-performance --output core-benchmark.json
+```
+
+该离线基准使用5个固定虚构案例覆盖全部8个公共确定性算子，并检查结果往返、重复执行语义指纹和Provenance证据绑定；同时测量`JSON解码→Canonical化→验证→执行→序列化`全链路。默认100毫秒p95阈值仅用于发现本机严重性能回归，不是跨硬件排名、生产SLA或模型能力评测。报告可作为`geotask.core-benchmark-report`再次严格验证。
+
 ### 执行主链
 
 ```text

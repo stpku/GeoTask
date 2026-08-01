@@ -29,6 +29,8 @@ from geotask_core.v1.artifact_registry import (
     ArtifactDescriptor,
     get_artifact_descriptor,
 )
+from geotask_core.v1.core_benchmark_contract import CoreBenchmarkFormatError
+from geotask_core.v1.core_benchmark_report import load_core_benchmark_report
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -623,6 +625,53 @@ def _validate_runtime_artifact_payload(
     )
 
 
+def _validate_core_benchmark_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        loaded = load_core_benchmark_report(payload)
+    except CoreBenchmarkFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_core_benchmark_report",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Regenerate the report with `geotask benchmark core --format json`."
+                    ),
+                ),
+            ),
+        )
+
+    body = loaded["core_benchmark"]
+    conformance = body["conformance"]
+    guardrail = body["performance"]["guardrail"]
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "benchmark_state": body["overall"]["state"],
+            "benchmark_valid": body["overall"]["valid"],
+            "conformance_passed": conformance["valid"],
+            "case_count": conformance["case_count"],
+            "operator_count": len(conformance["operator_coverage"]),
+            "pipeline_p95_ms": guardrail["observed_ms"],
+            "performance_guardrail_passed": guardrail["passed"],
+            "performance_enforced": guardrail["enforced"],
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -658,6 +707,8 @@ def _validate_verified_payload(
         "geotask.runtime-response",
     }:
         return _validate_runtime_artifact_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.core-benchmark-report":
+        return _validate_core_benchmark_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.artifact-validation-report":
         return _validate_artifact_validation_report_payload(
             descriptor,

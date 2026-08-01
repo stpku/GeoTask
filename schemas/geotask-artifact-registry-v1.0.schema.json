@@ -73,6 +73,7 @@
             "runtime_descriptor",
             "runtime_request",
             "runtime_response",
+            "core_benchmark_report",
             "artifact_validation_report"
           ]
         },

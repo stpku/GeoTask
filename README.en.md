@@ -150,6 +150,14 @@ Documents may optionally declare `provenance.sources`, `evidence_bindings`, and 
 
 `geotask inspect schemas --format json` also returns portable `ide_file_patterns` for every public Artifact, suitable for VS Code YAML, JetBrains, and other IDEs that associate files with JSON Schemas.
 
+### Public conformance and performance benchmark
+
+```bash
+geotask benchmark core --enforce-performance --output core-benchmark.json
+```
+
+The offline benchmark uses five fixed fictional cases to cover all eight public deterministic operators, result round trips, semantic replay digests, and provenance evidence bindings. It measures the full `JSON decode → canonicalize → validate → execute → serialize` path. The default 100 ms p95 threshold is only a broad local regression guardrail, not a cross-hardware ranking, production SLA, or model-quality benchmark. The retained report is registered as `geotask.core-benchmark-report` and can be strictly validated again.
+
 ### Execution chain
 
 ```text

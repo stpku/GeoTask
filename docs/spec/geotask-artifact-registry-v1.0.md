@@ -10,7 +10,7 @@ GeoTask publishes several machine-readable artifacts with different producers,
 wrappers, JSON Schemas, and validation commands. The Artifact Registry provides
 one stable public discovery surface for those contracts.
 
-The registry currently contains exactly eleven artifacts:
+The registry currently contains exactly twelve artifacts:
 
 1. GeoTask Document v1.0;
 2. GeoTask Execution Result v1.0;
@@ -22,7 +22,8 @@ The registry currently contains exactly eleven artifacts:
 8. GeoTask Runtime Descriptor v0.1;
 9. GeoTask Runtime Request v0.1;
 10. GeoTask Runtime Response v0.1;
-11. GeoTask Artifact Validation Report v1.0.
+11. GeoTask Core Benchmark Report v0.1;
+12. GeoTask Artifact Validation Report v1.0.
 
 It does not scan the filesystem, discover private modules, or infer unpublished
 contracts. New entries require an explicit public contract and compatibility
@@ -60,7 +61,7 @@ geotask inspect schemas geotask.execution-result --verify --format json
 ```
 
 `--verify` appends a sibling `schema_bundle_verification` object. Full discovery
-checks the registry Schema plus all eleven registered Artifact Schemas; exact
+checks the registry Schema plus all twelve registered Artifact Schemas; exact
 lookup checks only the selected artifact Schema. An invalid Bundle still emits
 the composite JSON or YAML report and exits non-zero. Without `--verify`, output
 remains the original Artifact Registry v1.0 payload and continues to validate
@@ -133,8 +134,8 @@ The same names are exported from `geotask_core.v1`.
 
 ### 3.1 Installed Schema Bundle
 
-The wheel and source distribution include all twelve public JSON Schemas needed to
-interpret the Registry and its eleven registered Artifacts. Callers can load them
+The wheel and source distribution include all thirteen public JSON Schemas needed to
+interpret the Registry and its twelve registered Artifacts. Callers can load them
 without network access:
 
 ```python
@@ -228,7 +229,7 @@ and non-execution boundary.
   "artifact_registry": {
     "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-artifact-registry-v1.0.schema.json",
     "registry_version": "1.0",
-    "artifact_count": 11,
+    "artifact_count": 12,
     "artifacts": [
       {
         "artifact_id": "geotask.document",
@@ -251,7 +252,7 @@ and non-execution boundary.
 }
 ```
 
-The complete payload contains all eleven descriptors in stable display order.
+The complete payload contains all twelve descriptors in stable display order.
 
 ## 5. Descriptor fields
 
@@ -448,7 +449,25 @@ A valid response may record `accepted`, `completed`, `blocked`, `rejected`, or
 `failed`. Strict loading checks output Artifacts, diagnostics, retryability, audit
 references, and side-effect declarations without repeating the Runtime operation.
 
-### 6.11 Artifact Validation Report
+### 6.11 Core Benchmark Report
+
+```text
+Artifact ID: geotask.core-benchmark-report
+Schema: schemas/geotask-core-benchmark-v0.1.schema.json
+Version: 0.1
+Wrapper: core_benchmark
+Generation:
+  geotask benchmark core --format json --output core-benchmark.json
+Validation:
+  geotask artifact validate geotask.core-benchmark-report <core-benchmark.json>
+```
+
+The report records production-Core conformance over fixed fictional cases and local
+pipeline timing observations. Validation checks its Schema and cross-field
+consistency without rerunning the cases. It performs no model call or network
+access, and its timing values are not comparable across different hardware.
+
+### 6.12 Artifact Validation Report
 
 ```text
 Artifact ID: geotask.artifact-validation-report

@@ -44,6 +44,7 @@ The Artifact Registry uses the unified command as its canonical
 | `geotask.runtime-descriptor` | JSON | strict Runtime identity, operation, Artifact-contract, authorization, side-effect, audit, and production-readiness validation |
 | `geotask.runtime-request` | JSON | strict registered input/output Artifact IDs, request identity, idempotency, authorization-reference, metadata, and JSON-value validation |
 | `geotask.runtime-response` | JSON | strict state, output Artifact, diagnostic, audit, retryability, polling, and side-effect cross-field validation |
+| `geotask.core-benchmark-report` | JSON | strict benchmark identity, case/count, replay digest, metric ordering, performance guardrail, overall-state, and execution-boundary validation |
 | `geotask.artifact-validation-report` | JSON | duplicate/non-finite JSON rejection, Registry identity checks, report cross-field validation, and `load_artifact_validation_report()` |
 
 Every validation first checks the corresponding installed Schema against the

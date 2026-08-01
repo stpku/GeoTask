@@ -18,6 +18,11 @@ All notable public changes to GeoTask Core are documented here.
 - Add optional document-level provenance with strict source identities, kinds, URI/Artifact references, SHA-256, timezone-aware timestamps, assertion evidence bindings, and authoring audit metadata. Valid bindings propagate to `CheckResult.evidence_refs` without increasing assurance or fetching external sources. Artifact Registry descriptors now expose portable `ide_file_patterns` through `geotask inspect schemas --format json` for direct IDE Schema association.
 - Add the public `geotask benchmark core` release gate and registered `geotask.core-benchmark-report` Artifact. Five fixed fictional cases cover all eight deterministic operators, result round trips, semantic replay hashes, and evidence propagation while measuring the production JSON-decode-to-result-serialization path. The optional p95 guardrail is local-only and explicitly does not support cross-hardware performance claims.
 
+### Changed
+
+- Reframe the architecture documentation from a single execution pipeline into four explicit planes: open reasoning, spatiotemporal task contracts, local verification/correction, and control/action boundaries. The document now distinguishes implemented Core, Agent, Artifact, and Runtime capabilities from planned `VerificationSession`, discrepancy, impact, observation, provider, and reevaluation abstractions.
+- Upgrade GT16 from a static route-crossing question into a dynamic verification replay. The initial 120-second separation remains verified, a fictional 40-second delay reduces the predicted margin to 80 seconds, and the action gate preserves valid findings while requiring continued monitoring and recheck at the 60-second threshold. Catalog-driven portal metadata, navigation JSON, Sitemap, bilingual Cookbook entries, page logic, example data, and tests are synchronized.
+
 ## [0.3.0] - 2026-07-31
 
 ### Added

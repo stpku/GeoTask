@@ -1,137 +1,403 @@
 # GeoTask Core Architecture
 
-## Main Chain
+## 1. Product Role
 
-Every GeoTask document flows through a single linear pipeline:
+GeoTask is the spatiotemporal error-detection, correction, and action-gating layer between open multimodal reasoning and local verification.
 
-```
-parse => canonicalize => validate => execute => result
-```
-
-### 1. Parse
-
-Raw YAML input is loaded into a Python dictionary. Structural checks catch missing sections, duplicate keys, and unknown top-level fields. Version detection distinguishes legacy (v0.x) documents from v1.0 native documents.
-
-Module: `geotask_core.parser`
-
-### 2. Canonicalize
-
-The parsed dictionary is converted into a `CanonicalDocument` dataclass. This step normalizes legacy field names (`xy` to `coordinates`, `line` to `polyline`), auto-generates assertions from legacy question-style tasks, and produces the single canonical representation used by every downstream stage.
-
-Module: `geotask_core.v1.canonicalizer`  
-Canonical types: `geotask_core.v1.ir`
-
-### 3. Validate
-
-The `CanonicalDocument` is validated against the v1.0 specification. Checks include:
-
-- ID format and uniqueness
-- Object type validity and geometry constraints
-- Operator registration and arity matching
-- Object reference resolution
-- Execution mode support
-- Output contract consistency
-- Dependency cycle detection
-
-Validation produces structured diagnostics. An empty diagnostic list means the document is fully valid.
-
-Module: `geotask_core.v1.validator`
-
-### 4. Execute
-
-Valid assertions are dispatched through the `AssertionDispatcher` against the operator registry. Each assertion resolves its `object_refs` to concrete `GeoObject` instances, extracts geometry data by type, and calls the bound implementation function. The result is captured as a `CheckResult` with value, unit, status, and assurance metadata.
-
-Pre-execution validation filters out assertions with structural errors (unknown operators, bad references, type mismatches) before dispatching. Condition and dependency ordering are enforced per the execution plan.
-
-Module: `geotask_core.v1.executor`
-
-### 5. Result
-
-All `CheckResult` instances are aggregated into a `GeotaskResult`. Summary counts, overall status derivation, and assurance level synthesis are computed from the check collection. The result can be serialized to dict, YAML, or JSON for consumption by downstream systems.
-
-Legacy output projections (`measurements`, `conclusion`, `verified_by`) are computed as `@property` on `GeotaskResult`, not stored separately.
-
-Module: `geotask_core.v1.executor` (GeotaskResult dataclass)
-
-## Module Map
-
-Public modules in `src/geotask_core/`:
-
-```
-geotask_core/
-├── ops.py                  # 6 deterministic operator implementations
-├── parser.py               # YAML loading and structural validation
-├── runner.py               # Public entry: run_geotask()
-├── normalizer.py           # LLM output extraction and structuring
-├── verifier.py             # Measurement verification with status hierarchy
-├── evaluator.py            # Compare Core results with normalized LLM output
-├── result_schema.py        # Status constants and overall_status computation
-├── cli.py                  # CLI: validate, run, normalize, eval
-├── models.py               # Legacy v0.x dataclasses (compat)
-├── operator_registry.py    # Legacy v0.x operator registry (compat)
-│
-└── v1/
-    ├── ir.py               # Canonical IR dataclasses (pure data, zero logic)
-    ├── enums.py            # All v1.0 enums, error codes, ID validation
-    ├── canonicalizer.py    # Raw dict to CanonicalDocument conversion
-    ├── validator.py        # CanonicalDocument validation
-    ├── operator_contracts.py  # Operator contracts, registry, dispatcher
-    └── executor.py         # Execution engine and GeotaskResult
+```text
+multimodal model proposes
+→ GeoTask structures the claim
+→ local spatial/temporal methods verify it
+→ discrepancies become bounded correction requests
+→ controls decide whether an output is eligible, blocked, or waiting for evidence
 ```
 
-The `geotask_runtime/` directory contains private interfaces and mock implementations. These are published as reference contracts only. The mock pipeline, planner, and router are not part of Core.
+The public Core does not replace a multimodal model, fetch real-world evidence, or execute production actions. It provides the public contracts and local deterministic baseline used by Agents, external Runtimes, and Domain Packs.
 
-## Dependency Direction
+The original definition—"a verifiable spatiotemporal task protocol"—remains correct as the implementation form. The broader system value is the verification loop built on top of that protocol.
 
-Dependencies flow from high-level orchestration down to pure data types. No cycles exist.
+## 2. Four Architectural Planes
 
+```text
+┌────────────────────────────────────────────────────────────┐
+│ 1. Open reasoning plane                                    │
+│ Multimodal models interpret scenes, propose claims/plans   │
+└─────────────────────────────┬──────────────────────────────┘
+                              ↓
+┌────────────────────────────────────────────────────────────┐
+│ 2. Spatiotemporal task plane                               │
+│ Objects, CRS, coordinates, time, altitude, evidence, tasks │
+└─────────────────────────────┬──────────────────────────────┘
+                              ↓
+┌────────────────────────────────────────────────────────────┐
+│ 3. Local verification and correction plane                 │
+│ Deterministic operators, validation, comparison, retry     │
+└─────────────────────────────┬──────────────────────────────┘
+                              ↓
+┌────────────────────────────────────────────────────────────┐
+│ 4. Control and action plane                                │
+│ Block, request evidence, recheck, review, external action  │
+└────────────────────────────────────────────────────────────┘
 ```
-runner.py / cli.py
-  => parser.py, canonicalizer, validator, executor
 
-executor => validator, dispatcher, ir, enums
-validator => ir, enums, operator_contracts (for operator lookup)
-canonicalizer => ir, enums
-dispatcher => ir, operator implementations (ops.py)
+GeoTask Core implements the public contracts for planes 2 and 3 and the read-only control semantics of plane 4. External Runtimes and Domain Packs provide connectors, industry policy, nonlocal models, authoritative data, human review, and production actions.
 
-ir.py => nothing (leaf)
-enums.py => nothing (leaf)
-ops.py => nothing (leaf, stdlib math only)
+## 3. Implemented Architecture
+
+### 3.1 Deterministic execution kernel
+
+The base execution path remains intentionally simple and reproducible:
+
+```text
+Document
+→ parse
+→ Canonical IR
+→ validate
+→ execute
+→ GeotaskResult
 ```
 
-The rule: `ir.py` and `enums.py` import nothing from Core. `ops.py` is a pure math module. Everything else depends inward toward these leaves.
+#### Parse
 
-## Operator Contract Structure
+Raw YAML is loaded with strict duplicate-key handling and structural checks. Version detection distinguishes legacy documents from native v1 documents.
 
-Each operator is defined by an `OperatorContract` dataclass in `v1/operator_contracts.py`:
+Modules:
 
-| Field | Purpose |
-|---|---|
-| `name` | Unique operator identifier |
-| `family` | Category: `measurement`, `topology`, `interval` |
-| `arity` | Number of input objects |
-| `input_types` | Ordered list of expected `GeoObject` types |
-| `output` | Result type (`number`, `boolean`) and unit behavior |
-| `deterministic` | Always `True` for Core operators |
-| `semantics` | Formula description and boundary rules |
-| `invariants` | Properties that must hold (e.g., `result >= 0`) |
-| `error_codes` | Diagnostic codes this operator may surface |
-| `implementation` | Module path to the bound function (e.g., `geotask_core.ops.distance_2d`) |
+- `geotask_core.parser`
+- `geotask_core.runner`
 
-The `OperatorRegistry` loads all 6 built-in contracts at construction time. External packages can register additional contracts via `registry.register(contract)`.
+#### Canonicalize
 
-## Assurance Level System
+Input is converted into one `CanonicalDocument`. Legacy aliases are normalized before downstream processing. The Canonical IR is the single source consumed by validation and execution.
 
-Every result carries an `AssuranceLevel`, an integer from 0 to 6:
+Modules:
 
-| Level | Value | Meaning |
+- `geotask_core.v1.canonicalizer`
+- `geotask_core.v1.ir`
+- `geotask_core.v1.enums`
+
+#### Validate
+
+Validation covers document identity, object structure, operator arity, references, execution order, output contracts, shared spatial contracts, extension profiles, provenance, and dependency consistency.
+
+Modules:
+
+- `geotask_core.v1.validator`
+- `geotask_core.v1.extension_profiles`
+- `geotask_core.v1.provenance`
+- `geotask_core.v1.output_contract`
+
+#### Execute
+
+Assertions are dispatched through registered operator contracts. The public deterministic baseline currently covers eight operators:
+
+```text
+distance_2d
+point_to_line_distance_2d
+line_intersects_rect
+rect_contains_point
+point_in_polygon
+multi_polyline_intersects_rect
+time_overlap
+altitude_overlap
+```
+
+Modules:
+
+- `geotask_core.v1.operator_contracts`
+- `geotask_core.v1.executor`
+- `geotask_core.ops`
+
+#### Result
+
+Each assertion becomes a `CheckResult`; all checks are aggregated into `GeotaskResult` with execution state, overall state, outputs, evidence references, and assurance metadata.
+
+Modules:
+
+- `geotask_core.v1.result`
+- `geotask_core.v1.assurance`
+
+### 3.2 Trust and control layer
+
+The execution kernel answers deterministic assertions. The trust and control layer determines how those results may be used.
+
+```text
+Execution Result
++ explicit state
++ evidence/control profile
+→ Control Evaluation
+→ eligible / blocked / evidence required / conflicted
+```
+
+Implemented capabilities include:
+
+- versioned control extension profiles;
+- a finite control-expression language;
+- three-valued and fail-closed control evaluation;
+- explicit `blocked_outputs`, `resume_when`, and `next_action` semantics;
+- strict source, evidence-binding, digest, timestamp, and audit metadata;
+- read-only evidence recovery after a named resume condition becomes true.
+
+Modules:
+
+- `geotask_core.v1.control_expressions`
+- `geotask_core.v1.control_evaluation`
+- `geotask_core.v1.provenance`
+- `geotask_core.v1.agent_integration`
+
+A structurally valid Artifact is not automatically an approved operational result. Callers must inspect its workflow state, blocked outputs, evidence state, and action boundary.
+
+### 3.3 Agent verification loop
+
+The public Agent integration has already moved beyond a single execution call:
+
+```text
+model-generated draft
+→ strict preparation
+→ mechanical repair where allowed
+→ structured revision request
+→ bounded-path revision verification
+→ retry preparation
+→ local deterministic execution
+→ control evaluation
+→ evidence recovery when explicitly resumable
+```
+
+Modules:
+
+- `geotask_core.v1.agent_generation`
+- `geotask_core.v1.agent_artifacts`
+- `geotask_core.v1.agent_integration`
+
+The preparation layer never invents coordinates, evidence, object references, operators, domain rules, or authorizations. Mechanical fixes are limited to protocol-level repairs. A revision is accepted only when changed paths remain within the generated request and immutable paths remain untouched.
+
+This is the implemented foundation of the future verification cycle. It is not yet a single first-class `VerificationSession` object.
+
+### 3.4 Artifact and Schema plane
+
+GeoTask publishes versioned machine-readable Artifacts instead of relying on undocumented in-memory coupling.
+
+Implemented Artifacts include:
+
+- task documents;
+- execution results;
+- control evaluations;
+- Agent preparation, revision, retry, and evidence-recovery reports;
+- Runtime descriptors, requests, and responses;
+- Core benchmark reports;
+- Artifact validation reports.
+
+The Artifact Registry provides stable IDs, Schema IDs, versions, producer guidance, validation commands, and IDE file patterns. The installed Schema Bundle allows offline validation and integrity verification.
+
+Modules:
+
+- `geotask_core.v1.artifact_registry`
+- `geotask_core.v1.artifact_validation`
+- `geotask_core.v1.schema_bundle`
+- `geotask_core.v1.serialized_validation`
+
+### 3.5 Runtime boundary
+
+The Runtime Interface separates public verification contracts from private execution infrastructure.
+
+```text
+Runtime Descriptor
+→ offline request preflight
+→ explicit submission by caller
+→ Runtime Response
+→ three-way contract validation
+```
+
+Core does not resolve credentials, discover private services, retry external calls, invoke hosted models by default, fetch evidence, or perform production actions.
+
+Module:
+
+- `geotask_core.v1.runtime_interface`
+
+External adapters may implement model calls or other operations, but their outputs remain bound to declared Artifact contracts, authorization references, side-effect classes, audit capabilities, and truthfulness constraints.
+
+### 3.6 Public conformance and performance gate
+
+The public Core benchmark executes fixed fictional cases through production parsing, canonicalization, validation, execution, and result serialization. It covers all eight deterministic operators, replay hashes, result round trips, and evidence propagation.
+
+Modules:
+
+- `geotask_core.v1.core_benchmark_contract`
+- `geotask_core.v1.core_benchmark_cases`
+- `geotask_core.v1.core_benchmark`
+- `geotask_core.v1.core_benchmark_report`
+- `geotask_core.v1.core_benchmark_cli`
+
+Performance values are local regression observations only. They are not cross-hardware rankings, production service levels, or model-quality measurements.
+
+## 4. Current End-to-End Flows
+
+### 4.1 Direct deterministic execution
+
+```text
+Task Document
+→ Canonical IR
+→ Validation
+→ Local Operators
+→ Execution Result
+```
+
+### 4.2 Evidence-gated decision
+
+```text
+Task Document
+→ Execution Result
+→ Control Context
+→ Control Evaluation
+→ eligible / blocked / request evidence
+```
+
+### 4.3 Agent correction and retry
+
+```text
+Model Draft
+→ Preparation Report
+→ Revision Request
+→ Bounded Revision
+→ Revision Verification
+→ Retry Report
+→ Deterministic Result
+```
+
+### 4.4 Evidence recovery
+
+```text
+Blocked Result
+→ declared evidence request
+→ supplied evidence state
+→ resume-condition evaluation
+→ affected deterministic assertion rerun
+→ final control evaluation
+```
+
+These flows are implemented independently. Users currently assemble them through related Artifacts and CLI commands.
+
+## 5. Target Evolution: Verification Cycle
+
+The next architectural step is an upward composition layer, not a rewrite of the execution kernel.
+
+```text
+Proposal
+→ task materialization
+→ local verification
+→ discrepancy detection
+→ correction request
+→ bounded revision
+→ affected-assertion analysis
+→ incremental recheck
+→ action gate
+→ new state
+→ repeat
+```
+
+Planned public abstractions:
+
+| Planned abstraction | Purpose | Reuses existing capability |
 |---|---|---|
-| `unverified` | 0 | No verification performed |
-| `model_generated` | 1 | Produced by a model, unchecked |
-| `model_self_checked` | 2 | Model checked its own output |
-| `local_deterministic` | 3 | Verified by Core local operator |
-| `model_local_agreement` | 4 | Model and Core agree |
-| `independent_cross_verified` | 5 | Verified by an independent system |
-| `human_reviewed` | 6 | Reviewed by a human |
+| `VerificationSession` | Bind proposal, task, results, controls, discrepancies, revisions, and state transitions | Artifact Registry, Agent reports, control evaluation |
+| `DiscrepancyReport` | Explain which claim differs, why, impact, mutable scope, and immutable paths | execution result, evaluator, revision request |
+| `CorrectionRequest` | Give an Agent an explicit bounded correction contract | Agent preparation and revision verification |
+| `ImpactGraph` | Map changed object/state paths to assertions and outputs | object refs, assertion refs, output contracts |
+| `ReevaluationResult` | Record preserved, invalidated, and recomputed findings | execution result and control evaluation |
+| `Observation` | Carry multimodal observations with source, time, producer, uncertainty, and claim | provenance and evidence binding |
+| `VerificationProvider` | Describe deterministic operators, rule engines, local predictive models, authoritative data, and human review | operator contracts and Runtime descriptors |
 
-Core always produces at least `local_deterministic` (3) for successful executions. Higher levels require the Runtime layer or external systems. Callers can set a `required_assurance` threshold and reject results below it.
+These names describe the target architecture only. They are not yet implemented public APIs and must not be presented as completed capabilities until code, Schemas, tests, and release notes exist.
+
+## 6. Dynamic Recheck Without a Streaming Platform
+
+Core does not need to embed Kafka, a stream processor, or a real-time database to support continuous verification semantics.
+
+The intended public interaction is snapshot based:
+
+```text
+initial state
+→ verification snapshot
+→ changed state
+→ impact analysis
+→ local recheck
+→ new gate state
+```
+
+A future high-level CLI may expose this as:
+
+```text
+geotask verify  --proposal ... --task ... --state ...
+geotask recheck <verification-session> --state ...
+```
+
+Each call should remain local, explicit, reproducible, and Artifact-producing. Long-running monitoring and event delivery remain Runtime responsibilities.
+
+GT16 demonstrates the intended semantics today through a fictional static replay: an initial 120-second separation is verified; a 40-second delay reduces the predicted separation to 80 seconds; the system preserves the still-valid findings, invalidates the assumption of permanent safety, and keeps action eligibility behind a 60-second recheck threshold.
+
+## 7. Assurance Model
+
+The current compatibility field is a single ordered `AssuranceLevel`:
+
+| Level | Meaning |
+|---|---|
+| `unverified` | no verification |
+| `model_generated` | model-produced and unchecked |
+| `model_self_checked` | checked only by the same model |
+| `local_deterministic` | verified by a local deterministic operator |
+| `model_local_agreement` | model and local result agree |
+| `independent_cross_verified` | independent verification recorded |
+| `human_reviewed` | human review recorded |
+
+This ordering remains useful for compatibility but does not capture every future trust dimension. Local predictive models, stale evidence, calibration, reproducibility, independent verification, and human review are not interchangeable.
+
+A future multidimensional assurance profile should add explicit fields such as source, method, reproducibility, independence, evidence freshness, calibration identity, and human review while retaining the current level as a compatibility summary.
+
+## 8. Dependency Direction
+
+Dependencies flow inward toward data contracts and deterministic primitives:
+
+```text
+CLI / runner / Agent integration / Runtime interface
+  → Artifact and control services
+  → parser / canonicalizer / validator / executor
+  → operator contracts / IR / enums / deterministic ops
+```
+
+Key rules:
+
+- `ir.py` and `enums.py` are leaf contracts;
+- deterministic operators do not call models or networks;
+- Core never imports private Runtime orchestration or Domain Packs;
+- Artifact validation does not repeat production actions;
+- control evaluation does not execute `next_action`;
+- Agent repair does not invent missing domain facts;
+- Runtime submission is explicit and remains outside normal validation.
+
+## 9. Public and Private Boundary
+
+Public Core contains:
+
+- language and Artifact contracts;
+- Canonical IR;
+- deterministic spatial and temporal operators;
+- validation and result assembly;
+- provenance and evidence bindings;
+- control evaluation;
+- Agent preparation, bounded revision, retry, and evidence recovery;
+- Artifact Registry and offline Schema Bundle;
+- Runtime message contracts and fail-closed reference behavior;
+- conformance and local regression benchmarks.
+
+External Runtime or Domain Packs contain:
+
+- multimodal model inference;
+- customer or regulatory data;
+- authoritative data connectors;
+- local predictive-model serving;
+- industry-specific rules and calibration;
+- identity, credentials, authorization, and audit infrastructure;
+- human-review operations;
+- production actions and long-running monitoring.
+
+This boundary allows GeoTask to become a verification and correction layer without turning the public Core into a hosted model platform or an operational control system.

@@ -36,6 +36,9 @@ CONTROL_EVALUATION_SCHEMA = ROOT / "schemas" / "geotask-control-evaluation-v1.0.
 AGENT_INTEGRATION_SPEC = (
     ROOT / "docs" / "spec" / "geotask-agent-integration-profile-v0.1.md"
 )
+RUNTIME_INTERFACE_SPEC = (
+    ROOT / "docs" / "spec" / "geotask-runtime-interface-profile-v0.1.md"
+)
 AGENT_SKILL = ROOT / "skills" / "geotask-core" / "SKILL.md"
 TARGET_SPEC_STATUS = ROOT / "docs" / "spec" / "target-specification-status.md"
 QUICKSTART_EN = ROOT / "docs" / "tutorials" / "quickstart.md"
@@ -48,6 +51,7 @@ CONTRIBUTING_EN = ROOT / "CONTRIBUTING.md"
 CONTRIBUTING_ZH = ROOT / "CONTRIBUTING.zh-CN.md"
 CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
 CITATION = ROOT / "CITATION.cff"
+PYPROJECT = ROOT / "pyproject.toml"
 ROADMAP = ROOT / "ROADMAP.md"
 RELEASE_NOTES_010 = ROOT / "docs" / "release_v0_1_0.md"
 RELEASE_NOTES_011 = ROOT / "docs" / "release_v0_1_1.md"
@@ -74,6 +78,7 @@ DOCUMENTS = (
     CONTROL_EVALUATION_SPEC,
     CONTROL_EVALUATION_SCHEMA,
     AGENT_INTEGRATION_SPEC,
+    RUNTIME_INTERFACE_SPEC,
     AGENT_SKILL,
     TARGET_SPEC_STATUS,
     QUICKSTART_EN,
@@ -198,8 +203,32 @@ def test_chinese_and_english_entrypoints_are_bidirectionally_linked() -> None:
     assert "[简体中文](README.md)" in root_en
     assert "[English](README.en.md)" in docs_zh
     assert "[简体中文](README.md)" in docs_en
-    assert "面向AI智能体的可验证时空任务协议" in root_zh
-    assert "Verifiable spatiotemporal task protocol for AI agents" in root_en
+    assert "面向智能体的可验证时空世界模型" in root_zh
+    assert "可验证时空任务协议" in root_zh
+    assert "Explicit and verifiable spatiotemporal world model" in root_en
+    assert "verifiable task protocol" in root_en
+
+
+def test_whitepaper_separates_positioning_implementation_and_roadmap() -> None:
+    text = WHITEPAPER.read_text(encoding="utf-8")
+
+    for fragment in (
+        "面向智能体的显式、可验证时空世界模型",
+        "为什么是现在：从直接给答案到开放推理与后验验证",
+        "GeoTask通过显式描述世界对象、位置、时间、状态、关系、约束、证据及其变化",
+        "面向智能体的可验证时空任务协议、Canonical IR、Artifact体系和本地验证内核",
+        "与隐式神经世界模型的区别",
+        "八类Canonical对象",
+        "八个本地确定性算子",
+        "World State",
+        "State Transition",
+        "仍是后续工程目标",
+    ):
+        assert fragment in text
+
+    assert "GeoTask 不负责提供完整地图、原始多模态识别、设备控制" in text
+    assert "初始正确不代表后续持续正确" in text
+    assert "GeoTask可以连接神经世界模型" in text
 
 
 def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
@@ -217,6 +246,7 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "spec/geotask-control-expression-language-v1.0.md",
         "spec/geotask-control-evaluation-v1.0.md",
         "spec/geotask-agent-integration-profile-v0.1.md",
+        "spec/geotask-runtime-interface-profile-v0.1.md",
         "../skills/geotask-core/SKILL.md",
         "tutorials/quickstart.md",
         "tutorials/quickstart.zh-CN.md",
@@ -244,7 +274,9 @@ def test_whitepaper_states_architecture_and_public_boundary() -> None:
     text = WHITEPAPER.read_text(encoding="utf-8")
 
     required_fragments = (
-        "面向智能体的可验证时空任务表示与执行框架",
+        "面向智能体的显式、可验证时空世界模型",
+        "可验证时空任务协议",
+        "与隐式神经世界模型的区别",
         "对象、算子和命题显式绑定",
         "生成与验证分离",
         "证据冲突",
@@ -331,8 +363,12 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.agent-revision-verification",
         "geotask.agent-revision-retry",
         "geotask.agent-evidence-recovery",
-        "exactly eight artifacts",
-        "all nine public JSON Schemas",
+        "geotask.runtime-descriptor",
+        "geotask.runtime-request",
+        "geotask.runtime-response",
+        "geotask.core-benchmark-report",
+        "exactly twelve artifacts",
+        "all thirteen public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text
@@ -458,6 +494,11 @@ def test_agent_integration_profile_and_skill_define_safe_recovery() -> None:
         "artifact validate geotask.agent-generation-preparation",
         "artifact validate geotask.agent-revision-retry",
         "geotask agent recover",
+        "geotask runtime inspect runtime-descriptor.json",
+        "geotask runtime check runtime-descriptor.json runtime-request.json",
+        "submitted=false",
+        "side_effects_executed=false",
+        "completed outputs must exactly match",
         "Do not answer `full_conflict=true`",
         "next_action_executed = false",
         "model_guess_used = false",
@@ -466,6 +507,43 @@ def test_agent_integration_profile_and_skill_define_safe_recovery() -> None:
 
     assert "execute production actions" not in skill.lower()
     assert "Public Core examples must use fictional evidence" in skill
+
+
+def test_runtime_interface_profile_defines_public_fail_closed_boundary() -> None:
+    specification = RUNTIME_INTERFACE_SPEC.read_text(encoding="utf-8")
+
+    for fragment in (
+        "GeoTask Runtime Interface Profile v0.1",
+        "geotask.runtime-interface",
+        "RuntimeAdapter",
+        "geotask.runtime-descriptor",
+        "geotask.runtime-request",
+        "geotask.runtime-response",
+        "geotask.runtime.validate-artifact",
+        "geotask.runtime.execute-nonlocal",
+        "geotask.runtime.resolve-evidence",
+        "geotask.runtime.execute-action",
+        "geotask.reference.fail-closed",
+        "geotask runtime inspect <runtime-descriptor.json>",
+        "geotask runtime check",
+        "submitted=false",
+        "min_input_artifacts",
+        "max_input_artifacts",
+        "validate_runtime_response_contract",
+        "structurally valid but contract-inconsistent",
+        "side_effects_executed=false",
+        "authorization_ref",
+        "idempotency_key",
+        "audit_ref",
+        "never contain a password",
+        "not a production Runtime",
+    ):
+        assert fragment in specification
+
+    assert "model/provider routing" in specification
+    assert "token and cost governance" in specification
+    assert "outside Core" in specification
+    assert "src/geotask_runtime" not in specification
 
 
 def test_legacy_compatibility_docs_match_distributed_package() -> None:
@@ -507,6 +585,10 @@ def test_root_readmes_match_current_capabilities() -> None:
             assert f"`{object_type}`" in text
         assert "geotask agent prepare" in text
         assert "geotask agent retry" in text
+        assert "geotask runtime inspect" in text
+        assert "geotask runtime check" in text
+        assert "geotask runtime mock" in text
+        assert "Runtime Interface Profile" in text or "Runtime接口Profile" in text
 
 
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
@@ -594,20 +676,28 @@ def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
         "docs/spec/geotask-artifact-registry-v1.0.md",
         "docs/spec/geotask-versioned-payload-validation-v1.0.md",
         "docs/spec/geotask-agent-integration-profile-v0.1.md",
+        "docs/spec/geotask-runtime-interface-profile-v0.1.md",
         "skills/geotask-core/SKILL.md",
         "src/geotask_core/v1/agent_generation.py",
         "src/geotask_core/v1/agent_artifacts.py",
+        "src/geotask_core/v1/runtime_interface.py",
         "examples/core/agent_generated_distance_draft.yaml",
         "examples/core/agent_generated_distance_blocked.yaml",
         "examples/core/agent_generated_distance_revised.yaml",
+        "examples/core/runtime_reference_descriptor.json",
+        "examples/core/runtime_validate_artifact_request.json",
         "tests/test_agent_generated_document_preparation.py",
         "tests/test_agent_generated_document_revision.py",
         "tests/test_agent_artifacts.py",
         "tests/test_agent_evidence_recovery_artifact.py",
+        "tests/test_runtime_interface.py",
         "schemas/geotask-agent-generation-preparation-v0.1.schema.json",
         "schemas/geotask-agent-integration-v0.1.schema.json",
         "schemas/geotask-agent-revision-verification-v0.1.schema.json",
         "schemas/geotask-agent-revision-retry-v0.1.schema.json",
+        "schemas/geotask-runtime-descriptor-v0.1.schema.json",
+        "schemas/geotask-runtime-request-v0.1.schema.json",
+        "schemas/geotask-runtime-response-v0.1.schema.json",
         "schemas/geotask-artifact-registry-v1.0.schema.json",
         "schemas/geotask-result-v1.0.schema.json",
         "CONTRIBUTING.zh-CN.md",
@@ -643,6 +733,7 @@ def test_bilingual_community_files_exist() -> None:
 
 def test_public_preview_release_assets_are_consistent() -> None:
     citation = yaml.safe_load(CITATION.read_text(encoding="utf-8"))
+    pyproject = PYPROJECT.read_text(encoding="utf-8")
     roadmap = ROADMAP.read_text(encoding="utf-8")
     release = RELEASE_NOTES.read_text(encoding="utf-8")
     codeowners = CODEOWNERS.read_text(encoding="utf-8")
@@ -654,12 +745,25 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert citation["repository-code"] == "https://github.com/stpku/GeoTask"
     assert citation["url"] == "https://stpku.github.io/GeoTask/"
     assert citation["license"] == "MIT"
+    assert "Explicit and Verifiable Spatiotemporal World Model" in citation["title"]
+    assert "world models" in citation["keywords"]
+    assert "explicit and verifiable spatiotemporal" in citation["abstract"]
+
+    assert "public contracts and deterministic kernel for explicit, verifiable spatiotemporal world models" in pyproject
+    assert '"world-model"' in pyproject
+    assert '"embodied-ai"' in pyproject
 
     assert "v0.1：公共预览" in roadmap
     assert "v0.2.0：制品契约" in roadmap
     assert "v0.3.0：Agent集成（当前稳定）" in roadmap
     assert "v0.4：Runtime接口、模型适配与对象扩展" in roadmap
-    assert "v0.5：Domain Pack规范与生态" in roadmap
+    assert "v0.5：Verifiable World-State Cycle" in roadmap
+    assert "v0.6：Local Verification Providers与Domain Pack生态" in roadmap
+    assert "Observation Artifact" in roadmap
+    assert "World State Artifact" in roadmap
+    assert "State Transition Artifact" in roadmap
+    assert "VerificationSession" in roadmap
+    assert "geotask recheck" in roadmap
 
     assert "GeoTask Core v0.3.0 Agent Integration Release" in release
     assert "v0.3.0" in release

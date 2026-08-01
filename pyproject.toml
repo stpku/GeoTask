@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "geotask-core"
 dynamic = ["version"]
-description = "GeoTask Core: deterministic verification for verifiable spatiotemporal AI-agent tasks"
+description = "GeoTask Core: public contracts and deterministic kernel for explicit, verifiable spatiotemporal world models"
 readme = "README.en.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -15,6 +15,8 @@ authors = [
 ]
 keywords = [
     "ai-agents",
+    "world-model",
+    "embodied-ai",
     "spatiotemporal",
     "spatial-reasoning",
     "deterministic-verification",

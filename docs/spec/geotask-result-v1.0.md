@@ -69,6 +69,8 @@ evidence_refs
 error
 ```
 
+When a validated task document declares `provenance.evidence_bindings`, Core copies the source IDs bound to each assertion into `evidence_refs`. These identifiers refer to the document's `provenance.sources`; they do not prove that Core fetched, authenticated, or independently verified the source, and they do not raise the check's assurance level.
+
 `executor` is one of:
 
 ```text

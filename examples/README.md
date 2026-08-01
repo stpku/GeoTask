@@ -10,6 +10,12 @@ patent-sensitive workflows.
 - `examples/core/minimal_valid.yaml`: minimal point distance example.
 - `examples/core/time_altitude_overlap.yaml`: generic time and altitude interval
   overlap example.
+- `examples/core/v1_polygon_multi_polyline.yaml`: native v1 polygon containment and
+  grouped-route rectangle intersection with explicit closed-boundary semantics.
+- `examples/core/v1_cross_task_space_contract.yaml`: three native v1 tasks sharing one
+  CRS, coordinate order, horizontal/vertical unit, vertical datum, and closed-boundary contract.
+- `examples/core/v1_provenance_evidence_audit.yaml`: fictional source records, strict
+  evidence-to-assertion bindings, authoring audit metadata, and propagated result evidence refs.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions
@@ -26,6 +32,29 @@ patent-sensitive workflows.
   converted into a structured evidence request with blocked outputs and a resume condition.
 - `examples/core/evidence_request_verified_state.yaml`: fictional complete evidence used by
   `geotask agent recover` to satisfy GT08's resume condition and rerun the temporal assertion.
+- `examples/core/runtime_reference_descriptor.json`: the public fail-closed Runtime capability
+  descriptor used for offline discovery and request-contract checks.
+- `examples/core/runtime_validate_artifact_request.json`: a public Runtime Request that asks the
+  fail-closed reference adapter to validate one embedded GeoTask Document without model calls,
+  external credentials, or side effects.
+- `examples/adapters/http_json_runtime_adapter.py`: a public-safe external HTTP JSON transport
+  adapter that keeps Descriptor discovery offline, performs one explicit POST, strictly loads the
+  Runtime Response, and leaves credentials, retries, models, and production actions outside Core.
+- `examples/adapters/README.md`: the external Adapter workflow, transport/error boundary, and
+  production-extension guidance.
+- `examples/endpoints/reference_runtime_http_server.py`: a loopback-only HTTP Runtime service
+  that accepts strict Runtime Request JSON, dispatches only to the fail-closed reference Runtime,
+  and returns validated Runtime Responses without credentials, model calls, or production actions.
+- `examples/endpoints/README.md`: the endpoint startup workflow, HTTP/Runtime-state distinction,
+  defensive transport behavior, and production-service boundary.
+- `examples/model_adapters/provider_neutral/`: an independently buildable provider-neutral model
+  Adapter package skeleton with non-secret configuration, a structural Provider Protocol, a
+  no-network Mock Provider, registered input/output Artifact validation, model-truthfulness guards,
+  and Descriptor/Request/mock-result examples. It contains no real provider SDK or credentials.
+- `examples/model_adapters/openai_responses/`: the first provider-specific integration package. It
+  accepts an externally authenticated official OpenAI SDK client, performs one no-retry Responses API
+  call with strict Structured Outputs and `store=false`, preserves audit references, and still routes
+  the nested result through registered Artifact and model-truthfulness validation.
 - `examples/core/evidence_conflict_review.yaml`: two verified schedule sources whose
   incompatible results trigger a structured conflict review task.
 - `examples/core/robot_corridor_coordination.yaml`: two warehouse robots whose routes

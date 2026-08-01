@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 from geotask_core.v1.enums import (
     _ID_PATTERN,
     ARITY_MISMATCH,
+    BOUNDARY_SEMANTICS_MISMATCH,
     CYCLIC_DEPENDENCY,
     DUPLICATE_ID,
     EXECUTION_ERROR,
@@ -31,6 +32,7 @@ from geotask_core.v1.enums import (
     OBJECT_TYPE_MISMATCH,
     OUTPUT_CONTRACT_VIOLATION,
     UNKNOWN_OBJECT_TYPE,
+    UNIT_MISMATCH,
     UNSUPPORTED_EXECUTION_MODE,
     UNVERIFIABLE_CLAIM,
     VALID_OBJECT_TYPES,
@@ -52,6 +54,7 @@ from geotask_core.v1.ir import (
 )
 from geotask_core.v1.extension_profiles import validate_extension_profiles
 from geotask_core.v1.operator_contracts import default_registry
+from geotask_core.v1.provenance import validate_provenance
 
 if TYPE_CHECKING:
     pass
@@ -60,6 +63,44 @@ if TYPE_CHECKING:
 # -- Diagnostic helpers
 
 _VALID_CRS_TYPES: set[str] = {"local_cartesian", "projected", "geographic", "unknown"}
+_PLANAR_OPERATOR_NAMES: frozenset[str] = frozenset(
+    {
+        "distance_2d",
+        "line_intersects_rect",
+        "multi_polyline_intersects_rect",
+        "point_in_polygon",
+        "point_to_line_distance_2d",
+        "rect_contains_point",
+    }
+)
+_BOUNDARY_SENSITIVE_OPERATOR_NAMES: frozenset[str] = frozenset(
+    {
+        "line_intersects_rect",
+        "multi_polyline_intersects_rect",
+        "point_in_polygon",
+        "rect_contains_point",
+        "time_overlap",
+        "altitude_overlap",
+    }
+)
+_UNIT_ALIASES: dict[str, str] = {
+    "m": "meter",
+    "meter": "meter",
+    "meters": "meter",
+    "metre": "meter",
+    "metres": "meter",
+    "km": "kilometer",
+    "kilometer": "kilometer",
+    "kilometers": "kilometer",
+    "kilometre": "kilometer",
+    "kilometres": "kilometer",
+    "ft": "foot",
+    "foot": "foot",
+    "feet": "foot",
+    "deg": "degree",
+    "degree": "degree",
+    "degrees": "degree",
+}
 
 _VALID_EXECUTION_MODES: set[str] = {e.value for e in ExecutionMode}
 
@@ -95,6 +136,21 @@ def _is_finite_number(x: object) -> bool:
     if isinstance(x, float):
         return math.isfinite(x)
     return False
+
+
+def _normalize_unit(value: object) -> str:
+    """Normalize common unit spellings without performing conversion."""
+    if not isinstance(value, str):
+        return ""
+    normalized = value.strip().casefold()
+    return _UNIT_ALIASES.get(normalized, normalized)
+
+
+def _units_equivalent(left: object, right: object) -> bool:
+    """Return whether two unit labels denote the same non-empty unit."""
+    left_normalized = _normalize_unit(left)
+    right_normalized = _normalize_unit(right)
+    return bool(left_normalized and left_normalized == right_normalized)
 
 
 def _is_valid_hhmm(s: object) -> bool:
@@ -200,10 +256,24 @@ def _check_duplicate_ids(doc: CanonicalDocument) -> list[dict]:
 # -- Space
 
 
-def _check_space(space: SpaceDefinition) -> list[dict]:
-    diags: list[dict] = []
+def _coordinate_order_is_valid(coordinate_order: object) -> bool:
+    return (
+        isinstance(coordinate_order, (list, tuple))
+        and len(coordinate_order) == 2
+        and all(isinstance(axis, str) and axis.strip() for axis in coordinate_order)
+        and coordinate_order[0].strip().casefold()
+        != coordinate_order[1].strip().casefold()
+    )
 
-    # crs.type must be valid
+
+def _normalized_boundary_semantics(space: SpaceDefinition) -> str:
+    if not isinstance(space.boundary_semantics, str):
+        return ""
+    return space.boundary_semantics.strip().casefold()
+
+
+def _check_space_structure(space: SpaceDefinition) -> list[dict]:
+    diags: list[dict] = []
     crs_type = space.crs.type if space.crs else ""
     if crs_type not in _VALID_CRS_TYPES:
         diags.append(
@@ -216,18 +286,217 @@ def _check_space(space: SpaceDefinition) -> list[dict]:
             )
         )
 
-    # horizontal_unit must be non-empty string
-    if not isinstance(space.horizontal_unit, str) or not space.horizontal_unit:
+    for field_name, value in (
+        ("horizontal_unit", space.horizontal_unit),
+        ("vertical_unit", space.vertical_unit),
+    ):
+        if not isinstance(value, str) or not value.strip():
+            diags.append(
+                _diagnostic(
+                    f"space.{field_name}",
+                    MISSING_FIELD,
+                    f"space.{field_name} is empty or missing.",
+                    f'Set {field_name} to a unit string, e.g. "meter".',
+                )
+            )
+
+    if not _coordinate_order_is_valid(space.coordinate_order):
         diags.append(
             _diagnostic(
-                "space.horizontal_unit",
-                MISSING_FIELD,
-                "space.horizontal_unit is empty or missing.",
-                'Set horizontal_unit to a unit string, e.g. "meter".',
+                "space.coordinate_order",
+                INVALID_COORDINATES,
+                "space.coordinate_order must contain exactly two distinct non-empty axis names.",
+                'Use a two-item order such as ["x", "y"].',
             )
         )
 
+    boundary_semantics = _normalized_boundary_semantics(space)
+    if boundary_semantics not in {"closed", "open"}:
+        diags.append(
+            _diagnostic(
+                "space.boundary_semantics",
+                INVALID_TYPE,
+                f"Unsupported boundary semantics '{space.boundary_semantics}'.",
+                'Set boundary_semantics to "closed" or "open".',
+            )
+        )
     return diags
+
+
+def _check_planar_space_contract(
+    space: SpaceDefinition,
+    assertions: list[Assertion],
+) -> list[dict]:
+    planar_assertions = [
+        assertion
+        for assertion in assertions
+        if assertion.operator in _PLANAR_OPERATOR_NAMES
+    ]
+    if not planar_assertions:
+        return []
+
+    diags: list[dict] = []
+    crs_type = space.crs.type if space.crs else ""
+    if crs_type not in {"local_cartesian", "projected"}:
+        operator_names = sorted({a.operator for a in planar_assertions})
+        diags.append(
+            _diagnostic(
+                "space.crs.type",
+                INVALID_CRS,
+                f"Planar operators {operator_names} cannot execute with CRS type "
+                f"'{crs_type}'. Core does not project geographic coordinates or "
+                "execute planar geometry under an unknown CRS.",
+                "Use a local_cartesian or projected CRS, or transform coordinates "
+                "outside Core before execution.",
+            )
+        )
+    elif crs_type == "projected" and not (
+        isinstance(space.crs.identifier, str) and space.crs.identifier.strip()
+    ):
+        diags.append(
+            _diagnostic(
+                "space.crs.identifier",
+                INVALID_CRS,
+                "Projected CRS requires a non-empty identifier.",
+                'Provide an identifier such as "EPSG:3857" after verifying it is appropriate.',
+            )
+        )
+
+    if _coordinate_order_is_valid(space.coordinate_order):
+        normalized_order = [
+            axis.strip().casefold() for axis in space.coordinate_order
+        ]
+        if normalized_order != ["x", "y"]:
+            diags.append(
+                _diagnostic(
+                    "space.coordinate_order",
+                    INVALID_COORDINATES,
+                    f"Planar Core operators require coordinate_order [x, y], got {space.coordinate_order!r}.",
+                    "Reorder coordinates outside Core and declare coordinate_order: [x, y].",
+                )
+            )
+    return diags
+
+
+def _check_boundary_space_contract(
+    space: SpaceDefinition,
+    assertions: list[Assertion],
+) -> list[dict]:
+    boundary_assertions = [
+        assertion
+        for assertion in assertions
+        if assertion.operator in _BOUNDARY_SENSITIVE_OPERATOR_NAMES
+    ]
+    boundary_semantics = _normalized_boundary_semantics(space)
+    if not boundary_assertions or boundary_semantics not in {"closed", "open"}:
+        return []
+    if boundary_semantics == "closed":
+        return []
+
+    operator_names = sorted({a.operator for a in boundary_assertions})
+    return [
+        _diagnostic(
+            "space.boundary_semantics",
+            BOUNDARY_SEMANTICS_MISMATCH,
+            f"Operators {operator_names} implement closed-boundary semantics, "
+            f"but the document declares '{boundary_semantics}'.",
+            'Set boundary_semantics to "closed" or use an external operator '
+            "whose contract explicitly implements the requested semantics.",
+        )
+    ]
+
+
+def _check_space_unit_contracts(
+    space: SpaceDefinition,
+    tasks: list[Task],
+    objects: dict[str, GeoObject],
+) -> list[dict]:
+    diags: list[dict] = []
+    for task in tasks:
+        for assertion_index, assertion in enumerate(task.assertions):
+            if not default_registry.is_registered(assertion.operator):
+                continue
+            contract = default_registry.get(assertion.operator)
+            if contract.output.get("unit_behavior") == "inherit_horizontal_unit":
+                if assertion.unit and not _units_equivalent(
+                    assertion.unit, space.horizontal_unit
+                ):
+                    diags.append(
+                        _diagnostic(
+                            f"tasks.{task.id}.assertions[{assertion_index}].unit",
+                            UNIT_MISMATCH,
+                            f"Assertion unit '{assertion.unit}' conflicts with "
+                            f"space.horizontal_unit '{space.horizontal_unit}'. Core does not convert units.",
+                            "Use the document horizontal unit or convert coordinates and expected values outside Core.",
+                        )
+                    )
+
+    for object_id, obj in objects.items():
+        if obj.type != "altitude_interval":
+            continue
+        object_unit = obj.data.get("unit")
+        if object_unit and not _units_equivalent(object_unit, space.vertical_unit):
+            diags.append(
+                _diagnostic(
+                    f"objects.{object_id}.data.unit",
+                    UNIT_MISMATCH,
+                    f"Altitude object unit '{object_unit}' conflicts with "
+                    f"space.vertical_unit '{space.vertical_unit}'. Core does not convert vertical units.",
+                    "Use the document vertical unit or convert the altitude interval outside Core.",
+                )
+            )
+
+    for task in tasks:
+        for assertion_index, assertion in enumerate(task.assertions):
+            if assertion.operator != "altitude_overlap" or len(assertion.object_refs) != 2:
+                continue
+            left = objects.get(assertion.object_refs[0])
+            right = objects.get(assertion.object_refs[1])
+            if left is None or right is None:
+                continue
+            left_datum = left.data.get("datum")
+            right_datum = right.data.get("datum")
+            if (
+                isinstance(left_datum, str)
+                and left_datum.strip()
+                and isinstance(right_datum, str)
+                and right_datum.strip()
+                and left_datum.strip().casefold() != right_datum.strip().casefold()
+            ):
+                diags.append(
+                    _diagnostic(
+                        f"tasks.{task.id}.assertions[{assertion_index}].object_refs",
+                        INVALID_CRS,
+                        f"Altitude overlap compares incompatible vertical datums "
+                        f"'{left_datum}' and '{right_datum}'.",
+                        "Transform both altitude intervals to the same verified vertical datum outside Core.",
+                    )
+                )
+    return diags
+
+
+def _check_space(
+    space: SpaceDefinition,
+    tasks: list[Task],
+    objects: dict[str, GeoObject],
+) -> list[dict]:
+    """Validate the document-wide spatial execution contract.
+
+    GeoTask Core does not transform CRS, reorder coordinates, convert units, or
+    switch boundary semantics per task. Every task therefore shares one explicit
+    fail-closed space contract.
+    """
+    assertions = [
+        assertion
+        for task in tasks
+        for assertion in task.assertions
+        if assertion.operator
+    ]
+    diagnostics = _check_space_structure(space)
+    diagnostics.extend(_check_planar_space_contract(space, assertions))
+    diagnostics.extend(_check_boundary_space_contract(space, assertions))
+    diagnostics.extend(_check_space_unit_contracts(space, tasks, objects))
+    return diagnostics
 
 
 # -- Objects
@@ -278,6 +547,10 @@ def _check_object_data(path: str, obj: GeoObject) -> list[dict]:
         return _check_point_data(path, data)
     elif obj_type == "polyline":
         return _check_polyline_data(path, data)
+    elif obj_type == "multi_polyline":
+        return _check_multi_polyline_data(path, data)
+    elif obj_type == "polygon":
+        return _check_polygon_data(path, data)
     elif obj_type == "rect":
         return _check_rect_data(path, data)
     elif obj_type == "time_interval":
@@ -389,6 +662,139 @@ def _check_polyline_data(path: str, data: dict) -> list[dict]:
                     )
                 )
 
+    return diags
+
+
+def _check_multi_polyline_data(path: str, data: dict) -> list[dict]:
+    diags: list[dict] = []
+    lines = data.get("coordinates") or data.get("lines")
+
+    if lines is None:
+        return [
+            _diagnostic(
+                f"{path}.data",
+                MISSING_DATA,
+                "Multi-polyline object missing coordinates or lines field.",
+                'Provide data with {"coordinates": [[[x1,y1], [x2,y2]], ...]}.',
+            )
+        ]
+    if not isinstance(lines, (list, tuple)) or not lines:
+        return [
+            _diagnostic(
+                f"{path}.data.coordinates",
+                INVALID_GEOMETRY,
+                "Multi-polyline coordinates must contain at least one polyline.",
+                "Provide one or more polylines, each containing at least two points.",
+            )
+        ]
+
+    for line_index, line in enumerate(lines):
+        line_path = f"{path}.data.coordinates[{line_index}]"
+        if not isinstance(line, (list, tuple)) or len(line) < 2:
+            diags.append(
+                _diagnostic(
+                    line_path,
+                    INVALID_GEOMETRY,
+                    f"Multi-polyline member[{line_index}] must contain at least 2 points.",
+                    "Provide at least two [x, y] points for every member polyline.",
+                )
+            )
+            continue
+        for point_index, point in enumerate(line):
+            point_path = f"{line_path}[{point_index}]"
+            if not isinstance(point, (list, tuple)) or len(point) != 2:
+                diags.append(
+                    _diagnostic(
+                        point_path,
+                        INVALID_GEOMETRY,
+                        f"Multi-polyline point[{line_index}][{point_index}] must be exactly 2 values.",
+                        "Each point must be [x, y] with two finite numbers.",
+                    )
+                )
+                continue
+            for coordinate_index, value in enumerate(point):
+                if not _is_finite_number(value):
+                    diags.append(
+                        _diagnostic(
+                            f"{point_path}[{coordinate_index}]",
+                            INVALID_COORDINATES,
+                            f"Multi-polyline coordinate is not finite: {value!r}.",
+                            "All coordinates must be finite numbers (not bool, NaN, or Inf).",
+                        )
+                    )
+    return diags
+
+
+def _check_polygon_data(path: str, data: dict) -> list[dict]:
+    diags: list[dict] = []
+    ring = data.get("coordinates") or data.get("points")
+
+    if ring is None:
+        return [
+            _diagnostic(
+                f"{path}.data",
+                MISSING_DATA,
+                "Polygon object missing coordinates or points field.",
+                'Provide a closed ring such as {"coordinates": [[0,0], [1,0], [1,1], [0,0]]}.',
+            )
+        ]
+    if not isinstance(ring, (list, tuple)) or len(ring) < 4:
+        return [
+            _diagnostic(
+                f"{path}.data.coordinates",
+                INVALID_GEOMETRY,
+                "Polygon ring must contain at least 4 points including closure.",
+                "Provide at least three vertices and repeat the first point at the end.",
+            )
+        ]
+
+    shape_valid = True
+    finite_valid = True
+    for point_index, point in enumerate(ring):
+        point_path = f"{path}.data.coordinates[{point_index}]"
+        if not isinstance(point, (list, tuple)) or len(point) != 2:
+            shape_valid = False
+            diags.append(
+                _diagnostic(
+                    point_path,
+                    INVALID_GEOMETRY,
+                    f"Polygon point[{point_index}] must be exactly 2 values.",
+                    "Each point must be [x, y] with two finite numbers.",
+                )
+            )
+            continue
+        for coordinate_index, value in enumerate(point):
+            if not _is_finite_number(value):
+                finite_valid = False
+                diags.append(
+                    _diagnostic(
+                        f"{point_path}[{coordinate_index}]",
+                        INVALID_COORDINATES,
+                        f"Polygon coordinate is not finite: {value!r}.",
+                        "All coordinates must be finite numbers (not bool, NaN, or Inf).",
+                    )
+                )
+
+    if shape_valid and finite_valid:
+        normalized_ring = [tuple(point) for point in ring]
+        if normalized_ring[0] != normalized_ring[-1]:
+            diags.append(
+                _diagnostic(
+                    f"{path}.data.coordinates",
+                    INVALID_GEOMETRY,
+                    "Polygon ring is not closed.",
+                    "Repeat the first coordinate as the final coordinate.",
+                )
+            )
+        if len(set(normalized_ring[:-1])) < 3:
+            diags.append(
+                _diagnostic(
+                    f"{path}.data.coordinates",
+                    INVALID_GEOMETRY,
+                    "Polygon ring must contain at least 3 distinct vertices.",
+                    "Provide at least three distinct vertices before the closing point.",
+                )
+            )
     return diags
 
 
@@ -1165,7 +1571,7 @@ def validate_canonical(doc: CanonicalDocument) -> list[dict]:
 
     # (b) Space
     try:
-        diagnostics.extend(_check_space(doc.space))
+        diagnostics.extend(_check_space(doc.space, doc.tasks, doc.objects))
     except Exception as exc:
         diagnostics.append(
             _diagnostic(
@@ -1176,7 +1582,20 @@ def validate_canonical(doc: CanonicalDocument) -> list[dict]:
             )
         )
 
-    # (c) Objects
+    # (c) Provenance
+    try:
+        diagnostics.extend(validate_provenance(doc.provenance, doc.tasks))
+    except Exception as exc:
+        diagnostics.append(
+            _diagnostic(
+                "provenance",
+                EXECUTION_ERROR,
+                f"Unexpected error validating provenance: {exc}",
+                severity="error",
+            )
+        )
+
+    # (d) Objects
     try:
         diagnostics.extend(_check_objects(doc.objects))
     except Exception as exc:

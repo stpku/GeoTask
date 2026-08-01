@@ -36,6 +36,76 @@ jobs:
       - run: pip install build twine
       - run: python -m build
       - run: python -m twine check dist/*
+      - name: Build provider-neutral model Adapter reference package
+        run: python -m build examples/model_adapters/provider_neutral --outdir model-adapter-dist
+      - name: Check provider-neutral model Adapter distributions
+        run: python -m twine check model-adapter-dist/*
+      - name: Verify provider-neutral model Adapter distribution contents
+        shell: bash
+        run: |
+          python - <<'PY'
+          import glob
+          import tarfile
+          import zipfile
+
+          wheel = glob.glob("model-adapter-dist/*.whl")[0]
+          sdist = glob.glob("model-adapter-dist/*.tar.gz")[0]
+          wheel_names = zipfile.ZipFile(wheel).namelist()
+          sdist_names = tarfile.open(sdist).getnames()
+          assert not any(name.startswith("geotask_core/") for name in wheel_names)
+          assert any(name.endswith(".dist-info/licenses/LICENSE") for name in wheel_names)
+          required = (
+              "/LICENSE",
+              "/README.md",
+              "/examples/model_runtime_descriptor.json",
+              "/examples/model_runtime_request.json",
+              "/examples/mock_model_execution_result.json",
+              "/src/geotask_model_adapter_reference/adapter.py",
+              "/src/geotask_model_adapter_reference/contracts.py",
+              "/src/geotask_model_adapter_reference/mock_provider.py",
+          )
+          assert all(any(name.endswith(item) for name in sdist_names) for item in required)
+          PY
+      - name: Build OpenAI Responses model Adapter package
+        run: python -m build examples/model_adapters/openai_responses --outdir openai-adapter-dist
+      - name: Check OpenAI Responses model Adapter distributions
+        run: python -m twine check openai-adapter-dist/*
+      - name: Verify OpenAI Responses model Adapter distribution contents
+        shell: bash
+        run: |
+          python - <<'PY'
+          import glob
+          import tarfile
+          import zipfile
+
+          wheel = glob.glob("openai-adapter-dist/*.whl")[0]
+          sdist = glob.glob("openai-adapter-dist/*.tar.gz")[0]
+          wheel_names = zipfile.ZipFile(wheel).namelist()
+          sdist_names = tarfile.open(sdist).getnames()
+          assert not any(
+              name.startswith("geotask_core/")
+              or name.startswith("geotask_model_adapter_reference/")
+              for name in wheel_names
+          )
+          assert any(name.endswith(".dist-info/licenses/LICENSE") for name in wheel_names)
+          required = (
+              "/LICENSE",
+              "/README.md",
+              "/examples/openai_runtime_descriptor.json",
+              "/examples/openai_runtime_request.json",
+              "/examples/installed_smoke.py",
+              "/src/geotask_openai_responses_adapter/provider.py",
+              "/src/geotask_openai_responses_adapter/runtime.py",
+          )
+          assert all(any(name.endswith(item) for name in sdist_names) for item in required)
+          PY
+      - name: Smoke-test installed OpenAI Adapter stack
+        shell: bash
+        run: |
+          python -m venv .venv-openai-adapter-smoke
+          .venv-openai-adapter-smoke/bin/python -m pip install dist/*.whl
+          .venv-openai-adapter-smoke/bin/python -m pip install --no-deps model-adapter-dist/*.whl openai-adapter-dist/*.whl
+          .venv-openai-adapter-smoke/bin/python examples/model_adapters/openai_responses/examples/installed_smoke.py --repository-root .
       - name: Verify release identity and distribution versions
         run: python .release/verify_release_preflight.py --artifacts dist --format json
       - name: Verify built Schema Bundle distributions
@@ -87,7 +157,15 @@ jobs:
           .venv-schema-smoke/bin/geotask agent recover examples/core/evidence_request_plan.yaml --evidence examples/core/evidence_request_verified_state.yaml --compact > agent-recovery.json
           .venv-schema-smoke/bin/geotask artifact validate geotask.agent-evidence-recovery agent-recovery.json --format json > agent-recovery-validation.json
           .venv-schema-smoke/bin/geotask artifact validate geotask.artifact-validation-report agent-recovery-validation.json --format json > recovery-validation-report-validation.json
-          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("schema-verification.json", encoding="utf-8"))["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 9'
+          .venv-schema-smoke/bin/geotask runtime inspect --format json > runtime-descriptor.json
+          .venv-schema-smoke/bin/geotask runtime inspect --profile --format json > runtime-profile.json
+          .venv-schema-smoke/bin/geotask runtime inspect examples/core/runtime_reference_descriptor.json --format json > runtime-file-inspection.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.runtime-descriptor runtime-descriptor.json --format json > runtime-descriptor-validation.json
+          .venv-schema-smoke/bin/geotask artifact validate geotask.runtime-request examples/core/runtime_validate_artifact_request.json --format json > runtime-request-validation.json
+          .venv-schema-smoke/bin/geotask runtime check examples/core/runtime_reference_descriptor.json examples/core/runtime_validate_artifact_request.json --format json > runtime-contract-check.json
+          .venv-schema-smoke/bin/geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json --compact
+          .venv-schema-smoke/bin/geotask artifact validate geotask.runtime-response runtime-response.json --format json > runtime-response-validation.json
+          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("schema-verification.json", encoding="utf-8"))["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 12'
           .venv-schema-smoke/bin/python -c 'import json; schema=json.load(open("execution-result.schema.json", encoding="utf-8")); assert schema["$id"].endswith("geotask-result-v1.0.schema.json")'
           .venv-schema-smoke/bin/python -c 'import json; payload=json.load(open("schema-inspection.json", encoding="utf-8")); assert payload["artifact_registry"]["artifact_count"] == 1; report=payload["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 1'
           .venv-schema-smoke/bin/python -c 'import json; profile=json.load(open("agent-profile.json", encoding="utf-8"))["agent_integration_profile"]; prep=profile["generated_document_preparation"]; artifacts=prep["report_artifacts"]; recovery=profile["evidence_recovery"]; assert profile["id"] == "geotask.agent-integration" and [tool["name"] for tool in profile["tools"]] == ["inspect_artifacts","validate_artifact","execute_task","evaluate_control"] and prep["repair_policy"] == "mechanical_only" and prep["revision_verification"]["requested_paths_only"] is True and prep["revision_verification"]["task_executed_before_acceptance"] is False and [item["artifact_id"] for item in artifacts] == ["geotask.agent-generation-preparation","geotask.agent-revision-verification","geotask.agent-revision-retry"] and prep["artifact_validity_is_distinct_from_business_state"] is True and recovery["artifact_id"] == "geotask.agent-evidence-recovery" and recovery["schema_version"] == "0.1" and recovery["artifact_validity_is_distinct_from_business_state"] is True'
@@ -98,7 +176,8 @@ jobs:
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("prepared-document-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.document" and report["valid"] is True and report["schema_verified"] is True'
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("retried-document-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.document" and report["valid"] is True and report["schema_verified"] is True'
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("agent-recovery.json", encoding="utf-8"))["agent_integration"]; assert report["state"] == "recovered" and report["summary"]["decision_value"] is True and report["materialization"]["task_reexecuted"] is True and report["materialization"]["next_action_executed"] is False and report["materialization"]["model_guess_used"] is False'
-          .venv-schema-smoke/bin/python -c 'import json; files=("document-validation.json","result-validation.json","control-validation.json","agent-preparation-validation.json","agent-verification-validation.json","agent-retry-validation.json","agent-recovery-validation.json","validation-report-validation.json"); reports=[json.load(open(path, encoding="utf-8"))["artifact_validation"] for path in files]; assert [r["artifact_id"] for r in reports] == ["geotask.document","geotask.execution-result","geotask.control-evaluation","geotask.agent-generation-preparation","geotask.agent-revision-verification","geotask.agent-revision-retry","geotask.agent-evidence-recovery","geotask.artifact-validation-report"]; assert all(r["valid"] is True and r["schema_verified"] is True for r in reports)'
+          .venv-schema-smoke/bin/python -c 'import json; descriptor=json.load(open("runtime-descriptor.json", encoding="utf-8"))["runtime_descriptor"]; file_descriptor=json.load(open("runtime-file-inspection.json", encoding="utf-8"))["runtime_descriptor"]; profile=json.load(open("runtime-profile.json", encoding="utf-8"))["runtime_interface_profile"]; check=json.load(open("runtime-contract-check.json", encoding="utf-8"))["runtime_contract_check"]; response=json.load(open("runtime-response.json", encoding="utf-8"))["runtime_response"]; assert descriptor == file_descriptor and descriptor["runtime_id"] == "geotask.reference.fail-closed" and descriptor["production_ready"] is False and descriptor["external_side_effects_allowed"] is False; assert profile["private_implementation_excluded"] is True and profile["model_calls_in_reference_runtime"] is False and profile["offline_discovery"]["submits_request"] is False and profile["exchange_validation"]["input_cardinality_enforced"] is True and profile["exchange_validation"]["response_bound_to_descriptor_and_request"] is True; assert check["valid"] is True and check["submitted"] is False and check["side_effects_executed"] is False; assert response["state"] == "completed" and response["side_effects_executed"] is False and response["output_artifacts"][0]["artifact_id"] == "geotask.artifact-validation-report"'
+          .venv-schema-smoke/bin/python -c 'import json; files=("document-validation.json","result-validation.json","control-validation.json","agent-preparation-validation.json","agent-verification-validation.json","agent-retry-validation.json","agent-recovery-validation.json","runtime-descriptor-validation.json","runtime-request-validation.json","runtime-response-validation.json","validation-report-validation.json"); reports=[json.load(open(path, encoding="utf-8"))["artifact_validation"] for path in files]; assert [r["artifact_id"] for r in reports] == ["geotask.document","geotask.execution-result","geotask.control-evaluation","geotask.agent-generation-preparation","geotask.agent-revision-verification","geotask.agent-revision-retry","geotask.agent-evidence-recovery","geotask.runtime-descriptor","geotask.runtime-request","geotask.runtime-response","geotask.artifact-validation-report"]; assert all(r["valid"] is True and r["schema_verified"] is True for r in reports)'
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("rejected-agent-retry-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.agent-revision-retry" and report["valid"] is True and report["summary"]["report_state"] == "rejected"'
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("agent-validation-report-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.artifact-validation-report" and report["valid"] is True and report["summary"]["validated_artifact_id"] == "geotask.agent-revision-retry"'
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("recovery-validation-report-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.artifact-validation-report" and report["valid"] is True and report["summary"]["validated_artifact_id"] == "geotask.agent-evidence-recovery"'

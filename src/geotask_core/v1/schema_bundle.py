@@ -16,9 +16,13 @@ from geotask_core.v1.artifact_registry import (
     ARTIFACT_REGISTRY_SCHEMA_ID,
     ARTIFACT_VALIDATION_SCHEMA_ID,
     GEOTASK_DOCUMENT_SCHEMA_ID,
+    RUNTIME_DESCRIPTOR_SCHEMA_ID,
+    RUNTIME_REQUEST_SCHEMA_ID,
+    RUNTIME_RESPONSE_SCHEMA_ID,
     get_artifact_descriptor,
 )
 from geotask_core.v1.control_evaluation import CONTROL_EVALUATION_SCHEMA_ID
+from geotask_core.v1.core_benchmark_contract import CORE_BENCHMARK_SCHEMA_ID
 from geotask_core.v1.result import GEOTASK_RESULT_SCHEMA_ID
 
 
@@ -37,6 +41,10 @@ _SCHEMA_FILENAME_BY_ID = {
     ),
     AGENT_REVISION_RETRY_SCHEMA_ID: "geotask-agent-revision-retry-v0.1.schema.json",
     AGENT_EVIDENCE_RECOVERY_SCHEMA_ID: "geotask-agent-integration-v0.1.schema.json",
+    RUNTIME_DESCRIPTOR_SCHEMA_ID: "geotask-runtime-descriptor-v0.1.schema.json",
+    RUNTIME_REQUEST_SCHEMA_ID: "geotask-runtime-request-v0.1.schema.json",
+    RUNTIME_RESPONSE_SCHEMA_ID: "geotask-runtime-response-v0.1.schema.json",
+    CORE_BENCHMARK_SCHEMA_ID: "geotask-core-benchmark-v0.1.schema.json",
     ARTIFACT_VALIDATION_SCHEMA_ID: "geotask-artifact-validation-v1.0.schema.json",
 }
 BUNDLED_SCHEMA_IDS = tuple(_SCHEMA_FILENAME_BY_ID)

@@ -36,6 +36,7 @@
     "execution": {"$ref": "#/$defs/execution"},
     "verification": {"$ref": "#/$defs/verification"},
     "output_contract": {"$ref": "#/$defs/outputContract"},
+    "provenance": {"$ref": "#/$defs/provenance"},
     "extensions": {
       "type": "object",
       "description": "Open application and Domain Pack extension mapping. Extensions must not redefine Core operator semantics. Declaring extension_profile opts the document into strict validation for that public profile.",
@@ -113,13 +114,22 @@
       "properties": {
         "crs": {"$ref": "#/$defs/crs"},
         "axes": {"type": "object", "additionalProperties": {"type": "string"}},
-        "horizontal_unit": {"type": "string"},
-        "vertical_unit": {"type": "string"},
-        "unit": {"type": "string"},
+        "horizontal_unit": {"type": "string", "minLength": 1},
+        "vertical_unit": {"type": "string", "minLength": 1},
+        "unit": {"type": "string", "minLength": 1},
         "coordinate_order": {
           "type": "array",
+          "prefixItems": [
+            {"type": "string", "minLength": 1},
+            {"type": "string", "minLength": 1}
+          ],
           "minItems": 2,
-          "items": {"type": "string"}
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "boundary_semantics": {
+          "enum": ["closed", "open"],
+          "default": "closed"
         },
         "precision": {"type": "object", "additionalProperties": true}
       }
@@ -134,6 +144,16 @@
       "type": "array",
       "minItems": 2,
       "items": {"$ref": "#/$defs/coordinate"}
+    },
+    "coordinateRing": {
+      "type": "array",
+      "minItems": 4,
+      "items": {"$ref": "#/$defs/coordinate"}
+    },
+    "multiCoordinateList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/coordinateList"}
     },
     "bbox": {
       "type": "array",
@@ -169,6 +189,7 @@
         "coordinates": {},
         "xy": {"$ref": "#/$defs/coordinate"},
         "points": {"$ref": "#/$defs/coordinateList"},
+        "lines": {"$ref": "#/$defs/multiCoordinateList"},
         "bbox": {"$ref": "#/$defs/bbox"},
         "start": {"$ref": "#/$defs/timeString"},
         "end": {"$ref": "#/$defs/timeString"},
@@ -182,6 +203,30 @@
         "features": {"type": "array"}
       }
     },
+    "multiPolylineData": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "coordinates": {"$ref": "#/$defs/multiCoordinateList"},
+        "lines": {"$ref": "#/$defs/multiCoordinateList"}
+      },
+      "anyOf": [
+        {"required": ["coordinates"]},
+        {"required": ["lines"]}
+      ]
+    },
+    "polygonData": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "coordinates": {"$ref": "#/$defs/coordinateRing"},
+        "points": {"$ref": "#/$defs/coordinateRing"}
+      },
+      "anyOf": [
+        {"required": ["coordinates"]},
+        {"required": ["points"]}
+      ]
+    },
     "geoObject": {
       "type": "object",
       "required": ["type"],
@@ -192,6 +237,8 @@
           "enum": [
             "point",
             "polyline",
+            "multi_polyline",
+            "polygon",
             "rect",
             "time_interval",
             "altitude_interval",
@@ -205,6 +252,7 @@
         "coordinates": {},
         "xy": {"$ref": "#/$defs/coordinate"},
         "points": {"$ref": "#/$defs/coordinateList"},
+        "lines": {"$ref": "#/$defs/multiCoordinateList"},
         "bbox": {"$ref": "#/$defs/bbox"},
         "start": {"$ref": "#/$defs/timeString"},
         "end": {"$ref": "#/$defs/timeString"},
@@ -231,6 +279,36 @@
         {
           "if": {"properties": {"type": {"enum": ["polyline", "line"]}}},
           "then": {
+            "anyOf": [
+              {"required": ["coordinates"]},
+              {"required": ["points"]},
+              {"required": ["data"]}
+            ]
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "multi_polyline"}}},
+          "then": {
+            "properties": {
+              "coordinates": {"$ref": "#/$defs/multiCoordinateList"},
+              "lines": {"$ref": "#/$defs/multiCoordinateList"},
+              "data": {"$ref": "#/$defs/multiPolylineData"}
+            },
+            "anyOf": [
+              {"required": ["coordinates"]},
+              {"required": ["lines"]},
+              {"required": ["data"]}
+            ]
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "polygon"}}},
+          "then": {
+            "properties": {
+              "coordinates": {"$ref": "#/$defs/coordinateRing"},
+              "points": {"$ref": "#/$defs/coordinateRing"},
+              "data": {"$ref": "#/$defs/polygonData"}
+            },
             "anyOf": [
               {"required": ["coordinates"]},
               {"required": ["points"]},
@@ -375,6 +453,75 @@
         "allow_model_inference": {"type": "boolean"},
         "numeric_precision": {"type": "object", "additionalProperties": true},
         "ordering": {"type": "object", "additionalProperties": true}
+      }
+    },
+    "sourceRecord": {
+      "type": "object",
+      "required": ["id", "kind", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["document", "dataset", "observation", "human", "artifact"]},
+        "title": {"type": "string", "minLength": 1},
+        "artifact_id": {"type": "string", "minLength": 1},
+        "uri": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "issued_at": {"type": "string", "format": "date-time"},
+        "retrieved_at": {"type": "string", "format": "date-time"},
+        "verified_at": {"type": "string", "format": "date-time"}
+      },
+      "anyOf": [
+        {"required": ["artifact_id"]},
+        {"required": ["uri"]}
+      ]
+    },
+    "evidenceBinding": {
+      "type": "object",
+      "required": ["assertion_id", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "assertion_id": {"$ref": "#/$defs/id"},
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        }
+      }
+    },
+    "auditMetadata": {
+      "type": "object",
+      "required": ["generated_by", "generated_at", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "generated_by": {"type": "string", "minLength": 1},
+        "generator_version": {"type": "string", "minLength": 1},
+        "generated_at": {"type": "string", "format": "date-time"},
+        "audit_ref": {"type": "string", "minLength": 1},
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["sources", "evidence_bindings", "audit"],
+      "additionalProperties": false,
+      "properties": {
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/sourceRecord"}
+        },
+        "evidence_bindings": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/evidenceBinding"}
+        },
+        "audit": {"$ref": "#/$defs/auditMetadata"}
       }
     },
     "nonEmptyUniqueStringList": {

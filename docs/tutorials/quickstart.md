@@ -118,6 +118,23 @@ assurance_level: local_deterministic
 
 `execution.status = completed` means the plan finished. Always inspect individual check statuses and assurance; completion alone is not a correctness guarantee.
 
+### 4.1 Inspect Schemas for IDEs
+
+```bash
+geotask inspect schemas --format json
+```
+
+Each Artifact descriptor includes its `schema_id`, repository `schema_path`, and portable `ide_file_patterns`. Use these values to associate GeoTask YAML/JSON files with the published Schemas in VS Code, JetBrains, or another Schema-aware IDE.
+
+Run the offline Core release gate:
+
+```bash
+geotask benchmark core --enforce-performance --output core-benchmark.json
+geotask artifact validate geotask.core-benchmark-report core-benchmark.json
+```
+
+The timing threshold is a local regression guardrail only; do not compare reports from different hardware as a performance ranking.
+
 ## 5. Use the Python API
 
 ```python

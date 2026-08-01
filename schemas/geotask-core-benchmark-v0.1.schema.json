@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-core-benchmark-v0.1.schema.json",
+  "title": "GeoTask Core Conformance and Performance Benchmark Report v0.1",
+  "description": "Public offline report for fixed fictional cases executed only through production GeoTask Core APIs. Performance observations are local regression guardrails, not cross-hardware claims.",
+  "type": "object",
+  "required": ["core_benchmark"],
+  "additionalProperties": false,
+  "properties": {
+    "core_benchmark": {
+      "type": "object",
+      "required": [
+        "report_version",
+        "schema_id",
+        "schema_version",
+        "benchmark_id",
+        "benchmark_version",
+        "generated_at",
+        "environment",
+        "configuration",
+        "conformance",
+        "performance",
+        "overall",
+        "boundaries"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "report_version": {"const": "0.1"},
+        "schema_id": {"const": "https://stpku.github.io/GeoTask/schemas/geotask-core-benchmark-v0.1.schema.json"},
+        "schema_version": {"const": "0.1"},
+        "benchmark_id": {"const": "geotask.core-conformance-performance"},
+        "benchmark_version": {"const": "0.1"},
+        "generated_at": {"type": "string", "format": "date-time"},
+        "environment": {"$ref": "#/$defs/environment"},
+        "configuration": {"$ref": "#/$defs/configuration"},
+        "conformance": {"$ref": "#/$defs/conformance"},
+        "performance": {"$ref": "#/$defs/performance"},
+        "overall": {"$ref": "#/$defs/overall"},
+        "boundaries": {"$ref": "#/$defs/boundaries"}
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "metric": {
+      "type": "object",
+      "required": ["sample_count", "min_ms", "median_ms", "p95_ms", "max_ms"],
+      "additionalProperties": false,
+      "properties": {
+        "sample_count": {"type": "integer", "minimum": 1},
+        "min_ms": {"type": "number", "minimum": 0},
+        "median_ms": {"type": "number", "minimum": 0},
+        "p95_ms": {"type": "number", "minimum": 0},
+        "max_ms": {"type": "number", "minimum": 0}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "required": ["python_version", "python_implementation", "platform_system", "platform_machine", "geotask_core_version"],
+      "additionalProperties": false,
+      "properties": {
+        "python_version": {"$ref": "#/$defs/nonEmptyString"},
+        "python_implementation": {"$ref": "#/$defs/nonEmptyString"},
+        "platform_system": {"$ref": "#/$defs/nonEmptyString"},
+        "platform_machine": {"$ref": "#/$defs/nonEmptyString"},
+        "geotask_core_version": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "required": ["iterations", "warmup_iterations", "max_pipeline_p95_ms", "performance_enforced"],
+      "additionalProperties": false,
+      "properties": {
+        "iterations": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "warmup_iterations": {"type": "integer", "minimum": 0, "maximum": 1000},
+        "max_pipeline_p95_ms": {"type": "number", "exclusiveMinimum": 0},
+        "performance_enforced": {"type": "boolean"}
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": ["code", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"$ref": "#/$defs/nonEmptyString"},
+        "message": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "conformanceCase": {
+      "type": "object",
+      "required": [
+        "case_id",
+        "valid",
+        "assertion_count",
+        "operators",
+        "semantic_sha256",
+        "deterministic_replay",
+        "result_roundtrip",
+        "expected_outputs_match",
+        "evidence_refs_match",
+        "overall_status",
+        "diagnostics"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "case_id": {"$ref": "#/$defs/nonEmptyString"},
+        "valid": {"type": "boolean"},
+        "assertion_count": {"type": "integer", "minimum": 0},
+        "operators": {"type": "array", "items": {"$ref": "#/$defs/nonEmptyString"}},
+        "semantic_sha256": {"type": "string", "pattern": "^$|^[0-9a-f]{64}$"},
+        "deterministic_replay": {"type": "boolean"},
+        "result_roundtrip": {"type": "boolean"},
+        "expected_outputs_match": {"type": "boolean"},
+        "evidence_refs_match": {"type": "boolean"},
+        "overall_status": {"$ref": "#/$defs/nonEmptyString"},
+        "diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}}
+      }
+    },
+    "conformance": {
+      "type": "object",
+      "required": ["valid", "case_count", "passed", "failed", "operator_coverage", "cases"],
+      "additionalProperties": false,
+      "properties": {
+        "valid": {"type": "boolean"},
+        "case_count": {"type": "integer", "minimum": 1},
+        "passed": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0},
+        "operator_coverage": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "cases": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/conformanceCase"}}
+      }
+    },
+    "stageMetric": {
+      "type": "object",
+      "required": ["stage", "sample_count", "min_ms", "median_ms", "p95_ms", "max_ms"],
+      "additionalProperties": false,
+      "properties": {
+        "stage": {"enum": ["decode", "canonicalize", "validate", "execute", "serialize", "pipeline"]},
+        "sample_count": {"type": "integer", "minimum": 1},
+        "min_ms": {"type": "number", "minimum": 0},
+        "median_ms": {"type": "number", "minimum": 0},
+        "p95_ms": {"type": "number", "minimum": 0},
+        "max_ms": {"type": "number", "minimum": 0}
+      }
+    },
+    "caseMetric": {
+      "type": "object",
+      "required": ["case_id", "sample_count", "min_ms", "median_ms", "p95_ms", "max_ms"],
+      "additionalProperties": false,
+      "properties": {
+        "case_id": {"$ref": "#/$defs/nonEmptyString"},
+        "sample_count": {"type": "integer", "minimum": 1},
+        "min_ms": {"type": "number", "minimum": 0},
+        "median_ms": {"type": "number", "minimum": 0},
+        "p95_ms": {"type": "number", "minimum": 0},
+        "max_ms": {"type": "number", "minimum": 0}
+      }
+    },
+    "guardrail": {
+      "type": "object",
+      "required": ["metric", "threshold_ms", "observed_ms", "enforced", "passed"],
+      "additionalProperties": false,
+      "properties": {
+        "metric": {"const": "pipeline_p95_ms"},
+        "threshold_ms": {"type": "number", "exclusiveMinimum": 0},
+        "observed_ms": {"type": "number", "minimum": 0},
+        "enforced": {"type": "boolean"},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "performance": {
+      "type": "object",
+      "required": ["valid", "sample_count", "throughput_cases_per_second", "stage_metrics", "case_metrics", "guardrail"],
+      "additionalProperties": false,
+      "properties": {
+        "valid": {"type": "boolean"},
+        "sample_count": {"type": "integer", "minimum": 1},
+        "throughput_cases_per_second": {"type": "number", "minimum": 0},
+        "stage_metrics": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/stageMetric"}},
+        "case_metrics": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/caseMetric"}},
+        "guardrail": {"$ref": "#/$defs/guardrail"}
+      }
+    },
+    "overall": {
+      "type": "object",
+      "required": ["valid", "state", "conformance_passed", "performance_guardrail_passed"],
+      "additionalProperties": false,
+      "properties": {
+        "valid": {"type": "boolean"},
+        "state": {"enum": ["passed", "failed"]},
+        "conformance_passed": {"type": "boolean"},
+        "performance_guardrail_passed": {"type": "boolean"}
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "required": ["production_core_only", "benchmark_local_verifier_used", "network_used", "model_called", "external_data_used", "cross_hardware_comparison_supported"],
+      "additionalProperties": false,
+      "properties": {
+        "production_core_only": {"const": true},
+        "benchmark_local_verifier_used": {"const": false},
+        "network_used": {"const": false},
+        "model_called": {"const": false},
+        "external_data_used": {"const": false},
+        "cross_hardware_comparison_supported": {"const": false}
+      }
+    }
+  }
+}

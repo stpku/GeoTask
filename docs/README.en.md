@@ -2,20 +2,21 @@
 
 [简体中文](README.md) | **English**
 
-GeoTask documentation is organized by purpose. Start with the white paper for the overall idea, then use the implemented language specification and tutorials for engineering work.
+GeoTask documentation is organized from world-model positioning to implemented contracts and future state-evolution extensions. Start with the white paper to understand the explicit and verifiable spatiotemporal world model, then use the specifications and tutorials to distinguish the current public foundation from roadmap abstractions.
 
 ## Start here
 
-- [GeoTask White Paper v0.1](whitepaper/GeoTask_White_Paper_v0.1.md) — why GeoTask exists, its architecture, trust model, application patterns, and public boundary. See the [build guide](whitepaper/README.md) for HTML, DOCX, and PDF commands.
+- [GeoTask White Paper v0.1](whitepaper/GeoTask_White_Paper_v0.1.md) — why agents need an explicit and verifiable spatiotemporal world model, how GeoTask differs from implicit neural world models, and where the current Core foundation ends before first-class state evolution. See the [build guide](whitepaper/README.md) for HTML, DOCX, and PDF commands.
 - [GeoTask Language and Execution Specification v1.0](spec/geotask-language-spec-v1.0.md) — the normative profile implemented by the current public Core.
 - [GeoTask Execution Result v1.0](spec/geotask-result-v1.0.md) — the `GeotaskResult.to_dict()` contract, public result JSON Schema, and `geotask result validate` command.
-- [GeoTask Artifact Registry v1.0](spec/geotask-artifact-registry-v1.0.md) — `geotask inspect schemas` discovery for all eight public Artifacts, their schemas, versions, and operating commands.
-- [GeoTask Artifact Validation v1.0](spec/geotask-artifact-validation-v1.0.md) — one `geotask artifact validate` entry point for validating all eight registered public Artifacts, including four Agent reports and validation reports themselves, by stable Artifact ID.
+- [GeoTask Artifact Registry v1.0](spec/geotask-artifact-registry-v1.0.md) — `geotask inspect schemas` discovery for all twelve public Artifacts, their schemas, versions, and operating commands.
+- [GeoTask Artifact Validation v1.0](spec/geotask-artifact-validation-v1.0.md) — one `geotask artifact validate` entry point for validating all twelve registered public Artifacts, including Agent reports, Runtime messages, the Core benchmark report, and validation reports themselves, by stable Artifact ID.
 - [GeoTask Versioned Payload Validation v1.0](spec/geotask-versioned-payload-validation-v1.0.md) — shared strict loading, schema metadata, diagnostics, and text/JSON reports for execution and control results.
 - [GeoTask Control Extension Profile v1.0](spec/geotask-control-extension-profile-v1.0.md) — versioned validation for evidence requests, evidence conflicts, decision rules, and task gates.
 - [GeoTask Control Expression Language v1.0](spec/geotask-control-expression-language-v1.0.md) — the safe finite grammar, three-valued logic, comparison semantics, and public parser/evaluator API.
 - [GeoTask Control Evaluation Result v1.0](spec/geotask-control-evaluation-v1.0.md) — read-only binding of assertion results and explicit domain state into gate status, unknown identifiers, and still-blocked outputs.
 - [GeoTask Agent Integration Profile v0.1](spec/geotask-agent-integration-profile-v0.1.md) — the four model-neutral tools, mechanical preparation of generated drafts, guarded revision-diff retries, registered Agent report Artifacts, unknown/blocked handling, and deterministic re-execution after evidence recovery.
+- [GeoTask Runtime Interface Profile v0.1](spec/geotask-runtime-interface-profile-v0.1.md) — Descriptor, Request, Response, authorization, idempotency, audit, and side-effect boundaries between Core and an external Runtime, plus public-safe HTTP Adapter, loopback Endpoint, provider-neutral model Adapter, and the first OpenAI Responses provider package.
 - [GeoTask Core Agent Skill](../skills/geotask-core/SKILL.md) — directly injectable model instructions and safety boundaries for Agent integrations.
 - [Quickstart](tutorials/quickstart.md) — install, validate, execute, inspect, and extend a first task.
 - [GT01–GT20 Cookbook](cookbook/gt01-gt20.md) — progressive examples from distance calculation to evidence governance, object-specific feasibility, emergency dispatch, equipment capability, and high-risk action gating.

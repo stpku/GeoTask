@@ -10,6 +10,8 @@ from geotask_core.verifier import SUPPORTED_OPERATORS
 EXPECTED_PUBLIC_SAFE_OPERATORS = {
     "distance_2d",
     "line_intersects_rect",
+    "multi_polyline_intersects_rect",
+    "point_in_polygon",
     "point_to_line_distance_2d",
     "rect_contains_point",
     "time_overlap",

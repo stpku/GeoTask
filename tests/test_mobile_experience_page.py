@@ -46,12 +46,23 @@ def test_mobile_experience_page_is_static_and_secret_free() -> None:
     assert "cookie" not in html
 
 
-def test_pages_workflow_deploys_site_directory() -> None:
-    workflow = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+def test_pages_workflow_validates_catalog_before_deploying_site() -> None:
+    text = WORKFLOW.read_text(encoding="utf-8")
+    workflow = yaml.safe_load(text)
 
     assert workflow["permissions"]["pages"] == "write"
+    assert '"cases/catalog.yaml"' in text
+    assert '"tools/generate_case_catalog.py"' in text
+
     steps = workflow["jobs"]["deploy"]["steps"]
-    upload_step = next(step for step in steps if step.get("uses") == "actions/upload-pages-artifact@v4")
+    assert any(step.get("uses") == "actions/setup-python@v6" for step in steps)
+    assert any(
+        step.get("run") == "python tools/generate_case_catalog.py --check"
+        for step in steps
+    )
+    upload_step = next(
+        step for step in steps if step.get("uses") == "actions/upload-pages-artifact@v4"
+    )
     assert upload_step["with"]["path"] == "site"
     assert any(step.get("uses") == "actions/deploy-pages@v5" for step in steps)
 

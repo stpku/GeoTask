@@ -56,6 +56,7 @@ def test_gt16_temporal_separation_meets_minimum() -> None:
     assert separation["uav_b_crossing_window"] == "09:03-09:04"
     assert separation["actual_separation_minutes"] == 2
     assert separation["minimum_separation_minutes"] == 1
+    assert separation["planned_separation_seconds"] == 120
     assert separation["separation_requirement_met"] is True
     assert separation["schedule_evidence_status"] == "current_and_verified"
 
@@ -80,4 +81,38 @@ def test_gt16_gate_preserves_verified_separation() -> None:
     assert gate["blocked_outputs"] == [
         "claim_collision_is_verified",
         "force_emergency_stop_without_temporal_conflict",
+    ]
+
+
+def test_gt16_new_state_reduces_margin_but_requires_monitoring_not_reversal() -> None:
+    data = load_geotask(CASE)
+    state = data["extensions"]["monitoring_state"]
+    gate = data["extensions"]["monitoring_gate"]
+
+    assert state == {
+        "observed_update": "uav_a_arrival_delay",
+        "observed_delay_seconds": 40,
+        "predicted_separation_seconds": 80,
+        "minimum_separation_seconds": 60,
+        "remaining_margin_seconds": 20,
+        "telemetry_freshness_seconds": 8,
+        "telemetry_freshness_limit_seconds": 10,
+        "monitoring_required": True,
+    }
+    assert gate["state"] == "eligible_with_active_monitoring"
+    assert gate["selected_action"] == "continue_with_active_monitoring"
+    assert gate["next_action"] == "monitor_and_recheck"
+    assert gate["expected_status"] == "eligible_with_active_monitoring"
+    assert gate["preserved_findings"] == [
+        "horizontal_crossing_verified",
+        "altitude_overlap_verified",
+        "planned_temporal_separation_verified",
+    ]
+    assert gate["invalidated_outputs"] == [
+        "treat_initial_plan_as_permanently_safe",
+        "disable_arrival_deviation_monitoring",
+    ]
+    assert gate["recheck_when"] == [
+        "predicted_separation_seconds <= 60",
+        "telemetry_freshness_seconds > 10",
     ]

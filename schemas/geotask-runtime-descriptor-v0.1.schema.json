@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-runtime-descriptor-v0.1.schema.json",
+  "title": "GeoTask Runtime Descriptor v0.1",
+  "description": "Public capability advertisement for an independently implemented GeoTask Runtime.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["runtime_descriptor"],
+  "properties": {
+    "runtime_descriptor": {
+      "$ref": "#/$defs/descriptor"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifactId": {
+      "type": "string",
+      "pattern": "^geotask\\.[a-z0-9][a-z0-9.-]*$"
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_id",
+        "title",
+        "description",
+        "input_artifact_ids",
+        "accepts_any_registered_artifact",
+        "min_input_artifacts",
+        "max_input_artifacts",
+        "output_artifact_ids",
+        "side_effect",
+        "requires_authorization",
+        "synchronous"
+      ],
+      "properties": {
+        "operation_id": {
+          "type": "string",
+          "pattern": "^geotask\\.runtime\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "description": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "input_artifact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifactId"
+          },
+          "uniqueItems": true
+        },
+        "accepts_any_registered_artifact": {
+          "type": "boolean"
+        },
+        "min_input_artifacts": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_input_artifacts": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "output_artifact_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/artifactId"
+          },
+          "uniqueItems": true
+        },
+        "side_effect": {
+          "enum": ["none", "external_read", "external_write"]
+        },
+        "requires_authorization": {
+          "type": "boolean"
+        },
+        "synchronous": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "accepts_any_registered_artifact": {
+                "const": true
+              }
+            },
+            "required": ["accepts_any_registered_artifact"]
+          },
+          "then": {
+            "properties": {
+              "input_artifact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "input_artifact_ids": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "side_effect": {
+                "const": "external_write"
+              }
+            },
+            "required": ["side_effect"]
+          },
+          "then": {
+            "properties": {
+              "requires_authorization": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface_version",
+        "runtime_id",
+        "runtime_version",
+        "title",
+        "implementation_kind",
+        "production_ready",
+        "capabilities",
+        "operations",
+        "audit_supported",
+        "credentials_managed_externally",
+        "external_side_effects_allowed"
+      ],
+      "properties": {
+        "interface_version": {
+          "const": "0.1"
+        },
+        "runtime_id": {
+          "type": "string",
+          "pattern": "^geotask\\.[a-z0-9][a-z0-9.-]*$"
+        },
+        "runtime_version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "implementation_kind": {
+          "enum": ["mock", "external"]
+        },
+        "production_ready": {
+          "type": "boolean"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "uniqueItems": true
+        },
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/operation"
+          }
+        },
+        "audit_supported": {
+          "type": "boolean"
+        },
+        "credentials_managed_externally": {
+          "type": "boolean"
+        },
+        "external_side_effects_allowed": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "implementation_kind": {
+                "const": "mock"
+              }
+            },
+            "required": ["implementation_kind"]
+          },
+          "then": {
+            "properties": {
+              "production_ready": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

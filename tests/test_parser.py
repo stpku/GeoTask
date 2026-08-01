@@ -58,7 +58,7 @@ def test_validate_unknown_object_type():
         "geotask": {"version": "0.1", "name": "test", "goal": "test"},
         "space": {"crs": "local"},
         "objects": {
-            "bad": {"type": "polygon", "coords": []},
+            "bad": {"type": "circle", "coords": []},
         },
         "ops": {},
         "task": {},

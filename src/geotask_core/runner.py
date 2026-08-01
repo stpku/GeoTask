@@ -3,9 +3,8 @@
 Executes spatial operations defined in a GeoTask document against
 the declared objects. Enhanced with:
   - Generic operator auto-detection from ops section
-  - Support for 6 operators (distance_2d, line_intersects_rect,
-    point_to_line_distance_2d, rect_contains_point, time_overlap,
-    altitude_overlap)
+  - Support for 8 operators, including polygon containment and grouped-polyline
+    rectangle intersection in addition to the original six primitives
   - Object-type-based auto-pairing (not name-based)
   - v1.0 assertion-driven execution for documents with explicit
     assertions or execution sections.
@@ -18,6 +17,8 @@ the document is canonicalized and executed via the v1.0 pipeline.
 from geotask_core.ops import (
     distance_2d,
     line_intersects_rect,
+    multi_polyline_intersects_rect,
+    point_in_polygon,
     point_to_line_distance_2d,
     rect_contains_point,
     time_overlap,
@@ -108,15 +109,22 @@ def _run_legacy(data: dict) -> dict:
     # Group objects by type
     points = {k: v for k, v in objects.items() if v.get("type") == "point"}
     lines = {k: v for k, v in objects.items() if v.get("type") == "line"}
+    multi_polylines = {
+        k: v for k, v in objects.items() if v.get("type") == "multi_polyline"
+    }
+    polygons = {k: v for k, v in objects.items() if v.get("type") == "polygon"}
     rects = {k: v for k, v in objects.items() if v.get("type") == "rect"}
 
-    # Auto-detect based on ops section
-    has_distance = any("distance_2d" in str(k) for k in ops_list)
-    has_intersect = any("line_intersects_rect" in str(k) for k in ops_list)
-    has_ptl = any("point_to_line_distance" in str(k) for k in ops_list)
-    has_contains = any("rect_contains_point" in str(k) for k in ops_list)
-    has_time = any("time_overlap" in str(k) for k in ops_list)
-    has_alt = any("altitude_overlap" in str(k) for k in ops_list)
+    # Auto-detect based on exact registered names in the ops section.
+    declared_operators = {str(name).strip() for name in ops_list}
+    has_distance = "distance_2d" in declared_operators
+    has_intersect = "line_intersects_rect" in declared_operators
+    has_multi_intersect = "multi_polyline_intersects_rect" in declared_operators
+    has_point_in_polygon = "point_in_polygon" in declared_operators
+    has_ptl = "point_to_line_distance_2d" in declared_operators
+    has_contains = "rect_contains_point" in declared_operators
+    has_time = "time_overlap" in declared_operators
+    has_alt = "altitude_overlap" in declared_operators
 
     # ── distance_2d: point → point ────────────────────────────────────
     if has_distance and len(points) >= 2:
@@ -145,6 +153,55 @@ def _run_legacy(data: dict) -> dict:
             "operation": "line_intersects_rect",
             "result": str(val).lower(),
         })
+
+    # ── multi_polyline_intersects_rect: grouped lines ↔ rect ───────────
+    if has_multi_intersect and multi_polylines and rects:
+        m_name = list(multi_polylines.keys())[0]
+        r_name = list(rects.keys())[0]
+        coordinates = (
+            multi_polylines[m_name].get("coordinates")
+            or multi_polylines[m_name].get("lines")
+        )
+        if coordinates is not None:
+            val = multi_polyline_intersects_rect(
+                coordinates,
+                rects[r_name]["bbox"],
+            )
+            measurements.append({
+                "name": f"{m_name}_intersects_{r_name}",
+                "value": val,
+                "unit": None,
+                "object_refs": [m_name, r_name],
+                "verified_by": "multi_polyline_intersects_rect",
+            })
+            verified_by.append({
+                "operation": "multi_polyline_intersects_rect",
+                "result": str(val).lower(),
+            })
+
+    # ── point_in_polygon: point ∈ polygon ───────────────────────────────
+    if has_point_in_polygon and points and polygons:
+        p_name = list(points.keys())[0]
+        polygon_name = list(polygons.keys())[0]
+        point_coordinates = points[p_name].get("xy") or points[p_name].get(
+            "coordinates"
+        )
+        polygon_coordinates = polygons[polygon_name].get(
+            "coordinates"
+        ) or polygons[polygon_name].get("points")
+        if point_coordinates is not None and polygon_coordinates is not None:
+            val = point_in_polygon(point_coordinates, polygon_coordinates)
+            measurements.append({
+                "name": f"{polygon_name}_contains_{p_name}",
+                "value": val,
+                "unit": None,
+                "object_refs": [p_name, polygon_name],
+                "verified_by": "point_in_polygon",
+            })
+            verified_by.append({
+                "operation": "point_in_polygon",
+                "result": str(val).lower(),
+            })
 
     # ── point_to_line_distance_2d: point ⟂ line ────────────────────────
     if has_ptl and points and lines:

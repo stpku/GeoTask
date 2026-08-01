@@ -35,22 +35,35 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 保持unknown、blocked和`next_action`的失败关闭语义；
 - 增加Agent生成路径与确定性验证路径的联合测试。
 
-### v0.4：Runtime接口、模型适配与对象扩展
+### v0.4：Runtime接口、模型适配与对象扩展（进行中）
 
-- 发布稳定的Runtime接口约定；
+- 发布Runtime Interface Profile v0.1，定义Descriptor、Request、Response、输入基数、授权、幂等、审计及副作用边界；
+- 提供Runtime Descriptor离线发现、Request无副作用预检和Descriptor/Request/Response三方交换校验；
+- 提供仅执行只读Artifact验证的失败关闭参考Runtime，明确不调用模型、不解析外部证据、不执行生产动作；
 - 提供至少两种模型适配参考实现；
-- 增加polygon、multi-polyline等通用空间对象与可组合确定性算子；
-- 明确CRS、单位和边界语义的跨任务约束；
-- 完善来源、证据、审计元数据和IDE Schema映射；
-- 建立公共一致性与性能基准。
+- ✅ 已增加polygon、multi-polyline通用空间对象，以及point-in-polygon和multi-polyline/rect确定性算子；
+- ✅ 已建立CRS、坐标顺序、水平/垂直单位和闭边界语义的跨任务失败关闭门禁；
+- ✅ 已增加文档级来源、证据绑定与审计元数据，并通过Artifact Registry输出IDE Schema文件匹配；
+- ✅ 已建立覆盖全部公共确定性算子的离线一致性与本机性能回归基准。
 
-### v0.5：Domain Pack规范与生态
+### v0.5：Verifiable World-State Cycle
 
-- 发布可复用的Domain Pack规范；
-- 提供机器人、低空或交通方向的参考Pack；
-- 增加数据连接器、规则包与工作流扩展点；
-- 建立Pack兼容性检查和版本协商机制；
-- 支持社区维护的案例、算子和行业扩展目录。
+- 发布Observation Artifact，使模型、传感器、地图、权威数据和人工输入以带来源、时间、不确定性和世界命题的结构化观察进入系统；
+- 发布World State Artifact，表达某一时刻版本化的世界对象、属性、关系、证据、有效时间和不确定状态；
+- 发布State Transition Artifact，记录哪些Observation改变了哪些世界状态路径、关系和行动资格；
+- 将`VerificationSession`定义为针对一个World State的可审计验证快照，绑定观察、任务、结果、控制评估、差异、行动资格和复核触发条件；
+- 发布通用Discrepancy Report、Correction Request、Impact Graph和增量复核结果；
+- 提供`geotask verify`与`geotask recheck`高层命令，保持本地、显式、可复现的世界状态快照语义；
+- 将GT21—GT28建设为Observation接入、世界状态构建、状态变化、影响传播、限定纠偏和行动门控案例。
+
+### v0.6：Local Verification Providers与Domain Pack生态
+
+- 发布统一Verification Provider Contract，覆盖确定性算子、规则引擎、本地预测模型、权威数据提供者和人工复核；
+- 增加多维Assurance Profile，表达来源、方法、可重复性、独立性、证据新鲜度、校准与人工复核；
+- 扩展trajectory、moving object及动态时空对象；
+- 发布可复用的Domain Pack规范，并提供低空、机器人或交通方向的参考Pack；
+- 建立验错率、漏检率、纠偏成功率、增量复核范围和执行时延基准；
+- 支持社区维护的Provider、案例、算子和行业扩展目录。
 
 ## 参与方式
 
@@ -90,19 +103,35 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - preserve fail-closed semantics for unknown, blocked outputs, and `next_action`;
 - add joint tests for Agent generation paths and deterministic verification paths.
 
-### v0.4: Runtime Interfaces, Model Adapters, and Object Extensions
+### v0.4: Runtime Interfaces, Model Adapters, and Object Extensions (in progress)
 
-- Publish stable Runtime interface contracts;
-- provide at least two reference model adapters;
-- add common spatial objects such as polygon and multi-polyline plus composable deterministic operators;
-- define CRS, units, and boundary semantics across tasks;
-- improve provenance, evidence, audit metadata, and IDE Schema mappings;
-- establish public conformance and performance benchmarks.
+- Publish Runtime Interface Profile v0.1 for Descriptor, Request, Response, input cardinality, authorization, idempotency, audit, and side-effect boundaries;
+- provide offline Runtime Descriptor discovery, side-effect-free Request preflight, and three-way Descriptor/Request/Response exchange validation;
+- provide a fail-closed reference Runtime that performs only read-only Artifact validation and never calls a model, resolves external evidence, or executes production actions;
+- provide a public-safe external HTTP JSON transport Adapter and paired loopback-only reference Endpoint outside Core, with offline Descriptor binding, strict Request/Response loading, and transport/operation failure separation;
+- provide an independently buildable provider-neutral model Adapter package skeleton with a no-network Mock Provider, opaque authorization/audit mapping, registered input/output Artifact validation, and model-output truthfulness guards;
+- provide the first provider-specific OpenAI Responses Adapter with externally injected authenticated client, one no-retry strict Structured Outputs call, disabled storage/tools, audit binding, and fully offline contract tests;
+- add a second provider-specific model Adapter only after installed-package compatibility and one explicitly authorized live smoke test are stable;
+- ✅ Added polygon and multi-polyline objects plus deterministic point-in-polygon and multi-polyline/rectangle operators;
+- ✅ Added fail-closed cross-task gates for CRS, coordinate order, horizontal/vertical units, and closed-boundary semantics;
+- ✅ Added document-level source, evidence-binding, and audit metadata plus Artifact Registry IDE Schema file mappings;
+- ✅ Established an offline conformance and local performance-regression benchmark covering every public deterministic operator.
 
-### v0.5: Domain Pack Specification and Ecosystem
+### v0.5: Verifiable World-State Cycle
 
-- Publish a reusable Domain Pack specification;
-- provide reference Packs for robotics, low-altitude, or transportation use cases;
-- add extension points for connectors, rules, and workflows;
-- establish Pack compatibility checks and version negotiation;
-- support a community-maintained catalog of cases, operators, and domain extensions.
+- Publish an Observation Artifact so models, sensors, maps, authoritative data, and humans enter the system as structured observations with source, time, uncertainty, and world claims;
+- publish a World State Artifact for versioned objects, attributes, relations, evidence, validity time, and uncertainty at one snapshot;
+- publish a State Transition Artifact that records which observations changed which world-state paths, relations, and action eligibility;
+- define `VerificationSession` as an auditable verification snapshot for one World State, binding observations, tasks, results, control evaluations, discrepancies, eligibility, and recheck triggers;
+- publish general Discrepancy Report, Correction Request, Impact Graph, and incremental-reevaluation contracts;
+- provide high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible world-state snapshot semantics;
+- build GT21–GT28 around Observation ingestion, world-state construction, state change, impact propagation, bounded correction, and action gating.
+
+### v0.6: Local Verification Providers and Domain Pack Ecosystem
+
+- Publish a common Verification Provider Contract for deterministic operators, rule engines, local predictive models, authoritative data providers, and human review;
+- add a multidimensional Assurance Profile for source, method, reproducibility, independence, evidence freshness, calibration, and human review;
+- extend trajectory, moving-object, and dynamic spatiotemporal object contracts;
+- publish a reusable Domain Pack specification with reference low-altitude, robotics, or transportation Packs;
+- establish benchmarks for error-detection rate, missed errors, correction success, incremental scope, and execution latency;
+- support community-maintained catalogs of Providers, cases, operators, and domain extensions.

@@ -13,11 +13,15 @@ GeoTask Core is the deterministic protocol and validation layer. You are respons
 
 Never:
 
-- invent coordinates, schedules, authorities, document versions, source references, or verification times;
+- invent coordinates, schedules, authorities, document versions, source references, source digests, audit references, or verification times;
+- treat geographic longitude/latitude or unknown-CRS coordinates as planar Euclidean coordinates;
+- reorder axes, convert units, reconcile vertical datums, or change open/closed boundary semantics implicitly;
 - convert `unverifiable`, `need_data`, or unknown into `true` or `false`;
 - bypass `blocked_outputs` in prose or another tool call;
 - execute `next_action` unless a separate authorized Runtime explicitly supports it;
-- replace deterministic operator output with model judgment.
+- replace deterministic operator output with model judgment;
+- treat declared provenance or `evidence_refs` as proof that a source was fetched, authenticated, independently verified, or human-reviewed;
+- compare benchmark timing from different hardware as a ranking, production SLA, or model-quality result.
 
 ## Required Workflow
 
@@ -103,6 +107,29 @@ Never:
    A structurally valid recovery Artifact may still record `state=blocked`; do not treat Artifact validity as proof that recovery succeeded.
 
 10. Use the final decision only after the affected assertion has been rerun and the control evaluation no longer blocks the output.
+
+11. Route nonlocal execution, external evidence, or production actions only through an explicitly inspected external Runtime:
+
+    ```bash
+    geotask runtime inspect --profile --format json
+    geotask runtime inspect runtime-descriptor.json --format json
+    geotask artifact validate geotask.runtime-descriptor runtime-descriptor.json --format json
+    geotask artifact validate geotask.runtime-request runtime-request.json --format json
+    geotask runtime check runtime-descriptor.json runtime-request.json --format json
+    ```
+
+    Read the Runtime Descriptor before constructing a Request. Do not assume that a standard operation ID is supported. Treat `runtime check` as an offline compatibility preflight only: it must report `submitted=false` and `side_effects_executed=false`, and it does not prove reachability, authorization, or trustworthiness. After submission, require the Response to remain bound to the inspected Descriptor and submitted Request: IDs must match, completed outputs must exactly match the declared output contract, a synchronous operation cannot return `accepted`, and side-effect or audit claims must not contradict the Descriptor. The public `geotask.reference.fail-closed` Runtime is not production ready and supports only read-only Artifact validation. The public HTTP JSON Adapter and loopback Endpoint examples are transport-only: they do not discover a Descriptor online, resolve authorization, retry, call a model, fetch evidence, or execute an action. Keep transport failures separate from Runtime states: malformed HTTP or JSON must not become `failed` or `rejected`, while a valid Request refused by the Runtime should return a contract-valid `rejected` Response. Treat output from a model Adapter as model-generated even when the Runtime state is `completed` and the Artifact is valid. Require `model_only`, `executor=model`, `deterministic=false`, and model-scoped or unverified assurance; never promote it to `verified`, `local_deterministic`, independent verification, or human review without a separate verifier or review step. Never place passwords, bearer tokens, private keys, or connector credentials in endpoint URLs, HTTP headers, `authorization_ref`, metadata, diagnostics, or audit references. A `rejected`, `blocked`, or `failed` Runtime Response may be a structurally valid Artifact; inspect its state and diagnostics instead of treating Artifact validity as operation success.
+
+    For the public OpenAI Responses Provider package, require a caller-inspected external Descriptor, a pinned model snapshot unless an explicit compatibility override is documented, an opaque authorization reference bound to an externally authenticated official SDK client, `store=false`, no tools or conversation state, and SDK retries disabled. Do not treat offline fake-client tests as proof of account access, model availability, quota, billing, or live-provider compatibility. A live smoke test requires explicit authorization and must remain outside Core and normal public CI.
+
+12. Before a Core release, run and retain the public offline benchmark:
+
+    ```bash
+    geotask benchmark core --enforce-performance --output core-benchmark.json
+    geotask artifact validate geotask.core-benchmark-report core-benchmark.json --format json
+    ```
+
+    Require all fixed conformance cases to pass. Interpret the p95 threshold only as a controlled local regression guardrail; retain environment metadata and never infer cross-hardware superiority or production capacity from it.
 
 ## Status Handling
 

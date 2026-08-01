@@ -60,6 +60,7 @@ class SpaceDefinition:
     horizontal_unit: str = "meter"
     vertical_unit: str = "meter"
     coordinate_order: list = field(default_factory=lambda: ["x", "y"])
+    boundary_semantics: str = "closed"
     precision: dict = field(default_factory=dict)
 
 
@@ -73,6 +74,8 @@ class GeoObject:
     Supported types and their data formats:
       - point:             data = {"coordinates": [x, y]} or {"xy": [x, y]} (compat)
       - polyline:          data = {"coordinates": [[x1,y1], ...]} or {"points": [...]}
+      - multi_polyline:    data = {"coordinates": [[[x1,y1], ...], ...]} or {"lines": [...]}
+      - polygon:           data = {"coordinates": [[x1,y1], ..., [x1,y1]]} or {"points": [...]}
       - rect:              data = {"bbox": [min_x, min_y, max_x, max_y]}
       - time_interval:     data = {"start": "08:00", "end": "10:00"} or {"interval": [...]}
       - altitude_interval: data = {"min": 100, "max": 200, "unit": "meter", "datum": "relative"}
@@ -80,7 +83,7 @@ class GeoObject:
       - feature_collection: data = {"feature_type": "point", "features": [...]}
     """
     id: str
-    type: str                # point, polyline, rect, time_interval, altitude_interval, feature_collection
+    type: str                # point, polyline, multi_polyline, polygon, rect, intervals, feature_collection
     data: dict = field(default_factory=dict)
 
 
@@ -189,6 +192,17 @@ class OutputContract:
     ordering: dict = field(default_factory=dict)
 
 
+# ── Provenance ───────────────────────────────────────────────────────────────
+
+
+@dataclass
+class ProvenanceDefinition:
+    """Document-level source, evidence-binding, and audit metadata."""
+    sources: list = field(default_factory=list)
+    evidence_bindings: list = field(default_factory=list)
+    audit: dict = field(default_factory=dict)
+
+
 # ── Canonical Document ──────────────────────────────────────────────────────
 
 
@@ -208,6 +222,7 @@ class CanonicalDocument:
     execution: ExecutionDefinition = field(default_factory=lambda: ExecutionDefinition())
     verification: VerificationDefinition = field(default_factory=lambda: VerificationDefinition())
     output_contract: OutputContract = field(default_factory=lambda: OutputContract())
+    provenance: ProvenanceDefinition | None = None
     extensions: dict = field(default_factory=dict)
     expected_results: list = field(default_factory=list)
     _source_schema_version: str = "0.x"                   # Track original format

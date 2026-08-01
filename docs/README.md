@@ -2,23 +2,24 @@
 
 **简体中文** | [English](README.en.md)
 
-GeoTask文档按照“理解项目、开始使用、查阅规范、扩展开发”四类组织。第一次接触GeoTask，建议先阅读白皮书和中文快速入门，再结合GT01—GT20案例理解完整工作方式。
+GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和GT01—GT20案例掌握当前公共Core已经实现的世界模型基础与能力边界。
 
 ## 从这里开始
 
-- [GeoTask白皮书v0.1](whitepaper/GeoTask_White_Paper_v0.1.md)：项目为什么存在、核心架构、可信执行、应用模式和公开边界。
+- [GeoTask白皮书v0.1](whitepaper/GeoTask_White_Paper_v0.1.md)：为什么智能体需要显式、可验证的时空世界模型，GeoTask与隐式神经世界模型有何区别，以及当前实现和目标状态演化能力的边界。
 - [白皮书构建说明](whitepaper/README.md)：从Markdown生成HTML、DOCX和可选PDF。
 - [中文快速入门](tutorials/quickstart.zh-CN.md)：安装、验证、执行和检查第一个任务。
 - [GT01—GT20中文案例手册](cookbook/gt01-gt20.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度、设备能力约束和高风险动作门控。
 - [当前实现语言与执行规范v1.0](spec/geotask-language-spec-v1.0.md)：当前公共Core真正实现的规范性文本。
 - [标准执行结果v1.0](spec/geotask-result-v1.0.md)：定义`GeotaskResult.to_dict()`、结果JSON Schema和`geotask result validate`命令。
-- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现8类公共Artifact的Schema、版本及操作命令。
-- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验8类公共制品，包括四类Agent报告与验证报告自身，并输出统一文本/JSON报告。
+- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现12类公共Artifact的Schema、版本及操作命令。
+- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验12类公共制品，包括Agent报告、Runtime消息、Core基准报告与验证报告自身，并输出统一文本/JSON报告。
 - [版本化载荷校验v1.0](spec/geotask-versioned-payload-validation-v1.0.md)：统一执行结果与控制结果的严格加载、Schema元数据、诊断和文本/JSON报告。
 - [控制扩展Profile v1.0](spec/geotask-control-extension-profile-v1.0.md)：对证据请求、证据冲突、决策规则和任务门控进行版本化校验。
 - [控制表达式语言v1.0](spec/geotask-control-expression-language-v1.0.md)：定义安全有限语法、三值逻辑、比较语义和公共解析求值API。
 - [控制评估结果v1.0](spec/geotask-control-evaluation-v1.0.md)：将断言结果和显式领域状态绑定为只读上下文，输出门控状态、未知变量和仍被阻断的输出。
 - [Agent集成Profile v0.1](spec/geotask-agent-integration-profile-v0.1.md)：定义Agent调用四类公共工具、机械修复生成草稿、执行修订差异门禁、验证四类Agent报告Artifact、处理unknown/blocked状态以及补证据后重新执行的边界。
+- [Runtime接口Profile v0.1](spec/geotask-runtime-interface-profile-v0.1.md)：定义Core与外部Runtime之间的Descriptor、Request、Response、授权、幂等、审计及副作用边界，并提供公共安全的HTTP Adapter、回环Endpoint、Provider-neutral模型Adapter以及首个OpenAI Responses Provider包。
 - [GeoTask Core Agent Skill](../skills/geotask-core/SKILL.md)：可直接注入Agent的模型无关操作指令与安全约束。
 - [v0.3.0 Agent集成版发布说明](release_v0_3_0.md)：新增Agent生成任务准备、受约束修订、补证据恢复、四类Agent报告Artifact及8类Artifact/9份Schema统一验证。
 - [v0.2.0制品契约版发布说明](release_v0_2_0.md)：新增Artifact Registry、离线Schema Bundle、统一制品校验和验证报告自验证。

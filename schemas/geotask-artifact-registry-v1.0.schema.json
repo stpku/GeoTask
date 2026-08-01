@@ -64,6 +64,7 @@
           "type": "string",
           "enum": [
             "task_document",
+            "world_observation",
             "execution_result",
             "control_evaluation_result",
             "agent_generation_preparation_report",

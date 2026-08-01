@@ -170,7 +170,7 @@ python -m geotask_core.cli inspect examples
   machine-readable JSON. Supplying one stable Artifact ID returns a one-entry
   registry envelope; unknown IDs fail explicitly. `--verify` appends a sibling
   `schema_bundle_verification` report. With no Artifact ID it verifies the Registry
-  Schema and all twelve Artifact Schemas; with an Artifact ID it verifies only that
+  Schema and all thirteen Artifact Schemas; with an Artifact ID it verifies only that
   Artifact's Schema. Without `--verify`, the Artifact Registry v1.0 envelope remains
   structurally compatible.
 - `schema export <artifact-id>` writes the installed JSON Schema for one
@@ -181,7 +181,7 @@ python -m geotask_core.cli inspect examples
   generated manifest before returning JSON.
 - `schema verify` checks the versioned Bundle Manifest, expected filenames,
   byte sizes, SHA-256 digests, JSON parsing, and published Schema `$id` values.
-  With no Artifact ID it checks all twelve bundled Schemas; supplying one stable
+  With no Artifact ID it checks all fourteen bundled Schemas; supplying one stable
   Artifact ID checks only that artifact. Text is the default and `--format json`
   emits a machine-readable report with stable non-zero failure behavior.
 - `inspect examples` lists repository examples and marks public-safe Core

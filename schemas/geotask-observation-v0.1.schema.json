@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+  "title": "GeoTask Observation v0.1",
+  "description": "A structured, source-bound observation containing world claims. Schema validity does not verify claim truth, source authenticity, or update a WorldState.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["observation"],
+  "properties": {
+    "observation": {
+      "$ref": "#/$defs/observation"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "uniqueStringArray": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/nonEmptyString"},
+      "uniqueItems": true
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "multimodal_model",
+            "sensor",
+            "map",
+            "authoritative_data",
+            "human",
+            "external_system",
+            "simulation"
+          ]
+        },
+        "reference": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"$ref": "#/$defs/nonEmptyString"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "kind": {
+          "enum": ["ai_model", "sensor", "human", "software", "organization"]
+        },
+        "version": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "uncertainty": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": {"enum": ["probability_of_error", "confidence"]},
+            "value": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": {"enum": ["standard_deviation", "interval_width"]},
+            "value": {"type": "number", "minimum": 0},
+            "unit": {"$ref": "#/$defs/nonEmptyString"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": {"const": "qualitative"},
+            "value": {"enum": ["low", "medium", "high", "unknown"]}
+          }
+        }
+      ]
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "subject_ref", "predicate", "basis", "value"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "predicate": {"$ref": "#/$defs/nonEmptyString"},
+        "basis": {
+          "enum": [
+            "direct_observation",
+            "model_inference",
+            "derived",
+            "external_assertion",
+            "human_judgment"
+          ]
+        },
+        "value": true,
+        "object_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "observed_at": {"$ref": "#/$defs/timestamp"},
+        "valid_until": {"$ref": "#/$defs/timestamp"},
+        "uncertainty": {"$ref": "#/$defs/uncertainty"},
+        "evidence_refs": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version",
+        "observation_id",
+        "observed_at",
+        "received_at",
+        "source",
+        "producer",
+        "claims"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json"
+        },
+        "schema_version": {"const": "0.1"},
+        "observation_id": {"$ref": "#/$defs/nonEmptyString"},
+        "observed_at": {"$ref": "#/$defs/timestamp"},
+        "received_at": {"$ref": "#/$defs/timestamp"},
+        "source": {"$ref": "#/$defs/source"},
+        "producer": {"$ref": "#/$defs/producer"},
+        "claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/claim"}
+        },
+        "supersedes": {"$ref": "#/$defs/uniqueStringArray"}
+      }
+    }
+  }
+}

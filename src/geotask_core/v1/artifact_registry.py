@@ -28,6 +28,10 @@ from geotask_core.v1.core_benchmark_contract import (
     CORE_BENCHMARK_SCHEMA_ID,
     CORE_BENCHMARK_SCHEMA_VERSION,
 )
+from geotask_core.v1.observation import (
+    OBSERVATION_SCHEMA_ID,
+    OBSERVATION_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -64,6 +68,11 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "*.geotask.yml",
         "examples/core/**/*.yaml",
         "examples/core/**/*.yml",
+    ),
+    "geotask.observation": (
+        "*.geotask-observation.json",
+        "observation*.json",
+        "examples/core/observation*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -144,6 +153,32 @@ _ARTIFACTS = (
             "and deterministic execution."
         ),
         execution_boundary="Validation does not execute operators.",
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.observation",
+        title="GeoTask Observation v0.1",
+        kind="world_observation",
+        schema_id=OBSERVATION_SCHEMA_ID,
+        schema_version=OBSERVATION_SCHEMA_VERSION,
+        schema_path="schemas/geotask-observation-v0.1.schema.json",
+        specification_path="docs/spec/geotask-observation-v0.1.md",
+        wrapper_key="observation",
+        generation_command=None,
+        generation_note=(
+            "Authored by a model, sensor adapter, external system, or human-facing "
+            "tool. Core does not synthesize observations or fetch their sources."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.observation <observation.json>"
+        ),
+        description=(
+            "Source-bound, timestamped world claims with producer identity, declared "
+            "uncertainty, evidence references, and optional supersession links."
+        ),
+        execution_boundary=(
+            "Validation does not verify claim truth, resolve references, update a "
+            "WorldState, invoke a Provider, or authorize action."
+        ),
     ),
     ArtifactDescriptor(
         artifact_id="geotask.execution-result",
@@ -502,6 +537,8 @@ __all__ = [
     "ARTIFACT_REGISTRY_VERSION",
     "GEOTASK_DOCUMENT_SCHEMA_ID",
     "GEOTASK_DOCUMENT_SCHEMA_VERSION",
+    "OBSERVATION_SCHEMA_ID",
+    "OBSERVATION_SCHEMA_VERSION",
     "ARTIFACT_VALIDATION_SCHEMA_ID",
     "ARTIFACT_VALIDATION_SCHEMA_VERSION",
     "AGENT_GENERATION_PREPARATION_SCHEMA_ID",

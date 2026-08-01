@@ -24,7 +24,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - **Verification and control maintain the world:** preserve supported facts, expose conflict and unknown states, constrain correction, and manage action eligibility.
 - **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local predictive models, human review, and production actions.
 
-> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. First-class Observation, World State, State Transition, and incremental reevaluation remain under development.
+> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. Observation v0.1 now carries source-bound world claims with declared uncertainty, while first-class World State, State Transition, and incremental reevaluation remain under development.
 
 ## Start here
 
@@ -63,7 +63,7 @@ flowchart LR
   N[New observation arrives] --> W
 ```
 
-The current public Core implements world objects and spatial contracts, source and evidence bindings, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. First-class `WorldState`, `Observation`, `VerificationSession`, `StateTransition`, impact graphs, and incremental reevaluation remain roadmap capabilities.
+The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation v0.1, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. First-class `WorldState`, `VerificationSession`, `StateTransition`, impact graphs, and incremental reevaluation remain roadmap capabilities.
 
 ## Five-minute quickstart
 

@@ -48,7 +48,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 
 ### v0.5：Verifiable World-State Cycle
 
-- 发布Observation Artifact，使模型、传感器、地图、权威数据和人工输入以带来源、时间、不确定性和世界命题的结构化观察进入系统；
+- ✅ 已发布Observation v0.1 Artifact，使模型、传感器、地图、权威数据和人工输入以带来源、时间、生产者、不确定性和世界命题的结构化观察进入系统，同时明确不验证命题真实性、不更新World State；
 - 发布World State Artifact，表达某一时刻版本化的世界对象、属性、关系、证据、有效时间和不确定状态；
 - 发布State Transition Artifact，记录哪些Observation改变了哪些世界状态路径、关系和行动资格；
 - 将`VerificationSession`定义为针对一个World State的可审计验证快照，绑定观察、任务、结果、控制评估、差异、行动资格和复核触发条件；
@@ -119,7 +119,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 
 ### v0.5: Verifiable World-State Cycle
 
-- Publish an Observation Artifact so models, sensors, maps, authoritative data, and humans enter the system as structured observations with source, time, uncertainty, and world claims;
+- ✅ Published Observation v0.1 so models, sensors, maps, authoritative data, and humans enter the system as structured observations with source, time, producer identity, uncertainty, and world claims, while explicitly not verifying claim truth or updating a World State;
 - publish a World State Artifact for versioned objects, attributes, relations, evidence, validity time, and uncertainty at one snapshot;
 - publish a State Transition Artifact that records which observations changed which world-state paths, relations, and action eligibility;
 - define `VerificationSession` as an auditable verification snapshot for one World State, binding observations, tasks, results, control evaluations, discrepancies, eligibility, and recheck triggers;

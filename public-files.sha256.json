@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 23372,
-    "sha256": "fa7e670e1f38e44f3f960b25c3ea8b717527c19c6bd7f40ebd52b60976ddb6c5"
+    "size": 23430,
+    "sha256": "8af4bee59a377e5373bfb35a5f3889f359775acc6ddb69509dbc0839a8de01de"
   },
   {
     "path": "CITATION.cff",
@@ -121,8 +121,8 @@
   },
   {
     "path": ".github/workflows/ci.yml",
-    "size": 20088,
-    "sha256": "adf484ff1329358b072e088dee81df71602ef583cc748b2e843fbafcd5e14fbf"
+    "size": 21180,
+    "sha256": "3ac0590093d8aa5819a00937bfaf20d22f563ad2633e89a0eb93196606035f59"
   },
   {
     "path": ".github/workflows/pages.yml",
@@ -466,8 +466,8 @@
   },
   {
     "path": "tests/test_release_preflight.py",
-    "size": 8155,
-    "sha256": "cf954dba24ed34f555bc81f3182489c411ad348597595cc672415de5e2f1bf19"
+    "size": 8963,
+    "sha256": "12c2da9f7612d689131e8e5b1d438f8a871ee43514e3e544ab4ff9e132efb51b"
   },
   {
     "path": "tests/test_result_schema_and_cli.py",

@@ -22,6 +22,8 @@ RESULT_SPEC = ROOT / "docs" / "spec" / "geotask-result-v1.0.md"
 RESULT_SCHEMA = ROOT / "schemas" / "geotask-result-v1.0.schema.json"
 WORLD_STATE_SPEC = ROOT / "docs" / "spec" / "geotask-world-state-v0.1.md"
 WORLD_STATE_SCHEMA = ROOT / "schemas" / "geotask-world-state-v0.1.schema.json"
+STATE_TRANSITION_SPEC = ROOT / "docs" / "spec" / "geotask-state-transition-v0.1.md"
+STATE_TRANSITION_SCHEMA = ROOT / "schemas" / "geotask-state-transition-v0.1.schema.json"
 ARTIFACT_REGISTRY_SPEC = (
     ROOT / "docs" / "spec" / "geotask-artifact-registry-v1.0.md"
 )
@@ -74,6 +76,8 @@ DOCUMENTS = (
     RESULT_SCHEMA,
     WORLD_STATE_SPEC,
     WORLD_STATE_SCHEMA,
+    STATE_TRANSITION_SPEC,
+    STATE_TRANSITION_SCHEMA,
     ARTIFACT_REGISTRY_SPEC,
     ARTIFACT_REGISTRY_SCHEMA,
     VERSIONED_VALIDATION_SPEC,
@@ -375,6 +379,27 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "#/$defs/worldState"
     )
 
+    transition_text = STATE_TRANSITION_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "GeoTask State Transition v0.1",
+        "geotask.state-transition",
+        "semantic fingerprint",
+        "identity-based JSON Pointer",
+        "validate_state_transition_bindings",
+        "does **not** compare snapshot contents",
+        "calculate a diff",
+        "action_authorized",
+    ):
+        assert fragment in transition_text
+    transition_schema = json.loads(STATE_TRANSITION_SCHEMA.read_text(encoding="utf-8"))
+    Draft202012Validator.check_schema(transition_schema)
+    assert transition_schema["$id"].endswith(
+        "geotask-state-transition-v0.1.schema.json"
+    )
+    assert transition_schema["properties"]["state_transition"]["$ref"] == (
+        "#/$defs/stateTransition"
+    )
+
     registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
     for fragment in (
         "GeoTask Artifact Registry v1.0",
@@ -383,6 +408,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.document",
         "geotask.observation",
         "geotask.world-state",
+        "geotask.state-transition",
         "geotask.execution-result",
         "geotask.control-evaluation",
         "geotask.agent-generation-preparation",
@@ -393,8 +419,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-request",
         "geotask.runtime-response",
         "geotask.core-benchmark-report",
-        "exactly fourteen artifacts",
-        "all fifteen public JSON Schemas",
+        "exactly fifteen artifacts",
+        "all sixteen public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text
@@ -822,7 +848,7 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "v0.6：Local Verification Providers与Domain Pack生态" in roadmap
     assert "Observation v0.1 Artifact" in roadmap
     assert "World State v0.1 Artifact" in roadmap
-    assert "State Transition Artifact" in roadmap
+    assert "State Transition v0.1 Artifact" in roadmap
     assert "VerificationSession" in roadmap
     assert "geotask recheck" in roadmap
 

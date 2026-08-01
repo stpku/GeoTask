@@ -14,9 +14,10 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [当前实现语言与执行规范v1.0](spec/geotask-language-spec-v1.0.md)：当前公共Core真正实现的规范性文本。
 - [标准执行结果v1.0](spec/geotask-result-v1.0.md)：定义`GeotaskResult.to_dict()`、结果JSON Schema和`geotask result validate`命令。
 - [Observation v0.1](spec/geotask-observation-v0.1.md)：用于表达带来源、时间、生产者和不确定性的世界命题，但不宣称命题真实，也不自动更新World State。
-- [World State v0.1](spec/geotask-world-state-v0.1.md)：用于表达某一时刻版本化的世界对象、属性、关系、有效时间、不确定性及Observation/Evidence引用闭包，但不合并Observation或计算State Transition。
-- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现14类公共Artifact的Schema、版本及操作命令。
-- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验14类公共制品，包括Observation、World State、Agent报告、Runtime消息、Core基准报告与验证报告自身，并输出统一文本/JSON报告。
+- [World State v0.1](spec/geotask-world-state-v0.1.md)：用于表达某一时刻版本化的世界对象、属性、关系、有效时间、不确定性及Observation/Evidence引用闭包，但不自动合并Observation或物化后续状态。
+- [State Transition v0.1](spec/geotask-state-transition-v0.1.md)：以前后World State语义指纹绑定快照，记录Observation支持的逐路径、关系和行动资格变化，但不自动计算差异、应用补丁或授权行动。
+- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现15类公共Artifact的Schema、版本及操作命令。
+- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验15类公共制品，包括Observation、World State、State Transition、Agent报告、Runtime消息、Core基准报告与验证报告自身，并输出统一文本/JSON报告。
 - [版本化载荷校验v1.0](spec/geotask-versioned-payload-validation-v1.0.md)：统一执行结果与控制结果的严格加载、Schema元数据、诊断和文本/JSON报告。
 - [控制扩展Profile v1.0](spec/geotask-control-extension-profile-v1.0.md)：对证据请求、证据冲突、决策规则和任务门控进行版本化校验。
 - [控制表达式语言v1.0](spec/geotask-control-expression-language-v1.0.md)：定义安全有限语法、三值逻辑、比较语义和公共解析求值API。

@@ -46,7 +46,7 @@ World State validation proves only that the payload is structurally complete, in
 - `as_of` is the time represented by the snapshot.
 - `materialized_at` is when this serialized snapshot was constructed and must not precede `as_of`.
 
-Revision ordering is declared metadata only. v0.1 does not infer a predecessor, compare revisions, merge branches, or create a State Transition.
+Revision ordering is declared metadata only. World State v0.1 does not infer a predecessor, compare revisions, merge branches, or create a State Transition. The separate State Transition v0.1 contract can bind two explicit snapshots after a caller has already selected and compared them.
 
 ## Reference inventories
 

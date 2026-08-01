@@ -7,6 +7,7 @@ GeoTask documentation is organized from world-model positioning to implemented c
 ## Start here
 
 - [GeoTask White Paper v0.1](whitepaper/GeoTask_White_Paper_v0.1.md) — why agents need an explicit and verifiable spatiotemporal world model, how GeoTask differs from implicit neural world models, and where the current Core foundation ends before first-class state evolution. See the [build guide](whitepaper/README.md) for HTML, DOCX, and PDF commands.
+- [White paper English abstract](whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract) — a concise English entry point and terminology map inside the same non-normative white paper.
 - [GeoTask Language and Execution Specification v1.0](spec/geotask-language-spec-v1.0.md) — the normative profile implemented by the current public Core.
 - [GeoTask Execution Result v1.0](spec/geotask-result-v1.0.md) — the `GeotaskResult.to_dict()` contract, public result JSON Schema, and `geotask result validate` command.
 - [GeoTask Observation v0.1](spec/geotask-observation-v0.1.md) — the first world-model Artifact for source-bound, timestamped claims with producer identity and declared uncertainty, without claiming truth or updating a WorldState.
@@ -19,6 +20,7 @@ GeoTask documentation is organized from world-model positioning to implemented c
 - [GeoTask Agent Integration Profile v0.1](spec/geotask-agent-integration-profile-v0.1.md) — the four model-neutral tools, mechanical preparation of generated drafts, guarded revision-diff retries, registered Agent report Artifacts, unknown/blocked handling, and deterministic re-execution after evidence recovery.
 - [GeoTask Runtime Interface Profile v0.1](spec/geotask-runtime-interface-profile-v0.1.md) — Descriptor, Request, Response, authorization, idempotency, audit, and side-effect boundaries between Core and an external Runtime, plus public-safe HTTP Adapter, loopback Endpoint, provider-neutral model Adapter, and the first OpenAI Responses provider package.
 - [GeoTask Core Agent Skill](../skills/geotask-core/SKILL.md) — directly injectable model instructions and safety boundaries for Agent integrations.
+- [VS Code Schema association example](../.vscode/settings.json) — binds local GeoTask files to the repository JSON Schema.
 - [Quickstart](tutorials/quickstart.md) — install, validate, execute, inspect, and extend a first task.
 - [GT01–GT20 Cookbook](cookbook/gt01-gt20.md) — progressive examples from distance calculation to evidence governance, object-specific feasibility, emergency dispatch, equipment capability, and high-risk action gating.
 - [v0.3.0 Agent Integration release notes](release_v0_3_0.md) — adds generated-task preparation, guarded revision, evidence recovery, four Agent report Artifacts, and unified validation across eight Artifacts and nine Schemas.

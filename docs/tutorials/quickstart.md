@@ -124,7 +124,21 @@ assurance_level: local_deterministic
 geotask inspect schemas --format json
 ```
 
-Each Artifact descriptor includes its `schema_id`, repository `schema_path`, and portable `ide_file_patterns`. Use these values to associate GeoTask YAML/JSON files with the published Schemas in VS Code, JetBrains, or another Schema-aware IDE.
+Each Artifact descriptor includes its `schema_id`, repository `schema_path`, and portable `ide_file_patterns`. The repository includes a ready-to-use [`.vscode/settings.json`](../../.vscode/settings.json) that associates native v1 task files with the local Schema:
+
+```json
+{
+  "yaml.schemas": {
+    "./schemas/geotask-v1.0.schema.json": [
+      "**/*.geotask.yaml",
+      "**/*.geotask.yml",
+      "examples/core/v1_*.yaml"
+    ]
+  }
+}
+```
+
+The association uses the checked-in Schema rather than a remote Schema service. Legacy `0.2/0.3` examples are intentionally excluded to avoid false editor diagnostics.
 
 Run the offline Core release gate:
 

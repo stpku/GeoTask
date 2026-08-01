@@ -8,6 +8,10 @@ patent-sensitive workflows.
 ## Public-Safe Core Examples
 
 - `examples/core/minimal_valid.yaml`: minimal point distance example.
+- `examples/core/v1_point_to_line_distance_minimal.en.yaml`: directly runnable English
+  example covering a four-meter point-to-line distance and the zero-distance on-line boundary case.
+- `examples/core/v1_point_to_line_distance_minimal.zh-CN.yaml`: the matching Chinese
+  example with identical objects, assertions, and deterministic expected results.
 - `examples/core/time_altitude_overlap.yaml`: generic time and altitude interval
   overlap example.
 - `examples/core/v1_polygon_multi_polyline.yaml`: native v1 polygon containment and

@@ -31,6 +31,7 @@ from geotask_core.v1.artifact_registry import (
 )
 from geotask_core.v1.core_benchmark_contract import CoreBenchmarkFormatError
 from geotask_core.v1.core_benchmark_report import load_core_benchmark_report
+from geotask_core.v1.observation import ObservationFormatError, load_observation
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -672,6 +673,54 @@ def _validate_core_benchmark_payload(
     )
 
 
+def _validate_observation_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        observation = load_observation(payload)
+    except ObservationFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_observation",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Observation v0.1. "
+                        "Structural validity does not prove that a claim is true."
+                    ),
+                ),
+            ),
+        )
+
+    uncertain_claim_count = sum(
+        1 for claim in observation.claims if claim.uncertainty is not None
+    )
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "observation_id": observation.observation_id,
+            "source_kind": observation.source.kind,
+            "producer_kind": observation.producer.kind,
+            "claim_count": len(observation.claims),
+            "uncertain_claim_count": uncertain_claim_count,
+            "supersedes_count": len(observation.supersedes),
+            "truth_verified": False,
+            "world_state_updated": False,
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -680,6 +729,8 @@ def _validate_verified_payload(
 ) -> ArtifactValidationReport:
     if descriptor.artifact_id == "geotask.document":
         return _validate_document_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.observation":
+        return _validate_observation_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.execution-result":
         return _validate_serialized_payload(
             descriptor,

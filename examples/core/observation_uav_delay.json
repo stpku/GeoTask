@@ -1,0 +1,50 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-fictional-uav-a-delay-4402",
+    "observed_at": "2026-08-01T08:30:05+08:00",
+    "received_at": "2026-08-01T08:30:06+08:00",
+    "source": {
+      "kind": "sensor",
+      "reference": "telemetry://fictional-uav-a/sample-4402",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "producer": {
+      "id": "fictional-telemetry-adapter",
+      "kind": "software",
+      "version": "0.1.0"
+    },
+    "claims": [
+      {
+        "id": "uav-a-delay-seconds",
+        "subject_ref": "uav-a",
+        "predicate": "delay_seconds",
+        "basis": "direct_observation",
+        "value": 40,
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 0.5,
+          "unit": "second"
+        },
+        "evidence_refs": [
+          "telemetry-sample-4402"
+        ]
+      },
+      {
+        "id": "uav-a-operational-state",
+        "subject_ref": "uav-a",
+        "predicate": "operational_state",
+        "basis": "direct_observation",
+        "value": "in_flight",
+        "uncertainty": {
+          "kind": "qualitative",
+          "value": "low"
+        }
+      }
+    ],
+    "supersedes": [
+      "obs-fictional-uav-a-delay-4398"
+    ]
+  }
+}

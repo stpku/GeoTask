@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements the foundational contracts of plane 2, the deterministic baseline of plane 3, and read-only control semantics of plane 4. First-class Observation, WorldState, StateTransition, and incremental reevaluation are target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
+GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, the deterministic baseline of plane 3, and read-only control semantics of plane 4. First-class WorldState, StateTransition, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -295,12 +295,13 @@ Observation
 → repeat
 ```
 
-Planned public abstractions:
+Observation v0.1 is now implemented as the first public world-model Artifact. It carries source-bound, timestamped world claims with producer identity, evidence references, declared uncertainty, validity windows, and optional supersession links. Its validation does not verify truth or update a WorldState.
+
+Remaining planned public abstractions:
 
 | Planned abstraction | Purpose | Reuses existing capability |
 |---|---|---|
-| `Observation` | Carry multimodal or external observations with source, time, producer, uncertainty, and claims | provenance and evidence binding |
-| `WorldState` | Represent one explicit, versioned snapshot of objects, attributes, relations, evidence, and validity time | Canonical IR, objects, space, provenance |
+| `WorldState` | Represent one explicit, versioned snapshot of objects, attributes, relations, evidence, and validity time | Canonical IR, objects, space, provenance, Observation v0.1 |
 | `StateTransition` | Record which observations changed which world-state paths and why | diagnostics, changed paths, provenance |
 | `VerificationSession` | Provide an auditable verification snapshot for one WorldState, binding observations, tasks, results, controls, discrepancies, eligibility, and recheck triggers | Artifact Registry, Agent reports, control evaluation |
 | `DiscrepancyReport` | Explain which world claim differs, why, impact, mutable scope, and immutable paths | execution result, evaluator, revision request |

@@ -23,6 +23,8 @@ SCHEMA_FILENAMES = (
     "geotask-artifact-registry-v1.0.schema.json",
     "geotask-artifact-validation-v1.0.schema.json",
     "geotask-control-evaluation-v1.0.schema.json",
+    "geotask-core-benchmark-v0.1.schema.json",
+    "geotask-observation-v0.1.schema.json",
     "geotask-result-v1.0.schema.json",
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",
@@ -150,7 +152,7 @@ def test_distribution_verifier_accepts_matching_wheel_and_sdist(tmp_path: Path) 
 
     assert report["valid"] is True
     assert report["bundle_version"] == "1.0"
-    assert report["schema_count"] == 12
+    assert report["schema_count"] == 14
     assert all(item["valid"] for item in report["schemas"])
     assert report["errors"] == []
 
@@ -209,7 +211,7 @@ def test_distribution_verifier_cli_emits_machine_readable_report(tmp_path: Path)
     assert result.stderr == ""
     report = json.loads(result.stdout)["schema_distribution_verification"]
     assert report["valid"] is True
-    assert report["schema_count"] == 12
+    assert report["schema_count"] == 14
 
 
 def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
@@ -228,6 +230,7 @@ def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
         )
         for artifact_id in (
             "geotask.document",
+            "geotask.observation",
             "geotask.execution-result",
             "geotask.control-evaluation",
             "geotask.agent-generation-preparation",
@@ -237,11 +240,12 @@ def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
             "geotask.runtime-descriptor",
             "geotask.runtime-request",
             "geotask.runtime-response",
+            "geotask.core-benchmark-report",
             "geotask.artifact-validation-report",
         ):
             assert f"artifact validate {artifact_id}" in workflow
         assert "artifact_validation" in workflow
-        assert "checked_count\"] == 12" in workflow
+        assert "checked_count\"] == 14" in workflow
         assert "checked_count\"] == 1" in workflow
 
     assert "pip wheel --no-deps --wheel-dir dist-from-sdist" in ci

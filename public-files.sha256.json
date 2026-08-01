@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 22016,
-    "sha256": "fe0ad8350fcdf5df2916606c2e26697a236cef7265ab1da8b933f1e52782aa26"
+    "size": 22226,
+    "sha256": "00cc50c15d7c4ffd218412d2d28799222e80483b0228de188d320af0a554ab8d"
   },
   {
     "path": "CITATION.cff",
@@ -121,8 +121,8 @@
   },
   {
     "path": ".github/workflows/ci.yml",
-    "size": 19552,
-    "sha256": "ca1dae3bf79d216b151594c7745e61aa26da80e523dae03a5e665588d6eed9b2"
+    "size": 20088,
+    "sha256": "c59bf5acf0fb22588507e693a2d3cbc318ee1a24532758c290bd7aad918d7d9f"
   },
   {
     "path": ".github/workflows/pages.yml",
@@ -131,8 +131,8 @@
   },
   {
     "path": ".github/workflows/publish-pypi.yml",
-    "size": 12531,
-    "sha256": "161debecb40bce8d53e1a37121d6b95e412e7d4e15bd8ba40f7ffad01971af5c"
+    "size": 13067,
+    "sha256": "1f9337c69b6f381cfb7f0c153bd16b5b4fc892a6200575604c7ddd27c0452380"
   },
   {
     "path": "tests/test_agent_artifacts.py",
@@ -486,8 +486,8 @@
   },
   {
     "path": "tests/test_schema_distribution_verifier.py",
-    "size": 8484,
-    "sha256": "7636633efec5753f211c22f55a00e726d041fc1463ab05523e5d3daeaf3607c1"
+    "size": 8655,
+    "sha256": "c9b2f98a56d90b72733f72f330027e760f58c8d98fb785f615599275fd95025b"
   },
   {
     "path": "tests/test_verifier.py",
@@ -1641,8 +1641,8 @@
   },
   {
     "path": ".release/verify_schema_distribution.py",
-    "size": 13448,
-    "sha256": "4d895dd716fc3928180bc776b6e34e2072436cfac38a79101286d7d089c0764c"
+    "size": 13539,
+    "sha256": "7f0dd5169ae8291cf9ab2d9091c0b3ea35af1b6e4e97ca0ed40a7e7b6e78fe82"
   },
   {
     "path": "skills/geotask-core/SKILL.md",

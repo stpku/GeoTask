@@ -1,8 +1,8 @@
 geotask:
   id: "gt16-uav-route-crossing-temporal-separation"
-  name: "GT16 UAV Route Crossing With Temporal Separation"
+  name: "GT16 UAV Planned Separation With Continuous Monitoring"
   schema_version: "1.0"
-  goal: "Distinguish geometric route crossing from an actual collision by verifying crossing location, altitude overlap, and crossing-zone occupancy time."
+  goal: "Verify planned crossing separation, then show why a later telemetry update requires continued monitoring and local re-evaluation."
 
 space:
   crs:
@@ -90,8 +90,8 @@ output_contract:
 
 extensions:
   application_context:
-    scenario: "two_uav_routes_cross_with_time_separation"
-    decision_question: "Do two UAVs collide merely because their routes cross and their altitude intervals overlap?"
+    scenario: "two_uav_routes_cross_with_dynamic_separation_monitoring"
+    decision_question: "After a planned crossing is verified as safe, does a later arrival delay require continued monitoring and re-evaluation?"
   crossing_state:
     route_a_passes_crossing: true
     route_b_passes_crossing: true
@@ -103,8 +103,18 @@ extensions:
     uav_b_crossing_window: "09:03-09:04"
     actual_separation_minutes: 2
     minimum_separation_minutes: 1
+    planned_separation_seconds: 120
     separation_requirement_met: true
     schedule_evidence_status: "current_and_verified"
+  monitoring_state:
+    observed_update: "uav_a_arrival_delay"
+    observed_delay_seconds: 40
+    predicted_separation_seconds: 80
+    minimum_separation_seconds: 60
+    remaining_margin_seconds: 20
+    telemetry_freshness_seconds: 8
+    telemetry_freshness_limit_seconds: 10
+    monitoring_required: true
   collision_rule:
     expression: "horizontal_crossing AND altitude_overlap AND temporal_overlap"
     collision_conflict: false
@@ -125,3 +135,18 @@ extensions:
     resume_when: "not_applicable_current_plan_verified"
     next_action: "maintain_planned_time_separation"
     expected_status: "verified_separation"
+  monitoring_gate:
+    state: "eligible_with_active_monitoring"
+    selected_action: "continue_with_active_monitoring"
+    preserved_findings:
+      - "horizontal_crossing_verified"
+      - "altitude_overlap_verified"
+      - "planned_temporal_separation_verified"
+    invalidated_outputs:
+      - "treat_initial_plan_as_permanently_safe"
+      - "disable_arrival_deviation_monitoring"
+    recheck_when:
+      - "predicted_separation_seconds <= 60"
+      - "telemetry_freshness_seconds > 10"
+    next_action: "monitor_and_recheck"
+    expected_status: "eligible_with_active_monitoring"

@@ -29,6 +29,8 @@ def test_cli_inspect_operators_lists_registry():
     assert result.returncode == 0
     assert "distance_2d" in result.stdout
     assert "line_intersects_rect" in result.stdout
+    assert "multi_polyline_intersects_rect" in result.stdout
+    assert "point_in_polygon" in result.stdout
     assert "input_shape" in result.stdout
     assert "Traceback" not in result.stderr
 

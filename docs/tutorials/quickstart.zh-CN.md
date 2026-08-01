@@ -105,10 +105,12 @@ geotask run my_distance.yaml
 geotask inspect operators
 ```
 
-公共Core当前提供六个确定性算子：
+公共Core当前提供八个确定性算子：
 
 - `distance_2d`
 - `line_intersects_rect`
+- `multi_polyline_intersects_rect`
+- `point_in_polygon`
 - `point_to_line_distance_2d`
 - `rect_contains_point`
 - `time_overlap`
@@ -125,6 +127,36 @@ schemas/geotask-v1.0.schema.json
 ```
 
 可以在IDE、CI或自己的工具中验证GeoTask YAML/JSON结构。仓库测试会使用该Schema检查公开v1案例，防止规范与示例漂移。
+
+发布前可运行离线Core门禁：
+
+```bash
+geotask benchmark core --enforce-performance --output core-benchmark.json
+geotask artifact validate geotask.core-benchmark-report core-benchmark.json
+```
+
+其中性能阈值只用于同一受控环境下的本机回归检查，不应将不同硬件上的报告作为性能排名。
+
+通过以下命令可获取全部公共Artifact的Schema及文件匹配模式：
+
+```bash
+geotask inspect schemas --format json
+```
+
+例如VS Code配合YAML扩展时，可将`geotask.document`返回的`schema_id`和`ide_file_patterns`转为：
+
+```json
+{
+  "yaml.schemas": {
+    "https://github.com/stpku/GeoTask/schemas/geotask-v1.0.schema.json": [
+      "*.geotask.yaml",
+      "*.geotask.yml",
+      "examples/core/**/*.yaml",
+      "examples/core/**/*.yml"
+    ]
+  }
+}
+```
 
 ## 6. 模型输出与本地验证
 

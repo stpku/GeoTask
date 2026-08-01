@@ -1,6 +1,6 @@
 catalog_version: "1.0"
 base_url: https://stpku.github.io/GeoTask/
-portal_lastmod: "2026-07-28"
+portal_lastmod: "2026-08-01"
 
 stages:
   - id: spatial_relations
@@ -140,11 +140,11 @@ cases:
   - id: GT16
     slug: gt16
     stage: action_feasibility
-    title_zh: 两架无人机路线相交，就一定会相撞吗？
-    summary_zh: 路线相交和高度重叠仍不足以证明碰撞，还必须核验交叉区占用时间。
+    title_zh: 计划已经安全，为什么无人机仍要持续监测？
+    summary_zh: 初始间隔满足要求，但A机延误40秒后预测间隔从120秒缩至80秒；结论仍可用，却必须持续监测并准备增量复核。
     page: site/gt16/index.html
     example: examples/core/uav_route_crossing_temporal_separation.yaml
-    lastmod: "2026-07-28"
+    lastmod: "2026-08-01"
   - id: GT17
     slug: gt17
     stage: action_feasibility

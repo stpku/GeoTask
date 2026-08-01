@@ -24,6 +24,9 @@ SCHEMA_FILENAMES = (
     "geotask-artifact-validation-v1.0.schema.json",
     "geotask-control-evaluation-v1.0.schema.json",
     "geotask-result-v1.0.schema.json",
+    "geotask-runtime-descriptor-v0.1.schema.json",
+    "geotask-runtime-request-v0.1.schema.json",
+    "geotask-runtime-response-v0.1.schema.json",
     "geotask-v1.0.schema.json",
 )
 
@@ -122,6 +125,9 @@ def _create_distribution(
         "src/geotask_core/v1/artifact_validation.py": (
             ROOT / "src" / "geotask_core" / "v1" / "artifact_validation.py"
         ).read_bytes(),
+        "src/geotask_core/v1/runtime_interface.py": (
+            ROOT / "src" / "geotask_core" / "v1" / "runtime_interface.py"
+        ).read_bytes(),
     }
     if omit_sdist_build_support:
         required_sources.pop("src/geotask_build_support.py")
@@ -144,7 +150,7 @@ def test_distribution_verifier_accepts_matching_wheel_and_sdist(tmp_path: Path) 
 
     assert report["valid"] is True
     assert report["bundle_version"] == "1.0"
-    assert report["schema_count"] == 9
+    assert report["schema_count"] == 12
     assert all(item["valid"] for item in report["schemas"])
     assert report["errors"] == []
 
@@ -203,7 +209,7 @@ def test_distribution_verifier_cli_emits_machine_readable_report(tmp_path: Path)
     assert result.stderr == ""
     report = json.loads(result.stdout)["schema_distribution_verification"]
     assert report["valid"] is True
-    assert report["schema_count"] == 9
+    assert report["schema_count"] == 12
 
 
 def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
@@ -228,11 +234,14 @@ def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
             "geotask.agent-revision-verification",
             "geotask.agent-revision-retry",
             "geotask.agent-evidence-recovery",
+            "geotask.runtime-descriptor",
+            "geotask.runtime-request",
+            "geotask.runtime-response",
             "geotask.artifact-validation-report",
         ):
             assert f"artifact validate {artifact_id}" in workflow
         assert "artifact_validation" in workflow
-        assert "checked_count\"] == 9" in workflow
+        assert "checked_count\"] == 12" in workflow
         assert "checked_count\"] == 1" in workflow
 
     assert "pip wheel --no-deps --wheel-dir dist-from-sdist" in ci

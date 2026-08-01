@@ -67,6 +67,7 @@ tasks:
 execution:            # optional, defaults to local execution behavior
 verification:         # optional
 output_contract:      # optional
+provenance:           # optional
 extensions:           # optional
 expected_results:     # optional
 ```
@@ -136,6 +137,7 @@ space:
   horizontal_unit: "meter"
   vertical_unit: "meter"
   coordinate_order: ["x", "y"]
+  boundary_semantics: "closed"
   precision:
     decimal_places: 3
     tolerance: 0.01
@@ -158,21 +160,25 @@ Supported descriptive CRS types include:
 - `geographic`
 - `unknown`
 
-The current Core does not perform CRS transformations. All objects used in one assertion MUST already be expressed in a compatible coordinate system.
+The current Core does not perform CRS transformations. Planar operators (`distance_2d`, rectangle topology, polygon containment, and point-to-line distance) MUST use `local_cartesian` or `projected`; `projected` additionally requires a non-empty identifier. `geographic` and `unknown` are rejected for planar execution instead of treating longitude/latitude or unidentified coordinates as Euclidean values. Pure temporal tasks MAY still declare a geographic CRS because they do not consume planar coordinates.
+
+For every planar operator, `coordinate_order` MUST be exactly `["x", "y"]`. Reordering longitude/latitude, northing/easting, or other axes is an external transformation and is not inferred by Core.
 
 ### 5.2 Units
 
-`horizontal_unit` and `vertical_unit` are descriptive contract fields. The current Core does not automatically convert units. Inputs to one operator MUST use compatible units.
+`horizontal_unit` and `vertical_unit` are document-wide execution contracts. Core does not convert units. Numeric distance assertions inherit `horizontal_unit`; an explicit assertion unit MUST be equivalent to it. Altitude objects inherit `vertical_unit` when no unit is present, and any explicit altitude unit MUST be equivalent to the shared vertical unit. Common spelling aliases such as `meter`, `metre`, `meters`, `metres`, and `m` are treated as the same label, but no numeric conversion is performed. Altitude intervals compared by `altitude_overlap` MUST also use the same declared vertical datum when both datums are present.
 
 ### 5.3 Boundary Semantics
 
-Core interval and rectangle operators use closed boundaries unless an operator contract states otherwise. Touching the boundary therefore counts as intersection, containment, or overlap.
+`space.boundary_semantics` defaults to `closed`. Core rectangle, polygon, multi-polyline, time-overlap, and altitude-overlap operators currently implement closed boundaries only: touching an edge, vertex, or interval endpoint counts as intersection, containment, or overlap. A document that declares `open` while using one of these operators fails validation; Core does not silently substitute closed-boundary results.
+
+The CRS, coordinate order, units, and boundary semantics apply to every task in one document. Tasks cannot override them independently.
 
 ---
 
 ## 6. `objects`
 
-`objects` is a mapping from object id to object definition. The public Canonical IR defines `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
+`objects` is a mapping from object id to object definition. The public Canonical IR defines `point`, `polyline`, `multi_polyline`, `polygon`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
 
 Native v1 objects MAY store fields inline:
 
@@ -228,7 +234,49 @@ Requirements:
 
 `line_intersects_rect` evaluates the polyline segments according to the registered operator implementation. Consumers MUST NOT assume that only the first segment is used in v1 examples.
 
-### 6.3 Rectangle
+### 6.3 Multi-Polyline
+
+```yaml
+route_group:
+  type: multi_polyline
+  coordinates:
+    - [[0, 0], [10, 0]]
+    - [[20, 20], [30, 30], [40, 20]]
+```
+
+Requirements:
+
+- at least one member polyline;
+- every member contains at least two coordinate pairs;
+- every coordinate pair contains exactly two finite numbers;
+- compatibility field `lines` is accepted and normalized to `coordinates`.
+
+`multi_polyline_intersects_rect` returns true when any member polyline touches or crosses the rectangle. Members are independent; Core does not join them into one continuous route.
+
+### 6.4 Polygon
+
+```yaml
+zone:
+  type: polygon
+  coordinates:
+    - [0, 0]
+    - [10, 0]
+    - [10, 10]
+    - [0, 10]
+    - [0, 0]
+```
+
+Requirements:
+
+- one exterior ring only;
+- at least three distinct vertices;
+- the closing coordinate MUST equal the first coordinate;
+- every coordinate pair contains exactly two finite numbers;
+- holes, multi-polygons, self-intersection repair, and implicit ring closure are not provided by this contract.
+
+`point_in_polygon` uses the even-odd rule. A point on an edge or vertex is contained because the registered boundary semantics are closed.
+
+### 6.5 Rectangle
 
 ```yaml
 restricted_zone:
@@ -238,7 +286,7 @@ restricted_zone:
 
 `bbox` MUST be `[min_x, min_y, max_x, max_y]`, with minimum values not greater than maximum values.
 
-### 6.4 Time Interval
+### 6.6 Time Interval
 
 Preferred native form:
 
@@ -264,7 +312,7 @@ Requirements:
 - current public operator treats the interval as closed;
 - legacy type `time` is accepted.
 
-### 6.5 Altitude Interval
+### 6.7 Altitude Interval
 
 Preferred native form:
 
@@ -292,7 +340,7 @@ Requirements:
 - both intervals compared by `altitude_overlap` MUST use compatible unit and datum;
 - legacy type `altitude` is accepted.
 
-### 6.6 Feature Collection
+### 6.8 Feature Collection
 
 ```yaml
 site_candidates:
@@ -323,6 +371,8 @@ The list declares operators used by the document. Every assertion operator SHOUL
 |---|---|---|---|
 | `distance_2d` | point, point | number | n/a |
 | `line_intersects_rect` | polyline, rect | bool | contact counts |
+| `multi_polyline_intersects_rect` | multi_polyline, rect | bool | any member; contact counts |
+| `point_in_polygon` | point, polygon | bool | edge and vertex contact count |
 | `point_to_line_distance_2d` | point, polyline | number | segment distance |
 | `rect_contains_point` | rect, point | bool | boundary counts |
 | `time_overlap` | time_interval, time_interval | bool | endpoint contact counts |
@@ -543,6 +593,35 @@ output_contract:
 | `ordering` | Optional deterministic ordering requirements. |
 
 Output contracts constrain result shape. They do not alter operator values.
+
+### 13.1 `provenance`
+
+`provenance` is an optional document-level contract for source identity, assertion evidence, and authoring audit metadata:
+
+```yaml
+provenance:
+  sources:
+    - id: survey_dataset
+      kind: dataset
+      title: Fictional Local Survey Coordinates
+      uri: urn:geotask:fictional:survey-dataset:2026-07-31
+      version: "1.0"
+      sha256: 1111111111111111111111111111111111111111111111111111111111111111
+      verified_at: 2026-07-31T08:10:00+00:00
+  evidence_bindings:
+    - assertion_id: survey_distance
+      source_refs: [survey_dataset]
+  audit:
+    generated_by: fictional-geotask-authoring-tool
+    generator_version: 0.1.0
+    generated_at: 2026-07-31T08:15:00+00:00
+    audit_ref: audit:fictional:provenance-evidence-audit-v1
+    source_refs: [survey_dataset]
+```
+
+Each source MUST have a unique GeoTask identifier, a supported `kind`, a title, and either `artifact_id` or `uri`. Optional SHA-256 values MUST be lowercase 64-character digests. Source and audit timestamps MUST be ISO 8601 values with an explicit timezone. Evidence bindings MUST reference one existing assertion and one or more declared source IDs; one assertion may have at most one binding. Audit `source_refs` MUST also resolve to declared sources.
+
+After successful validation, Core copies the binding for each assertion into `CheckResult.evidence_refs`. This proves only that the task document declared and passed the provenance contract; Core does not fetch the source, verify the URI, recompute a supplied digest, or promote the evidence to independent or human assurance. Invalid provenance blocks execution instead of dropping or inventing evidence metadata.
 
 ---
 

@@ -2,7 +2,9 @@
 
 **简体中文** | [English](README.en.md)
 
-> **面向AI智能体的可验证时空任务协议**
+> **面向智能体的可验证时空世界模型**
+>
+> 让大模型理解世界，让GeoTask验证并维护世界。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
@@ -15,13 +17,14 @@
 pip install geotask-core
 ```
 
-GeoTask把自然语言中的空间、时间、证据、资源和行动约束转换为结构化任务，并通过本地确定性计算验证模型结果。
+GeoTask把多模态模型、传感器、地图、权威数据和人工输入转化为显式的世界对象、时空关系、状态、证据和行动约束，构建可计算、可验证、可更新、可追溯的时空世界状态。它不是把整个世界隐式压进一个神经网络，而是让智能体依赖的现实事实能够被查看、复算、纠偏和持续维护。
 
-- **模型负责提出：** 对象、断言、解释和候选动作；
-- **GeoTask Core负责验证：** 结构、引用、算子契约、确定性结果和可信等级；
-- **上层应用负责决策：** 继续执行、阻断任务、补充证据或进入人工复核。
+- **多模态模型负责感知与开放推理：** 从文本、地图、图像、视频和状态数据中形成观察、假设与方案；
+- **GeoTask Core负责世界状态契约与验证内核：** 显式表达对象、坐标、时间、关系、证据和命题，并用本地确定性路径验证；
+- **验证与控制机制负责维护世界：** 保留已证实事实，标记冲突和未知，限定纠偏范围，并管理行动资格；
+- **Runtime与Domain Pack负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
 
-> 模型生成的答案只是候选结论。只有经过明确验证路径，才能成为可信结果。
+> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。完整的Observation、World State、State Transition和增量重算仍在持续建设。
 
 ## 从这里开始
 
@@ -31,36 +34,36 @@ GeoTask把自然语言中的空间、时间、证据、资源和行动约束转�
 - [GT01—GT20中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)
 - [当前实现语言与执行规范v1.0](docs/spec/geotask-language-spec-v1.0.md)
 - [Agent集成Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
+- [Runtime接口Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
 - [v0.3.0 Agent集成版发布说明](docs/release_v0_3_0.md)
 - [v0.2.0制品契约版发布说明](docs/release_v0_2_0.md)
 - [公共路线图](ROADMAP.md)
 - [中文文档导航](docs/README.md)
 
-## 为什么Agent需要GeoTask
+## 智能体为什么需要可验证的世界模型
 
-大模型擅长理解和生成，却可能在坐标顺序、边界语义、时间区间、高度范围、对象能力和安全余量上产生错误。一次Tool Calling可以完成局部函数调用，但通常不能完整保留：
+多模态大模型越来越会看懂场景、调用工具和生成计划，但模型内部的“世界理解”通常隐含在上下文、向量或参数中。进入真实行动前，智能体还需要一个外显、共享、可验证的世界状态，持续回答：
 
-- 任务要解决什么问题；
-- 哪些对象参与计算；
-- 对象采用什么单位和坐标参考；
-- 哪些结论由模型提出，哪些由本地算子产生；
-- 缺少证据时应阻断什么；
-- 条件恢复后从哪里继续。
+- 世界中有哪些对象，它们在哪里、何时存在、处于什么状态；
+- 哪些关系和约束已经成立，哪些仍然未知、冲突或缺少证据；
+- 新观察到来后，哪些世界状态和结论需要更新或失效；
+- 哪些事实来自模型、传感器、权威数据或人工复核；
+- 当前世界状态允许智能体采取什么行动。
 
-GeoTask提供任务级中间表示：
+一次Tool Calling可以完成局部函数调用，却不会自动维护对象身份、世界快照、证据状态、变化影响和行动边界。GeoTask把这些信息组织为可验证、可审计的世界模型原语与Artifact：
 
 ```mermaid
 flowchart LR
-  A[自然语言任务] --> B[GeoTask文档]
-  B --> C[解析与规范化]
-  C --> D[结构验证]
-  D --> E[本地确定性执行]
-  E --> F[结构化结果与可信等级]
-  M[模型生成候选结论] --> G[比较验证]
-  F --> G
-  G --> H[verified / contradicted / review]
+  O[多模态观察与外部状态] --> W[显式时空世界状态]
+  W --> R[关系、约束与世界命题]
+  R --> V[本地验证与证据治理]
+  V --> U[状态更新、纠偏与复核]
+  U --> G[行动资格与外部Runtime]
+  N[新观察到来] --> W
 ```
+
+当前公共Core已经实现世界对象与空间合同、来源与证据绑定、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。第一类`WorldState`、`Observation`、`VerificationSession`、`StateTransition`、影响图和增量重算仍属于后续路线图。
 
 ## 5分钟运行
 
@@ -105,7 +108,7 @@ geotask run my_distance.yaml
 
 ## 20个公开应用案例
 
-GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示AI如何可靠地理解、执行和验证时空任务。
+GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示模型方案如何被结构化、复算、验错、补证、纠偏和行动门控。
 
 | 阶段 | 案例 | 核心问题 |
 |---|---|---|
@@ -124,7 +127,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT13：** 道路开放，不等于具体车辆的安全包络能够通过；
 - **GT14：** 距离最近，不等于救援队能够最早到达并满足响应时限；
 - **GT15：** 地图结构可通行，不等于机器人当前路线没有被实时障碍占据；
-- **GT16：** 两条无人机路线相交，不等于它们会在同一高度和同一时刻发生碰撞；
+- **GT16：** 初始计划已验证，不等于新遥测到来后可以停止监测；延误使预测间隔从120秒缩至80秒，系统应保留有效结论并准备增量复核；
 - **GT17：** 十次上报不等于十起事件，应合并为一个任务并保留十份来源证据；
 - **GT18：** 最短路线能够到达目标，不等于它满足环境风险和救援机器人耐受能力约束；
 - **GT19：** 无人机到达目标上空，不等于投放区已经净空并获得载荷释放授权；
@@ -136,20 +139,40 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 
 ### Canonical对象类型
 
-`point`、`polyline`、`rect`、`time_interval`、`altitude_interval`和`feature_collection`。
+`point`、`polyline`、`multi_polyline`、`polygon`、`rect`、`time_interval`、`altitude_interval`和`feature_collection`。
 
 其中`feature_collection`已经进入Canonical IR，但具体算子只接受算子注册表中声明的对象组合。
 
-### 六个本地确定性算子
+### 八个本地确定性算子
 
 | 算子 | 输入 | 输出 |
 |---|---|---|
 | `distance_2d` | 点、点 | 数值 |
 | `line_intersects_rect` | 折线、矩形 | 布尔值 |
+| `multi_polyline_intersects_rect` | 多折线、矩形 | 布尔值 |
+| `point_in_polygon` | 点、多边形 | 布尔值 |
 | `point_to_line_distance_2d` | 点、折线 | 数值 |
 | `rect_contains_point` | 矩形、点 | 布尔值 |
 | `time_overlap` | 时间区间、时间区间 | 布尔值 |
 | `altitude_overlap` | 高度区间、高度区间 | 布尔值 |
+
+### 跨任务空间合同
+
+同一文档中的全部任务共享一套CRS、坐标顺序、水平/垂直单位和边界语义。平面算子只接受`local_cartesian`或带标识的`projected`坐标，且坐标顺序必须为`[x, y]`；Core不会把经纬度直接当作欧氏坐标，也不会自动换算单位。距离断言与高度对象必须匹配文档单位；当前边界敏感算子只支持`closed`，声明`open`会失败关闭。纯时间任务不受平面CRS门禁影响。
+
+### 来源、证据与审计
+
+文档可选声明`provenance.sources`、`evidence_bindings`和`audit`。Core严格校验来源ID、类型、URI/Artifact身份、SHA-256、带时区时间、断言绑定和审计引用；通过后将声明的来源ID写入对应`CheckResult.evidence_refs`。该机制不联网获取来源、不重算外部摘要，也不会仅因存在来源元数据而提升Assurance等级。
+
+`geotask inspect schemas --format json`还会为每类公共Artifact返回`ide_file_patterns`，可直接用于VS Code YAML、JetBrains或其他支持JSON Schema文件匹配的IDE配置。
+
+### 公共一致性与性能基准
+
+```bash
+geotask benchmark core --enforce-performance --output core-benchmark.json
+```
+
+该离线基准使用5个固定虚构案例覆盖全部8个公共确定性算子，并检查结果往返、重复执行语义指纹和Provenance证据绑定；同时测量`JSON解码→Canonical化→验证→执行→序列化`全链路。默认100毫秒p95阈值仅用于发现本机严重性能回归，不是跨硬件排名、生产SLA或模型能力评测。报告可作为`geotask.core-benchmark-report`再次严格验证。
 
 ### 执行主链
 
@@ -211,7 +234,16 @@ geotask agent prepare <generated.yaml> --repaired-output <prepared.yaml>
 geotask agent retry <blocked-report.json> <revised.yaml> --verification-output <verification.json> --prepared-output <prepared.yaml>
 geotask agent recover <task.yaml> --evidence <verified-state.yaml> --output <recovery-report.json>
 geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json> --format json
+geotask runtime inspect examples/core/runtime_reference_descriptor.json --format json
+geotask runtime check examples/core/runtime_reference_descriptor.json examples/core/runtime_validate_artifact_request.json --format json
+geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json
 ```
+
+公共仓还提供[`examples/adapters/http_json_runtime_adapter.py`](examples/adapters/http_json_runtime_adapter.py)，演示如何在`geotask_core`之外把已离线检查的Descriptor绑定到独立HTTP Runtime。配套的[`examples/endpoints/reference_runtime_http_server.py`](examples/endpoints/reference_runtime_http_server.py)可在回环地址启动一个真实HTTP Endpoint，形成Adapter—Endpoint端到端闭环。两者均不在线获取Descriptor、不处理凭据、不重试、不调用模型，也不执行生产动作；传输错误与Runtime状态严格分离，返回结果仍由Core执行Descriptor / Request / Response三方合同校验。
+
+[`examples/model_adapters/provider_neutral/`](examples/model_adapters/provider_neutral/)进一步提供一个可独立构建的Provider-neutral模型Adapter包骨架：定义非秘密配置、结构化Provider Protocol、Mock Provider和`execute-nonlocal`映射，并在调用前验证输入Artifact、调用后验证输出Artifact及模型真实性。它拒绝模型结果冒充`verified`、`local_deterministic`或确定性执行。
+
+[`examples/model_adapters/openai_responses/`](examples/model_adapters/openai_responses/)在此基础上实现首个真实Provider集成：由私有启动代码注入已认证的官方OpenAI SDK客户端，公共包执行一次关闭重试、关闭存储、禁用工具的Responses API严格结构化输出调用，并将结果继续交给Artifact和真实性门禁。仓库测试仅使用模拟SDK客户端，不读取密钥，也不发起线上调用。
 
 ## 版本说明
 
@@ -221,6 +253,7 @@ geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json>
 | GeoTask文档Schema | `1.0` | YAML/JSON任务格式版本 |
 | 语言与执行规范 | `1.0` | 当前公共实现规范 |
 | Agent Integration Profile | `0.1` | 模型无关工具契约、补证据恢复与恢复报告Artifact |
+| Runtime Interface Profile | `0.1` | Core与外部Runtime之间的Descriptor、Request、Response契约 |
 | 白皮书 | `0.1` | 公开概念草案 |
 
 ## 文档

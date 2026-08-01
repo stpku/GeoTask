@@ -1,0 +1,77 @@
+geotask:
+  id: "polygon-multi-polyline-v1"
+  name: "Polygon and Multi-Polyline v1.0"
+  description: "Demonstrate deterministic containment and grouped-route intersection."
+  schema_version: "1.0"
+  language: "en"
+  domain: "general_spatial"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "local_xy_m"
+  axes:
+    x: "east"
+    y: "north"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+
+objects:
+  query_point:
+    type: "point"
+    coordinates: [5, 5]
+  service_zone:
+    type: "polygon"
+    coordinates:
+      - [0, 0]
+      - [10, 0]
+      - [10, 10]
+      - [0, 10]
+      - [0, 0]
+  candidate_routes:
+    type: "multi_polyline"
+    coordinates:
+      - [[-10, -10], [-5, -5]]
+      - [[-2, 5], [12, 5]]
+  inspection_window:
+    type: "rect"
+    bbox: [0, 0, 10, 10]
+
+operator_set:
+  - point_in_polygon
+  - multi_polyline_intersects_rect
+
+tasks:
+  - id: "evaluate_geometry"
+    family: "topology"
+    goal: "Evaluate point containment and grouped-route intersection."
+    assertions:
+      - id: "point_contained"
+        operator: "point_in_polygon"
+        object_refs: ["query_point", "service_zone"]
+        expected_type: "boolean"
+      - id: "route_intersects"
+        operator: "multi_polyline_intersects_rect"
+        object_refs: ["candidate_routes", "inspection_window"]
+        expected_type: "boolean"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "evaluate"
+      executor: "local"
+      assertion_refs: ["point_contained", "route_intersects"]
+      depends_on: []
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "point_contained"
+    - "route_intersects"
+  allow_additional_fields: true
+
+expected_results:
+  - name: "point_contained"
+    value: true
+  - name: "route_intersects"
+    value: true

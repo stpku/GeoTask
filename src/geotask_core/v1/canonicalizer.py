@@ -21,6 +21,7 @@ from geotask_core.v1.ir import (
     GeoObject,
     OperatorContract,
     OutputContract,
+    ProvenanceDefinition,
     SpaceCRS,
     SpaceDefinition,
     Task,
@@ -31,9 +32,11 @@ from geotask_core.v1.ir import (
 # -- Operator → expected input type pairs (for auto-generating assertions)
 
 _OPERATOR_INPUT_TYPES: dict[str, list[str]] = {
-    "distance_2d":                ["point", "point"],
-    "line_intersects_rect":       ["polyline", "rect"],
-    "point_to_line_distance_2d":  ["point", "polyline"],
+    "distance_2d":                    ["point", "point"],
+    "line_intersects_rect":           ["polyline", "rect"],
+    "multi_polyline_intersects_rect": ["multi_polyline", "rect"],
+    "point_in_polygon":               ["point", "polygon"],
+    "point_to_line_distance_2d":      ["point", "polyline"],
     "rect_contains_point":        ["rect", "point"],
     "time_overlap":               ["time_interval", "time_interval"],
     "altitude_overlap":           ["altitude_interval", "altitude_interval"],
@@ -43,6 +46,7 @@ _OPERATOR_INPUT_TYPES: dict[str, list[str]] = {
 _LEGACY_OBJECT_FIELD_TO_DATA_KEY: dict[str, str] = {
     "xy":       "coordinates",
     "points":   "coordinates",
+    "lines":    "coordinates",
     "bbox":     "bbox",
     "interval": "interval",
     "range":    "range",
@@ -193,6 +197,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         horizontal_unit=str(space_raw.get("unit", space_raw.get("horizontal_unit", "meter"))),
         vertical_unit=str(space_raw.get("vertical_unit", "meter")),
         coordinate_order=list(space_raw.get("coordinate_order", ["x", "y"])),
+        boundary_semantics=str(space_raw.get("boundary_semantics", "closed")),
         precision=dict(space_raw.get("precision", {})),
     )
 
@@ -302,6 +307,15 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         ordering=dict(oc_raw.get("ordering", {})),
     )
 
+    provenance_raw = data.get("provenance")
+    provenance = None
+    if isinstance(provenance_raw, dict):
+        provenance = ProvenanceDefinition(
+            sources=list(provenance_raw.get("sources", [])),
+            evidence_bindings=list(provenance_raw.get("evidence_bindings", [])),
+            audit=dict(provenance_raw.get("audit", {})),
+        )
+
     # -- Expected results 
     expected_results: list[Any] = list(data.get("expected_results", []))
 
@@ -318,6 +332,7 @@ def _convert_legacy(data: dict[str, Any]) -> CanonicalDocument:
         execution=execution,
         verification=verification,
         output_contract=output_contract,
+        provenance=provenance,
         extensions=extensions,
         expected_results=expected_results,
         _source_schema_version="1.0",   # Mark as canonicalised for idempotency
@@ -388,6 +403,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         horizontal_unit=str(sp.get("horizontal_unit", sp.get("unit", "meter"))),
         vertical_unit=str(sp.get("vertical_unit", "meter")),
         coordinate_order=list(sp.get("coordinate_order", ["x", "y"])),
+        boundary_semantics=str(sp.get("boundary_semantics", "closed")),
         precision=dict(sp.get("precision", {})),
     )
 
@@ -488,6 +504,15 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         ordering=dict(oc_d.get("ordering", {})),
     )
 
+    provenance_raw = data.get("provenance")
+    provenance = None
+    if isinstance(provenance_raw, dict):
+        provenance = ProvenanceDefinition(
+            sources=list(provenance_raw.get("sources", [])),
+            evidence_bindings=list(provenance_raw.get("evidence_bindings", [])),
+            audit=dict(provenance_raw.get("audit", {})),
+        )
+
     # -- Remaining top-level fields 
     expected_results: list[Any] = list(data.get("expected_results", []))
     extensions: dict[str, Any] = dict(data.get("extensions", {}))
@@ -502,6 +527,7 @@ def _parse_v1_native(data: dict[str, Any]) -> CanonicalDocument:
         execution=execution,
         verification=verification,
         output_contract=output_contract,
+        provenance=provenance,
         extensions=extensions,
         expected_results=expected_results,
         _source_schema_version="1.0",
@@ -708,7 +734,7 @@ def _parse_execution(raw: dict[str, Any]) -> ExecutionDefinition:
 
 def _canonical_document_to_dict(doc: CanonicalDocument) -> dict[str, Any]:
     """Convert a CanonicalDocument to a plain dict for round-tripping."""
-    return {
+    payload = {
         "metadata": _dataclass_to_dict(doc.metadata),
         "space": _space_to_dict(doc.space),
         "objects": {
@@ -730,6 +756,9 @@ def _canonical_document_to_dict(doc: CanonicalDocument) -> dict[str, Any]:
         "expected_results": list(doc.expected_results),
         "_source_schema_version": doc._source_schema_version,
     }
+    if doc.provenance is not None:
+        payload["provenance"] = _dataclass_to_dict(doc.provenance)
+    return payload
 
 
 def _space_to_dict(sp: SpaceDefinition) -> dict[str, Any]:
@@ -739,6 +768,7 @@ def _space_to_dict(sp: SpaceDefinition) -> dict[str, Any]:
         "horizontal_unit": sp.horizontal_unit,
         "vertical_unit": sp.vertical_unit,
         "coordinate_order": list(sp.coordinate_order),
+        "boundary_semantics": sp.boundary_semantics,
         "precision": dict(sp.precision),
     }
 

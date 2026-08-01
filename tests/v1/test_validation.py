@@ -346,18 +346,20 @@ def test_bool_not_number() -> None:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-def test_operator_registry_has_six_operators() -> None:
-    """Default operator registry contains all 6 Core operators."""
+def test_operator_registry_has_builtin_operators() -> None:
+    """Default operator registry contains all public built-in Core operators."""
     from geotask_core.v1.operator_contracts import default_registry
 
-    names = default_registry.list_names()
-    assert "distance_2d" in names
-    assert "line_intersects_rect" in names
-    assert "point_to_line_distance_2d" in names
-    assert "rect_contains_point" in names
-    assert "time_overlap" in names
-    assert "altitude_overlap" in names
-    assert len(names) == 6
+    assert default_registry.list_names() == [
+        "distance_2d",
+        "line_intersects_rect",
+        "multi_polyline_intersects_rect",
+        "point_in_polygon",
+        "point_to_line_distance_2d",
+        "rect_contains_point",
+        "time_overlap",
+        "altitude_overlap",
+    ]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

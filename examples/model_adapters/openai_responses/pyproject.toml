@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geotask-openai-responses-adapter"
+version = "0.1.0"
+description = "OpenAI Responses API provider integration for the GeoTask provider-neutral Runtime Adapter"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [
+  { name = "GeoTask Contributors" },
+]
+dependencies = [
+  "geotask-provider-neutral-model-adapter>=0.1.0,<0.2.0",
+  "openai>=2.46.0,<3.0.0",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["geotask_openai_responses_adapter*"]

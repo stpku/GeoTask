@@ -51,14 +51,14 @@ def test_validate_geotask_diagnostics_missing_top_level_key():
 def test_validate_geotask_diagnostics_unknown_object_type():
     """Unknown object types get a precise object path and stable code."""
     data = _base_doc()
-    data["objects"] = {"bad": {"type": "polygon", "coords": []}}
+    data["objects"] = {"bad": {"type": "circle", "coords": []}}
 
     diagnostics = validate_geotask_diagnostics(data)
 
     diag = diagnostics[0]
     assert diag["path"] == "objects.bad.type"
     assert diag["code"] == "unknown_object_type"
-    assert "polygon" in diag["message"]
+    assert "circle" in diag["message"]
     assert "point" in diag["suggested_fix"]
 
 
@@ -213,7 +213,7 @@ def test_validate_geotask_remains_string_list_compatible():
 def test_cli_validate_failure_prints_structured_diagnostics(tmp_path):
     """CLI validate failure includes path/code/suggested fix and no traceback."""
     data = _base_doc()
-    data["objects"] = {"bad": {"type": "polygon", "coords": []}}
+    data["objects"] = {"bad": {"type": "circle", "coords": []}}
     path = tmp_path / "invalid.yaml"
     path.write_text(yaml.safe_dump(data), encoding="utf-8")
 

@@ -24,9 +24,21 @@ from geotask_core.v1.control_evaluation import (
     CONTROL_EVALUATION_SCHEMA_ID,
     CONTROL_EVALUATION_SCHEMA_VERSION,
 )
+from geotask_core.v1.core_benchmark_contract import (
+    CORE_BENCHMARK_SCHEMA_ID,
+    CORE_BENCHMARK_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
+)
+from geotask_core.v1.runtime_interface import (
+    RUNTIME_DESCRIPTOR_SCHEMA_ID,
+    RUNTIME_DESCRIPTOR_SCHEMA_VERSION,
+    RUNTIME_REQUEST_SCHEMA_ID,
+    RUNTIME_REQUEST_SCHEMA_VERSION,
+    RUNTIME_RESPONSE_SCHEMA_ID,
+    RUNTIME_RESPONSE_SCHEMA_VERSION,
 )
 
 
@@ -44,6 +56,32 @@ ARTIFACT_VALIDATION_SCHEMA_ID = (
     "geotask-artifact-validation-v1.0.schema.json"
 )
 ARTIFACT_VALIDATION_SCHEMA_VERSION = "1.0"
+
+
+_IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
+    "geotask.document": (
+        "*.geotask.yaml",
+        "*.geotask.yml",
+        "examples/core/**/*.yaml",
+        "examples/core/**/*.yml",
+    ),
+    "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
+    "geotask.control-evaluation": ("*control-evaluation*.json",),
+    "geotask.agent-generation-preparation": ("*preparation-report*.json",),
+    "geotask.agent-revision-verification": ("*revision-verification*.json",),
+    "geotask.agent-revision-retry": ("*retry-report*.json",),
+    "geotask.agent-evidence-recovery": ("*recovery-report*.json",),
+    "geotask.runtime-descriptor": ("*runtime-descriptor*.json",),
+    "geotask.runtime-request": ("*runtime-request*.json",),
+    "geotask.runtime-response": ("*runtime-response*.json",),
+    "geotask.core-benchmark-report": ("*core-benchmark*.json",),
+    "geotask.artifact-validation-report": ("*artifact-validation*.json",),
+}
+
+
+def _ide_file_patterns(artifact_id: str) -> list[str]:
+    """Return portable glob patterns suitable for IDE Schema association."""
+    return list(_IDE_FILE_PATTERNS.get(artifact_id, ()))
 
 
 @dataclass(frozen=True)
@@ -73,6 +111,7 @@ class ArtifactDescriptor:
             "schema_version": self.schema_version,
             "schema_path": self.schema_path,
             "specification_path": self.specification_path,
+            "ide_file_patterns": _ide_file_patterns(self.artifact_id),
             "wrapper_key": self.wrapper_key,
             "generation_command": self.generation_command,
             "generation_note": self.generation_note,
@@ -281,6 +320,116 @@ _ARTIFACTS = (
         ),
     ),
     ArtifactDescriptor(
+        artifact_id="geotask.runtime-descriptor",
+        title="GeoTask Runtime Descriptor v0.1",
+        kind="runtime_descriptor",
+        schema_id=RUNTIME_DESCRIPTOR_SCHEMA_ID,
+        schema_version=RUNTIME_DESCRIPTOR_SCHEMA_VERSION,
+        schema_path="schemas/geotask-runtime-descriptor-v0.1.schema.json",
+        specification_path="docs/spec/geotask-runtime-interface-profile-v0.1.md",
+        wrapper_key="runtime_descriptor",
+        generation_command="geotask runtime inspect --format json",
+        generation_note=(
+            "Produced by a RuntimeAdapter capability advertisement. The public "
+            "reference descriptor is deterministic and fail-closed."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.runtime-descriptor "
+            "<runtime-descriptor.json>"
+        ),
+        description=(
+            "Versioned Runtime identity, capability, operation, authorization, "
+            "side-effect, and audit boundary advertisement."
+        ),
+        execution_boundary=(
+            "Validating a descriptor does not connect to or invoke a Runtime."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.runtime-request",
+        title="GeoTask Runtime Request v0.1",
+        kind="runtime_request",
+        schema_id=RUNTIME_REQUEST_SCHEMA_ID,
+        schema_version=RUNTIME_REQUEST_SCHEMA_VERSION,
+        schema_path="schemas/geotask-runtime-request-v0.1.schema.json",
+        specification_path="docs/spec/geotask-runtime-interface-profile-v0.1.md",
+        wrapper_key="runtime_request",
+        generation_command=None,
+        generation_note=(
+            "Authored by a caller after inspecting a Runtime Descriptor. Core does "
+            "not synthesize credentials, authorization, or production requests."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.runtime-request "
+            "<runtime-request.json>"
+        ),
+        description=(
+            "Idempotent operation request carrying registered input Artifacts, an "
+            "explicit output contract, and an opaque authorization reference."
+        ),
+        execution_boundary=(
+            "Validating a request never submits it to a Runtime or executes side effects."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.runtime-response",
+        title="GeoTask Runtime Response v0.1",
+        kind="runtime_response",
+        schema_id=RUNTIME_RESPONSE_SCHEMA_ID,
+        schema_version=RUNTIME_RESPONSE_SCHEMA_VERSION,
+        schema_path="schemas/geotask-runtime-response-v0.1.schema.json",
+        specification_path="docs/spec/geotask-runtime-interface-profile-v0.1.md",
+        wrapper_key="runtime_response",
+        generation_command=(
+            "geotask runtime mock <runtime-request.json> "
+            "--output <runtime-response.json>"
+        ),
+        generation_note=(
+            "Produced by a RuntimeAdapter. The public reference adapter supports only "
+            "read-only Artifact validation and rejects all private operations."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.runtime-response "
+            "<runtime-response.json>"
+        ),
+        description=(
+            "Versioned Runtime state, output Artifacts, diagnostics, audit reference, "
+            "retryability, and side-effect declaration."
+        ),
+        execution_boundary=(
+            "Validating a response does not repeat the Runtime operation or side effects."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.core-benchmark-report",
+        title="GeoTask Core Benchmark Report v0.1",
+        kind="core_benchmark_report",
+        schema_id=CORE_BENCHMARK_SCHEMA_ID,
+        schema_version=CORE_BENCHMARK_SCHEMA_VERSION,
+        schema_path="schemas/geotask-core-benchmark-v0.1.schema.json",
+        specification_path="docs/spec/geotask-core-benchmark-v0.1.md",
+        wrapper_key="core_benchmark",
+        generation_command=(
+            "geotask benchmark core --format json --output core-benchmark.json"
+        ),
+        generation_note=(
+            "Produced offline from fixed fictional cases using production GeoTask Core "
+            "Parser, Canonical IR, Validator, Executor, and Result contracts."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.core-benchmark-report "
+            "<core-benchmark.json>"
+        ),
+        description=(
+            "Versioned conformance and local performance-regression report covering "
+            "all public deterministic operators, result round trips, and evidence bindings."
+        ),
+        execution_boundary=(
+            "The benchmark performs no model call, network access, external evidence read, "
+            "or production action. Timing values are not comparable across hardware."
+        ),
+    ),
+    ArtifactDescriptor(
         artifact_id="geotask.artifact-validation-report",
         title="GeoTask Artifact Validation Report v1.0",
         kind="artifact_validation_report",
@@ -363,6 +512,12 @@ __all__ = [
     "AGENT_REVISION_RETRY_SCHEMA_VERSION",
     "AGENT_EVIDENCE_RECOVERY_SCHEMA_ID",
     "AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION",
+    "RUNTIME_DESCRIPTOR_SCHEMA_ID",
+    "RUNTIME_DESCRIPTOR_SCHEMA_VERSION",
+    "RUNTIME_REQUEST_SCHEMA_ID",
+    "RUNTIME_REQUEST_SCHEMA_VERSION",
+    "RUNTIME_RESPONSE_SCHEMA_ID",
+    "RUNTIME_RESPONSE_SCHEMA_VERSION",
     "ArtifactDescriptor",
     "list_artifact_descriptors",
     "get_artifact_descriptor",

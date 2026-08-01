@@ -10,7 +10,7 @@ GeoTask publishes several machine-readable artifacts with different producers,
 wrappers, JSON Schemas, and validation commands. The Artifact Registry provides
 one stable public discovery surface for those contracts.
 
-The registry currently contains exactly eight artifacts:
+The registry currently contains exactly twelve artifacts:
 
 1. GeoTask Document v1.0;
 2. GeoTask Execution Result v1.0;
@@ -19,7 +19,11 @@ The registry currently contains exactly eight artifacts:
 5. GeoTask Agent Revision Verification Report v0.1;
 6. GeoTask Agent Revision Retry Report v0.1;
 7. GeoTask Agent Evidence Recovery Report v0.1;
-8. GeoTask Artifact Validation Report v1.0.
+8. GeoTask Runtime Descriptor v0.1;
+9. GeoTask Runtime Request v0.1;
+10. GeoTask Runtime Response v0.1;
+11. GeoTask Core Benchmark Report v0.1;
+12. GeoTask Artifact Validation Report v1.0.
 
 It does not scan the filesystem, discover private modules, or infer unpublished
 contracts. New entries require an explicit public contract and compatibility
@@ -57,7 +61,7 @@ geotask inspect schemas geotask.execution-result --verify --format json
 ```
 
 `--verify` appends a sibling `schema_bundle_verification` object. Full discovery
-checks the registry Schema plus all eight registered artifact Schemas; exact
+checks the registry Schema plus all twelve registered Artifact Schemas; exact
 lookup checks only the selected artifact Schema. An invalid Bundle still emits
 the composite JSON or YAML report and exits non-zero. Without `--verify`, output
 remains the original Artifact Registry v1.0 payload and continues to validate
@@ -90,6 +94,16 @@ from geotask_core import (
     AGENT_REVISION_RETRY_SCHEMA_VERSION,
     AGENT_EVIDENCE_RECOVERY_SCHEMA_ID,
     AGENT_EVIDENCE_RECOVERY_SCHEMA_VERSION,
+    RUNTIME_DESCRIPTOR_SCHEMA_ID,
+    RUNTIME_DESCRIPTOR_SCHEMA_VERSION,
+    RUNTIME_REQUEST_SCHEMA_ID,
+    RUNTIME_REQUEST_SCHEMA_VERSION,
+    RUNTIME_RESPONSE_SCHEMA_ID,
+    RUNTIME_RESPONSE_SCHEMA_VERSION,
+    RuntimeInterfaceFormatError,
+    load_runtime_descriptor,
+    load_runtime_request,
+    load_runtime_response,
     AgentArtifactFormatError,
     load_agent_generation_preparation_report,
     load_agent_revision_verification_report,
@@ -120,8 +134,8 @@ The same names are exported from `geotask_core.v1`.
 
 ### 3.1 Installed Schema Bundle
 
-The wheel and source distribution include all nine public JSON Schemas needed to
-interpret the registry and its eight registered artifacts. Callers can load them
+The wheel and source distribution include all thirteen public JSON Schemas needed to
+interpret the Registry and its twelve registered Artifacts. Callers can load them
 without network access:
 
 ```python
@@ -215,7 +229,7 @@ and non-execution boundary.
   "artifact_registry": {
     "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-artifact-registry-v1.0.schema.json",
     "registry_version": "1.0",
-    "artifact_count": 8,
+    "artifact_count": 12,
     "artifacts": [
       {
         "artifact_id": "geotask.document",
@@ -225,6 +239,7 @@ and non-execution boundary.
         "schema_version": "1.0",
         "schema_path": "schemas/geotask-v1.0.schema.json",
         "specification_path": "docs/spec/geotask-language-spec-v1.0.md",
+        "ide_file_patterns": ["*.geotask.yaml", "*.geotask.yml", "examples/core/**/*.yaml", "examples/core/**/*.yml"],
         "wrapper_key": null,
         "generation_command": null,
         "generation_note": "Authored input. GeoTask Core does not synthesize task documents; public case starters may be created with tools/scaffold_case.py.",
@@ -237,7 +252,7 @@ and non-execution boundary.
 }
 ```
 
-The complete payload contains all eight descriptors in stable display order.
+The complete payload contains all twelve descriptors in stable display order.
 
 ## 5. Descriptor fields
 
@@ -252,6 +267,7 @@ Each `ArtifactDescriptor` contains:
 | `schema_version` | Artifact schema version |
 | `schema_path` | Repository-relative Schema file |
 | `specification_path` | Repository-relative normative specification |
+| `ide_file_patterns` | Portable glob patterns for IDE Schema association |
 | `wrapper_key` | Top-level JSON wrapper, or `null` for the task document |
 | `generation_command` | CLI producer command, or `null` for authored input |
 | `generation_note` | Producer and authorship explanation |
@@ -383,7 +399,75 @@ checks pass—the resumed execution and final control evaluation. A structurally
 valid Artifact may record `state=blocked`; validation does not reacquire evidence,
 repeat recovery, execute `next_action`, or release outputs.
 
-### 6.8 Artifact Validation Report
+### 6.8 Runtime Descriptor
+
+```text
+Artifact ID: geotask.runtime-descriptor
+Schema: schemas/geotask-runtime-descriptor-v0.1.schema.json
+Version: 0.1
+Wrapper: runtime_descriptor
+Generation:
+  geotask runtime inspect --format json
+Validation:
+  geotask artifact validate geotask.runtime-descriptor <runtime-descriptor.json>
+```
+
+The descriptor advertises Runtime identity, operations, input/output Artifact
+contracts, authorization requirements, side-effect classes, and audit capability.
+Validation never connects to or invokes the described Runtime.
+
+### 6.9 Runtime Request
+
+```text
+Artifact ID: geotask.runtime-request
+Schema: schemas/geotask-runtime-request-v0.1.schema.json
+Version: 0.1
+Wrapper: runtime_request
+Generation: caller-authored after descriptor inspection
+Validation:
+  geotask artifact validate geotask.runtime-request <runtime-request.json>
+```
+
+The request contains registered input Artifacts, an explicit expected-output
+contract, an idempotency key, and an optional opaque authorization reference.
+Validation never submits the request or resolves credentials.
+
+### 6.10 Runtime Response
+
+```text
+Artifact ID: geotask.runtime-response
+Schema: schemas/geotask-runtime-response-v0.1.schema.json
+Version: 0.1
+Wrapper: runtime_response
+Generation:
+  geotask runtime mock <runtime-request.json> --output <runtime-response.json>
+Validation:
+  geotask artifact validate geotask.runtime-response <runtime-response.json>
+```
+
+A valid response may record `accepted`, `completed`, `blocked`, `rejected`, or
+`failed`. Strict loading checks output Artifacts, diagnostics, retryability, audit
+references, and side-effect declarations without repeating the Runtime operation.
+
+### 6.11 Core Benchmark Report
+
+```text
+Artifact ID: geotask.core-benchmark-report
+Schema: schemas/geotask-core-benchmark-v0.1.schema.json
+Version: 0.1
+Wrapper: core_benchmark
+Generation:
+  geotask benchmark core --format json --output core-benchmark.json
+Validation:
+  geotask artifact validate geotask.core-benchmark-report <core-benchmark.json>
+```
+
+The report records production-Core conformance over fixed fictional cases and local
+pipeline timing observations. Validation checks its Schema and cross-field
+consistency without rerunning the cases. It performs no model call or network
+access, and its timing values are not comparable across different hardware.
+
+### 6.12 Artifact Validation Report
 
 ```text
 Artifact ID: geotask.artifact-validation-report
@@ -415,6 +499,9 @@ The Artifact Registry is a discovery layer. It does not replace:
 - `load_agent_revision_verification_report()`;
 - `load_agent_revision_retry_report()`;
 - `load_agent_evidence_recovery_report()`;
+- `load_runtime_descriptor()`;
+- `load_runtime_request()`;
+- `load_runtime_response()`;
 - `load_artifact_validation_report()`;
 - the Versioned Payload Validation framework;
 - artifact-specific JSON Schemas.

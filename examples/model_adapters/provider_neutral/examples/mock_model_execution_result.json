@@ -1,0 +1,48 @@
+{
+  "geotask_result": {
+    "schema_version": "1.0",
+    "task_id": "minimal-distance-v1",
+    "execution": {
+      "mode": "model_only",
+      "status": "completed",
+      "started_at": "2026-07-31T03:20:36+00:00",
+      "finished_at": "2026-07-31T03:20:36+00:00"
+    },
+    "checks": [
+      {
+        "assertion_id": "ab_distance",
+        "operator": "distance_2d",
+        "object_refs": [
+          "point_a",
+          "point_b"
+        ],
+        "executor": "model",
+        "value": 5.0,
+        "unit": "meter",
+        "status": "computed",
+        "assurance_level": "model_generated",
+        "deterministic": false,
+        "evidence_refs": [],
+        "error": null
+      }
+    ],
+    "outputs": {
+      "ab_distance": 5.0
+    },
+    "summary": {
+      "total_checks": 1,
+      "verified": 0,
+      "contradicted": 0,
+      "need_review": 1,
+      "invalid": 0
+    },
+    "overall": {
+      "status": "computed",
+      "assurance_level": "model_generated"
+    },
+    "warnings": [
+      "Mock provider output is model-generated and requires independent verification."
+    ],
+    "errors": []
+  }
+}

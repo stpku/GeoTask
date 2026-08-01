@@ -1,6 +1,6 @@
 """GeoTask Core v1.0 — Structured operator contracts with implementation binding.
 
-This module defines all 6 current Core operators as v1.0 OperatorContracts
+This module defines all current Core operators as v1.0 OperatorContracts
 and provides an OperatorRegistry for lookup plus an AssertionDispatcher
 that replaces the v0.x runner.py type-based auto-detection with
 assertion-driven execution.
@@ -104,6 +104,95 @@ LINE_INTERSECTS_RECT = OperatorContract(
         },
     ],
     implementation="geotask_core.ops.line_intersects_rect",
+)
+
+MULTI_POLYLINE_INTERSECTS_RECT = OperatorContract(
+    name="multi_polyline_intersects_rect",
+    version="1.0",
+    family="topology",
+    description=(
+        "Check if any member of a multi-polyline intersects an axis-aligned "
+        "rectangle."
+    ),
+    arity=2,
+    input_types=["multi_polyline", "rect"],
+    output={"type": "boolean"},
+    deterministic=True,
+    semantics={
+        "boundary_rules": [
+            "Boundary contact counts as intersection.",
+            "Each member polyline is evaluated independently.",
+        ],
+    },
+    model_execution={
+        "level": "M1",
+        "supported": True,
+        "recommended_max_items": 20,
+    },
+    invariants=[
+        {"id": "bool_output", "expression": "result in (True, False)"},
+        {"id": "any_member", "expression": "result == any(member intersects rect)"},
+    ],
+    error_codes=[
+        "invalid_geometry",
+        "invalid_bbox",
+        "object_type_mismatch",
+    ],
+    examples=[
+        {
+            "inputs": {
+                "multi_polyline": [
+                    [[-10, -10], [-5, -5]],
+                    [[-2, 5], [12, 5]],
+                ],
+                "rect": [0, 0, 10, 10],
+            },
+            "expected": True,
+        },
+    ],
+    implementation="geotask_core.ops.multi_polyline_intersects_rect",
+)
+
+POINT_IN_POLYGON = OperatorContract(
+    name="point_in_polygon",
+    version="1.0",
+    family="topology",
+    description="Check if a point is inside or on the boundary of a polygon.",
+    arity=2,
+    input_types=["point", "polygon"],
+    output={"type": "boolean"},
+    deterministic=True,
+    semantics={
+        "algorithm": "even_odd_rule",
+        "boundary_rules": [
+            "Boundary contact counts as containment.",
+            "The polygon is one closed exterior ring without holes.",
+        ],
+    },
+    model_execution={
+        "level": "M1",
+        "supported": True,
+        "recommended_max_items": 50,
+    },
+    invariants=[
+        {"id": "bool_output", "expression": "result in (True, False)"},
+        {"id": "boundary_included", "expression": "point on ring => result == True"},
+    ],
+    error_codes=[
+        "invalid_coordinates",
+        "invalid_geometry",
+        "object_type_mismatch",
+    ],
+    examples=[
+        {
+            "inputs": {
+                "point": [5, 5],
+                "polygon": [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
+            },
+            "expected": True,
+        },
+    ],
+    implementation="geotask_core.ops.point_in_polygon",
 )
 
 POINT_TO_LINE_DISTANCE_2D = OperatorContract(
@@ -302,7 +391,7 @@ ALTITUDE_OVERLAP = OperatorContract(
 class OperatorRegistry:
     """Registry of v1.0 operator contracts with name-based lookup.
 
-    All 6 Core operators are registered at construction time. Additional
+    All built-in Core operators are registered at construction time. Additional
     contracts can be registered via :meth:`register`.
     """
 
@@ -438,6 +527,10 @@ class AssertionDispatcher:
           - ``point`` → ``data["coordinates"]`` (fallback: ``data["xy"]``)
           - ``polyline`` / ``line`` → ``data["coordinates"]``
             (fallback: ``data["points"]``)
+          - ``multi_polyline`` → ``data["coordinates"]``
+            (fallback: ``data["lines"]``)
+          - ``polygon`` → ``data["coordinates"]``
+            (fallback: ``data["points"]``)
           - ``rect`` → ``data["bbox"]``
           - ``time_interval`` → ``[data["start"], data["end"]]``
             (fallback: ``data["interval"]``)
@@ -493,6 +586,34 @@ class AssertionDispatcher:
                 raise ValueError(
                     f"Polyline object '{obj.id}' has no coordinates "
                     f"or points field."
+                )
+            return coords
+
+        # multi_polyline
+        if expected_type == "multi_polyline":
+            if obj_type != "multi_polyline":
+                raise ValueError(
+                    f"Expected type 'multi_polyline' for '{obj.id}', "
+                    f"got '{obj_type}'"
+                )
+            coords = data.get("coordinates") or data.get("lines")
+            if coords is None:
+                raise ValueError(
+                    f"Multi-polyline object '{obj.id}' has no coordinates "
+                    f"or lines field."
+                )
+            return coords
+
+        # polygon
+        if expected_type == "polygon":
+            if obj_type != "polygon":
+                raise ValueError(
+                    f"Expected type 'polygon' for '{obj.id}', got '{obj_type}'"
+                )
+            coords = data.get("coordinates") or data.get("points")
+            if coords is None:
+                raise ValueError(
+                    f"Polygon object '{obj.id}' has no coordinates or points field."
                 )
             return coords
 
@@ -596,11 +717,13 @@ class AssertionDispatcher:
 _BUILTIN_CONTRACTS: list[OperatorContract] = [
     DISTANCE_2D,
     LINE_INTERSECTS_RECT,
+    MULTI_POLYLINE_INTERSECTS_RECT,
+    POINT_IN_POLYGON,
     POINT_TO_LINE_DISTANCE_2D,
     RECT_CONTAINS_POINT,
     TIME_OVERLAP,
     ALTITUDE_OVERLAP,
 ]
 
-#: Default pre-populated registry with all 6 Core operators.
+#: Default pre-populated registry with all built-in Core operators.
 default_registry = OperatorRegistry()

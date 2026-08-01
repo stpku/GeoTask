@@ -37,6 +37,7 @@ from geotask_core.v1.operator_contracts import (
     default_registry,
 )
 from geotask_core.v1.output_contract import _enforce_output_contract
+from geotask_core.v1.provenance import evidence_refs_by_assertion
 from geotask_core.v1.result import (
     CheckResult,
     ExecutionSummary,
@@ -124,19 +125,19 @@ def execute_canonical(doc: CanonicalDocument) -> GeotaskResult:
         if doc.execution.mode == ExecutionMode.model_only.value:
             _execute_model_only(doc, result)
             _enforce_output_contract(result, doc)
-            _finalize(result)
+            _finalize(result, doc)
             return result
 
         if doc.execution.mode != ExecutionMode.local_only.value:
             _execute_unsupported(doc, result)
-            _finalize(result)
+            _finalize(result, doc)
             return result
 
         # -- Route by execution steps ─────────────────────────────────────
         if doc.execution.steps:
             if _has_unsupported_executors(doc.execution.steps):
                 _execute_unsupported(doc, result)
-                _finalize(result)
+                _finalize(result, doc)
                 return result
             _execute_steps(doc, dispatcher, result)
         else:
@@ -160,12 +161,15 @@ def execute_canonical(doc: CanonicalDocument) -> GeotaskResult:
 
     # -- 4. Output contract enforcement ───────────────────────────────────
     _enforce_output_contract(result, doc)
-    _finalize(result)
+    _finalize(result, doc)
     return result
 
 
-def _finalize(result: GeotaskResult) -> None:
-    """Post-execution: stamp timestamp, compute summary / overall."""
+def _finalize(result: GeotaskResult, doc: CanonicalDocument) -> None:
+    """Attach declared evidence, stamp timestamps, and compute aggregates."""
+    bindings = evidence_refs_by_assertion(doc.provenance)
+    for check in result.checks:
+        check.evidence_refs = list(bindings.get(check.assertion_id, []))
     result.execution.finished_at = _now_iso()
     _compute_summary(result)
     _compute_overall(result)
@@ -1014,8 +1018,6 @@ def _resolve_unit(
     doc: CanonicalDocument,
 ) -> str:
     """Resolve the unit string for a check result."""
-    if assertion.unit:
-        return assertion.unit
     if contract is not None:
         output_type = contract.output.get("type", "")
         if output_type == "boolean":
@@ -1023,6 +1025,8 @@ def _resolve_unit(
         unit_behavior = contract.output.get("unit_behavior", "")
         if unit_behavior == "inherit_horizontal_unit":
             return doc.space.horizontal_unit
+    if assertion.unit:
+        return assertion.unit
     return ""
 
 

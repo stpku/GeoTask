@@ -41,6 +41,10 @@ The Artifact Registry uses the unified command as its canonical
 | `geotask.agent-revision-verification` | JSON | strict requested-path decision, fingerprint, count, policy, resolved-change, and violation validation |
 | `geotask.agent-revision-retry` | JSON | strict composition of revision verification, optional preparation, retry state, and summary validation |
 | `geotask.agent-evidence-recovery` | JSON | strict nested execution/control loading, evidence-completeness, task identity, state transition, output-gating, and safety-flag validation |
+| `geotask.runtime-descriptor` | JSON | strict Runtime identity, operation, Artifact-contract, authorization, side-effect, audit, and production-readiness validation |
+| `geotask.runtime-request` | JSON | strict registered input/output Artifact IDs, request identity, idempotency, authorization-reference, metadata, and JSON-value validation |
+| `geotask.runtime-response` | JSON | strict state, output Artifact, diagnostic, audit, retryability, polling, and side-effect cross-field validation |
+| `geotask.core-benchmark-report` | JSON | strict benchmark identity, case/count, replay digest, metric ordering, performance guardrail, overall-state, and execution-boundary validation |
 | `geotask.artifact-validation-report` | JSON | duplicate/non-finite JSON rejection, Registry identity checks, report cross-field validation, and `load_artifact_validation_report()` |
 
 Every validation first checks the corresponding installed Schema against the
@@ -103,6 +107,20 @@ A preparation or recovery report with `state=blocked`, or retry report with
 `state=rejected`, can still be structurally valid. Artifact validity describes
 the serialized contract, not whether the Agent workflow reached an accepted or
 recovered business outcome.
+
+Validate Runtime interface messages without connecting to a production Runtime:
+
+```bash
+geotask runtime inspect --format json > runtime-descriptor.json
+geotask artifact validate geotask.runtime-descriptor runtime-descriptor.json --format json
+geotask artifact validate geotask.runtime-request examples/core/runtime_validate_artifact_request.json --format json
+geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json
+geotask artifact validate geotask.runtime-response runtime-response.json --format json
+```
+
+A `rejected`, `blocked`, or `failed` Runtime Response can still be a valid Artifact
+when it truthfully records diagnostics and side-effect state. Validation never
+submits a Request or repeats the Runtime operation.
 
 Generate and then validate an Artifact Validation Report:
 
@@ -230,6 +248,12 @@ include `report_state`, `revision_accepted`, `task_executed`, and
 `preparation_state`. Evidence-recovery summaries include `report_state`,
 `evidence_complete`, `task_reexecuted`, `decision_value`, blocked/eligible output
 counts, and `diagnostic_count`.
+
+Runtime Descriptor summaries include Runtime identity/version, operation count,
+production readiness, and external-side-effect capability. Runtime Request summaries
+include request/runtime/operation identity, input/output counts, and authorization
+presence. Runtime Response summaries include response state, output/diagnostic
+counts, side-effect execution, and retryability.
 
 Artifact Validation Report summaries include `validated_artifact_id`,
 `validated_artifact_valid`, and `diagnostic_count`. These describe the inner

@@ -37,11 +37,11 @@ jobs:
             echo "Select the default branch $DEFAULT_BRANCH, got $DISPATCH_REF_NAME." >&2
             exit 1
           fi
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: v${{ inputs.version }}
           fetch-depth: 0
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - name: Verify checked-out release tag
@@ -153,7 +153,7 @@ jobs:
               output.write(f"already_exists={exists}\n")
           print(f"geotask-core {version} already exists on PyPI: {exists}")
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: python-package-distributions
           path: dist/
@@ -168,7 +168,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: python-package-distributions
           path: dist/

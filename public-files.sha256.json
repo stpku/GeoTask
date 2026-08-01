@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 23080,
-    "sha256": "a7a94a35cb327c145e0594f57e0d6181e20ce637c4550685f093c2941ef052f4"
+    "size": 23372,
+    "sha256": "fa7e670e1f38e44f3f960b25c3ea8b717527c19c6bd7f40ebd52b60976ddb6c5"
   },
   {
     "path": "CITATION.cff",
@@ -122,17 +122,17 @@
   {
     "path": ".github/workflows/ci.yml",
     "size": 20088,
-    "sha256": "c59bf5acf0fb22588507e693a2d3cbc318ee1a24532758c290bd7aad918d7d9f"
+    "sha256": "adf484ff1329358b072e088dee81df71602ef583cc748b2e843fbafcd5e14fbf"
   },
   {
     "path": ".github/workflows/pages.yml",
     "size": 1204,
-    "sha256": "ab2bd9b7360e121097e8e0794daf27dbb60a983b25675dcc1cdf73c12bcef650"
+    "sha256": "990d848cdbecc469f29125702073a269fb42aa5fa35dcb7b6b06e614c29a9bee"
   },
   {
     "path": ".github/workflows/publish-pypi.yml",
     "size": 13067,
-    "sha256": "1f9337c69b6f381cfb7f0c153bd16b5b4fc892a6200575604c7ddd27c0452380"
+    "sha256": "46346aa1101ee1f09301ff9c55194bfb33bf914c00b6aeccb05ffd6763841335"
   },
   {
     "path": "tests/test_agent_artifacts.py",
@@ -402,7 +402,7 @@
   {
     "path": "tests/test_mobile_experience_page.py",
     "size": 2523,
-    "sha256": "984a6c8a8e6abefd5e9e4290bdd43ba9d95e4c3fe74660745fb6f5cbee8d44a7"
+    "sha256": "9a718627f0a523f325ed431a5a2bc3dce32e33906bfc214806ba1a08213cdb19"
   },
   {
     "path": "tests/test_normalizer.py",
@@ -466,8 +466,8 @@
   },
   {
     "path": "tests/test_release_preflight.py",
-    "size": 7028,
-    "sha256": "728da77f1d4fea23c22963b417b0a82c7fc4d90fc852f429bb20da477fccb9a1"
+    "size": 8155,
+    "sha256": "cf954dba24ed34f555bc81f3182489c411ad348597595cc672415de5e2f1bf19"
   },
   {
     "path": "tests/test_result_schema_and_cli.py",

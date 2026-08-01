@@ -33,6 +33,8 @@ EXPECTED_SCHEMA_FILENAMES = {
     "geotask-artifact-registry-v1.0.schema.json",
     "geotask-artifact-validation-v1.0.schema.json",
     "geotask-control-evaluation-v1.0.schema.json",
+    "geotask-core-benchmark-v0.1.schema.json",
+    "geotask-observation-v0.1.schema.json",
     "geotask-result-v1.0.schema.json",
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",

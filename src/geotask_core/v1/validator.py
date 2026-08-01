@@ -69,6 +69,7 @@ _PLANAR_OPERATOR_NAMES: frozenset[str] = frozenset(
         "line_intersects_rect",
         "multi_polyline_intersects_rect",
         "point_in_polygon",
+        "polygon_contains_point",
         "point_to_line_distance_2d",
         "rect_contains_point",
     }
@@ -78,6 +79,7 @@ _BOUNDARY_SENSITIVE_OPERATOR_NAMES: frozenset[str] = frozenset(
         "line_intersects_rect",
         "multi_polyline_intersects_rect",
         "point_in_polygon",
+        "polygon_contains_point",
         "rect_contains_point",
         "time_overlap",
         "altitude_overlap",

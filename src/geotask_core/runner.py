@@ -3,8 +3,8 @@
 Executes spatial operations defined in a GeoTask document against
 the declared objects. Enhanced with:
   - Generic operator auto-detection from ops section
-  - Support for 8 operators, including polygon containment and grouped-polyline
-    rectangle intersection in addition to the original six primitives
+  - Support for 9 operators, including both polygon-containment argument orders
+    and grouped-polyline rectangle intersection
   - Object-type-based auto-pairing (not name-based)
   - v1.0 assertion-driven execution for documents with explicit
     assertions or execution sections.
@@ -19,6 +19,7 @@ from geotask_core.ops import (
     line_intersects_rect,
     multi_polyline_intersects_rect,
     point_in_polygon,
+    polygon_contains_point,
     point_to_line_distance_2d,
     rect_contains_point,
     time_overlap,
@@ -121,6 +122,7 @@ def _run_legacy(data: dict) -> dict:
     has_intersect = "line_intersects_rect" in declared_operators
     has_multi_intersect = "multi_polyline_intersects_rect" in declared_operators
     has_point_in_polygon = "point_in_polygon" in declared_operators
+    has_polygon_contains_point = "polygon_contains_point" in declared_operators
     has_ptl = "point_to_line_distance_2d" in declared_operators
     has_contains = "rect_contains_point" in declared_operators
     has_time = "time_overlap" in declared_operators
@@ -179,8 +181,8 @@ def _run_legacy(data: dict) -> dict:
                 "result": str(val).lower(),
             })
 
-    # ── point_in_polygon: point ∈ polygon ───────────────────────────────
-    if has_point_in_polygon and points and polygons:
+    # ── polygon containment: explicit object order by operator name ─────
+    if (has_point_in_polygon or has_polygon_contains_point) and points and polygons:
         p_name = list(points.keys())[0]
         polygon_name = list(polygons.keys())[0]
         point_coordinates = points[p_name].get("xy") or points[p_name].get(
@@ -190,16 +192,23 @@ def _run_legacy(data: dict) -> dict:
             "coordinates"
         ) or polygons[polygon_name].get("points")
         if point_coordinates is not None and polygon_coordinates is not None:
-            val = point_in_polygon(point_coordinates, polygon_coordinates)
+            if has_polygon_contains_point:
+                operation = "polygon_contains_point"
+                object_refs = [polygon_name, p_name]
+                val = polygon_contains_point(polygon_coordinates, point_coordinates)
+            else:
+                operation = "point_in_polygon"
+                object_refs = [p_name, polygon_name]
+                val = point_in_polygon(point_coordinates, polygon_coordinates)
             measurements.append({
                 "name": f"{polygon_name}_contains_{p_name}",
                 "value": val,
                 "unit": None,
-                "object_refs": [p_name, polygon_name],
-                "verified_by": "point_in_polygon",
+                "object_refs": object_refs,
+                "verified_by": operation,
             })
             verified_by.append({
-                "operation": "point_in_polygon",
+                "operation": operation,
                 "result": str(val).lower(),
             })
 

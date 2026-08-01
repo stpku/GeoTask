@@ -192,12 +192,22 @@ CORE_BENCHMARK_CASES: tuple[dict[str, Any], ...] = (
                     "data": {"bbox": [0, 0, 4, 4]},
                 },
             },
-            operators=["point_in_polygon", "multi_polyline_intersects_rect"],
+            operators=[
+                "point_in_polygon",
+                "polygon_contains_point",
+                "multi_polyline_intersects_rect",
+            ],
             assertions=[
                 {
                     "id": "point_in_service_polygon",
                     "operator": "point_in_polygon",
                     "object_refs": ["query_point", "service_polygon"],
+                    "expected_type": "boolean",
+                },
+                {
+                    "id": "service_polygon_contains_point",
+                    "operator": "polygon_contains_point",
+                    "object_refs": ["service_polygon", "query_point"],
                     "expected_type": "boolean",
                 },
                 {
@@ -210,6 +220,7 @@ CORE_BENCHMARK_CASES: tuple[dict[str, Any], ...] = (
         ),
         expected_outputs={
             "point_in_service_polygon": True,
+            "service_polygon_contains_point": True,
             "grouped_route_intersects": True,
         },
     ),

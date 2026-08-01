@@ -33,6 +33,7 @@ EXPECTED_OPERATORS = (
     "multi_polyline_intersects_rect",
     "point_in_polygon",
     "point_to_line_distance_2d",
+    "polygon_contains_point",
     "rect_contains_point",
     "time_overlap",
 )
@@ -197,7 +198,7 @@ def test_unified_artifact_validation_summarizes_benchmark() -> None:
     assert payload["schema_verified"] is True
     assert payload["summary"]["benchmark_state"] == "passed"
     assert payload["summary"]["case_count"] == 5
-    assert payload["summary"]["operator_count"] == 8
+    assert payload["summary"]["operator_count"] == 9
     assert payload["diagnostics"] == []
 
     tampered = _report()
@@ -304,7 +305,7 @@ def test_cli_generated_report_can_be_validated_as_artifact(tmp_path: Path) -> No
     assert validated.returncode == 0
     body = json.loads(validated.stdout)["artifact_validation"]
     assert body["valid"] is True
-    assert body["summary"]["operator_count"] == 8
+    assert body["summary"]["operator_count"] == 9
 
 
 def test_public_namespaces_export_benchmark_contract() -> None:

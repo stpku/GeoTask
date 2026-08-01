@@ -287,14 +287,15 @@ expected_results: # 可选测试夹具
 
 ### 4.2 算子
 
-公共 Core 当前提供八个本地确定性算子：
+公共 Core 当前提供九个本地确定性算子：
 
 | 算子 | 作用 |
 |---|---|
 | `distance_2d` | 二维点到点欧氏距离 |
 | `line_intersects_rect` | 折线是否接触或穿过轴对齐矩形 |
 | `multi_polyline_intersects_rect` | 多折线任一成员是否接触或穿过矩形 |
-| `point_in_polygon` | 点是否位于单环多边形内部或闭边界上 |
+| `point_in_polygon` | 点是否位于单环多边形内部或闭边界上（点在前） |
+| `polygon_contains_point` | 单环多边形是否包含点或与点接触（多边形在前） |
 | `point_to_line_distance_2d` | 点到折线的最短距离 |
 | `rect_contains_point` | 矩形是否包含点，边界计入 |
 | `time_overlap` | 两个闭时间区间是否重叠 |

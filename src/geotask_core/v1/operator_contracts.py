@@ -195,6 +195,59 @@ POINT_IN_POLYGON = OperatorContract(
     implementation="geotask_core.ops.point_in_polygon",
 )
 
+POLYGON_CONTAINS_POINT = OperatorContract(
+    name="polygon_contains_point",
+    version="1.0",
+    family="topology",
+    description="Check if a polygon contains a point or touches it on the boundary.",
+    arity=2,
+    input_types=["polygon", "point"],
+    output={"type": "boolean"},
+    deterministic=True,
+    semantics={
+        "algorithm": "even_odd_rule",
+        "equivalent_predicate": "point_in_polygon(point, polygon)",
+        "argument_order": ["polygon", "point"],
+        "boundary_rules": [
+            "Boundary contact counts as containment.",
+            "The polygon is one closed exterior ring without holes.",
+        ],
+        "coordinate_constraints": [
+            "Polygon and point coordinates use the document SpaceDefinition.",
+            "Both objects must use the same coordinate order and CRS.",
+            "The boolean result is dimensionless and performs no unit conversion.",
+        ],
+    },
+    model_execution={
+        "level": "M1",
+        "supported": True,
+        "recommended_max_items": 50,
+    },
+    invariants=[
+        {"id": "bool_output", "expression": "result in (True, False)"},
+        {"id": "boundary_included", "expression": "point on ring => result == True"},
+        {
+            "id": "predicate_equivalence",
+            "expression": "polygon_contains_point(p, q) == point_in_polygon(q, p)",
+        },
+    ],
+    error_codes=[
+        "invalid_coordinates",
+        "invalid_geometry",
+        "object_type_mismatch",
+    ],
+    examples=[
+        {
+            "inputs": {
+                "polygon": [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
+                "point": [5, 5],
+            },
+            "expected": True,
+        },
+    ],
+    implementation="geotask_core.ops.polygon_contains_point",
+)
+
 POINT_TO_LINE_DISTANCE_2D = OperatorContract(
     name="point_to_line_distance_2d",
     version="1.0",
@@ -719,6 +772,7 @@ _BUILTIN_CONTRACTS: list[OperatorContract] = [
     LINE_INTERSECTS_RECT,
     MULTI_POLYLINE_INTERSECTS_RECT,
     POINT_IN_POLYGON,
+    POLYGON_CONTAINS_POINT,
     POINT_TO_LINE_DISTANCE_2D,
     RECT_CONTAINS_POINT,
     TIME_OVERLAP,

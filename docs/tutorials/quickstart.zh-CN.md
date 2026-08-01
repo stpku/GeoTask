@@ -105,12 +105,13 @@ geotask run my_distance.yaml
 geotask inspect operators
 ```
 
-公共Core当前提供八个确定性算子：
+公共Core当前提供九个确定性算子：
 
 - `distance_2d`
 - `line_intersects_rect`
 - `multi_polyline_intersects_rect`
 - `point_in_polygon`
+- `polygon_contains_point`
 - `point_to_line_distance_2d`
 - `rect_contains_point`
 - `time_overlap`

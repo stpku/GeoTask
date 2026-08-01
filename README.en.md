@@ -2,7 +2,9 @@
 
 [简体中文](README.md) | **English**
 
-**Verifiable spatiotemporal task protocol for AI agents.**
+**Spatiotemporal error-checking and correction layer for multimodal agents.**
+
+> Let foundation models reason openly; let GeoTask protect spatiotemporal facts and action boundaries.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
@@ -15,13 +17,14 @@
 pip install geotask-core
 ```
 
-GeoTask turns spatial, temporal, evidential, resource, and action constraints into explicit YAML tasks that both models and programs can read. GeoTask Core then recomputes supported claims with local deterministic operators, so a fluent model response is not mistaken for a verified result.
+GeoTask connects open multimodal reasoning to local spatiotemporal verification. It turns model-produced observations, objects, claims, plans, and candidate actions into explicit tasks, checks for omitted constraints and violations of geometric or temporal facts, tracks whether evidence is still current, and exposes bounded paths for blocking, evidence requests, or revision when a conclusion does not hold.
 
-- **Models propose:** objects, assertions, explanations, and candidate actions.
-- **GeoTask Core verifies:** structure, references, operator contracts, deterministic results, and assurance metadata.
-- **Applications decide:** whether a result can continue, must be blocked, needs evidence, or requires review.
+- **Multimodal models understand and propose:** observations, hypotheses, explanations, and plans from text, maps, imagery, video, and state data.
+- **GeoTask Core structures and verifies:** objects, coordinate contracts, units, evidence bindings, operator contracts, and local deterministic results.
+- **The control layer corrects and gates:** contradictions, missing evidence, bounded revisions, blocked outputs, and eligibility.
+- **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local models, human review, and production actions.
 
-> A model-generated answer is a proposal. It becomes trustworthy only through an explicit verification path.
+> **The technical definition remains:** GeoTask is a verifiable spatiotemporal task protocol for AI agents. The protocol is the implementation form; error detection, correction, and action gating are the primary value.
 
 ## Start here
 
@@ -38,23 +41,32 @@ GeoTask turns spatial, temporal, evidential, resource, and action constraints in
 - [Public roadmap](ROADMAP.md)
 - [Documentation index](docs/README.en.md)
 
-## Why GeoTask
+## Why stronger models make GeoTask more valuable
 
-LLMs can misunderstand coordinates, boundaries, interval semantics, object capabilities, and resource margins. Tool calling solves individual function calls, but it does not by itself preserve task intent, object binding, evidence status, blocked outputs, or resume conditions.
+Multimodal models are becoming better at understanding scenes, calling tools, and proposing plans. As that capability grows, the scarce questions shift from “can the model produce a spatial answer?” to:
 
-GeoTask provides a task-level intermediate representation:
+- did generation omit coordinate, time, altitude, capability, or safety-margin constraints;
+- does the result satisfy geometric, topological, temporal, and physical facts;
+- does the conclusion remain valid after evidence or state changes;
+- can an error be localized to a claim, object, or permitted revision path;
+- can an unverified output cross into a real action without an explicit gate.
+
+A tool call can compute one function, but it does not automatically preserve the complete task, evidence state, affected outputs, revision boundary, or recovery condition. GeoTask organizes those concerns into verifiable and auditable tasks and Artifacts:
 
 ```mermaid
 flowchart LR
-  A[Natural-language intent] --> B[GeoTask document]
-  B --> C[Parse and canonicalize]
-  C --> D[Validate]
-  D --> E[Deterministic execution]
-  E --> F[Structured result and assurance]
-  M[Model-generated proposal] --> G[Comparator]
-  F --> G
-  G --> H[verified / contradicted / review]
+  M[Multimodal model proposes observations and plans] --> T[GeoTask materializes a task]
+  T --> V[Local spatiotemporal verification]
+  V --> S{Verification state}
+  S -->|verified| G[Action gate]
+  S -->|contradicted| C[Bounded correction]
+  S -->|unverifiable| E[Evidence request]
+  C --> T
+  E --> T
+  N[New state arrives] --> V
 ```
+
+The current public Core implements task structuring, deterministic verification, evidence and control states, mechanical Agent repair, and bounded-path retry. A unified `VerificationSession`, general discrepancy reports, impact graphs, and incremental reevaluation remain roadmap capabilities.
 
 ## Five-minute quickstart
 
@@ -94,6 +106,8 @@ geotask run my_distance.yaml
 
 ## Public application cases
 
+The cases show how model proposals are materialized, recomputed, contradicted, evidence-gated, corrected, and kept behind action boundaries across robotics, UAV, vehicle, and emergency scenarios.
+
 | Stage | Cases | Main question |
 |---|---|---|
 | Geometry | GT01–GT03 | What spatial relationship is actually true? |
@@ -111,7 +125,7 @@ Selected examples:
 - **GT13:** an open road may still be impassable for a specific vehicle envelope.
 - **GT14:** the nearest rescue team may not have the earliest verified arrival or meet the response deadline.
 - **GT15:** a structurally passable map corridor may still be occupied by a live obstacle.
-- **GT16:** crossing routes and overlapping altitudes do not prove collision when crossing-zone occupancy times are separated.
+- **GT16:** an initially verified plan does not justify stopping monitoring after new telemetry arrives; a delay reduces predicted separation from 120 to 80 seconds, so valid findings are preserved while reevaluation remains armed.
 - **GT17:** ten reports of one incident should create one dispatch task while preserving all ten evidence sources.
 - **GT18:** the geometrically shortest route may be unsafe when it crosses a hazard beyond the rescue robot's operating capability.
 - **GT19:** reaching the target overhead does not authorize payload release while the live ground-clearance condition remains false.

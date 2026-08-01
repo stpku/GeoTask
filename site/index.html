@@ -4,21 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#102f47">
-  <meta name="description" content="GeoTask是面向AI智能体的可验证时空任务协议，将空间、时间、证据、资源和行动约束转化为结构化任务，并通过本地确定性计算验证模型结果。">
-  <meta name="keywords" content="GeoTask,AI智能体,时空任务,空间推理,确定性验证,机器人,无人机,自动驾驶,GIS">
+  <meta name="description" content="GeoTask是多模态智能体的时空验错与纠偏层：将模型提出的观察、方案和候选动作转化为显式时空任务，通过本地算法、证据与控制机制完成复算、纠偏和行动门控。">
+  <meta name="keywords" content="GeoTask,多模态智能体,时空验错,时空纠偏,行动门控,可信AI,空间推理,机器人,无人机,自动驾驶,GIS">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://stpku.github.io/GeoTask/">
   <link rel="sitemap" type="application/xml" href="sitemap.xml">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="GeoTask">
-  <meta property="og:title" content="GeoTask｜面向AI智能体的可验证时空任务协议">
-  <meta property="og:description" content="让模型负责理解与生成，让本地确定性路径负责验证。体验GT01—GT20机器人、无人机、自动驾驶、应急救援和实时环境状态案例。">
+  <meta property="og:title" content="GeoTask｜多模态智能体的时空验错与纠偏层">
+  <meta property="og:description" content="大模型负责理解场景与提出方案，GeoTask通过本地时空验证完成复算、验错、纠偏和行动门控。">
   <meta property="og:url" content="https://stpku.github.io/GeoTask/">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="GeoTask｜可验证时空任务协议">
-  <meta name="twitter:description" content="模型生成候选结论，本地确定性路径验证。">
-  <title>GeoTask｜面向AI智能体的可验证时空任务协议</title>
+  <meta name="twitter:title" content="GeoTask｜时空验错与纠偏层">
+  <meta name="twitter:description" content="让大模型开放推理，让本地时空框架守住事实和行动边界。">
+  <title>GeoTask｜多模态智能体的时空验错与纠偏层</title>
   <style>
     :root {
       color-scheme: light;
@@ -119,13 +119,13 @@
     .footer-links a { color: var(--navy); text-decoration: none; font-weight: 700; }
     @media (min-width:660px) {
       .trust-strip { grid-template-columns: repeat(4,minmax(0,1fr)); }
-      .flow { grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; }
+      .flow { grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: stretch; }
       .case-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
       .resource-grid, .capability-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
     }
     @media (min-width:980px) {
       .case-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
-      .arch-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+      .arch-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
       .resource-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
     }
     @media (max-width:720px) {
@@ -141,7 +141,7 @@
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
     "name": "GeoTask",
-    "description": "面向AI智能体的可验证时空任务协议",
+    "description": "多模态智能体的时空验错、纠偏与行动门控层",
     "codeRepository": "https://github.com/stpku/GeoTask",
     "license": "https://opensource.org/licenses/MIT",
     "programmingLanguage": "Python",
@@ -155,9 +155,10 @@
     <div class="shell nav">
       <a class="brand" href="./" aria-label="GeoTask项目首页"><span class="mark">GT</span><span>GeoTask</span></a>
       <nav class="nav-links" aria-label="主要导航">
-        <a href="#why">工作方式</a>
+        <a href="#why">为什么现在</a>
+        <a href="#demo">30秒纠偏</a>
         <a href="#cases">案例</a>
-        <a href="#architecture">开放架构</a>
+        <a href="#architecture">验证架构</a>
         <a href="#docs">文档</a>
         <a href="https://github.com/stpku/GeoTask">GitHub</a>
       </nav>
@@ -167,19 +168,19 @@
   <main id="main">
     <section class="hero">
       <div class="shell">
-        <p class="eyebrow">VERIFIABLE SPATIOTEMPORAL TASK PROTOCOL</p>
-        <h1>面向AI智能体的<br>可验证时空任务协议</h1>
-        <p class="hero-lead">GeoTask把自然语言中的空间、时间、证据、资源和行动约束转化为结构化任务，并通过本地确定性计算验证模型结果。</p>
-        <div class="hero-quote">让模型负责理解与生成，让确定性路径负责计算与验证。</div>
+        <p class="eyebrow">SPATIOTEMPORAL ERROR-CHECKING &amp; CORRECTION LAYER</p>
+        <h1>多模态智能体的<br>时空验错与纠偏层</h1>
+        <p class="hero-lead">大模型负责理解场景、提出假设和生成方案；GeoTask把这些结果转化为显式时空任务，通过本地算法、证据与控制机制完成复算、验错、纠偏和行动门控。</p>
+        <div class="hero-quote">大模型负责开放推理，GeoTask守住时空事实与行动边界。</div>
         <div class="actions">
-          <a class="button primary" href="gt01/">从GT01开始体验</a>
-          <a class="button secondary" href="https://github.com/stpku/GeoTask">查看GitHub工程</a>
+          <a class="button primary" href="gt16/">体验一次时空验错</a>
+          <a class="button secondary" href="#architecture">查看工程架构</a>
           <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读中文白皮书</a>
         </div>
         <div class="trust-strip" aria-label="项目概览">
           <div class="trust-item"><strong>20</strong><span>公开应用案例</span></div>
-          <div class="trust-item"><strong>6</strong><span>本地确定性算子</span></div>
-          <div class="trust-item"><strong>1.0</strong><span>文档Schema</span></div>
+          <div class="trust-item"><strong>8</strong><span>本地确定性算子</span></div>
+          <div class="trust-item"><strong>12</strong><span>公共Artifact</span></div>
           <div class="trust-item"><strong>MIT</strong><span>GeoTask Core许可</span></div>
         </div>
       </div>
@@ -187,14 +188,31 @@
 
     <section class="block" id="why">
       <div class="shell">
-        <div class="section-head"><div><h2>模型会回答，系统还要验证</h2><p>一次Tool Calling能够调用函数，却不自动保证对象绑定、单位、证据状态、阻断输出和恢复条件始终一致。GeoTask提供任务级中间表示。</p></div></div>
-        <div class="flow" aria-label="GeoTask工作流程">
-          <article class="flow-card"><small>01 · MODEL</small><h3>模型提出候选</h3><p>理解意图，选择对象，提出断言、解释和候选动作。</p></article>
+        <div class="section-head"><div><h2>多模态模型越强，越需要本地时空验错</h2><p>模型越来越会看、会理解、会规划，也越来越接近真实行动。此时最稀缺的不只是生成能力，而是对约束遗漏、事实错误、证据变化和行动风险的独立验证。</p></div></div>
+        <div class="flow" aria-label="为什么现在需要GeoTask">
+          <article class="flow-card"><small>01 · UNDERSTAND</small><h3>越来越会看懂</h3><p>多模态模型可以从文字、地图、图像、视频和状态数据中形成观察。</p></article>
           <div class="flow-arrow" aria-hidden="true">→</div>
-          <article class="flow-card"><small>02 · CORE</small><h3>本地确定性执行</h3><p>解析、规范化、验证引用，并用注册算子重新计算。</p></article>
+          <article class="flow-card"><small>02 · PROPOSE</small><h3>越来越会规划</h3><p>模型可以组合路线、时间、资源和动作，生成看起来完整的候选方案。</p></article>
           <div class="flow-arrow" aria-hidden="true">→</div>
-          <article class="flow-card"><small>03 · DECISION</small><h3>形成可信状态</h3><p>标记verified、contradicted、需要证据、阻断或复核。</p></article>
+          <article class="flow-card"><small>03 · ACT</small><h3>越来越接近执行</h3><p>候选结果可能进入机器人、无人机、车辆、调度和审批流程。</p></article>
+          <div class="flow-arrow" aria-hidden="true">→</div>
+          <article class="flow-card"><small>04 · VERIFY</small><h3>因此必须验明</h3><p>本地时空框架检查事实、定位差异、要求纠偏，并守住未经验证的行动边界。</p></article>
         </div>
+      </div>
+    </section>
+
+    <section class="block" id="demo">
+      <div class="shell architecture">
+        <h2>30秒看懂一次时空纠偏</h2>
+        <p>GT16不是简单把“安全”改成“冲突”，而是在新状态到来后保留仍然成立的结论、失效过时假设，并把下一步行动限制在可验证边界内。</p>
+        <div class="arch-grid">
+          <article class="arch-card"><strong>模型判断</strong><span>两架无人机计划间隔120秒，高于60秒最低要求，可以按计划通过。</span></article>
+          <article class="arch-card"><strong>新遥测到来</strong><span>A机延误40秒；路线与高度关系未变，但时间证据已经更新。</span></article>
+          <article class="arch-card"><strong>本地重新验算</strong><span>预测间隔缩至80秒，剩余余量20秒，当前结论尚未反转。</span></article>
+          <article class="arch-card"><strong>行动门控</strong><span>继续通行但保持监测；间隔降至60秒或遥测过期时重新复核。</span></article>
+        </div>
+        <div class="arch-note">验证不是一次性盖章：初始结论只对当时的对象、证据和状态快照成立。</div>
+        <div class="actions"><a class="button primary" href="gt16/">进入GT16动态复核体验</a></div>
       </div>
     </section>
 
@@ -251,22 +269,23 @@
 
     <section class="block" id="architecture">
       <div class="shell architecture">
-        <h2>开放Core，连接时空智能生态</h2>
-        <p>GeoTask开放通用任务格式、Canonical IR、确定性算子和验证机制，让开发者可以在统一协议上构建Agent、机器人、无人机、自动驾驶与行业应用。</p>
+        <h2>四个平面组成时空验证循环</h2>
+        <p>GeoTask不把多模态模型、行业数据和生产控制全部塞进Core，而是通过清晰边界连接开放推理、本地验证和现实行动。</p>
         <div class="arch-grid">
-          <article class="arch-card"><strong>GeoTask Core</strong><span>任务格式、Canonical IR、结构验证、确定性算子、结果与Assurance。MIT开源，欢迎使用与贡献。</span></article>
-          <article class="arch-card"><strong>GeoTask Runtime</strong><span>模型适配、任务编排、路由、成本治理和审计，可由社区或应用团队按需实现。</span></article>
-          <article class="arch-card"><strong>Domain Pack</strong><span>面向低空、机器人、交通等领域扩展对象、规则、数据接口和工作流。</span></article>
+          <article class="arch-card"><strong>1 · 开放推理平面</strong><span>多模态大模型理解场景、提出观察、假设、方案和候选动作。</span></article>
+          <article class="arch-card"><strong>2 · 时空任务平面</strong><span>对象、坐标、时间、高度、证据、断言和输出契约被显式表达。</span></article>
+          <article class="arch-card"><strong>3 · 本地验证与纠偏平面</strong><span>确定性算子、规则和外部本地Provider复算命题、发现差异并限定修改范围。</span></article>
+          <article class="arch-card"><strong>4 · 控制与行动平面</strong><span>控制评估负责阻断、补证和资格判断；Runtime负责授权后的外部操作。</span></article>
         </div>
-        <div class="arch-note">Core提供稳定的公共协议和验证基础，Runtime与Domain Pack通过明确接口组合，形成可替换、可扩展的时空智能应用。</div>
+        <div class="arch-note">当前公共Core覆盖任务平面的公共契约、本地确定性验证、证据与控制语义；统一Verification Session、Impact Graph和增量重算仍是后续工程方向。</div>
       </div>
     </section>
 
     <section class="block" id="docs">
       <div class="shell">
-        <div class="section-head"><div><h2>从理解到实现的文档体系</h2><p>白皮书解释为什么，语言规范定义当前实现，Schema服务工具集成，案例手册提供渐进式学习路径。</p></div></div>
+        <div class="section-head"><div><h2>从产业定位到工程合同的文档体系</h2><p>白皮书解释为什么多模态模型越强越需要时空验证；架构与语言规范区分当前能力、公共边界和后续验证循环。</p></div></div>
         <div class="resource-grid">
-          <article class="resource"><span class="label">WHY</span><h3>中文白皮书</h3><p>项目定位、核心架构、可信执行与典型应用模式。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读白皮书 →</a></article>
+          <article class="resource"><span class="label">WHY NOW</span><h3>中文白皮书</h3><p>时空验错与纠偏定位、四平面架构、可信边界和典型应用模式。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读白皮书 →</a></article>
           <article class="resource"><span class="label">WHAT</span><h3>语言与执行规范</h3><p>当前公共Core真正支持的字段、对象、算子、状态和执行语义。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-language-spec-v1.0.md">查看规范 →</a></article>
           <article class="resource"><span class="label">HOW</span><h3>中文快速入门</h3><p>安装Core、运行第一个任务、查看算子并验证模型输出。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/tutorials/quickstart.zh-CN.md">5分钟开始 →</a></article>
           <article class="resource"><span class="label">TOOLING</span><h3>JSON Schema</h3><p>用于IDE提示、YAML/JSON结构校验和CI一致性检查。</p><a href="https://github.com/stpku/GeoTask/blob/main/schemas/geotask-v1.0.schema.json">查看Schema →</a></article>
@@ -276,22 +295,24 @@
 
     <section class="block">
       <div class="shell">
-        <div class="section-head"><div><h2>当前能力与演进方向</h2><p>项目首页展示已经开放的能力，以及下一阶段面向社区持续建设的方向。</p></div></div>
+        <div class="section-head"><div><h2>四类能力覆盖推理到执行</h2><p>GeoTask不是替模型思考，而是在不同阶段把隐含约束、可计算事实、证据状态和行动资格变成显式合同。</p></div></div>
         <div class="capability-grid">
-          <article class="capability-card open"><h3>当前已开放</h3><ul><li>六类Canonical对象</li><li>六个本地确定性算子</li><li>解析、规范化、结构验证和执行</li><li>结果、状态和Assurance元数据</li><li>CLI、JSON Schema、GT01—GT20与一致性测试</li></ul></article>
-          <article class="capability-card roadmap"><h3>持续建设</h3><ul><li>更多时空对象与确定性算子</li><li>Runtime接口与模型适配示例</li><li>可复用的行业Domain Pack规范</li><li>数据连接器与证据治理工具</li><li>更完整的评测基准和开发者工具</li></ul></article>
+          <article class="capability-card open"><h3>推理前 · 任务结构化</h3><ul><li>对象、坐标、时间与高度显式表达</li><li>证据、来源和输出契约绑定</li><li>Agent草稿严格校验与机械修复</li></ul></article>
+          <article class="capability-card open"><h3>推理中 · 约束辅助</h3><ul><li>8个公共确定性算子</li><li>跨任务CRS、单位和边界门禁</li><li>缺证据时返回unverifiable而不是猜测</li></ul></article>
+          <article class="capability-card open"><h3>推理后 · 验错纠偏</h3><ul><li>verified与contradicted状态</li><li>限定路径修订、重试和差异保护</li><li>12类公共Artifact保留验证链</li></ul></article>
+          <article class="capability-card roadmap"><h3>执行中 · 动态重算</h3><ul><li>当前已有控制评估与证据恢复</li><li>GT16演示状态更新后的复核语义</li><li>Verification Session、Impact Graph与增量重算仍在路线图</li></ul></article>
         </div>
       </div>
     </section>
 
     <section class="block">
       <div class="shell cta">
-        <h2>从一个5米任务开始</h2>
-        <p>先亲手完成GT01，再沿着空间关系、时空组合、证据治理和行动可行性逐步深入。</p>
+        <h2>亲手体验一次“模型提出—本地验错—行动门控”</h2>
+        <p>从GT16的动态复核理解新定位，也可以从GT01的5米距离开始，沿着空间关系、证据治理、纠偏和行动安全逐步深入。</p>
         <div class="actions" style="justify-content:center">
-          <a class="button primary" href="gt01/">进入GT01</a>
-          <a class="button secondary" href="https://github.com/stpku/GeoTask">克隆GeoTask</a>
-          <a class="button secondary" href="https://github.com/stpku/GeoTask/issues">提交案例建议</a>
+          <a class="button primary" href="gt16/">体验GT16动态复核</a>
+          <a class="button secondary" href="gt01/">从GT01系统学习</a>
+          <a class="button secondary" href="https://github.com/stpku/GeoTask">查看GeoTask工程</a>
         </div>
       </div>
     </section>
@@ -299,7 +320,7 @@
 
   <footer>
     <div class="shell footer-grid">
-      <div>GeoTask Core · MIT License · 开放协议与确定性验证基础</div>
+      <div>GeoTask Core · MIT License · 开放的时空验错、纠偏与行动门控基础</div>
       <div class="footer-links"><a href="https://github.com/stpku/GeoTask">GitHub</a><a href="https://github.com/stpku/GeoTask/blob/main/README.en.md">English</a><a href="https://github.com/stpku/GeoTask/blob/main/SECURITY.md">Security</a></div>
     </div>
   </footer>

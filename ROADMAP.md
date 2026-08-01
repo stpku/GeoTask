@@ -46,13 +46,23 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已增加文档级来源、证据绑定与审计元数据，并通过Artifact Registry输出IDE Schema文件匹配；
 - ✅ 已建立覆盖全部公共确定性算子的离线一致性与本机性能回归基准。
 
-### v0.5：Domain Pack规范与生态
+### v0.5：Verification Cycle
 
-- 发布可复用的Domain Pack规范；
-- 提供机器人、低空或交通方向的参考Pack；
-- 增加数据连接器、规则包与工作流扩展点；
-- 建立Pack兼容性检查和版本协商机制；
-- 支持社区维护的案例、算子和行业扩展目录。
+- 发布`VerificationSession`组合Artifact，串联模型方案、任务、执行结果、控制评估、差异、修订与复核状态；
+- 增加Proposal与Observation契约，使多模态结果以带来源、时间和不确定性的结构化观察进入验证链；
+- 发布通用Discrepancy Report与Correction Request，明确错误命题、影响输出、可修改范围和不可变路径；
+- 建立Impact Graph、受影响断言集合、失效输出集合与增量复核结果；
+- 提供`geotask verify`与`geotask recheck`高层命令，保持本地、显式、可复现的快照式验证；
+- 将GT21—GT28建设为推理后验错、限定纠偏、动态状态更新和行动门控案例。
+
+### v0.6：Local Verification Providers与Domain Pack生态
+
+- 发布统一Verification Provider Contract，覆盖确定性算子、规则引擎、本地预测模型、权威数据提供者和人工复核；
+- 增加多维Assurance Profile，表达来源、方法、可重复性、独立性、证据新鲜度、校准与人工复核；
+- 扩展trajectory、moving object及动态时空对象；
+- 发布可复用的Domain Pack规范，并提供低空、机器人或交通方向的参考Pack；
+- 建立验错率、漏检率、纠偏成功率、增量复核范围和执行时延基准；
+- 支持社区维护的Provider、案例、算子和行业扩展目录。
 
 ## 参与方式
 
@@ -106,10 +116,20 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Added document-level source, evidence-binding, and audit metadata plus Artifact Registry IDE Schema file mappings;
 - ✅ Established an offline conformance and local performance-regression benchmark covering every public deterministic operator.
 
-### v0.5: Domain Pack Specification and Ecosystem
+### v0.5: Verification Cycle
 
-- Publish a reusable Domain Pack specification;
-- provide reference Packs for robotics, low-altitude, or transportation use cases;
-- add extension points for connectors, rules, and workflows;
-- establish Pack compatibility checks and version negotiation;
-- support a community-maintained catalog of cases, operators, and domain extensions.
+- Publish a `VerificationSession` composite Artifact that binds model proposals, tasks, execution results, control evaluations, discrepancies, revisions, and recheck state;
+- add Proposal and Observation contracts so multimodal output enters the verification chain with source, time, and uncertainty metadata;
+- publish general Discrepancy Report and Correction Request contracts for failed claims, affected outputs, mutable scope, and immutable paths;
+- establish Impact Graph, affected-assertion, invalidated-output, and incremental-reevaluation contracts;
+- provide high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible snapshot semantics;
+- build GT21–GT28 around post-reasoning error detection, bounded correction, dynamic state changes, and action gating.
+
+### v0.6: Local Verification Providers and Domain Pack Ecosystem
+
+- Publish a common Verification Provider Contract for deterministic operators, rule engines, local predictive models, authoritative data providers, and human review;
+- add a multidimensional Assurance Profile for source, method, reproducibility, independence, evidence freshness, calibration, and human review;
+- extend trajectory, moving-object, and dynamic spatiotemporal object contracts;
+- publish a reusable Domain Pack specification with reference low-altitude, robotics, or transportation Packs;
+- establish benchmarks for error-detection rate, missed errors, correction success, incremental scope, and execution latency;
+- support community-maintained catalogs of Providers, cases, operators, and domain extensions.

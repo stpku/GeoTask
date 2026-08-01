@@ -22,6 +22,8 @@ All notable public changes to GeoTask Core are documented here.
 
 - Reframe the architecture documentation from a single execution pipeline into four explicit planes: open reasoning, spatiotemporal task contracts, local verification/correction, and control/action boundaries. The document now distinguishes implemented Core, Agent, Artifact, and Runtime capabilities from planned `VerificationSession`, discrepancy, impact, observation, provider, and reevaluation abstractions.
 - Upgrade GT16 from a static route-crossing question into a dynamic verification replay. The initial 120-second separation remains verified, a fictional 40-second delay reduces the predicted margin to 80 seconds, and the action gate preserves valid findings while requiring continued monitoring and recheck at the 60-second threshold. Catalog-driven portal metadata, navigation JSON, Sitemap, bilingual Cookbook entries, page logic, example data, and tests are synchronized.
+- Reposition the README, public portal, documentation indexes, and white paper around GeoTask as the spatiotemporal error-checking, correction, and action-gating layer for multimodal agents, while retaining the verifiable task protocol as the technical implementation form. The portal now explains why stronger models increase verification demand, replays GT16 as a 30-second correction example, presents the four-plane architecture and four lifecycle capabilities, and explicitly labels Verification Session and incremental reevaluation as roadmap work.
+- Move the post-v0.4 roadmap to `v0.5: Verification Cycle` and `v0.6: Local Verification Providers and Domain Pack Ecosystem` without redefining the in-progress v0.4 package and Adapter compatibility target.
 
 ## [0.3.0] - 2026-07-31
 

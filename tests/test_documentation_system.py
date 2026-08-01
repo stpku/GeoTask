@@ -202,8 +202,29 @@ def test_chinese_and_english_entrypoints_are_bidirectionally_linked() -> None:
     assert "[简体中文](README.md)" in root_en
     assert "[English](README.en.md)" in docs_zh
     assert "[简体中文](README.md)" in docs_en
+    assert "多模态智能体的时空验错与纠偏层" in root_zh
     assert "面向AI智能体的可验证时空任务协议" in root_zh
-    assert "Verifiable spatiotemporal task protocol for AI agents" in root_en
+    assert "Spatiotemporal error-checking and correction layer" in root_en
+    assert "verifiable spatiotemporal task protocol for AI agents" in root_en
+
+
+def test_whitepaper_separates_positioning_implementation_and_roadmap() -> None:
+    text = WHITEPAPER.read_text(encoding="utf-8")
+
+    for fragment in (
+        "多模态智能体的时空验错、纠偏与行动门控框架",
+        "为什么是现在：从直接给答案到开放推理与后验验证",
+        "连接多模态大模型开放推理与本地时空验证框架的验错、纠偏和行动门控层",
+        "面向智能体的可验证时空任务协议",
+        "八类Canonical对象",
+        "八个本地确定性算子",
+        "统一 Verification Session",
+        "仍是后续工程目标",
+    ):
+        assert fragment in text
+
+    assert "GeoTask 不负责提供完整地图、原始多模态识别、设备控制" in text
+    assert "初始正确不代表后续持续正确" in text
 
 
 def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
@@ -249,7 +270,8 @@ def test_whitepaper_states_architecture_and_public_boundary() -> None:
     text = WHITEPAPER.read_text(encoding="utf-8")
 
     required_fragments = (
-        "面向智能体的可验证时空任务表示与执行框架",
+        "多模态智能体的时空验错、纠偏与行动门控框架",
+        "面向智能体的可验证时空任务协议",
         "对象、算子和命题显式绑定",
         "生成与验证分离",
         "证据冲突",
@@ -722,7 +744,10 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "v0.2.0：制品契约" in roadmap
     assert "v0.3.0：Agent集成（当前稳定）" in roadmap
     assert "v0.4：Runtime接口、模型适配与对象扩展" in roadmap
-    assert "v0.5：Domain Pack规范与生态" in roadmap
+    assert "v0.5：Verification Cycle" in roadmap
+    assert "v0.6：Local Verification Providers与Domain Pack生态" in roadmap
+    assert "VerificationSession" in roadmap
+    assert "geotask recheck" in roadmap
 
     assert "GeoTask Core v0.3.0 Agent Integration Release" in release
     assert "v0.3.0" in release

@@ -1,0 +1,301 @@
+{
+  "impact_graph": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-impact-graph-v0.1.schema.json",
+    "schema_version": "0.1",
+    "graph_id": "fictional-uav-separation-impact-graph",
+    "recorded_at": "2026-07-16T10:01:10+08:00",
+    "state": "blocked",
+    "reason": "The confirmed temporal-separation discrepancy propagates through two bounded successor-state recomputations to the temporal-conflict assertion, continuation output, and automatic route-continuation action.",
+    "world_state": {
+      "ref_id": "base-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "semantic_fingerprint": "7b432a7d6ee91a2e4bdaea0b4e1abc55bc93bf91a1cd5354ef57e1ac56b4725d",
+      "content_sha256": "77b8edace03ad6261a22c675630b847dca054dfa5de5f9c12c715c7ddd10df7f"
+    },
+    "artifact_refs": [
+      {
+        "ref_id": "discrepancy-uav-recheck",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-discrepancy-report",
+        "content_sha256": "8e8ebf064066b056f511f8567387e05535088969e1662d84c1a42fe950480945"
+      },
+      {
+        "ref_id": "correction-uav-recheck",
+        "artifact_id": "geotask.correction-request",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-correction-request",
+        "content_sha256": "41a3f73cf9a11b862e0c8a5a6f4b3c243ef74fbd22f0fc9c3cf117a45ca3342b"
+      }
+    ],
+    "entity_refs": [
+      {
+        "id": "entity-separation-mismatch",
+        "kind": "discrepancy",
+        "artifact_ref": "discrepancy-uav-recheck",
+        "entity_id": "temporal-separation-value-mismatch"
+      },
+      {
+        "id": "entity-recompute-delay",
+        "kind": "correction_change",
+        "artifact_ref": "correction-uav-recheck",
+        "entity_id": "recompute-uav-b-delay"
+      },
+      {
+        "id": "entity-recompute-separation",
+        "kind": "correction_change",
+        "artifact_ref": "correction-uav-recheck",
+        "entity_id": "recompute-temporal-separation"
+      }
+    ],
+    "root_node_refs": [
+      "node-discrepancy"
+    ],
+    "nodes": [
+      {
+        "id": "node-discrepancy",
+        "kind": "discrepancy",
+        "identity": "entity-separation-mismatch",
+        "impact_state": "root",
+        "reason": "This confirmed discrepancy is the root of the declared impact graph.",
+        "basis_refs": [
+          "discrepancy-uav-recheck"
+        ],
+        "entity_ref": "entity-separation-mismatch"
+      },
+      {
+        "id": "node-change-delay",
+        "kind": "correction_change",
+        "identity": "entity-recompute-delay",
+        "impact_state": "affected",
+        "reason": "The successor-state request requires the telemetry-derived UAV-B delay to be recomputed.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ],
+        "entity_ref": "entity-recompute-delay"
+      },
+      {
+        "id": "node-change-separation",
+        "kind": "correction_change",
+        "identity": "entity-recompute-separation",
+        "impact_state": "affected",
+        "reason": "The successor-state request requires the dependent temporal-separation relation to be recomputed.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ],
+        "entity_ref": "entity-recompute-separation"
+      },
+      {
+        "id": "node-delay-path",
+        "kind": "world_state_path",
+        "identity": "/objects/uav-b/attributes/delay_seconds/value",
+        "impact_state": "affected",
+        "reason": "The telemetry-derived delay value is an affected successor-state input.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "node-separation-path",
+        "kind": "world_state_path",
+        "identity": "/relations/uav-temporal-separation/value",
+        "impact_state": "affected",
+        "reason": "The temporal-separation relation is the discrepancy subject and a derived successor-state value.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "node-temporal-conflict",
+        "kind": "assertion",
+        "identity": "temporal_conflict",
+        "impact_state": "requires_recheck",
+        "reason": "The temporal-conflict assertion must be reevaluated after the affected values are recomputed.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "node-continuation-output",
+        "kind": "output",
+        "identity": "continue_route_without_recheck",
+        "impact_state": "blocked",
+        "reason": "The continuation output remains blocked until the affected assertion is reevaluated.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "node-route-action",
+        "kind": "action",
+        "identity": "automatic_route_continuation",
+        "impact_state": "blocked",
+        "reason": "Automatic route continuation remains blocked while its prerequisite output is blocked.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-discrepancy-invalidates-separation",
+        "kind": "invalidates",
+        "from_node": "node-discrepancy",
+        "to_node": "node-separation-path",
+        "state": "confirmed",
+        "reason": "The discrepancy directly invalidates reuse of the prior temporal-separation value as current truth.",
+        "basis_refs": [
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "edge-discrepancy-requires-delay-change",
+        "kind": "requires",
+        "from_node": "node-discrepancy",
+        "to_node": "node-change-delay",
+        "state": "confirmed",
+        "reason": "The bound Correction Request addresses the discrepancy by recomputing the delay input.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "edge-discrepancy-requires-separation-change",
+        "kind": "requires",
+        "from_node": "node-discrepancy",
+        "to_node": "node-change-separation",
+        "state": "confirmed",
+        "reason": "The bound Correction Request addresses the discrepancy by recomputing the derived separation relation.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "edge-delay-change-updates-path",
+        "kind": "changes",
+        "from_node": "node-change-delay",
+        "to_node": "node-delay-path",
+        "state": "confirmed",
+        "reason": "The declared change targets the UAV-B delay value path.",
+        "basis_refs": [
+          "correction-uav-recheck"
+        ]
+      },
+      {
+        "id": "edge-separation-change-updates-path",
+        "kind": "changes",
+        "from_node": "node-change-separation",
+        "to_node": "node-separation-path",
+        "state": "confirmed",
+        "reason": "The declared change targets the temporal-separation relation value path.",
+        "basis_refs": [
+          "correction-uav-recheck"
+        ]
+      },
+      {
+        "id": "edge-delay-affects-separation",
+        "kind": "affects",
+        "from_node": "node-delay-path",
+        "to_node": "node-separation-path",
+        "state": "confirmed",
+        "reason": "Temporal separation is derived from the crossing times and the UAV-B delay.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "edge-separation-requires-assertion-recheck",
+        "kind": "requires_recheck",
+        "from_node": "node-separation-path",
+        "to_node": "node-temporal-conflict",
+        "state": "confirmed",
+        "reason": "Changing the separation relation requires the temporal-conflict assertion to be rerun.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "edge-assertion-blocks-output",
+        "kind": "blocks",
+        "from_node": "node-temporal-conflict",
+        "to_node": "node-continuation-output",
+        "state": "confirmed",
+        "reason": "The affected assertion blocks release of continuation without recheck.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "edge-output-blocks-action",
+        "kind": "blocks",
+        "from_node": "node-continuation-output",
+        "to_node": "node-route-action",
+        "state": "confirmed",
+        "reason": "A blocked continuation output cannot support automatic route continuation.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      }
+    ],
+    "reevaluation_targets": [
+      {
+        "id": "target-temporal-conflict",
+        "node_ref": "node-temporal-conflict",
+        "state": "required",
+        "reason": "Rerun the temporal-conflict assertion against the successor World State.",
+        "input_node_refs": [
+          "node-delay-path",
+          "node-separation-path"
+        ],
+        "prerequisite_node_refs": [
+          "node-change-delay",
+          "node-change-separation"
+        ],
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      },
+      {
+        "id": "target-continuation-output",
+        "node_ref": "node-continuation-output",
+        "state": "blocked",
+        "reason": "The output cannot be reevaluated for release until the successor-state changes and temporal assertion recheck complete.",
+        "input_node_refs": [
+          "node-temporal-conflict"
+        ],
+        "prerequisite_node_refs": [
+          "node-change-delay",
+          "node-change-separation"
+        ],
+        "basis_refs": [
+          "correction-uav-recheck",
+          "discrepancy-uav-recheck"
+        ]
+      }
+    ],
+    "blocked_outputs": [
+      "continue_route_without_recheck"
+    ],
+    "blocked_actions": [
+      "automatic_route_continuation"
+    ]
+  }
+}

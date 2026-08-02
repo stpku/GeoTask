@@ -277,7 +277,7 @@
           <article class="arch-card"><strong>3 · 验证与状态演化</strong><span>确定性算子、规则和本地Provider验证世界命题，识别差异并更新受影响状态。</span></article>
           <article class="arch-card"><strong>4 · 控制与现实行动</strong><span>控制评估管理行动资格；Runtime连接授权、人工复核和生产系统。</span></article>
         </div>
-        <div class="arch-note">当前公共Core已经提供世界对象、空间合同、来源证据、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、命题验证和控制语义；自动差异计算、Observation合并、后继状态物化、影响图执行和增量重算仍是后续工程方向。</div>
+        <div class="arch-note">当前公共Core已经提供世界对象、空间合同、来源证据、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、命题验证和控制语义；自动差异计算、Observation合并、后继状态物化、Impact Graph自动生成与传播执行和增量重算仍是后续工程方向。</div>
       </div>
     </section>
 
@@ -292,6 +292,7 @@
           <article class="resource"><span class="label">SESSION</span><h3>Verification Session v0.1</h3><p>绑定World State与任务、结果、转换等精确制品，记录行动资格和复核触发条件。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-verification-session-v0.1.md">查看会话合同 →</a></article>
           <article class="resource"><span class="label">DISCREPANCY</span><h3>Discrepancy Report v0.1</h3><p>记录期望与观测差异、影响范围，以及可变与不可变修订路径。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-discrepancy-report-v0.1.md">查看差异合同 →</a></article>
           <article class="resource"><span class="label">CORRECTION</span><h3>Correction Request v0.1</h3><p>限定后继World State允许变更、验收标准、不可变路径和输出/行动门禁。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-correction-request-v0.1.md">查看修订合同 →</a></article>
+          <article class="resource"><span class="label">IMPACT</span><h3>Impact Graph v0.1</h3><p>将差异、修订、状态路径、断言、输出、动作和复核目标组织为可校验的有向无环图。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-impact-graph-v0.1.md">查看影响图合同 →</a></article>
           <article class="resource"><span class="label">HOW</span><h3>中文快速入门</h3><p>安装Core、运行第一个任务、查看算子并验证模型输出。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/tutorials/quickstart.zh-CN.md">5分钟开始 →</a></article>
           <article class="resource"><span class="label">TOOLING</span><h3>JSON Schema</h3><p>用于IDE提示、YAML/JSON结构校验和CI一致性检查。</p><a href="https://github.com/stpku/GeoTask/blob/main/schemas/geotask-v1.0.schema.json">查看Schema →</a></article>
         </div>
@@ -306,7 +307,7 @@
           <article class="capability-card open"><h3>2 · 多模态观察接入</h3><ul><li>Observation v0.1记录来源、时间、生产者和世界命题</li><li>模型、传感器、地图、权威数据和人工均可作为来源</li><li>结构校验不宣称命题真实，也不直接更新World State</li></ul></article>
           <article class="capability-card open"><h3>3 · 关系与约束计算</h3><ul><li>8个公共确定性算子</li><li>空间、时间、高度和拓扑命题</li><li>本地、可重复、无网络验证路径</li></ul></article>
           <article class="capability-card open"><h3>4 · 事实验证与证据治理</h3><ul><li>verified、contradicted与unverifiable</li><li>来源、证据绑定、冲突与审计信息</li><li>Agent限定修订和证据恢复</li></ul></article>
-          <article class="capability-card roadmap"><h3>5 · 状态变化与影响传播</h3><ul><li>当前已有控制评估和GT16复核语义</li><li>World State、Transition与Verification Session待实现</li><li>Impact Graph和增量重算仍在路线图</li></ul></article>
+          <article class="capability-card open"><h3>5 · 状态变化与影响传播</h3><ul><li>World State、Transition、Verification Session形成状态演化证据链</li><li>Discrepancy、Correction与Impact Graph表达差异、限定修订和影响DAG</li><li>图自动生成、传播执行和增量重算仍在路线图</li></ul></article>
           <article class="capability-card open"><h3>6 · 纠偏与行动门控</h3><ul><li>阻断输出、补证和恢复条件</li><li>行动资格与外部授权边界</li><li>Runtime连接人工复核和生产动作</li></ul></article>
         </div>
       </div>

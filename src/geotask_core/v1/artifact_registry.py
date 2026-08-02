@@ -52,6 +52,10 @@ from geotask_core.v1.correction_request import (
     CORRECTION_REQUEST_SCHEMA_ID,
     CORRECTION_REQUEST_SCHEMA_VERSION,
 )
+from geotask_core.v1.impact_graph import (
+    IMPACT_GRAPH_SCHEMA_ID,
+    IMPACT_GRAPH_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -123,6 +127,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "correction-request*.json",
         "correction_request*.json",
         "examples/core/correction_request*.json",
+    ),
+    "geotask.impact-graph": (
+        "*.geotask-impact-graph.json",
+        "impact-graph*.json",
+        "impact_graph*.json",
+        "examples/core/impact_graph*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -359,6 +369,32 @@ _ARTIFACTS = (
             "Validation does not edit the base snapshot, materialize a successor World State, "
             "evaluate acceptance criteria, resolve discrepancies, rerun tasks, release outputs, "
             "or authorize actions."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.impact-graph",
+        title="GeoTask Impact Graph v0.1",
+        kind="impact_graph",
+        schema_id=IMPACT_GRAPH_SCHEMA_ID,
+        schema_version=IMPACT_GRAPH_SCHEMA_VERSION,
+        schema_path="schemas/geotask-impact-graph-v0.1.schema.json",
+        specification_path="docs/spec/geotask-impact-graph-v0.1.md",
+        wrapper_key="impact_graph",
+        generation_command=None,
+        generation_note=(
+            "Authored or materialized by an Agent or Runtime after explicit impact analysis. "
+            "Core validates the declared DAG and source bindings but does not compute propagation."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.impact-graph <impact-graph.json>"
+        ),
+        description=(
+            "Finite source-bound impact DAG connecting discrepancies and bounded corrections to "
+            "affected state paths, assertions, outputs, actions, and reevaluation targets."
+        ),
+        execution_boundary=(
+            "Validation does not discover impact, execute propagation, apply correction, materialize "
+            "state, evaluate reevaluation targets, release outputs, or authorize actions."
         ),
     ),
     ArtifactDescriptor(

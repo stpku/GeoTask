@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 26404,
-    "sha256": "5d103f86cc120397b650e99eb8668820fdefcd189a8b4dfbeda4d494c5f9ae43"
+    "size": 27113,
+    "sha256": "ace5c0bbe9cdb7381815cc6e5addb8cc912fc453168cdacdeef99e1ed446a574"
   },
   {
     "path": "CITATION.cff",
@@ -51,18 +51,18 @@
   },
   {
     "path": "README.en.md",
-    "size": 18026,
-    "sha256": "34ccdac9275c638648477f137b7d90337e0e00b6855468eb938e7b20d52426d3"
+    "size": 18041,
+    "sha256": "8c1796bfecb0d570db56aa02742d89fbfadba6290124cc63a884d9ea47fa2a63"
   },
   {
     "path": "README.md",
-    "size": 16824,
-    "sha256": "28b4b64bfa8147ac5a1b40b08b91cc43d7b23ef6a2ac18149c9f364ad731541e"
+    "size": 16787,
+    "sha256": "28cf42e0200271121c3322be2db8bbd7c70283c3305deb4f994eb55d03503b1c"
   },
   {
     "path": "ROADMAP.md",
-    "size": 12776,
-    "sha256": "43e5044d1e5d0194b96eb68f581821c428a7f315285fb7a40e33e475c46fd144"
+    "size": 13465,
+    "sha256": "706365dca207eef745b45af0e2a38327cfa686803706554c38c2b0f3a106ac6c"
   },
   {
     "path": "SECURITY.md",
@@ -121,8 +121,8 @@
   },
   {
     "path": ".github/workflows/ci.yml",
-    "size": 22424,
-    "sha256": "0559a2c4e805480a7423baad454770d34653f4e8db81c39bb362c5bc025ab6a3"
+    "size": 22647,
+    "sha256": "cb47067f3ac6f2efdc5f4e6a95abf936064b77796a3bf1d8a10927dfd8a0a220"
   },
   {
     "path": ".github/workflows/pages.yml",
@@ -131,8 +131,8 @@
   },
   {
     "path": ".github/workflows/publish-pypi.yml",
-    "size": 14311,
-    "sha256": "9482d0c1648ef3969085917f7f859b7123a2437a6bbc2a6c140f6b0987784fb1"
+    "size": 14534,
+    "sha256": "7caf55baecff55d7302daad92ed41af5df6e80e52f17afeb1163689a2f27feb7"
   },
   {
     "path": "tests/test_agent_artifacts.py",
@@ -166,8 +166,8 @@
   },
   {
     "path": "tests/test_artifact_registry.py",
-    "size": 41943,
-    "sha256": "c122347ca51544413c92b0c5809b2ab84481053235a61d4adf47ceba185ac72b"
+    "size": 43139,
+    "sha256": "0a023d6a8a1d5c226a2ee93a75234985338755add4c3623060545c6e9ca4c9ce"
   },
   {
     "path": "tests/test_artifact_validation.py",
@@ -211,13 +211,13 @@
   },
   {
     "path": "tests/test_core_examples_v0_2.py",
-    "size": 5550,
-    "sha256": "0575848f554e2cf3912318df1819dea2023bbf184aa7fe0a03153e938cb5d2e4"
+    "size": 5617,
+    "sha256": "51b407ab684e8e07d8e92986a457a620b538d63f6e80e4bf044ecc31981e0ec1"
   },
   {
     "path": "tests/test_documentation_system.py",
-    "size": 39777,
-    "sha256": "806f788ad64a8ce278c23a5e61cdf4e0d2c69bc23d0e11009f66275a39917662"
+    "size": 40758,
+    "sha256": "6865caa30c32ab0a796c6319bd58be029b7a928c8596e659b8958c6d5b78c8be"
   },
   {
     "path": "tests/test_evaluator.py",
@@ -446,8 +446,8 @@
   },
   {
     "path": "tests/test_project_portal.py",
-    "size": 8055,
-    "sha256": "2af68b1ad332bc4e7eb93997221a22abe42f3a033964513e9bbb02b9bff90245"
+    "size": 8125,
+    "sha256": "1129be92dd40cec8d4c5a0769f20faada9bb594d86140b469a81a24ddb0172ac"
   },
   {
     "path": "tests/test_provider_neutral_model_adapter_example.py",
@@ -486,8 +486,8 @@
   },
   {
     "path": "tests/test_schema_distribution_verifier.py",
-    "size": 9106,
-    "sha256": "d8f21d69cdde30fd184cb748e18b498a30ea7d1a5c7849e71922c623cb4c9000"
+    "size": 9329,
+    "sha256": "1a7dcabf144a1c0afa040cde6b68ed7b5cf7e4831e8598f862b1ab22be928376"
   },
   {
     "path": "tests/test_verifier.py",
@@ -568,6 +568,11 @@
     "path": "tests/v1/test_extension_profiles.py",
     "size": 9755,
     "sha256": "1cf72563ded3560f0c6b3ef80a4797ab186adc97401b895c4c4d8cf7a7c3bc49"
+  },
+  {
+    "path": "tests/v1/test_impact_graph_v0_5.py",
+    "size": 15443,
+    "sha256": "89da06cd21e819b2e26a4d11352feb93c47f6672804ad9a787747f99765fe36c"
   },
   {
     "path": "tests/v1/test_object_extensions_v0_4.py",
@@ -651,8 +656,8 @@
   },
   {
     "path": "schemas/geotask-artifact-registry-v1.0.schema.json",
-    "size": 3703,
-    "sha256": "2122f5e1d3e5e41519e08be5afc868d058f3f99720a43d6799011bd1f9227d6f"
+    "size": 3731,
+    "sha256": "19f399e75ba72d2ad44f059280aaa468d1cb8acafd5ebd6aa8528d8a34371e95"
   },
   {
     "path": "schemas/geotask-artifact-validation-v1.0.schema.json",
@@ -678,6 +683,11 @@
     "path": "schemas/geotask-discrepancy-report-v0.1.schema.json",
     "size": 8818,
     "sha256": "602ead5ef923c5207271e0d1e636ff46e86eed2766486fd642b5119ca53fd171"
+  },
+  {
+    "path": "schemas/geotask-impact-graph-v0.1.schema.json",
+    "size": 7524,
+    "sha256": "f36c92a622fda8db94c4c8092f3f83b87591c0197e35d78ebc5172d47e1dce96"
   },
   {
     "path": "schemas/geotask-observation-v0.1.schema.json",
@@ -726,8 +736,8 @@
   },
   {
     "path": "examples/README.md",
-    "size": 9783,
-    "sha256": "1a9aed7c62316c706d173e1edb5f9416d27ea2fdc2cc574fa2d0cb0b1defcc52"
+    "size": 10231,
+    "sha256": "a85f5bdf162e67d0740d6575e4819aa64a3d9a22292e4e6fd03ad837e0e00d58"
   },
   {
     "path": "examples/basic_distance.yaml",
@@ -808,6 +818,11 @@
     "path": "examples/core/evidence_request_verified_state.yaml",
     "size": 499,
     "sha256": "a9056224b7d68269d36fbe025dd3b76ddc7db9b76d656826a485186a31b4be77"
+  },
+  {
+    "path": "examples/core/impact_graph_uav_recheck.json",
+    "size": 10541,
+    "sha256": "707b4ec94f4f7759a67faac3e3e3321bce8a0b5f5e194dc31bc68764f9752005"
   },
   {
     "path": "examples/core/minimal_valid.yaml",
@@ -1146,8 +1161,8 @@
   },
   {
     "path": "site/index.html",
-    "size": 30553,
-    "sha256": "a7c405f63e0a197a187cdf2f0ca78dc6b421309baeda8632842b9143c8f63ea2"
+    "size": 31013,
+    "sha256": "1d9ad2e7d1bfbc3a3ca24a3d14b86e020f715a320f5c61b2d46ab0dd28caff11"
   },
   {
     "path": "site/robots.txt",
@@ -1276,8 +1291,8 @@
   },
   {
     "path": "src/geotask_core/__init__.py",
-    "size": 18146,
-    "sha256": "bb35ac0d49a7664140c04aa9033bd04b8ba5088d3ff48e00f92a2627f7229271"
+    "size": 18720,
+    "sha256": "48debd9e9f911d1c66404cc6e6f706c33075accf71b31031c5a9e0acdf100800"
   },
   {
     "path": "src/geotask_core/_version.py",
@@ -1351,8 +1366,8 @@
   },
   {
     "path": "src/geotask_core/v1/__init__.py",
-    "size": 16666,
-    "sha256": "24dbc6ed0d9a79318e52e289557e8bab9a41a65283a21ad212d760dde07d992f"
+    "size": 17240,
+    "sha256": "8571c7311154876487f780deeec40b0bb79c57a9b348332a153965142185d5aa"
   },
   {
     "path": "src/geotask_core/v1/agent_artifacts.py",
@@ -1371,13 +1386,13 @@
   },
   {
     "path": "src/geotask_core/v1/artifact_registry.py",
-    "size": 31193,
-    "sha256": "50d23c46ce6e6ba748ffb822482ca75bc4d85e4813dfb62609b7d103cfa4a383"
+    "size": 32737,
+    "sha256": "64e513ec9643f81b1834faaf9bcf33feb4463e8d24abddd4f59dd5acd916fdb1"
   },
   {
     "path": "src/geotask_core/v1/artifact_validation.py",
-    "size": 44306,
-    "sha256": "51dfccf85b1adf6c980da1f8b2f39c549d51a65924fffdab1c07276274acdeaf"
+    "size": 47482,
+    "sha256": "5aabda848bd36ea488c19eff7bc5af6b9f53402b4828098b9d90404c755277db"
   },
   {
     "path": "src/geotask_core/v1/assurance.py",
@@ -1450,6 +1465,11 @@
     "sha256": "848078d4a5259c3c335be59dad951e240a52fb202070f46aa6d6af13f4103a84"
   },
   {
+    "path": "src/geotask_core/v1/impact_graph.py",
+    "size": 58118,
+    "sha256": "621a2c4d40e08afc7b7de1c047714c7c38b88d02c956a8b0cd6a04386680f6fe"
+  },
+  {
     "path": "src/geotask_core/v1/ir.py",
     "size": 9217,
     "sha256": "68cdef15c3f8ccc9fc6f441e0f20d5f167a0e99db5cc5d2047a00e65ac66562a"
@@ -1486,8 +1506,8 @@
   },
   {
     "path": "src/geotask_core/v1/schema_bundle.py",
-    "size": 13025,
-    "sha256": "7c43967121d7a05ce53b1954eb3b562c6186d0a5c3436b7a3383a3122effe512"
+    "size": 13122,
+    "sha256": "e7c6373fd77dd2dda44a3ec13ec68bb66770a0a2a25fe52b1d0831ac212314e4"
   },
   {
     "path": "src/geotask_core/v1/serialized_validation.py",
@@ -1526,18 +1546,18 @@
   },
   {
     "path": "docs/README.en.md",
-    "size": 9459,
-    "sha256": "889976690c1e9a69cba83112e0a9cf97c5363dd4c5bcd0f27d29caf97f1cb398"
+    "size": 9744,
+    "sha256": "83973d58d879045c51e1cb8320c4268aac080fe1c23b73868b55903b6f42d236"
   },
   {
     "path": "docs/README.md",
-    "size": 8568,
-    "sha256": "7125ab411d33d86a5932b45f3ae68d225294df938189e11f909aace059946aa7"
+    "size": 8802,
+    "sha256": "e4f80c39b24c8a2c5ba62555ca41c46cdcd8d6888dff88f30cbf74d3521b9b22"
   },
   {
     "path": "docs/architecture.md",
-    "size": 18543,
-    "sha256": "7a2c12ff49a9288068f6750171ad5ea0a014dbed33f18f8b80e52e5378fd6444"
+    "size": 19155,
+    "sha256": "cbf1aae1bdc598b927d0f8cfd08049c0eca7902c3cde9ac19861e232fc7b21b5"
   },
   {
     "path": "docs/cli_usage.md",
@@ -1616,8 +1636,8 @@
   },
   {
     "path": "docs/whitepaper/GeoTask_White_Paper_v0.1.md",
-    "size": 26472,
-    "sha256": "9d086cba45fbf1a9f373f6d03aece91cd22957bf8b51eab2b39f5858fae15701"
+    "size": 26610,
+    "sha256": "518734b31e801031ff6a83b2f943504aca12434ff480b2a2230d709dd4025647"
   },
   {
     "path": "docs/whitepaper/README.md",
@@ -1681,8 +1701,8 @@
   },
   {
     "path": "docs/spec/geotask-artifact-registry-v1.0.md",
-    "size": 20797,
-    "sha256": "74699f259d202ae4937d06c0d1bc4852d7264e2d95b1fbb2a384e162898adf50"
+    "size": 21239,
+    "sha256": "47b5f2e81f097d71384e3c97605ea7e6daa26f5fefa38292a71bad5fd125d2f3"
   },
   {
     "path": "docs/spec/geotask-artifact-validation-v1.0.md",
@@ -1718,6 +1738,11 @@
     "path": "docs/spec/geotask-discrepancy-report-v0.1.md",
     "size": 9417,
     "sha256": "e38abd32edf46da6194f2d2df6b9fd580b1839b415427871c30e70e40267351f"
+  },
+  {
+    "path": "docs/spec/geotask-impact-graph-v0.1.md",
+    "size": 12350,
+    "sha256": "68652d86df1b3f4a8124d547c9c782c7f491572e98e4824230cff53ceb699daa"
   },
   {
     "path": "docs/spec/geotask-language-spec-v1.0.md",
@@ -1761,8 +1786,8 @@
   },
   {
     "path": "docs/spec/target-specification-status.md",
-    "size": 6181,
-    "sha256": "274b091ff5cd3f14f56b9bcbe1ff6ee3ce4fcacccfff394b0ae6992d01df1ab7"
+    "size": 6540,
+    "sha256": "6d3ab0bfad8cc7ecc003b3a35640ce93304250690ddfaccbb959d484c3bf3ebf"
   },
   {
     "path": ".release/README.md",
@@ -1781,8 +1806,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 19986,
-    "sha256": "496246687f9937926dcc7b0da4c8cc5f3b7d0af8beb5402efc2204910b75bfcc"
+    "size": 20363,
+    "sha256": "7be5568ccfd0b1577eee01f219636c9d63be17526a1d47de85d06c1b902e3076"
   },
   {
     "path": ".release/release_public.py",
@@ -1806,13 +1831,13 @@
   },
   {
     "path": ".release/verify_schema_distribution.py",
-    "size": 13787,
-    "sha256": "101088ee7111a8358f3787ac11f6054df59320e05edf1b5fc7c581edffaaf0ea"
+    "size": 13875,
+    "sha256": "203470854d5343361efc0a1bf2251e86f26bbfc5e631f83db526562f05eee0b8"
   },
   {
     "path": "skills/geotask-core/SKILL.md",
-    "size": 10665,
-    "sha256": "b65bc71e6dcd7660306b724472b3dc28cdb93302171a5a6e3ebe8b268dfa4a23"
+    "size": 10947,
+    "sha256": "2be2ad11701f4561dbf56aedc97ddc16dcc323895cfdcc2da51f0a8bf553b65c"
   },
   {
     "path": "tools/generate_case_catalog.py",

@@ -40,6 +40,7 @@ EXPECTED_SCHEMA_FILENAMES = {
     "geotask-verification-session-v0.1.schema.json",
     "geotask-discrepancy-report-v0.1.schema.json",
     "geotask-correction-request-v0.1.schema.json",
+    "geotask-impact-graph-v0.1.schema.json",
     "geotask-result-v1.0.schema.json",
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",
@@ -53,6 +54,7 @@ REQUIRED_SDIST_PATHS = {
     "src/geotask_core/schemas/__init__.py",
     "src/geotask_core/v1/schema_bundle.py",
     "src/geotask_core/v1/artifact_validation.py",
+    "src/geotask_core/v1/impact_graph.py",
     "src/geotask_core/v1/runtime_interface.py",
     *(f"schemas/{name}" for name in EXPECTED_SCHEMA_FILENAMES),
 }

@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, and Correction Request v0.1 successor-state correction contracts, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, Observation merging, successor-state materialization, executable impact propagation, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
+GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, Correction Request v0.1 successor-state correction contracts, and Impact Graph v0.1 source-bound impact DAGs, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, Observation merging, successor-state materialization, automatic impact discovery and propagation execution, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -307,12 +307,13 @@ Discrepancy Report v0.1 is implemented as a public bounded-difference Artifact. 
 
 Correction Request v0.1 is implemented as a public successor-state contract. It binds one immutable base World State and exact Discrepancy Reports, constrains requested changes to mutable identity paths, preserves immutable paths, defines operation-specific acceptance criteria, requires a later World State revision, and keeps affected outputs/actions blocked. Core validates structure and explicit bindings but does not edit the base state, apply changes, materialize a successor, evaluate acceptance criteria, release outputs, or authorize action.
 
+Impact Graph v0.1 is implemented as a public impact-topology contract. It binds one World State and exact Discrepancy Report/Correction Request bytes, resolves source entities, and represents discrepancies, correction changes, state paths, assertions, outputs, actions, and reevaluation targets as a finite directed acyclic graph. Core validates roots, reachability, cycles, reference closure, aggregate state, and key edge semantics against the bound source Artifacts. It does not discover dependencies, execute propagation, apply corrections, materialize a successor state, run reevaluation, release outputs, or authorize action.
+
 Remaining planned public abstractions:
 
 | Planned abstraction | Purpose | Reuses existing capability |
 |---|---|---|
-| `ImpactGraph` | Map changed world-state paths to claims, assertions, outputs, and action gates | object refs, assertion refs, output contracts |
-| `ReevaluationResult` | Record preserved, invalidated, and recomputed world findings | execution result and control evaluation |
+| `ReevaluationResult` | Execute and record preserved, invalidated, and recomputed world findings against an Impact Graph | execution result, control evaluation, and Impact Graph targets |
 | `VerificationProvider` | Describe deterministic operators, rule engines, local predictive models, authoritative data, and human review | operator contracts and Runtime descriptors |
 
 These names describe the target architecture only. They are not yet implemented public APIs and must not be presented as completed capabilities until code, Schemas, tests, and release notes exist.

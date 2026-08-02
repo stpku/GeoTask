@@ -22,6 +22,7 @@ from geotask_core.v1.artifact_registry import (
     VERIFICATION_SESSION_SCHEMA_ID,
     DISCREPANCY_REPORT_SCHEMA_ID,
     CORRECTION_REQUEST_SCHEMA_ID,
+    IMPACT_GRAPH_SCHEMA_ID,
     RUNTIME_DESCRIPTOR_SCHEMA_ID,
     RUNTIME_REQUEST_SCHEMA_ID,
     RUNTIME_RESPONSE_SCHEMA_ID,
@@ -43,6 +44,7 @@ _SCHEMA_FILENAME_BY_ID = {
     VERIFICATION_SESSION_SCHEMA_ID: "geotask-verification-session-v0.1.schema.json",
     DISCREPANCY_REPORT_SCHEMA_ID: "geotask-discrepancy-report-v0.1.schema.json",
     CORRECTION_REQUEST_SCHEMA_ID: "geotask-correction-request-v0.1.schema.json",
+    IMPACT_GRAPH_SCHEMA_ID: "geotask-impact-graph-v0.1.schema.json",
     GEOTASK_RESULT_SCHEMA_ID: "geotask-result-v1.0.schema.json",
     CONTROL_EVALUATION_SCHEMA_ID: "geotask-control-evaluation-v1.0.schema.json",
     AGENT_GENERATION_PREPARATION_SCHEMA_ID: (

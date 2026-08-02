@@ -40,6 +40,10 @@ patent-sensitive workflows.
   and four exact source Artifacts, recording a 120-to-60-second relation mismatch, a stale historical result,
   confirmed downstream impact, mutable telemetry-derived paths, and immutable route/result paths without
   comparing sources, applying corrections, or authorizing action.
+- `examples/core/correction_request_uav_recheck.json`: Correction Request v0.1 binding World State revision 2,
+  the corresponding Discrepancy Report, and the GT16 task, requesting two bounded recomputations for a successor
+  snapshot with revision at least 3 while preserving route identity/geometry and keeping continuation blocked
+  until the successor state is valid and the affected temporal output has been rechecked.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

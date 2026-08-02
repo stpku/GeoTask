@@ -105,6 +105,9 @@ def test_examples_readme_lists_core_examples():
     assert "examples/core/discrepancy_report_uav_recheck.json" in readme
     assert "examples/core/correction_request_uav_recheck.json" in readme
     assert "examples/core/impact_graph_uav_recheck.json" in readme
+    assert "examples/core/world_state_uav_separation_successor.json" in readme
+    assert "examples/core/incremental_reevaluation_uav_execution_result.json" in readme
+    assert "examples/core/incremental_reevaluation_result_uav_recheck.json" in readme
     assert "examples/core/time_altitude_overlap.yaml" in readme
     assert "examples/core/assertions_expected_results.yaml" in readme
     assert "examples/core/multi_constraint_conflict.yaml" in readme

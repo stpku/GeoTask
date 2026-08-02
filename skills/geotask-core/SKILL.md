@@ -27,6 +27,7 @@ Never:
 - treat a valid `geotask.discrepancy-report` Artifact as proof that sources were compared, a discrepancy is true, impact was propagated, a Correction Request was created, correction was applied, state was materialized, a recheck ran, or action was authorized;
 - treat a valid `geotask.correction-request` Artifact as proof that bindings or correction scope were verified, changes were applied, a successor World State was materialized, acceptance criteria were met, discrepancies were resolved, outputs were released, or actions were authorized;
 - treat a valid `geotask.impact-graph` Artifact as proof that bindings or source entities were verified, impact was discovered, propagation ran, corrections were applied, a successor World State was materialized, reevaluation ran, outputs were released, or actions were authorized;
+- treat a valid `geotask.incremental-reevaluation-result` Artifact as proof that exact bindings were verified, reevaluation executed, a successor World State was generated, acceptance criteria were evaluated, discrepancies were resolved, production outputs were released, or an action was authorized or executed;
 - compare benchmark timing from different hardware as a ranking, production SLA, or model-quality result.
 
 ## Required Workflow

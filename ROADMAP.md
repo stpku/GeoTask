@@ -55,8 +55,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布Discrepancy Report v0.1 Artifact，绑定一个World State语义指纹与精确来源制品字节，记录差异类型、期望值/观测值、影响范围及可变/不可变修订路径，同时明确不自动比较来源、传播影响、生成修订请求或应用纠正；
 - ✅ 已发布Correction Request v0.1 Artifact，绑定不可变基准World State与Discrepancy Report，限定后继状态允许变更、验收标准、不可变路径保护及输出/行动门禁，同时明确不原地修改快照、不应用修订、不物化后继状态或释放输出；
 - ✅ 已发布Impact Graph v0.1 Artifact，将差异、修订、状态路径、断言、输出、动作和复核目标组织为来源绑定的有向无环图，并验证根可达性、无环性、精确文件绑定和关键边语义，同时明确不自动生成图、不执行传播或复核；
-- 发布Incremental Reevaluation Result并物化后继World State；
-- 提供`geotask verify`与`geotask recheck`高层命令，保持本地、显式、可复现的世界状态快照语义；
+- ✅ 已发布Incremental Reevaluation Result v0.1 Artifact，绑定基准/后继World State、Impact Graph、Correction Request、Discrepancy Report与执行结果的精确字节，完整记录节点/目标结果、验收条件、差异消解和输出/动作门禁，同时明确不执行复核、不生成后继状态、不授权或执行动作；
+- 提供自动后继World State生成以及`geotask verify`、`geotask recheck`高层命令，保持本地、显式、可复现的世界状态快照语义；
 - 将GT21—GT28建设为Observation接入、世界状态构建、状态变化、影响传播、限定纠偏和行动门控案例。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
@@ -129,8 +129,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published Discrepancy Report v0.1, binding one World State semantic fingerprint to exact source-artifact bytes and recording discrepancy kind, expected/observed values, downstream impact, and mutable/immutable correction paths, while explicitly not comparing sources, propagating impact, creating correction requests, or applying corrections;
 - ✅ Published Correction Request v0.1, binding one immutable base World State to exact Discrepancy Reports and constraining successor-state changes, acceptance criteria, immutable-path preservation, and output/action gates while explicitly not editing snapshots, applying changes, materializing successors, or releasing outputs;
 - ✅ Published Impact Graph v0.1, representing discrepancies, corrections, state paths, assertions, outputs, actions, and reevaluation targets as a source-bound directed acyclic graph with root reachability, exact-byte bindings, and key edge-semantic checks, while explicitly not discovering the graph or executing propagation or reevaluation;
-- publish the Incremental Reevaluation Result and materialize successor World States;
-- provide high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible world-state snapshot semantics;
+- ✅ Published Incremental Reevaluation Result v0.1, binding exact base/successor World States, Impact Graph, Correction Requests, Discrepancy Reports, and execution results while closing graph-node, target, acceptance, discrepancy-resolution, output-gate, and action-eligibility outcomes without executing reevaluation, generating successors, authorizing actions, or executing actions;
+- provide automatic successor-World-State generation plus high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible snapshot semantics;
 - build GT21–GT28 around Observation ingestion, world-state construction, state change, impact propagation, bounded correction, and action gating.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem

@@ -1,0 +1,344 @@
+{
+  "incremental_reevaluation_result": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-incremental-reevaluation-result-v0.1.schema.json",
+    "schema_version": "0.1",
+    "result_id": "fictional-uav-separation-incremental-reevaluation",
+    "recorded_at": "2026-07-16T10:01:20+08:00",
+    "state": "completed",
+    "reason": "The bounded successor-state recomputations and both declared reevaluation targets completed, all Correction Request acceptance criteria were satisfied, the temporal-separation discrepancy was resolved, the continuation output was released, and the route action became eligible but remains externally unauthorized and unexecuted.",
+    "base_world_state": {
+      "ref_id": "base-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "semantic_fingerprint": "7b432a7d6ee91a2e4bdaea0b4e1abc55bc93bf91a1cd5354ef57e1ac56b4725d",
+      "content_sha256": "77b8edace03ad6261a22c675630b847dca054dfa5de5f9c12c715c7ddd10df7f"
+    },
+    "successor_world_state": {
+      "ref_id": "successor-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 3,
+      "as_of": "2026-07-16T10:01:15+08:00",
+      "semantic_fingerprint": "adf0cf3a94f3c78825d34f39fb3c3364d304bd6cfa607cb7579848aa1f396645",
+      "content_sha256": "68aa01914e445ecf93316cff423a41cb45fe93952e481b0ca29f77ee063492fb"
+    },
+    "impact_graph_ref": {
+      "ref_id": "impact-graph-uav-recheck",
+      "artifact_id": "geotask.impact-graph",
+      "schema_version": "0.1",
+      "instance_id": "fictional-uav-separation-impact-graph",
+      "content_sha256": "707b4ec94f4f7759a67faac3e3e3321bce8a0b5f5e194dc31bc68764f9752005"
+    },
+    "correction_request_refs": [
+      {
+        "ref_id": "correction-uav-recheck",
+        "artifact_id": "geotask.correction-request",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-correction-request",
+        "content_sha256": "41a3f73cf9a11b862e0c8a5a6f4b3c243ef74fbd22f0fc9c3cf117a45ca3342b"
+      }
+    ],
+    "discrepancy_report_refs": [
+      {
+        "ref_id": "discrepancy-uav-recheck",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-discrepancy-report",
+        "content_sha256": "8e8ebf064066b056f511f8567387e05535088969e1662d84c1a42fe950480945"
+      }
+    ],
+    "execution_result_refs": [
+      {
+        "ref_id": "result-gt16-reevaluation",
+        "artifact_id": "geotask.execution-result",
+        "schema_version": "1.0",
+        "instance_id": "gt16-uav-route-crossing-temporal-separation",
+        "content_sha256": "67d77a8472e41e5d8ecda2aa324a9e44dce00b32ad526a23cd2cf71b829fe131"
+      }
+    ],
+    "node_results": [
+      {
+        "id": "result-node-discrepancy",
+        "node_ref": "node-discrepancy",
+        "state": "resolved",
+        "reason": "The successor relation retains the telemetry-observed 60-second value rather than the stale 120-second assumption.",
+        "basis_refs": [
+          "successor-world-state",
+          "discrepancy-uav-recheck",
+          "correction-uav-recheck"
+        ]
+      },
+      {
+        "id": "result-node-change-delay",
+        "node_ref": "node-change-delay",
+        "state": "recomputed",
+        "reason": "The delay path was re-materialized from the declared telemetry inputs in revision 3.",
+        "previous": 60,
+        "current": 60,
+        "basis_refs": [
+          "base-world-state",
+          "successor-world-state",
+          "correction-uav-recheck"
+        ]
+      },
+      {
+        "id": "result-node-change-separation",
+        "node_ref": "node-change-separation",
+        "state": "recomputed",
+        "reason": "The derived temporal-separation path was re-materialized from the bounded inputs in revision 3.",
+        "previous": 60,
+        "current": 60,
+        "basis_refs": [
+          "base-world-state",
+          "successor-world-state",
+          "correction-uav-recheck"
+        ]
+      },
+      {
+        "id": "result-node-delay-path",
+        "node_ref": "node-delay-path",
+        "state": "recomputed",
+        "reason": "The successor snapshot contains the recomputed UAV-B delay value.",
+        "previous": 60,
+        "current": 60,
+        "basis_refs": [
+          "base-world-state",
+          "successor-world-state",
+          "correction-uav-recheck"
+        ]
+      },
+      {
+        "id": "result-node-separation-path",
+        "node_ref": "node-separation-path",
+        "state": "recomputed",
+        "reason": "The successor snapshot contains the recomputed temporal-separation value.",
+        "previous": 60,
+        "current": 60,
+        "basis_refs": [
+          "base-world-state",
+          "successor-world-state",
+          "correction-uav-recheck"
+        ]
+      },
+      {
+        "id": "result-node-temporal-conflict",
+        "node_ref": "node-temporal-conflict",
+        "state": "recomputed",
+        "reason": "The temporal-conflict assertion was rerun against the successor state and remained false.",
+        "previous": false,
+        "current": false,
+        "basis_refs": [
+          "base-world-state",
+          "successor-world-state",
+          "result-gt16-reevaluation"
+        ]
+      },
+      {
+        "id": "result-node-continuation-output",
+        "node_ref": "node-continuation-output",
+        "state": "released",
+        "reason": "The required assertion recheck completed and all output-release criteria were satisfied.",
+        "basis_refs": [
+          "successor-world-state",
+          "correction-uav-recheck",
+          "result-gt16-reevaluation"
+        ]
+      },
+      {
+        "id": "result-node-route-action",
+        "node_ref": "node-route-action",
+        "state": "eligible",
+        "reason": "The released output makes automatic route continuation eligible for separate external authorization.",
+        "basis_refs": [
+          "successor-world-state",
+          "correction-uav-recheck",
+          "result-gt16-reevaluation"
+        ]
+      }
+    ],
+    "target_results": [
+      {
+        "id": "result-target-temporal-conflict",
+        "target_ref": "target-temporal-conflict",
+        "node_ref": "node-temporal-conflict",
+        "node_result_ref": "result-node-temporal-conflict",
+        "state": "completed",
+        "reason": "The declared temporal-conflict target was reevaluated by the bound execution result.",
+        "basis_refs": [
+          "impact-graph-uav-recheck",
+          "successor-world-state",
+          "result-gt16-reevaluation"
+        ]
+      },
+      {
+        "id": "result-target-continuation-output",
+        "target_ref": "target-continuation-output",
+        "node_ref": "node-continuation-output",
+        "node_result_ref": "result-node-continuation-output",
+        "state": "completed",
+        "reason": "The continuation output target was reevaluated after its prerequisites and assertion target completed.",
+        "basis_refs": [
+          "impact-graph-uav-recheck",
+          "successor-world-state",
+          "result-gt16-reevaluation"
+        ]
+      }
+    ],
+    "acceptance_results": [
+      {
+        "id": "accept-delay-path-recomputed",
+        "request_ref": "correction-uav-recheck",
+        "criterion_id": "delay-path-recomputed",
+        "state": "satisfied",
+        "reason": "The delay change and its World State path are both recorded as recomputed.",
+        "node_result_refs": [
+          "result-node-change-delay",
+          "result-node-delay-path"
+        ],
+        "target_result_refs": [],
+        "basis_refs": [
+          "correction-uav-recheck",
+          "successor-world-state"
+        ]
+      },
+      {
+        "id": "accept-separation-path-recomputed",
+        "request_ref": "correction-uav-recheck",
+        "criterion_id": "separation-path-recomputed",
+        "state": "satisfied",
+        "reason": "The separation change and its World State path are both recorded as recomputed.",
+        "node_result_refs": [
+          "result-node-change-separation",
+          "result-node-separation-path"
+        ],
+        "target_result_refs": [],
+        "basis_refs": [
+          "correction-uav-recheck",
+          "successor-world-state"
+        ]
+      },
+      {
+        "id": "accept-successor-world-state-valid",
+        "request_ref": "correction-uav-recheck",
+        "criterion_id": "successor-world-state-valid",
+        "state": "satisfied",
+        "reason": "The bound revision-3 World State passes the registered strict loader and fingerprint checks.",
+        "node_result_refs": [
+          "result-node-delay-path",
+          "result-node-separation-path"
+        ],
+        "target_result_refs": [],
+        "basis_refs": [
+          "correction-uav-recheck",
+          "successor-world-state"
+        ]
+      },
+      {
+        "id": "accept-separation-discrepancy-resolved",
+        "request_ref": "correction-uav-recheck",
+        "criterion_id": "separation-discrepancy-resolved",
+        "state": "satisfied",
+        "reason": "The discrepancy node is resolved and the successor subject path no longer contains the stale expected value.",
+        "node_result_refs": [
+          "result-node-discrepancy",
+          "result-node-change-delay",
+          "result-node-change-separation",
+          "result-node-delay-path",
+          "result-node-separation-path",
+          "result-node-temporal-conflict"
+        ],
+        "target_result_refs": [],
+        "basis_refs": [
+          "discrepancy-uav-recheck",
+          "correction-uav-recheck",
+          "successor-world-state"
+        ]
+      },
+      {
+        "id": "accept-temporal-output-rechecked",
+        "request_ref": "correction-uav-recheck",
+        "criterion_id": "temporal-output-rechecked",
+        "state": "satisfied",
+        "reason": "The temporal assertion and continuation output targets completed before output release.",
+        "node_result_refs": [
+          "result-node-temporal-conflict",
+          "result-node-continuation-output"
+        ],
+        "target_result_refs": [
+          "result-target-temporal-conflict",
+          "result-target-continuation-output"
+        ],
+        "basis_refs": [
+          "correction-uav-recheck",
+          "successor-world-state",
+          "result-gt16-reevaluation"
+        ]
+      }
+    ],
+    "discrepancy_results": [
+      {
+        "id": "result-separation-mismatch",
+        "request_ref": "correction-uav-recheck",
+        "discrepancy_ref": "separation-mismatch",
+        "state": "resolved",
+        "reason": "The successor path is bound to the observed 60-second value and the dependent assertion was reevaluated.",
+        "node_result_refs": [
+          "result-node-discrepancy",
+          "result-node-change-delay",
+          "result-node-change-separation",
+          "result-node-delay-path",
+          "result-node-separation-path",
+          "result-node-temporal-conflict"
+        ],
+        "basis_refs": [
+          "discrepancy-uav-recheck",
+          "correction-uav-recheck",
+          "successor-world-state",
+          "result-gt16-reevaluation"
+        ]
+      }
+    ],
+    "output_gates": [
+      {
+        "output_ref": "continue_route_without_recheck",
+        "state": "released",
+        "reason": "The output target completed and all linked acceptance criteria are satisfied.",
+        "target_result_refs": [
+          "result-target-continuation-output"
+        ],
+        "criterion_result_refs": [
+          "accept-delay-path-recomputed",
+          "accept-separation-path-recomputed",
+          "accept-successor-world-state-valid",
+          "accept-separation-discrepancy-resolved",
+          "accept-temporal-output-rechecked"
+        ]
+      }
+    ],
+    "action_gates": [
+      {
+        "action_ref": "automatic_route_continuation",
+        "state": "eligible",
+        "reason": "The prerequisite output is released, but production authorization and execution remain outside GeoTask Core.",
+        "output_refs": [
+          "continue_route_without_recheck"
+        ],
+        "criterion_result_refs": [
+          "accept-delay-path-recomputed",
+          "accept-separation-path-recomputed",
+          "accept-successor-world-state-valid",
+          "accept-separation-discrepancy-resolved",
+          "accept-temporal-output-rechecked"
+        ],
+        "external_authorization_required": true,
+        "authorized": false,
+        "executed": false
+      }
+    ],
+    "next_action": "none"
+  }
+}

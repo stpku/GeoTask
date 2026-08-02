@@ -31,6 +31,7 @@ SCHEMA_FILENAMES = (
     "geotask-discrepancy-report-v0.1.schema.json",
     "geotask-correction-request-v0.1.schema.json",
     "geotask-impact-graph-v0.1.schema.json",
+    "geotask-incremental-reevaluation-result-v0.1.schema.json",
     "geotask-result-v1.0.schema.json",
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",
@@ -136,6 +137,13 @@ def _create_distribution(
         "src/geotask_core/v1/impact_graph.py": (
             ROOT / "src" / "geotask_core" / "v1" / "impact_graph.py"
         ).read_bytes(),
+        "src/geotask_core/v1/incremental_reevaluation_result.py": (
+            ROOT
+            / "src"
+            / "geotask_core"
+            / "v1"
+            / "incremental_reevaluation_result.py"
+        ).read_bytes(),
         "src/geotask_core/v1/runtime_interface.py": (
             ROOT / "src" / "geotask_core" / "v1" / "runtime_interface.py"
         ).read_bytes(),
@@ -161,7 +169,7 @@ def test_distribution_verifier_accepts_matching_wheel_and_sdist(tmp_path: Path) 
 
     assert report["valid"] is True
     assert report["bundle_version"] == "1.0"
-    assert report["schema_count"] == 20
+    assert report["schema_count"] == 21
     assert all(item["valid"] for item in report["schemas"])
     assert report["errors"] == []
 
@@ -220,7 +228,7 @@ def test_distribution_verifier_cli_emits_machine_readable_report(tmp_path: Path)
     assert result.stderr == ""
     report = json.loads(result.stdout)["schema_distribution_verification"]
     assert report["valid"] is True
-    assert report["schema_count"] == 20
+    assert report["schema_count"] == 21
 
 
 def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
@@ -246,6 +254,7 @@ def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
             "geotask.discrepancy-report",
             "geotask.correction-request",
             "geotask.impact-graph",
+            "geotask.incremental-reevaluation-result",
             "geotask.execution-result",
             "geotask.control-evaluation",
             "geotask.agent-generation-preparation",
@@ -260,7 +269,7 @@ def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
         ):
             assert f"artifact validate {artifact_id}" in workflow
         assert "artifact_validation" in workflow
-        assert "checked_count\"] == 20" in workflow
+        assert "checked_count\"] == 21" in workflow
         assert "checked_count\"] == 1" in workflow
 
     assert "pip wheel --no-deps --wheel-dir dist-from-sdist" in ci

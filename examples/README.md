@@ -44,6 +44,10 @@ patent-sensitive workflows.
   the corresponding Discrepancy Report, and the GT16 task, requesting two bounded recomputations for a successor
   snapshot with revision at least 3 while preserving route identity/geometry and keeping continuation blocked
   until the successor state is valid and the affected temporal output has been rechecked.
+- `examples/core/impact_graph_uav_recheck.json`: Impact Graph v0.1 binding the same World State, Discrepancy Report,
+  and Correction Request into an eight-node, nine-edge directed acyclic graph from the confirmed discrepancy through
+  two correction changes and affected state paths to the temporal assertion, blocked continuation output, blocked
+  route action, and two explicit reevaluation targets without discovering or executing propagation.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

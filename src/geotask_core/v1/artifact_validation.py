@@ -49,6 +49,10 @@ from geotask_core.v1.correction_request import (
     CorrectionRequestFormatError,
     load_correction_request,
 )
+from geotask_core.v1.impact_graph import (
+    ImpactGraphFormatError,
+    load_impact_graph,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1076,6 +1080,80 @@ def _validate_correction_request_payload(
     )
 
 
+def _validate_impact_graph_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        graph = load_impact_graph(payload)
+    except ImpactGraphFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_impact_graph",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Impact Graph v0.1. "
+                        "Structural validity does not verify bindings, compute impact, execute "
+                        "propagation, apply correction, reevaluate targets, release outputs, or "
+                        "authorize actions."
+                    ),
+                ),
+            ),
+        )
+
+    confirmed_edges = sum(1 for item in graph.edges if item.state == "confirmed")
+    required_targets = sum(
+        1 for item in graph.reevaluation_targets if item.state == "required"
+    )
+    blocked_targets = sum(
+        1 for item in graph.reevaluation_targets if item.state == "blocked"
+    )
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "graph_id": graph.graph_id,
+            "state": graph.state,
+            "world_state_id": graph.world_state.world_state_id,
+            "world_state_revision": graph.world_state.revision,
+            "artifact_ref_count": len(graph.artifact_refs),
+            "entity_ref_count": len(graph.entity_refs),
+            "root_node_count": len(graph.root_node_refs),
+            "node_count": len(graph.nodes),
+            "edge_count": len(graph.edges),
+            "confirmed_edge_count": confirmed_edges,
+            "reevaluation_target_count": len(graph.reevaluation_targets),
+            "required_reevaluation_target_count": required_targets,
+            "blocked_reevaluation_target_count": blocked_targets,
+            "blocked_output_count": len(graph.blocked_outputs),
+            "blocked_action_count": len(graph.blocked_actions),
+            "semantic_fingerprint": graph.semantic_fingerprint(),
+            "world_state_binding_verified": False,
+            "artifact_bindings_verified": False,
+            "source_entities_verified": False,
+            "edge_semantics_verified": False,
+            "impact_computed": False,
+            "propagation_executed": False,
+            "corrections_applied": False,
+            "successor_world_state_materialized": False,
+            "reevaluation_executed": False,
+            "outputs_released": False,
+            "external_truth_verified": False,
+            "action_authorized": False,
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1096,6 +1174,8 @@ def _validate_verified_payload(
         return _validate_discrepancy_report_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.correction-request":
         return _validate_correction_request_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.impact-graph":
+        return _validate_impact_graph_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.execution-result":
         return _validate_serialized_payload(
             descriptor,

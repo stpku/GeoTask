@@ -10,7 +10,7 @@ GeoTask publishes several machine-readable artifacts with different producers,
 wrappers, JSON Schemas, and validation commands. The Artifact Registry provides
 one stable public discovery surface for those contracts.
 
-The registry currently contains exactly eighteen artifacts:
+The registry currently contains exactly nineteen artifacts:
 
 1. GeoTask Document v1.0;
 2. GeoTask Observation v0.1;
@@ -19,19 +19,20 @@ The registry currently contains exactly eighteen artifacts:
 5. GeoTask Verification Session v0.1;
 6. GeoTask Discrepancy Report v0.1;
 7. GeoTask Correction Request v0.1;
-8. GeoTask Execution Result v1.0;
-9. GeoTask Control Evaluation Result v1.0;
-10. GeoTask Agent Generation Preparation Report v0.1;
-11. GeoTask Agent Revision Verification Report v0.1;
-12. GeoTask Agent Revision Retry Report v0.1;
-13. GeoTask Agent Evidence Recovery Report v0.1;
-14. GeoTask Runtime Descriptor v0.1;
-15. GeoTask Runtime Request v0.1;
-16. GeoTask Runtime Response v0.1;
-17. GeoTask Core Benchmark Report v0.1;
-18. GeoTask Artifact Validation Report v1.0.
+8. GeoTask Impact Graph v0.1;
+9. GeoTask Execution Result v1.0;
+10. GeoTask Control Evaluation Result v1.0;
+11. GeoTask Agent Generation Preparation Report v0.1;
+12. GeoTask Agent Revision Verification Report v0.1;
+13. GeoTask Agent Revision Retry Report v0.1;
+14. GeoTask Agent Evidence Recovery Report v0.1;
+15. GeoTask Runtime Descriptor v0.1;
+16. GeoTask Runtime Request v0.1;
+17. GeoTask Runtime Response v0.1;
+18. GeoTask Core Benchmark Report v0.1;
+19. GeoTask Artifact Validation Report v1.0.
 
-The world-model input contract uses `geotask.observation`; it records structured claims but does not verify truth or automatically update a World State. The snapshot contract uses `geotask.world-state`; it validates one explicit state snapshot but does not merge observations or materialize a later state. The transition contract uses `geotask.state-transition`; it binds two snapshot fingerprints and records explicit changes but does not calculate a diff, apply changes, verify truth, or authorize action. The audit-snapshot contract uses `geotask.verification-session`; it binds one World State to exact serialized artifacts plus eligibility and recheck records, but does not validate linked artifact semantics or execute the declared work. The discrepancy contract uses `geotask.discrepancy-report`; it records explicit expected/observed differences, declared impact, and bounded correction scope, but does not compare sources, propagate impact, apply correction, or authorize action. The correction contract uses `geotask.correction-request`; it binds an immutable base state and exact discrepancy reports, constrains successor-state changes and acceptance criteria, and keeps outputs/actions gated without applying changes or materializing the successor.
+The world-model input contract uses `geotask.observation`; it records structured claims but does not verify truth or automatically update a World State. The snapshot contract uses `geotask.world-state`; it validates one explicit state snapshot but does not merge observations or materialize a later state. The transition contract uses `geotask.state-transition`; it binds two snapshot fingerprints and records explicit changes but does not calculate a diff, apply changes, verify truth, or authorize action. The audit-snapshot contract uses `geotask.verification-session`; it binds one World State to exact serialized artifacts plus eligibility and recheck records, but does not validate linked artifact semantics or execute the declared work. The discrepancy contract uses `geotask.discrepancy-report`; it records explicit expected/observed differences, declared impact, and bounded correction scope, but does not compare sources, propagate impact, apply correction, or authorize action. The correction contract uses `geotask.correction-request`; it binds an immutable base state and exact discrepancy reports, constrains successor-state changes and acceptance criteria, and keeps outputs/actions gated without applying changes or materializing the successor. The impact contract uses `geotask.impact-graph`; it validates a source-bound directed acyclic graph from discrepancies and correction entities to affected paths, assertions, outputs, actions, and reevaluation targets, but does not discover dependencies or execute propagation or reevaluation.
 
 It does not scan the filesystem, discover private modules, or infer unpublished
 contracts. New entries require an explicit public contract and compatibility
@@ -69,7 +70,7 @@ geotask inspect schemas geotask.execution-result --verify --format json
 ```
 
 `--verify` appends a sibling `schema_bundle_verification` object. Full discovery
-checks the Registry Schema plus all eighteen registered Artifact Schemas; exact
+checks the Registry Schema plus all nineteen registered Artifact Schemas; exact
 lookup checks only the selected artifact Schema. An invalid Bundle still emits
 the composite JSON or YAML report and exits non-zero. Without `--verify`, output
 remains the original Artifact Registry v1.0 payload and continues to validate
@@ -114,6 +115,10 @@ from geotask_core import (
     CORRECTION_REQUEST_SCHEMA_VERSION,
     load_correction_request,
     validate_correction_request_bindings,
+    IMPACT_GRAPH_SCHEMA_ID,
+    IMPACT_GRAPH_SCHEMA_VERSION,
+    load_impact_graph,
+    validate_impact_graph_bindings,
     ARTIFACT_VALIDATION_SCHEMA_ID,
     ARTIFACT_VALIDATION_SCHEMA_VERSION,
     AGENT_GENERATION_PREPARATION_SCHEMA_ID,
@@ -164,8 +169,8 @@ The same names are exported from `geotask_core.v1`.
 
 ### 3.1 Installed Schema Bundle
 
-The wheel and source distribution include all nineteen public JSON Schemas needed to
-interpret the Registry and its eighteen registered Artifacts. Callers can load them
+The wheel and source distribution include all twenty public JSON Schemas needed to
+interpret the Registry and its nineteen registered Artifacts. Callers can load them
 without network access:
 
 ```python
@@ -259,7 +264,7 @@ and non-execution boundary.
   "artifact_registry": {
     "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-artifact-registry-v1.0.schema.json",
     "registry_version": "1.0",
-    "artifact_count": 18,
+    "artifact_count": 19,
     "artifacts": [
       {
         "artifact_id": "geotask.document",
@@ -282,7 +287,7 @@ and non-execution boundary.
 }
 ```
 
-The complete payload contains all eighteen descriptors in stable display order.
+The complete payload contains all nineteen descriptors in stable display order.
 
 ## 5. Descriptor fields
 
@@ -547,7 +552,7 @@ Registry v1.0 guarantees:
 - the self-describing `schema_id`;
 - `registry_version` and `artifact_count`;
 - the descriptor field set documented above;
-- stable artifact IDs for the eighteen current entries;
+- stable artifact IDs for the nineteen current entries;
 - deterministic registry ordering.
 
 Adding a backward-compatible public artifact may keep registry version `1.0`.

@@ -30,6 +30,8 @@ DISCREPANCY_REPORT_SPEC = ROOT / "docs" / "spec" / "geotask-discrepancy-report-v
 DISCREPANCY_REPORT_SCHEMA = ROOT / "schemas" / "geotask-discrepancy-report-v0.1.schema.json"
 CORRECTION_REQUEST_SPEC = ROOT / "docs" / "spec" / "geotask-correction-request-v0.1.md"
 CORRECTION_REQUEST_SCHEMA = ROOT / "schemas" / "geotask-correction-request-v0.1.schema.json"
+IMPACT_GRAPH_SPEC = ROOT / "docs" / "spec" / "geotask-impact-graph-v0.1.md"
+IMPACT_GRAPH_SCHEMA = ROOT / "schemas" / "geotask-impact-graph-v0.1.schema.json"
 ARTIFACT_REGISTRY_SPEC = (
     ROOT / "docs" / "spec" / "geotask-artifact-registry-v1.0.md"
 )
@@ -90,6 +92,8 @@ DOCUMENTS = (
     DISCREPANCY_REPORT_SCHEMA,
     CORRECTION_REQUEST_SPEC,
     CORRECTION_REQUEST_SCHEMA,
+    IMPACT_GRAPH_SPEC,
+    IMPACT_GRAPH_SCHEMA,
     ARTIFACT_REGISTRY_SPEC,
     ARTIFACT_REGISTRY_SCHEMA,
     VERSIONED_VALIDATION_SPEC,
@@ -479,6 +483,25 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "#/$defs/correctionRequest"
     )
 
+    impact_text = IMPACT_GRAPH_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "GeoTask Impact Graph v0.1",
+        "geotask.impact-graph",
+        "directed acyclic graph",
+        "validate_impact_graph_bindings",
+        "Source entities",
+        "Reevaluation targets",
+        "does **not** discover impact",
+        "outputs released or actions authorized",
+    ):
+        assert fragment in impact_text
+    impact_schema = json.loads(IMPACT_GRAPH_SCHEMA.read_text(encoding="utf-8"))
+    Draft202012Validator.check_schema(impact_schema)
+    assert impact_schema["$id"].endswith("geotask-impact-graph-v0.1.schema.json")
+    assert impact_schema["properties"]["impact_graph"]["$ref"] == (
+        "#/$defs/impactGraph"
+    )
+
     registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
     for fragment in (
         "GeoTask Artifact Registry v1.0",
@@ -491,6 +514,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.verification-session",
         "geotask.discrepancy-report",
         "geotask.correction-request",
+        "geotask.impact-graph",
         "geotask.execution-result",
         "geotask.control-evaluation",
         "geotask.agent-generation-preparation",
@@ -501,8 +525,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-request",
         "geotask.runtime-response",
         "geotask.core-benchmark-report",
-        "exactly eighteen artifacts",
-        "all nineteen public JSON Schemas",
+        "exactly nineteen artifacts",
+        "all twenty public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

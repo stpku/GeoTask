@@ -138,7 +138,7 @@ This is validation of an already assembled graph. It is not automatic dependency
 
 ## 7. Reevaluation targets
 
-`reevaluation_targets` identify the work that a later Incremental Reevaluation contract may perform. Each target records:
+`reevaluation_targets` identify the work whose outcomes may be recorded by an Incremental Reevaluation Result v0.1 Artifact. Each target records:
 
 - the graph node to reevaluate;
 - state: `required`, `blocked`, `not_required`, or `unknown`;

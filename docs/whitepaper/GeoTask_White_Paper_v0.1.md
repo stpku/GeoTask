@@ -14,7 +14,7 @@
 
 GeoTask 将自身定位为面向智能体的显式、可验证时空世界模型。它把多模态模型、传感器、地图、权威数据和人工输入转化为世界对象、时空关系、状态、证据、约束与行动资格，使智能体依赖的现实事实能够被计算、验证、更新、追溯和纠偏。验错、补证、限定修订、状态复核和行动门控不是最高层定义，而是GeoTask维护可信世界状态的核心机制。
 
-GeoTask不是以视频生成或隐式神经动力学预测为核心的单体世界模型。公共 Core 提供可验证时空世界模型的状态契约、任务与Artifact表示、本地确定性验证、证据绑定、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、控制评估和Agent修订基础；Runtime与Domain Pack负责权威数据、行业规则、本地预测模型、人工复核和生产动作。“可验证时空任务协议”是当前工程实现形式，而自动差异计算、Observation合并、后继状态物化、影响图自动生成与传播执行和增量复核是下一阶段公共抽象。
+GeoTask不是以视频生成或隐式神经动力学预测为核心的单体世界模型。公共 Core 提供可验证时空世界模型的状态契约、任务与Artifact表示、本地确定性验证、证据绑定、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Incremental Reevaluation Result v0.1、控制评估和Agent修订基础；Runtime与Domain Pack负责权威数据、行业规则、本地预测模型、人工复核和生产动作。“可验证时空任务协议”是当前工程实现形式，而自动差异计算、Observation合并、后继状态自动生成、影响图自动发现与传播执行是下一阶段公共抽象。
 
 ## English Abstract
 
@@ -22,7 +22,7 @@ Multimodal foundation models are moving from answering questions to interpreting
 
 GeoTask is an **explicit and verifiable spatiotemporal world model for AI agents**. It converts multimodal-model outputs, sensor observations, maps, authoritative data, and human input into explicit world objects, spatiotemporal relations, state, evidence, constraints, and action eligibility. This makes operational facts computable, verifiable, updateable, traceable, and correctable. Error detection, evidence recovery, bounded revision, state reevaluation, and action gating are mechanisms for maintaining a trustworthy world state rather than the complete definition of GeoTask.
 
-GeoTask is not a monolithic neural world model centered on video generation or implicit dynamics prediction. The public Core provides state and Artifact contracts, task representation, deterministic local verification, provenance and evidence binding, Observation v0.1, World State v0.1, State Transition v0.1, Verification Session v0.1, Discrepancy Report v0.1, Correction Request v0.1, Impact Graph v0.1, control evaluation, and guarded Agent revision. External Runtimes and Domain Packs remain responsible for authoritative sources, domain rules, local predictive models, human review, credentials, and production actions. The verifiable spatiotemporal task protocol is the current engineering form; automatic diff computation, Observation merging, successor-state materialization, automatic impact-graph discovery and propagation execution, and incremental reevaluation remain the next public abstractions.
+GeoTask is not a monolithic neural world model centered on video generation or implicit dynamics prediction. The public Core provides state and Artifact contracts, task representation, deterministic local verification, provenance and evidence binding, Observation v0.1, World State v0.1, State Transition v0.1, Verification Session v0.1, Discrepancy Report v0.1, Correction Request v0.1, Impact Graph v0.1, Incremental Reevaluation Result v0.1, control evaluation, and guarded Agent revision. External Runtimes and Domain Packs remain responsible for authoritative sources, domain rules, local predictive models, human review, credentials, and production actions. The verifiable spatiotemporal task protocol is the current engineering form; automatic diff computation, Observation merging, automatic successor-state generation, and automatic impact-graph discovery and propagation execution remain the next public abstractions.
 
 | 中文核心术语 | English term |
 |---|---|
@@ -109,7 +109,7 @@ State Update / Bounded Correction ← New Observation
         Action Eligibility Gate
 ```
 
-当前公共 Core 已实现世界对象和空间合同、来源与证据绑定、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。自动差异计算、Observation合并、后继状态物化、Impact Graph自动生成与传播执行和增量重算仍是后续工程目标。
+当前公共 Core 已实现世界对象和空间合同、来源与证据绑定、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Incremental Reevaluation Result v0.1、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。自动差异计算、Observation合并、后继状态自动生成以及Impact Graph自动发现与传播执行仍是后续工程目标。
 
 ---
 

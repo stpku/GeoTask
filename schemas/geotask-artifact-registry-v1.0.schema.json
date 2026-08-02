@@ -71,6 +71,7 @@
             "discrepancy_report",
             "correction_request",
             "impact_graph",
+            "incremental_reevaluation_result",
             "execution_result",
             "control_evaluation_result",
             "agent_generation_preparation_report",

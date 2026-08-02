@@ -53,6 +53,10 @@ from geotask_core.v1.impact_graph import (
     ImpactGraphFormatError,
     load_impact_graph,
 )
+from geotask_core.v1.incremental_reevaluation_result import (
+    IncrementalReevaluationResultFormatError,
+    load_incremental_reevaluation_result,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1154,6 +1158,91 @@ def _validate_impact_graph_payload(
     )
 
 
+def _validate_incremental_reevaluation_result_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_incremental_reevaluation_result(payload)
+    except IncrementalReevaluationResultFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_incremental_reevaluation_result",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Incremental Reevaluation "
+                        "Result v0.1. Structural validity does not verify bindings, execute "
+                        "reevaluation, materialize state, release outputs, or authorize actions."
+                    ),
+                ),
+            ),
+        )
+
+    completed_targets = sum(
+        1 for item in result.target_results if item.state == "completed"
+    )
+    satisfied_criteria = sum(
+        1 for item in result.acceptance_results if item.state == "satisfied"
+    )
+    resolved_discrepancies = sum(
+        1 for item in result.discrepancy_results if item.state == "resolved"
+    )
+    released_outputs = sum(
+        1 for item in result.output_gates if item.state == "released"
+    )
+    eligible_actions = sum(
+        1 for item in result.action_gates if item.state == "eligible"
+    )
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "result_id": result.result_id,
+            "state": result.state,
+            "base_world_state_id": result.base_world_state.world_state_id,
+            "base_world_state_revision": result.base_world_state.revision,
+            "successor_world_state_revision": result.successor_world_state.revision,
+            "correction_request_ref_count": len(result.correction_request_refs),
+            "discrepancy_report_ref_count": len(result.discrepancy_report_refs),
+            "execution_result_ref_count": len(result.execution_result_refs),
+            "node_result_count": len(result.node_results),
+            "target_result_count": len(result.target_results),
+            "completed_target_count": completed_targets,
+            "acceptance_result_count": len(result.acceptance_results),
+            "satisfied_acceptance_count": satisfied_criteria,
+            "discrepancy_result_count": len(result.discrepancy_results),
+            "resolved_discrepancy_count": resolved_discrepancies,
+            "released_output_count": released_outputs,
+            "eligible_action_count": eligible_actions,
+            "next_action": result.next_action,
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "base_world_state_binding_verified": False,
+            "successor_world_state_binding_verified": False,
+            "artifact_bindings_verified": False,
+            "impact_graph_coverage_verified": False,
+            "correction_scope_verified": False,
+            "acceptance_criteria_evaluated": False,
+            "discrepancies_resolved": False,
+            "reevaluation_executed": False,
+            "successor_world_state_materialized": False,
+            "outputs_released": False,
+            "external_truth_verified": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1176,6 +1265,12 @@ def _validate_verified_payload(
         return _validate_correction_request_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.impact-graph":
         return _validate_impact_graph_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.incremental-reevaluation-result":
+        return _validate_incremental_reevaluation_result_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
     if descriptor.artifact_id == "geotask.execution-result":
         return _validate_serialized_payload(
             descriptor,

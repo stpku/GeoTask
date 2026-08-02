@@ -48,6 +48,10 @@ from geotask_core.v1.discrepancy_report import (
     DISCREPANCY_REPORT_SCHEMA_ID,
     DISCREPANCY_REPORT_SCHEMA_VERSION,
 )
+from geotask_core.v1.correction_request import (
+    CORRECTION_REQUEST_SCHEMA_ID,
+    CORRECTION_REQUEST_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -113,6 +117,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "discrepancy-report*.json",
         "discrepancy_report*.json",
         "examples/core/discrepancy_report*.json",
+    ),
+    "geotask.correction-request": (
+        "*.geotask-correction-request.json",
+        "correction-request*.json",
+        "correction_request*.json",
+        "examples/core/correction_request*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -322,6 +332,33 @@ _ARTIFACTS = (
         execution_boundary=(
             "Validation does not compare source contents, create a Correction Request, apply a "
             "correction, materialize state, run rechecks, verify external truth, or authorize action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.correction-request",
+        title="GeoTask Correction Request v0.1",
+        kind="correction_request",
+        schema_id=CORRECTION_REQUEST_SCHEMA_ID,
+        schema_version=CORRECTION_REQUEST_SCHEMA_VERSION,
+        schema_path="schemas/geotask-correction-request-v0.1.schema.json",
+        specification_path="docs/spec/geotask-correction-request-v0.1.md",
+        wrapper_key="correction_request",
+        generation_command=None,
+        generation_note=(
+            "Authored or materialized by an Agent or Runtime after a bound Discrepancy Report exists. "
+            "Core validates the request and explicit bindings but does not apply corrections."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.correction-request <correction-request.json>"
+        ),
+        description=(
+            "Bounded successor-World-State request with exact base/report bindings, allowed changes, "
+            "acceptance criteria, immutable-path preservation, and output/action gates."
+        ),
+        execution_boundary=(
+            "Validation does not edit the base snapshot, materialize a successor World State, "
+            "evaluate acceptance criteria, resolve discrepancies, rerun tasks, release outputs, "
+            "or authorize actions."
         ),
     ),
     ArtifactDescriptor(
@@ -691,6 +728,8 @@ __all__ = [
     "VERIFICATION_SESSION_SCHEMA_VERSION",
     "DISCREPANCY_REPORT_SCHEMA_ID",
     "DISCREPANCY_REPORT_SCHEMA_VERSION",
+    "CORRECTION_REQUEST_SCHEMA_ID",
+    "CORRECTION_REQUEST_SCHEMA_VERSION",
     "ARTIFACT_VALIDATION_SCHEMA_ID",
     "ARTIFACT_VALIDATION_SCHEMA_VERSION",
     "AGENT_GENERATION_PREPARATION_SCHEMA_ID",

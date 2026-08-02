@@ -45,6 +45,10 @@ from geotask_core.v1.discrepancy_report import (
     DiscrepancyReportFormatError,
     load_discrepancy_report,
 )
+from geotask_core.v1.correction_request import (
+    CorrectionRequestFormatError,
+    load_correction_request,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1007,6 +1011,71 @@ def _validate_discrepancy_report_payload(
     )
 
 
+def _validate_correction_request_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        request = load_correction_request(payload)
+    except CorrectionRequestFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_correction_request",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Correction Request v0.1. "
+                        "Structural validity does not verify bindings, apply changes, materialize "
+                        "a successor state, evaluate acceptance criteria, release outputs, or "
+                        "authorize actions."
+                    ),
+                ),
+            ),
+        )
+
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "request_id": request.request_id,
+            "state": request.state,
+            "base_world_state_id": request.base_world_state.world_state_id,
+            "base_world_state_revision": request.base_world_state.revision,
+            "minimum_successor_revision": request.output_contract.minimum_revision,
+            "discrepancy_report_ref_count": len(request.discrepancy_report_refs),
+            "supporting_artifact_ref_count": len(request.supporting_artifact_refs),
+            "discrepancy_ref_count": len(request.discrepancy_refs),
+            "change_count": len(request.changes),
+            "review_requirement_count": len(request.review_requirements),
+            "acceptance_criterion_count": len(request.acceptance_criteria),
+            "blocked_output_count": len(request.blocked_outputs),
+            "blocked_action_count": len(request.blocked_actions),
+            "semantic_fingerprint": request.semantic_fingerprint(),
+            "base_world_state_binding_verified": False,
+            "discrepancy_report_bindings_verified": False,
+            "artifact_bindings_verified": False,
+            "correction_scope_verified": False,
+            "changes_applied": False,
+            "successor_world_state_materialized": False,
+            "acceptance_criteria_evaluated": False,
+            "discrepancies_resolved": False,
+            "rechecks_executed": False,
+            "outputs_released": False,
+            "external_truth_verified": False,
+            "action_authorized": False,
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1025,6 +1094,8 @@ def _validate_verified_payload(
         return _validate_verification_session_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.discrepancy-report":
         return _validate_discrepancy_report_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.correction-request":
+        return _validate_correction_request_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.execution-result":
         return _validate_serialized_payload(
             descriptor,

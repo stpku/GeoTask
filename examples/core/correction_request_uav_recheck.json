@@ -1,0 +1,171 @@
+{
+  "correction_request": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-correction-request-v0.1.schema.json",
+    "schema_version": "0.1",
+    "request_id": "fictional-uav-separation-correction-request",
+    "created_at": "2026-07-16T10:01:08+08:00",
+    "state": "required",
+    "reason": "Materialize a successor World State from the telemetry-backed values, preserve route identity and geometry, and keep automatic continuation blocked until the affected temporal assertion is rechecked.",
+    "base_world_state": {
+      "ref_id": "base-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "semantic_fingerprint": "7b432a7d6ee91a2e4bdaea0b4e1abc55bc93bf91a1cd5354ef57e1ac56b4725d",
+      "content_sha256": "77b8edace03ad6261a22c675630b847dca054dfa5de5f9c12c715c7ddd10df7f"
+    },
+    "discrepancy_report_refs": [
+      {
+        "ref_id": "discrepancy-uav-recheck",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-discrepancy-report",
+        "content_sha256": "8e8ebf064066b056f511f8567387e05535088969e1662d84c1a42fe950480945"
+      }
+    ],
+    "supporting_artifact_refs": [
+      {
+        "ref_id": "task-gt16",
+        "artifact_id": "geotask.document",
+        "schema_version": "1.0",
+        "instance_id": "gt16-uav-route-crossing-temporal-separation",
+        "content_sha256": "4e0ece7f4b2f66cb115f3c523c90bf3bffc452a65b472bc70dc68faeac41252b"
+      }
+    ],
+    "observation_refs": [
+      "obs-uav-b-delay-002"
+    ],
+    "evidence_refs": [
+      "telemetry:fictional/uav-b/delay-002",
+      "execution-result:fictional/gt16/temporal-recheck"
+    ],
+    "discrepancy_refs": [
+      {
+        "id": "separation-mismatch",
+        "report_ref": "discrepancy-uav-recheck",
+        "discrepancy_id": "temporal-separation-value-mismatch"
+      }
+    ],
+    "changes": [
+      {
+        "id": "recompute-uav-b-delay",
+        "discrepancy_ref": "separation-mismatch",
+        "subject_kind": "attribute",
+        "target_path": "/objects/uav-b/attributes/delay_seconds/value",
+        "operation": "recompute",
+        "reason": "Recompute the telemetry-derived delay in the successor snapshot from the bound observation instead of editing revision 2 in place.",
+        "basis_refs": [
+          "discrepancy-uav-recheck",
+          "task-gt16"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-b/delay-002"
+        ],
+        "input_fields": [
+          "observation_id",
+          "observed_at",
+          "delay_seconds",
+          "source_reference",
+          "verified_at"
+        ],
+        "acceptance_criterion_refs": [
+          "delay-path-recomputed",
+          "successor-world-state-valid"
+        ],
+        "before": 60
+      },
+      {
+        "id": "recompute-temporal-separation",
+        "discrepancy_ref": "separation-mismatch",
+        "subject_kind": "relation",
+        "target_path": "/relations/uav-temporal-separation/value",
+        "operation": "recompute",
+        "reason": "Recompute the derived temporal-separation relation from the corrected delay and crossing times in the successor snapshot.",
+        "basis_refs": [
+          "discrepancy-uav-recheck",
+          "task-gt16"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-b/delay-002",
+          "execution-result:fictional/gt16/temporal-recheck"
+        ],
+        "input_fields": [
+          "uav_a_crossing_time",
+          "uav_b_crossing_time",
+          "delay_seconds",
+          "calculation_method",
+          "verified_at"
+        ],
+        "acceptance_criterion_refs": [
+          "separation-path-recomputed",
+          "separation-discrepancy-resolved",
+          "successor-world-state-valid"
+        ],
+        "before": 60
+      }
+    ],
+    "review_requirements": [],
+    "acceptance_criteria": [
+      {
+        "id": "delay-path-recomputed",
+        "kind": "path_recomputed",
+        "reason": "The successor World State must contain a newly materialized delay value derived from the declared inputs.",
+        "target_path": "/objects/uav-b/attributes/delay_seconds/value",
+        "output_refs": []
+      },
+      {
+        "id": "separation-path-recomputed",
+        "kind": "path_recomputed",
+        "reason": "The successor World State must contain a newly materialized temporal-separation value derived from the declared inputs.",
+        "target_path": "/relations/uav-temporal-separation/value",
+        "output_refs": []
+      },
+      {
+        "id": "successor-world-state-valid",
+        "kind": "artifact_valid",
+        "reason": "The successor snapshot must pass the registered GeoTask World State validator.",
+        "artifact_id": "geotask.world-state",
+        "output_refs": []
+      },
+      {
+        "id": "separation-discrepancy-resolved",
+        "kind": "discrepancy_resolved",
+        "reason": "The successor snapshot and affected results must no longer retain the original 120-second assumption as current truth.",
+        "discrepancy_ref": "separation-mismatch",
+        "output_refs": []
+      },
+      {
+        "id": "temporal-output-rechecked",
+        "kind": "recheck_completed",
+        "reason": "The affected continuation output must be recalculated against the successor World State before release.",
+        "output_refs": [
+          "continue_route_without_recheck"
+        ]
+      }
+    ],
+    "output_contract": {
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "minimum_revision": 3,
+      "preserve_immutable_paths": true,
+      "require_semantic_fingerprint": true
+    },
+    "blocked_outputs": [
+      "continue_route_without_recheck"
+    ],
+    "blocked_actions": [
+      "automatic_route_continuation"
+    ],
+    "resume_when": "successor_world_state_valid == true and temporal_conflict_rechecked == true",
+    "next_action": "materialize_successor_state"
+  }
+}

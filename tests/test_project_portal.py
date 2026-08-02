@@ -27,8 +27,8 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert "30秒看懂一次世界状态更新" in html
     assert "四个平面构成可验证时空世界模型" in html
     assert "六类能力共同维护智能体的世界" in html
-    assert "Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1" in html
-    assert "自动差异计算、Observation合并、Correction Request、状态物化" in html
+    assert "Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1" in html
+    assert "自动差异计算、Observation合并、后继状态物化" in html
     assert "保护商业运行层" not in html
     assert "商业边界" not in html
     assert "GT01—GT20渐进式案例" in html
@@ -80,6 +80,7 @@ def test_portal_links_primary_public_resources() -> None:
         "docs/spec/geotask-state-transition-v0.1.md",
         "docs/spec/geotask-verification-session-v0.1.md",
         "docs/spec/geotask-discrepancy-report-v0.1.md",
+        "docs/spec/geotask-correction-request-v0.1.md",
         "docs/tutorials/quickstart.zh-CN.md",
         "docs/cookbook/gt01-gt20.zh-CN.md",
         "schemas/geotask-v1.0.schema.json",

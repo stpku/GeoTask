@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, and Discrepancy Report v0.1 bounded-difference records, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, Observation merging, state materialization, Correction Request, executable impact propagation, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
+GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, and Correction Request v0.1 successor-state correction contracts, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, Observation merging, successor-state materialization, executable impact propagation, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -305,11 +305,12 @@ Verification Session v0.1 is implemented as an immutable audit snapshot. It bind
 
 Discrepancy Report v0.1 is implemented as a public bounded-difference Artifact. It binds one World State and exact source bytes, records kind-specific expected/observed values, declares affected paths, assertions, outputs, and actions, and separates mutable from immutable correction scope. Core validates those declarations and bindings but does not compare sources, propagate impact, create a Correction Request, apply correction, materialize state, rerun tasks, or authorize action.
 
+Correction Request v0.1 is implemented as a public successor-state contract. It binds one immutable base World State and exact Discrepancy Reports, constrains requested changes to mutable identity paths, preserves immutable paths, defines operation-specific acceptance criteria, requires a later World State revision, and keeps affected outputs/actions blocked. Core validates structure and explicit bindings but does not edit the base state, apply changes, materialize a successor, evaluate acceptance criteria, release outputs, or authorize action.
+
 Remaining planned public abstractions:
 
 | Planned abstraction | Purpose | Reuses existing capability |
 |---|---|---|
-| `CorrectionRequest` | Give an Agent an explicit bounded correction contract | Agent preparation and revision verification |
 | `ImpactGraph` | Map changed world-state paths to claims, assertions, outputs, and action gates | object refs, assertion refs, output contracts |
 | `ReevaluationResult` | Record preserved, invalidated, and recomputed world findings | execution result and control evaluation |
 | `VerificationProvider` | Describe deterministic operators, rule engines, local predictive models, authoritative data, and human review | operator contracts and Runtime descriptors |

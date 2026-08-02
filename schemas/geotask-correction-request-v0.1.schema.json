@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-correction-request-v0.1.schema.json",
+  "title": "GeoTask Correction Request v0.1",
+  "description": "A bounded request to materialize a successor World State from one immutable base snapshot and one or more exact Discrepancy Reports. Schema validity does not verify bindings, compare sources, apply changes, materialize state, evaluate acceptance criteria, resolve discrepancies, rerun tasks, release outputs, or authorize actions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["correction_request"],
+  "properties": {
+    "correction_request": {"$ref": "#/$defs/correctionRequest"}
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "identityPath": {
+      "type": "string",
+      "pattern": "^/(?!.*//)(?!.*~(?:[^01]|$)).+[^/]$"
+    },
+    "uniqueStrings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonEmptyString"}
+    },
+    "nonEmptyUniqueStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonEmptyString"}
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "instance_id",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"$ref": "#/$defs/nonEmptyString"},
+        "schema_version": {"$ref": "#/$defs/nonEmptyString"},
+        "instance_id": {"$ref": "#/$defs/nonEmptyString"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "discrepancyReportRef": {
+      "allOf": [
+        {"$ref": "#/$defs/artifactRef"},
+        {
+          "type": "object",
+          "properties": {
+            "artifact_id": {"const": "geotask.discrepancy-report"},
+            "schema_version": {"const": "0.1"}
+          }
+        }
+      ]
+    },
+    "worldStateRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "world_state_id",
+        "revision",
+        "as_of",
+        "semantic_fingerprint",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"const": "geotask.world-state"},
+        "schema_version": {"const": "0.1"},
+        "world_state_id": {"$ref": "#/$defs/nonEmptyString"},
+        "revision": {"type": "integer", "minimum": 1},
+        "as_of": {"$ref": "#/$defs/timestamp"},
+        "semantic_fingerprint": {"$ref": "#/$defs/sha256"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "discrepancyRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "report_ref", "discrepancy_id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "report_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "discrepancy_id": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "acceptanceCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "reason", "output_refs"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "kind": {
+          "enum": [
+            "path_equals",
+            "path_absent",
+            "path_recomputed",
+            "artifact_valid",
+            "discrepancy_resolved",
+            "recheck_completed",
+            "human_reviewed"
+          ]
+        },
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "target_path": {"$ref": "#/$defs/identityPath"},
+        "expected": true,
+        "artifact_id": {"$ref": "#/$defs/nonEmptyString"},
+        "discrepancy_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "output_refs": {"$ref": "#/$defs/uniqueStrings"},
+        "reviewer_role": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "discrepancy_ref",
+        "subject_kind",
+        "target_path",
+        "operation",
+        "reason",
+        "basis_refs",
+        "observation_refs",
+        "evidence_refs",
+        "input_fields",
+        "acceptance_criterion_refs"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "discrepancy_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "subject_kind": {"enum": ["object", "attribute", "relation"]},
+        "target_path": {"$ref": "#/$defs/identityPath"},
+        "operation": {"enum": ["add", "replace", "remove", "recompute"]},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "basis_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+        "observation_refs": {"$ref": "#/$defs/uniqueStrings"},
+        "evidence_refs": {"$ref": "#/$defs/uniqueStrings"},
+        "input_fields": {"$ref": "#/$defs/uniqueStrings"},
+        "acceptance_criterion_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+        "before": true,
+        "after": true
+      }
+    },
+    "reviewRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "discrepancy_refs",
+        "reviewer_role",
+        "reason",
+        "affected_paths",
+        "basis_refs"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "discrepancy_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+        "reviewer_role": {"$ref": "#/$defs/nonEmptyString"},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "affected_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identityPath"}
+        },
+        "basis_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"}
+      }
+    },
+    "outputContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "schema_version",
+        "world_state_id",
+        "minimum_revision",
+        "preserve_immutable_paths",
+        "require_semantic_fingerprint"
+      ],
+      "properties": {
+        "artifact_id": {"const": "geotask.world-state"},
+        "schema_version": {"const": "0.1"},
+        "world_state_id": {"$ref": "#/$defs/nonEmptyString"},
+        "minimum_revision": {"type": "integer", "minimum": 2},
+        "preserve_immutable_paths": {"const": true},
+        "require_semantic_fingerprint": {"const": true}
+      }
+    },
+    "correctionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version",
+        "request_id",
+        "created_at",
+        "state",
+        "reason",
+        "base_world_state",
+        "discrepancy_report_refs",
+        "supporting_artifact_refs",
+        "observation_refs",
+        "evidence_refs",
+        "discrepancy_refs",
+        "changes",
+        "review_requirements",
+        "acceptance_criteria",
+        "output_contract",
+        "blocked_outputs",
+        "blocked_actions",
+        "resume_when",
+        "next_action"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://stpku.github.io/GeoTask/schemas/geotask-correction-request-v0.1.schema.json"
+        },
+        "schema_version": {"const": "0.1"},
+        "request_id": {"$ref": "#/$defs/nonEmptyString"},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "state": {"enum": ["required", "need_review", "blocked"]},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "base_world_state": {"$ref": "#/$defs/worldStateRef"},
+        "discrepancy_report_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/discrepancyReportRef"}
+        },
+        "supporting_artifact_refs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/artifactRef"}
+        },
+        "observation_refs": {"$ref": "#/$defs/uniqueStrings"},
+        "evidence_refs": {"$ref": "#/$defs/uniqueStrings"},
+        "discrepancy_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/discrepancyRef"}
+        },
+        "changes": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/change"}
+        },
+        "review_requirements": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/reviewRequirement"}
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/acceptanceCriterion"}
+        },
+        "output_contract": {"$ref": "#/$defs/outputContract"},
+        "blocked_outputs": {"$ref": "#/$defs/uniqueStrings"},
+        "blocked_actions": {"$ref": "#/$defs/uniqueStrings"},
+        "resume_when": {"$ref": "#/$defs/nonEmptyString"},
+        "next_action": {
+          "enum": ["materialize_successor_state", "human_review", "none"]
+        }
+      }
+    }
+  }
+}

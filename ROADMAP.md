@@ -53,7 +53,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布State Transition v0.1 Artifact，以前后World State语义指纹绑定快照，记录Observation支持的对象、属性、关系和行动资格变化，同时明确不自动计算差异、不应用补丁、不物化状态或授权行动；
 - ✅ 已发布Verification Session v0.1 Artifact，绑定一个World State语义指纹与任务、执行结果、控制评估、State Transition及差异制品的精确字节哈希，记录行动资格与复核触发条件，同时明确不验证引用制品语义、不执行任务、控制或复核；
 - ✅ 已发布Discrepancy Report v0.1 Artifact，绑定一个World State语义指纹与精确来源制品字节，记录差异类型、期望值/观测值、影响范围及可变/不可变修订路径，同时明确不自动比较来源、传播影响、生成修订请求或应用纠正；
-- 发布Correction Request、Impact Graph和增量复核结果；
+- ✅ 已发布Correction Request v0.1 Artifact，绑定不可变基准World State与Discrepancy Report，限定后继状态允许变更、验收标准、不可变路径保护及输出/行动门禁，同时明确不原地修改快照、不应用修订、不物化后继状态或释放输出；
+- 发布Impact Graph和增量复核结果；
 - 提供`geotask verify`与`geotask recheck`高层命令，保持本地、显式、可复现的世界状态快照语义；
 - 将GT21—GT28建设为Observation接入、世界状态构建、状态变化、影响传播、限定纠偏和行动门控案例。
 
@@ -125,7 +126,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published State Transition v0.1, binding before/after World State snapshots by semantic fingerprint and recording Observation-supported object, attribute, relation, and action-eligibility changes, while explicitly not calculating diffs, applying patches, materializing state, or authorizing action;
 - ✅ Published Verification Session v0.1, binding one World State semantic fingerprint to exact-byte task, execution-result, control-evaluation, State Transition, and discrepancy references plus action eligibility and recheck triggers, while explicitly not validating linked artifact semantics or executing tasks, controls, or rechecks;
 - ✅ Published Discrepancy Report v0.1, binding one World State semantic fingerprint to exact source-artifact bytes and recording discrepancy kind, expected/observed values, downstream impact, and mutable/immutable correction paths, while explicitly not comparing sources, propagating impact, creating correction requests, or applying corrections;
-- publish Correction Request, Impact Graph, and incremental-reevaluation contracts;
+- ✅ Published Correction Request v0.1, binding one immutable base World State to exact Discrepancy Reports and constraining successor-state changes, acceptance criteria, immutable-path preservation, and output/action gates while explicitly not editing snapshots, applying changes, materializing successors, or releasing outputs;
+- publish Impact Graph and incremental-reevaluation contracts;
 - provide high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible world-state snapshot semantics;
 - build GT21–GT28 around Observation ingestion, world-state construction, state change, impact propagation, bounded correction, and action gating.
 

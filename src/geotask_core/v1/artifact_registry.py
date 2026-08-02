@@ -40,6 +40,10 @@ from geotask_core.v1.state_transition import (
     STATE_TRANSITION_SCHEMA_ID,
     STATE_TRANSITION_SCHEMA_VERSION,
 )
+from geotask_core.v1.verification_session import (
+    VERIFICATION_SESSION_SCHEMA_ID,
+    VERIFICATION_SESSION_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -93,6 +97,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "state-transition*.json",
         "state_transition*.json",
         "examples/core/state_transition*.json",
+    ),
+    "geotask.verification-session": (
+        "*.geotask-verification-session.json",
+        "verification-session*.json",
+        "verification_session*.json",
+        "examples/core/verification_session*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -250,6 +260,32 @@ _ARTIFACTS = (
         execution_boundary=(
             "Validation does not compare snapshots, apply changes, materialize a World State, "
             "verify external truth, rerun tasks, or authorize action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.verification-session",
+        title="GeoTask Verification Session v0.1",
+        kind="verification_session",
+        schema_id=VERIFICATION_SESSION_SCHEMA_ID,
+        schema_version=VERIFICATION_SESSION_SCHEMA_VERSION,
+        schema_path="schemas/geotask-verification-session-v0.1.schema.json",
+        specification_path="docs/spec/geotask-verification-session-v0.1.md",
+        wrapper_key="verification_session",
+        generation_command=None,
+        generation_note=(
+            "Authored or materialized by an Agent or Runtime after the referenced World State "
+            "and artifacts already exist. Core validates the audit snapshot and explicit bindings."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.verification-session <verification-session.json>"
+        ),
+        description=(
+            "Immutable verification audit snapshot binding one World State to exact serialized "
+            "tasks, results, controls, transitions, discrepancies, eligibility, and recheck triggers."
+        ),
+        execution_boundary=(
+            "Validation does not validate linked artifact semantics, execute tasks, evaluate controls, "
+            "run rechecks, verify external truth, materialize state, or authorize action."
         ),
     ),
     ArtifactDescriptor(
@@ -615,6 +651,8 @@ __all__ = [
     "WORLD_STATE_SCHEMA_VERSION",
     "STATE_TRANSITION_SCHEMA_ID",
     "STATE_TRANSITION_SCHEMA_VERSION",
+    "VERIFICATION_SESSION_SCHEMA_ID",
+    "VERIFICATION_SESSION_SCHEMA_VERSION",
     "ARTIFACT_VALIDATION_SCHEMA_ID",
     "ARTIFACT_VALIDATION_SCHEMA_VERSION",
     "AGENT_GENERATION_PREPARATION_SCHEMA_ID",

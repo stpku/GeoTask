@@ -37,6 +37,10 @@ from geotask_core.v1.state_transition import (
     StateTransitionFormatError,
     load_state_transition,
 )
+from geotask_core.v1.verification_session import (
+    VerificationSessionFormatError,
+    load_verification_session,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -833,6 +837,79 @@ def _validate_state_transition_payload(
     )
 
 
+def _validate_verification_session_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        session = load_verification_session(payload)
+    except VerificationSessionFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_verification_session",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Verification Session v0.1. "
+                        "Structural validity does not verify linked artifact semantics, run rechecks, or authorize action."
+                    ),
+                ),
+            ),
+        )
+
+    artifact_ref_count = len(session.all_artifact_refs())
+    blocked_count = sum(
+        1 for item in session.action_eligibility if item.state == "blocked"
+    )
+    unknown_count = sum(
+        1 for item in session.action_eligibility if item.state == "unknown"
+    )
+    satisfied_recheck_count = sum(
+        1 for item in session.recheck_triggers if item.state == "satisfied"
+    )
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "session_id": session.session_id,
+            "state": session.state,
+            "world_state_id": session.world_state.world_state_id,
+            "world_state_revision": session.world_state.revision,
+            "observation_ref_count": len(session.observation_refs),
+            "artifact_ref_count": artifact_ref_count,
+            "task_ref_count": len(session.task_refs),
+            "execution_result_ref_count": len(session.execution_result_refs),
+            "control_evaluation_ref_count": len(session.control_evaluation_refs),
+            "state_transition_ref_count": len(session.state_transition_refs),
+            "discrepancy_ref_count": len(session.discrepancy_refs),
+            "action_eligibility_count": len(session.action_eligibility),
+            "blocked_action_count": blocked_count,
+            "unknown_action_count": unknown_count,
+            "recheck_trigger_count": len(session.recheck_triggers),
+            "satisfied_recheck_count": satisfied_recheck_count,
+            "semantic_fingerprint": session.semantic_fingerprint(),
+            "world_state_binding_verified": False,
+            "artifact_bindings_verified": False,
+            "linked_artifact_semantics_verified": False,
+            "tasks_executed": False,
+            "controls_evaluated": False,
+            "rechecks_executed": False,
+            "external_truth_verified": False,
+            "world_state_materialized": False,
+            "action_authorized": False,
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -847,6 +924,8 @@ def _validate_verified_payload(
         return _validate_world_state_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.state-transition":
         return _validate_state_transition_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.verification-session":
+        return _validate_verification_session_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.execution-result":
         return _validate_serialized_payload(
             descriptor,

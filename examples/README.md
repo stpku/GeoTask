@@ -31,6 +31,11 @@ patent-sensitive workflows.
 - `examples/core/state_transition_uav_separation_recheck.json`: State Transition v0.1 binding both
   snapshot fingerprints and recording two state changes plus one blocked eligibility change, without
   calculating the diff, applying changes, materializing state, or authorizing action.
+- `examples/core/verification_session_uav_execution_result.json`: deterministic GT16 execution result
+  with fixed timestamps for exact-byte Verification Session binding.
+- `examples/core/verification_session_uav_recheck.json`: Verification Session v0.1 binding World State
+  revision 2, the GT16 task, its result, and the State Transition by semantic fingerprint and raw SHA-256,
+  while recording blocked/eligible outputs and one satisfied recheck trigger without executing the recheck.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

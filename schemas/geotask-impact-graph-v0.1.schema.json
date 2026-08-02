@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-impact-graph-v0.1.schema.json",
+  "title": "GeoTask Impact Graph v0.1",
+  "description": "A finite directed acyclic graph of declared impact bound to one World State and exact source Artifacts. Schema validity does not discover impact, execute propagation, apply correction, materialize state, evaluate reevaluation targets, release outputs, or authorize actions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["impact_graph"],
+  "properties": {
+    "impact_graph": {"$ref": "#/$defs/impactGraph"}
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "jsonPointer": {
+      "type": "string",
+      "pattern": "^/(?!.*//)(?!.*~(?:[^01]|$)).+[^/]$"
+    },
+    "uniqueStrings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonEmptyString"}
+    },
+    "nonEmptyUniqueStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonEmptyString"}
+    },
+    "worldStateRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "world_state_id",
+        "revision",
+        "as_of",
+        "semantic_fingerprint",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"const": "geotask.world-state"},
+        "schema_version": {"const": "0.1"},
+        "world_state_id": {"$ref": "#/$defs/nonEmptyString"},
+        "revision": {"type": "integer", "minimum": 1},
+        "as_of": {"$ref": "#/$defs/timestamp"},
+        "semantic_fingerprint": {"$ref": "#/$defs/sha256"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "instance_id",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"$ref": "#/$defs/nonEmptyString"},
+        "schema_version": {"$ref": "#/$defs/nonEmptyString"},
+        "instance_id": {"$ref": "#/$defs/nonEmptyString"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "entityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "artifact_ref", "entity_id"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "kind": {
+          "enum": [
+            "discrepancy",
+            "correction_change",
+            "acceptance_criterion",
+            "review_requirement"
+          ]
+        },
+        "artifact_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "entity_id": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "identity", "impact_state", "reason", "basis_refs"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "kind": {
+          "enum": [
+            "world_state_path",
+            "discrepancy",
+            "correction_change",
+            "acceptance_criterion",
+            "review_requirement",
+            "assertion",
+            "output",
+            "action",
+            "artifact"
+          ]
+        },
+        "identity": {"$ref": "#/$defs/nonEmptyString"},
+        "impact_state": {
+          "enum": ["root", "affected", "blocked", "requires_recheck", "unknown"]
+        },
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "basis_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+        "entity_ref": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "from_node",
+        "to_node",
+        "state",
+        "reason",
+        "basis_refs"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "kind": {
+          "enum": [
+            "changes",
+            "invalidates",
+            "affects",
+            "blocks",
+            "requires",
+            "requires_recheck",
+            "guards"
+          ]
+        },
+        "from_node": {"$ref": "#/$defs/nonEmptyString"},
+        "to_node": {"$ref": "#/$defs/nonEmptyString"},
+        "state": {"enum": ["confirmed", "potential", "unknown"]},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "basis_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"}
+      }
+    },
+    "reevaluationTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "node_ref",
+        "state",
+        "reason",
+        "input_node_refs",
+        "prerequisite_node_refs",
+        "basis_refs"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "node_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "state": {"enum": ["required", "blocked", "not_required", "unknown"]},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "input_node_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+        "prerequisite_node_refs": {"$ref": "#/$defs/uniqueStrings"},
+        "basis_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"}
+      }
+    },
+    "impactGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version",
+        "graph_id",
+        "recorded_at",
+        "state",
+        "reason",
+        "world_state",
+        "artifact_refs",
+        "entity_refs",
+        "root_node_refs",
+        "nodes",
+        "edges",
+        "reevaluation_targets",
+        "blocked_outputs",
+        "blocked_actions"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://stpku.github.io/GeoTask/schemas/geotask-impact-graph-v0.1.schema.json"
+        },
+        "schema_version": {"const": "0.1"},
+        "graph_id": {"$ref": "#/$defs/nonEmptyString"},
+        "recorded_at": {"$ref": "#/$defs/timestamp"},
+        "state": {"enum": ["mapped", "partial", "blocked", "unknown"]},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "world_state": {"$ref": "#/$defs/worldStateRef"},
+        "artifact_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/artifactRef"}
+        },
+        "entity_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/entityRef"}
+        },
+        "root_node_refs": {"$ref": "#/$defs/nonEmptyUniqueStrings"},
+        "nodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/node"}
+        },
+        "edges": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/edge"}
+        },
+        "reevaluation_targets": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/reevaluationTarget"}
+        },
+        "blocked_outputs": {"$ref": "#/$defs/uniqueStrings"},
+        "blocked_actions": {"$ref": "#/$defs/uniqueStrings"}
+      }
+    }
+  }
+}

@@ -69,6 +69,7 @@
             "world_state_transition",
             "verification_session",
             "discrepancy_report",
+            "correction_request",
             "execution_result",
             "control_evaluation_result",
             "agent_generation_preparation_report",

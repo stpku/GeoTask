@@ -24,7 +24,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - **验证与控制机制负责维护世界：** 保留已证实事实，标记冲突和未知，限定纠偏范围，并管理行动资格；
 - **Runtime与Domain Pack负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
 
-> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。Observation v0.1已用于表达带来源和不确定性的世界命题，World State v0.1已用于表达某一时刻可版本化、可校验的显式世界快照，State Transition v0.1已用于绑定前后快照并记录逐路径、关系和行动资格变化，Verification Session v0.1已用于将状态、任务、结果、控制、转换、行动资格和复核触发条件固化为可审计快照，Discrepancy Report v0.1已用于记录差异、影响与可变/不可变修订范围；自动差异计算、Observation合并、Correction Request、状态物化、影响图执行和增量重算仍在持续建设。
+> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。Observation v0.1已用于表达带来源和不确定性的世界命题，World State v0.1已用于表达某一时刻可版本化、可校验的显式世界快照，State Transition v0.1已用于绑定前后快照并记录逐路径、关系和行动资格变化，Verification Session v0.1已用于将状态、任务、结果、控制、转换、行动资格和复核触发条件固化为可审计快照，Discrepancy Report v0.1已用于记录差异、影响与可变/不可变修订范围，Correction Request v0.1已用于约束后继World State的允许变更、验收条件与输出/行动门禁；自动差异计算、Observation合并、后继状态物化、影响图执行和增量重算仍在持续建设。
 
 ## 从这里开始
 
@@ -39,6 +39,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - [State Transition v0.1](docs/spec/geotask-state-transition-v0.1.md)
 - [Verification Session v0.1](docs/spec/geotask-verification-session-v0.1.md)
 - [Discrepancy Report v0.1](docs/spec/geotask-discrepancy-report-v0.1.md)
+- [Correction Request v0.1](docs/spec/geotask-correction-request-v0.1.md)
 - [Agent集成Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
 - [Runtime接口Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
@@ -70,7 +71,7 @@ flowchart LR
   N[新观察到来] --> W
 ```
 
-当前公共Core已经实现世界对象与空间合同、来源与证据绑定、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。自动差异计算、Correction Request、影响图执行、Observation合并、状态物化和增量重算仍属于后续路线图。
+当前公共Core已经实现世界对象与空间合同、来源与证据绑定、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。自动差异计算、影响图执行、Observation合并、后继状态物化和增量重算仍属于后续路线图。
 
 ## 5分钟运行
 

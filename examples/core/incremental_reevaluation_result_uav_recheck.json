@@ -24,7 +24,7 @@
       "revision": 3,
       "as_of": "2026-07-16T10:01:15+08:00",
       "semantic_fingerprint": "adf0cf3a94f3c78825d34f39fb3c3364d304bd6cfa607cb7579848aa1f396645",
-      "content_sha256": "68aa01914e445ecf93316cff423a41cb45fe93952e481b0ca29f77ee063492fb"
+      "content_sha256": "f5cd0b3da1c8ff55feac6ba17589db592d5b280c742a6f575c8bbf82af9beeb6"
     },
     "impact_graph_ref": {
       "ref_id": "impact-graph-uav-recheck",

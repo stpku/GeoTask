@@ -1,0 +1,121 @@
+{
+  "world_state_materialization_result": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-materialization-result-v0.1.schema.json",
+    "schema_version": "0.1",
+    "materialization_id": "fictional-uav-successor-materialization",
+    "created_at": "2026-07-16T10:01:17+08:00",
+    "state": "completed",
+    "reason": "Apply the two telemetry-bound recomputations and preserve all blocked outputs and actions for reevaluation.",
+    "base_world_state": {
+      "ref_id": "base-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "materialized_at": "2026-07-16T10:01:02+08:00",
+      "semantic_fingerprint": "7b432a7d6ee91a2e4bdaea0b4e1abc55bc93bf91a1cd5354ef57e1ac56b4725d",
+      "content_sha256": "77b8edace03ad6261a22c675630b847dca054dfa5de5f9c12c715c7ddd10df7f"
+    },
+    "correction_request_ref": {
+      "ref_id": "correction-uav-recheck",
+      "artifact_id": "geotask.correction-request",
+      "schema_version": "0.1",
+      "instance_id": "fictional-uav-separation-correction-request",
+      "content_sha256": "41a3f73cf9a11b862e0c8a5a6f4b3c243ef74fbd22f0fc9c3cf117a45ca3342b"
+    },
+    "successor_world_state": {
+      "ref_id": "successor-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 3,
+      "as_of": "2026-07-16T10:01:15+08:00",
+      "materialized_at": "2026-07-16T10:01:16+08:00",
+      "semantic_fingerprint": "adf0cf3a94f3c78825d34f39fb3c3364d304bd6cfa607cb7579848aa1f396645",
+      "content_sha256": "f5cd0b3da1c8ff55feac6ba17589db592d5b280c742a6f575c8bbf82af9beeb6"
+    },
+    "applied_changes": [
+      {
+        "change_id": "recompute-temporal-separation",
+        "target_path": "/relations/uav-temporal-separation/value",
+        "operation": "recompute",
+        "state": "applied",
+        "request_basis_refs": [
+          "discrepancy-uav-recheck",
+          "task-gt16"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "execution-result:fictional/gt16/temporal-recheck",
+          "telemetry:fictional/uav-b/delay-002"
+        ],
+        "input_fields": [
+          "calculation_method",
+          "delay_seconds",
+          "uav_a_crossing_time",
+          "uav_b_crossing_time",
+          "verified_at"
+        ],
+        "acceptance_criterion_refs": [
+          "separation-discrepancy-resolved",
+          "separation-path-recomputed",
+          "successor-world-state-valid"
+        ],
+        "before": 60,
+        "after": 60
+      },
+      {
+        "change_id": "recompute-uav-b-delay",
+        "target_path": "/objects/uav-b/attributes/delay_seconds/value",
+        "operation": "recompute",
+        "state": "applied",
+        "request_basis_refs": [
+          "discrepancy-uav-recheck",
+          "task-gt16"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-b/delay-002"
+        ],
+        "input_fields": [
+          "delay_seconds",
+          "observation_id",
+          "observed_at",
+          "source_reference",
+          "verified_at"
+        ],
+        "acceptance_criterion_refs": [
+          "delay-path-recomputed",
+          "successor-world-state-valid"
+        ],
+        "before": 60,
+        "after": 60
+      }
+    ],
+    "preserved_observation_refs": [
+      "obs-uav-b-delay-002"
+    ],
+    "preserved_evidence_refs": [
+      "execution-result:fictional/gt16/spatial-separation",
+      "execution-result:fictional/gt16/temporal-recheck",
+      "telemetry:fictional/uav-b/delay-002"
+    ],
+    "blocked_outputs": [
+      "continue_route_without_recheck"
+    ],
+    "blocked_actions": [
+      "automatic_route_continuation"
+    ],
+    "next_action": "reevaluate_successor_state",
+    "reevaluation_executed": false,
+    "outputs_released": false,
+    "external_truth_verified": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

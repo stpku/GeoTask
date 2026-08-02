@@ -1,0 +1,97 @@
+{
+  "geotask_result": {
+    "schema_version": "1.0",
+    "task_id": "gt16-uav-route-crossing-temporal-separation",
+    "execution": {
+      "mode": "local_only",
+      "status": "completed",
+      "started_at": "2026-07-16T10:00:00+08:00",
+      "finished_at": "2026-07-16T10:00:01+08:00"
+    },
+    "checks": [
+      {
+        "assertion_id": "route_a_crossing_distance",
+        "operator": "point_to_line_distance_2d",
+        "object_refs": [
+          "crossing_point",
+          "route_a"
+        ],
+        "executor": "local",
+        "value": 0.0,
+        "unit": "meter",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      },
+      {
+        "assertion_id": "route_b_crossing_distance",
+        "operator": "point_to_line_distance_2d",
+        "object_refs": [
+          "crossing_point",
+          "route_b"
+        ],
+        "executor": "local",
+        "value": 0.0,
+        "unit": "meter",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      },
+      {
+        "assertion_id": "altitude_conflict",
+        "operator": "altitude_overlap",
+        "object_refs": [
+          "altitude_a",
+          "altitude_b"
+        ],
+        "executor": "local",
+        "value": true,
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      },
+      {
+        "assertion_id": "temporal_conflict",
+        "operator": "time_overlap",
+        "object_refs": [
+          "crossing_time_a",
+          "crossing_time_b"
+        ],
+        "executor": "local",
+        "value": false,
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      }
+    ],
+    "outputs": {
+      "route_a_crossing_distance": 0.0,
+      "route_b_crossing_distance": 0.0,
+      "altitude_conflict": true,
+      "temporal_conflict": false
+    },
+    "summary": {
+      "total_checks": 4,
+      "verified": 4,
+      "contradicted": 0,
+      "need_review": 0,
+      "invalid": 0
+    },
+    "overall": {
+      "status": "verified",
+      "assurance_level": "local_deterministic"
+    },
+    "warnings": [],
+    "errors": []
+  }
+}

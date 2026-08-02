@@ -23,6 +23,7 @@ Never:
 - treat declared provenance or `evidence_refs` as proof that a source was fetched, authenticated, independently verified, or human-reviewed;
 - treat a valid `geotask.world-state` Artifact as proof of external truth, an Observation merge, a State Transition, task re-execution, or action authorization;
 - treat a valid `geotask.state-transition` Artifact as proof that snapshot bindings were checked, a diff was calculated, changes were applied, a new state was materialized, or action was authorized;
+- treat a valid `geotask.verification-session` Artifact as proof that its World State or file bindings were checked, linked Artifact semantics were validated, tasks or rechecks ran, external truth was established, or action was authorized;
 - compare benchmark timing from different hardware as a ranking, production SLA, or model-quality result.
 
 ## Required Workflow

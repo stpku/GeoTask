@@ -48,9 +48,11 @@ patent-sensitive workflows.
   and Correction Request into an eight-node, nine-edge directed acyclic graph from the confirmed discrepancy through
   two correction changes and affected state paths to the temporal assertion, blocked continuation output, blocked
   route action, and two explicit reevaluation targets without discovering or executing propagation.
-- `examples/core/world_state_uav_separation_successor.json`: explicit World State revision 3 used as the already-authored
-  successor snapshot after bounded recomputation; route identity and geometry remain unchanged while the mutable delay
-  and temporal-separation paths are re-materialized with fresh evidence.
+- `examples/core/world_state_uav_separation_successor.json`: canonical World State revision 3 emitted by bounded Core
+  materialization; route identity and geometry remain unchanged while the two requested mutable values are re-materialized.
+- `examples/core/world_state_materialization_result_uav_recheck.json`: World State Materialization Result v0.1 binding
+  the exact base state, Correction Request, and generated successor bytes, with complete applied-change coverage and all
+  output/action gates preserved for later reevaluation.
 - `examples/core/incremental_reevaluation_uav_execution_result.json`: deterministic reevaluation execution result with
   fixed timestamps and four verified GT16 checks, including the recomputed `temporal_conflict=false` assertion.
 - `examples/core/incremental_reevaluation_result_uav_recheck.json`: Incremental Reevaluation Result v0.1 binding the

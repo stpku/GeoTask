@@ -130,7 +130,7 @@ def test_example_loads_round_trips_and_binds() -> None:
     assert result.action_gates[0].authorized is False
     assert result.action_gates[0].executed is False
     assert result.semantic_fingerprint() == (
-        "a855a553cadb2ac368ca55dc7bfd173ee3d31a44817d202a0ddc60ff1cf734ce"
+        "dd43c121f42c925227772fd06eb89fb24a9bed2be26bd358ee09b8dec3810df0"
     )
     assert load_incremental_reevaluation_result(result.to_dict()) == result
     _bind(result)

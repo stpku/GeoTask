@@ -24,7 +24,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - **Verification and control maintain the world:** preserve supported facts, expose conflict and unknown states, constrain correction, and manage action eligibility.
 - **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local predictive models, human review, and production actions.
 
-> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. Observation v0.1 carries source-bound world claims with declared uncertainty, World State v0.1 records explicit versioned snapshots, State Transition v0.1 binds before/after snapshots to explicit path, relation, and eligibility changes, and Verification Session v0.1 freezes state, task, result, control, transition, eligibility, and recheck references into an auditable snapshot; automatic diff computation, Observation merging, state materialization, impact propagation, and incremental reevaluation remain under development.
+> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. Observation v0.1 carries source-bound world claims with declared uncertainty, World State v0.1 records explicit versioned snapshots, State Transition v0.1 binds before/after snapshots to explicit path, relation, and eligibility changes, Verification Session v0.1 freezes state, task, result, control, transition, eligibility, and recheck references into an auditable snapshot, and Discrepancy Report v0.1 records explicit differences, downstream impact, and mutable/immutable correction scope; automatic diff computation, Observation merging, Correction Request, state materialization, executable impact graphs, and incremental reevaluation remain under development.
 
 ## Start here
 
@@ -37,6 +37,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [GeoTask World State v0.1](docs/spec/geotask-world-state-v0.1.md)
 - [GeoTask State Transition v0.1](docs/spec/geotask-state-transition-v0.1.md)
 - [GeoTask Verification Session v0.1](docs/spec/geotask-verification-session-v0.1.md)
+- [GeoTask Discrepancy Report v0.1](docs/spec/geotask-discrepancy-report-v0.1.md)
 - [GeoTask Agent Integration Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
 - [GeoTask Runtime Interface Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
@@ -69,7 +70,7 @@ flowchart LR
   N[New observation arrives] --> W
 ```
 
-The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation v0.1, World State v0.1, State Transition v0.1, Verification Session v0.1, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. Automatic diff computation, general discrepancy reports, impact graphs, Observation merging, state materialization, and incremental reevaluation remain roadmap capabilities.
+The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation v0.1, World State v0.1, State Transition v0.1, Verification Session v0.1, Discrepancy Report v0.1, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. Automatic diff computation, Correction Request, executable impact graphs, Observation merging, state materialization, and incremental reevaluation remain roadmap capabilities.
 
 ## Five-minute quickstart
 

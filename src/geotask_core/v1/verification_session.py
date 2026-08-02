@@ -596,8 +596,8 @@ def load_verification_session(payload: Mapping[str, object]) -> VerificationSess
     discrepancy_refs = _load_artifact_refs(
         body["discrepancy_refs"],
         "verification_session.discrepancy_refs",
-        expected_artifact_id=None,
-        expected_schema_version=None,
+        expected_artifact_id="geotask.discrepancy-report",
+        expected_schema_version="0.1",
         non_empty=False,
         global_ref_ids=global_ref_ids,
     )

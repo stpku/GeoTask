@@ -116,6 +116,18 @@
         }
       ]
     },
+    "discrepancyReportRef": {
+      "allOf": [
+        {"$ref": "#/$defs/artifactRef"},
+        {
+          "type": "object",
+          "properties": {
+            "artifact_id": {"const": "geotask.discrepancy-report"},
+            "schema_version": {"const": "0.1"}
+          }
+        }
+      ]
+    },
     "actionEligibility": {
       "type": "object",
       "additionalProperties": false,
@@ -216,7 +228,7 @@
         },
         "discrepancy_refs": {
           "type": "array",
-          "items": {"$ref": "#/$defs/artifactRef"}
+          "items": {"$ref": "#/$defs/discrepancyReportRef"}
         },
         "action_eligibility": {
           "type": "array",

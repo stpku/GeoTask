@@ -41,6 +41,10 @@ from geotask_core.v1.verification_session import (
     VerificationSessionFormatError,
     load_verification_session,
 )
+from geotask_core.v1.discrepancy_report import (
+    DiscrepancyReportFormatError,
+    load_discrepancy_report,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -910,6 +914,99 @@ def _validate_verification_session_payload(
     )
 
 
+def _validate_discrepancy_report_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        report = load_discrepancy_report(payload)
+    except DiscrepancyReportFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_discrepancy_report",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Discrepancy Report v0.1. "
+                        "Structural validity does not compare source contents, prove a "
+                        "discrepancy, propagate impact, apply correction, or authorize action."
+                    ),
+                ),
+            ),
+        )
+
+    confirmed_count = sum(
+        1 for item in report.discrepancies if item.state == "confirmed"
+    )
+    need_review_count = sum(
+        1 for item in report.discrepancies if item.state == "need_review"
+    )
+    unknown_count = sum(
+        1 for item in report.discrepancies if item.state == "unknown"
+    )
+    critical_count = sum(
+        1 for item in report.discrepancies if item.severity == "critical"
+    )
+    affected_paths = {
+        path
+        for item in report.discrepancies
+        for path in item.impact.affected_paths
+    }
+    mutable_paths = {
+        path
+        for item in report.discrepancies
+        for path in item.correction_scope.mutable_paths
+    }
+    immutable_paths = {
+        path
+        for item in report.discrepancies
+        for path in item.correction_scope.immutable_paths
+    }
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "report_id": report.report_id,
+            "state": report.state,
+            "severity": report.severity,
+            "world_state_id": report.world_state.world_state_id,
+            "world_state_revision": report.world_state.revision,
+            "discrepancy_count": len(report.discrepancies),
+            "confirmed_discrepancy_count": confirmed_count,
+            "need_review_discrepancy_count": need_review_count,
+            "unknown_discrepancy_count": unknown_count,
+            "critical_discrepancy_count": critical_count,
+            "artifact_ref_count": len(report.artifact_refs),
+            "observation_ref_count": len(report.observation_refs),
+            "evidence_ref_count": len(report.evidence_refs),
+            "affected_path_count": len(affected_paths),
+            "mutable_path_count": len(mutable_paths),
+            "immutable_path_count": len(immutable_paths),
+            "semantic_fingerprint": report.semantic_fingerprint(),
+            "world_state_binding_verified": False,
+            "artifact_bindings_verified": False,
+            "source_artifact_semantics_verified": False,
+            "discrepancies_computed": False,
+            "impact_propagated": False,
+            "correction_request_created": False,
+            "corrections_applied": False,
+            "world_state_materialized": False,
+            "rechecks_executed": False,
+            "external_truth_verified": False,
+            "action_authorized": False,
+        },
+    )
+
+
 def _validate_verified_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -926,6 +1023,8 @@ def _validate_verified_payload(
         return _validate_state_transition_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.verification-session":
         return _validate_verification_session_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id == "geotask.discrepancy-report":
+        return _validate_discrepancy_report_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.execution-result":
         return _validate_serialized_payload(
             descriptor,

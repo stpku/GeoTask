@@ -102,6 +102,25 @@ def test_verification_session_rejects_time_and_artifact_type_mismatches() -> Non
     with pytest.raises(VerificationSessionFormatError, match="must equal '1.0'"):
         load_verification_session(payload)
 
+    discrepancy_ref = {
+        "ref_id": "discrepancy-uav-recheck",
+        "artifact_id": "geotask.execution-result",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-discrepancy-report",
+        "content_sha256": "0" * 64,
+    }
+    payload = _payload()
+    payload["verification_session"]["discrepancy_refs"] = [discrepancy_ref]
+    with pytest.raises(VerificationSessionFormatError, match="geotask.discrepancy-report"):
+        load_verification_session(payload)
+
+    payload = _payload()
+    discrepancy_ref["artifact_id"] = "geotask.discrepancy-report"
+    discrepancy_ref["schema_version"] = "1.0"
+    payload["verification_session"]["discrepancy_refs"] = [discrepancy_ref]
+    with pytest.raises(VerificationSessionFormatError, match="must equal '0.1'"):
+        load_verification_session(payload)
+
 
 def test_verification_session_rejects_open_and_duplicate_references() -> None:
     payload = _payload()

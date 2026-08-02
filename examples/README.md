@@ -36,6 +36,10 @@ patent-sensitive workflows.
 - `examples/core/verification_session_uav_recheck.json`: Verification Session v0.1 binding World State
   revision 2, the GT16 task, its result, and the State Transition by semantic fingerprint and raw SHA-256,
   while recording blocked/eligible outputs and one satisfied recheck trigger without executing the recheck.
+- `examples/core/discrepancy_report_uav_recheck.json`: Discrepancy Report v0.1 binding the later World State
+  and four exact source Artifacts, recording a 120-to-60-second relation mismatch, a stale historical result,
+  confirmed downstream impact, mutable telemetry-derived paths, and immutable route/result paths without
+  comparing sources, applying corrections, or authorizing action.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

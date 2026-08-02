@@ -26,6 +26,8 @@ STATE_TRANSITION_SPEC = ROOT / "docs" / "spec" / "geotask-state-transition-v0.1.
 STATE_TRANSITION_SCHEMA = ROOT / "schemas" / "geotask-state-transition-v0.1.schema.json"
 VERIFICATION_SESSION_SPEC = ROOT / "docs" / "spec" / "geotask-verification-session-v0.1.md"
 VERIFICATION_SESSION_SCHEMA = ROOT / "schemas" / "geotask-verification-session-v0.1.schema.json"
+DISCREPANCY_REPORT_SPEC = ROOT / "docs" / "spec" / "geotask-discrepancy-report-v0.1.md"
+DISCREPANCY_REPORT_SCHEMA = ROOT / "schemas" / "geotask-discrepancy-report-v0.1.schema.json"
 ARTIFACT_REGISTRY_SPEC = (
     ROOT / "docs" / "spec" / "geotask-artifact-registry-v1.0.md"
 )
@@ -82,6 +84,8 @@ DOCUMENTS = (
     STATE_TRANSITION_SCHEMA,
     VERIFICATION_SESSION_SPEC,
     VERIFICATION_SESSION_SCHEMA,
+    DISCREPANCY_REPORT_SPEC,
+    DISCREPANCY_REPORT_SCHEMA,
     ARTIFACT_REGISTRY_SPEC,
     ARTIFACT_REGISTRY_SCHEMA,
     VERSIONED_VALIDATION_SPEC,
@@ -425,6 +429,29 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "#/$defs/verificationSession"
     )
 
+    discrepancy_text = DISCREPANCY_REPORT_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "GeoTask Discrepancy Report v0.1",
+        "geotask.discrepancy-report",
+        "immutable audit record",
+        "validate_discrepancy_report_bindings",
+        "identity-based JSON Pointer",
+        "Mutable and immutable paths",
+        "does **not** prove",
+        "action authorization",
+    ):
+        assert fragment in discrepancy_text
+    discrepancy_schema = json.loads(
+        DISCREPANCY_REPORT_SCHEMA.read_text(encoding="utf-8")
+    )
+    Draft202012Validator.check_schema(discrepancy_schema)
+    assert discrepancy_schema["$id"].endswith(
+        "geotask-discrepancy-report-v0.1.schema.json"
+    )
+    assert discrepancy_schema["properties"]["discrepancy_report"]["$ref"] == (
+        "#/$defs/discrepancyReport"
+    )
+
     registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
     for fragment in (
         "GeoTask Artifact Registry v1.0",
@@ -435,6 +462,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.world-state",
         "geotask.state-transition",
         "geotask.verification-session",
+        "geotask.discrepancy-report",
         "geotask.execution-result",
         "geotask.control-evaluation",
         "geotask.agent-generation-preparation",
@@ -445,8 +473,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-request",
         "geotask.runtime-response",
         "geotask.core-benchmark-report",
-        "exactly sixteen artifacts",
-        "all seventeen public JSON Schemas",
+        "exactly seventeen artifacts",
+        "all eighteen public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

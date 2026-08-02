@@ -1,0 +1,157 @@
+{
+  "discrepancy_report": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-discrepancy-report-v0.1.schema.json",
+    "schema_version": "0.1",
+    "report_id": "fictional-uav-separation-discrepancy-report",
+    "recorded_at": "2026-07-16T10:01:06+08:00",
+    "state": "confirmed",
+    "severity": "high",
+    "reason": "The later telemetry-backed World State no longer supports the original temporal-separation assumption or reuse of the initial execution result without recheck.",
+    "world_state": {
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "semantic_fingerprint": "7b432a7d6ee91a2e4bdaea0b4e1abc55bc93bf91a1cd5354ef57e1ac56b4725d"
+    },
+    "observation_refs": [
+      "obs-uav-b-delay-002"
+    ],
+    "evidence_refs": [
+      "telemetry:fictional/uav-b/delay-002",
+      "execution-result:fictional/gt16/temporal-recheck"
+    ],
+    "artifact_refs": [
+      {
+        "ref_id": "task-gt16",
+        "artifact_id": "geotask.document",
+        "schema_version": "1.0",
+        "instance_id": "gt16-uav-route-crossing-temporal-separation",
+        "content_sha256": "4e0ece7f4b2f66cb115f3c523c90bf3bffc452a65b472bc70dc68faeac41252b"
+      },
+      {
+        "ref_id": "result-gt16-initial",
+        "artifact_id": "geotask.execution-result",
+        "schema_version": "1.0",
+        "instance_id": "gt16-uav-route-crossing-temporal-separation-result",
+        "content_sha256": "d1417586256e12985ef3ea98bd9ba54537706649e86a96dccffb3565579f1cc3"
+      },
+      {
+        "ref_id": "transition-uav-recheck",
+        "artifact_id": "geotask.state-transition",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-recheck-transition",
+        "content_sha256": "1aeffc61c3aa8b3b214cb4e1ee699091269f5df7b13109c727af73cbc19781dc"
+      },
+      {
+        "ref_id": "session-uav-recheck",
+        "artifact_id": "geotask.verification-session",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-verification-session",
+        "content_sha256": "57fc26f7f98c62ff1d5eab3ff53690b4ff402e51912e0f1004f8871548e83384"
+      }
+    ],
+    "discrepancies": [
+      {
+        "id": "temporal-separation-value-mismatch",
+        "kind": "value_mismatch",
+        "state": "confirmed",
+        "severity": "high",
+        "subject_kind": "relation",
+        "subject_path": "/relations/uav-temporal-separation/value",
+        "summary": "Temporal separation fell from the original 120-second assumption to 60 seconds.",
+        "reason": "The later telemetry Observation records a sixty-second delay for UAV-B, and the bound State Transition records the corresponding relation change.",
+        "basis_refs": [
+          "result-gt16-initial",
+          "transition-uav-recheck",
+          "session-uav-recheck"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-b/delay-002",
+          "execution-result:fictional/gt16/temporal-recheck"
+        ],
+        "expected": 120,
+        "observed": 60,
+        "impact": {
+          "state": "confirmed",
+          "reason": "The changed relation affects the temporal-conflict assertion and blocks continuation without another recheck.",
+          "affected_paths": [
+            "/objects/uav-b/attributes/delay_seconds/value",
+            "/relations/uav-temporal-separation/value",
+            "/action_eligibility/continue_route_without_recheck/state"
+          ],
+          "affected_assertion_refs": [
+            "temporal_conflict"
+          ],
+          "affected_output_refs": [
+            "continue_route_without_recheck"
+          ],
+          "affected_action_refs": [
+            "automatic_route_continuation"
+          ]
+        },
+        "correction_scope": {
+          "state": "allowed",
+          "reason": "A later bounded correction may update the telemetry-derived delay and dependent temporal relation, but must not alter route identity or geometry.",
+          "mutable_paths": [
+            "/objects/uav-b/attributes/delay_seconds/value",
+            "/relations/uav-temporal-separation/value"
+          ],
+          "immutable_paths": [
+            "/objects/uav-a/attributes/route_id",
+            "/objects/uav-b/attributes/route_id",
+            "/relations/uav-route-crossing"
+          ]
+        }
+      },
+      {
+        "id": "initial-temporal-result-stale",
+        "kind": "stale_claim",
+        "state": "confirmed",
+        "severity": "medium",
+        "subject_kind": "artifact",
+        "subject_path": "/artifacts/result-gt16-initial/checks/temporal_conflict/value",
+        "summary": "The initial temporal-conflict result is stale relative to World State revision 2.",
+        "reason": "The initial result was produced before the later delay Observation and cannot be edited in place or reused as current-state evidence.",
+        "basis_refs": [
+          "result-gt16-initial",
+          "transition-uav-recheck",
+          "session-uav-recheck"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ],
+        "evidence_refs": [
+          "execution-result:fictional/gt16/temporal-recheck"
+        ],
+        "observed": false,
+        "impact": {
+          "state": "confirmed",
+          "reason": "The stale result must not release the previously eligible continuation output.",
+          "affected_paths": [
+            "/action_eligibility/continue_route_without_recheck/state"
+          ],
+          "affected_assertion_refs": [
+            "temporal_conflict"
+          ],
+          "affected_output_refs": [
+            "continue_route_without_recheck"
+          ],
+          "affected_action_refs": [
+            "automatic_route_continuation"
+          ]
+        },
+        "correction_scope": {
+          "state": "blocked",
+          "reason": "Historical execution results are immutable; a later Correction Request may request re-execution but may not rewrite the original artifact.",
+          "mutable_paths": [],
+          "immutable_paths": [
+            "/artifacts/result-gt16-initial"
+          ]
+        }
+      }
+    ]
+  }
+}

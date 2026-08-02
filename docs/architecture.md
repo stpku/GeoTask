@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, State Transition v0.1 snapshot bindings, and Verification Session v0.1 audit snapshots, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, Observation merging, state materialization, discrepancy contracts, impact propagation, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
+GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, and Discrepancy Report v0.1 bounded-difference records, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, Observation merging, state materialization, Correction Request, executable impact propagation, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -301,13 +301,14 @@ World State v0.1 is implemented as a public world-model Artifact. It records one
 
 State Transition v0.1 is implemented as a public audit Artifact. It binds an earlier and later World State by ID, revision, snapshot time, and deterministic semantic fingerprint, then records Observation-supported object, attribute, relation, and action-eligibility changes using identity-based paths. Core can validate those bindings against two loaded snapshots, but it does not calculate the diff, apply the declared changes, materialize a state, verify truth, rerun tasks, or authorize action.
 
-Verification Session v0.1 is implemented as an immutable audit snapshot. It binds one World State semantic fingerprint to exact serialized task, execution-result, control-evaluation, State Transition, and discrepancy references, then records action eligibility and recheck triggers. Core can verify the state binding and raw artifact SHA-256 digests, but linked artifact semantics and operational execution remain separate validation layers.
+Verification Session v0.1 is implemented as an immutable audit snapshot. It binds one World State semantic fingerprint to exact serialized task, execution-result, control-evaluation, State Transition, and Discrepancy Report references, then records action eligibility and recheck triggers. Core can verify the state binding and raw artifact SHA-256 digests, but linked artifact semantics and operational execution remain separate validation layers.
+
+Discrepancy Report v0.1 is implemented as a public bounded-difference Artifact. It binds one World State and exact source bytes, records kind-specific expected/observed values, declares affected paths, assertions, outputs, and actions, and separates mutable from immutable correction scope. Core validates those declarations and bindings but does not compare sources, propagate impact, create a Correction Request, apply correction, materialize state, rerun tasks, or authorize action.
 
 Remaining planned public abstractions:
 
 | Planned abstraction | Purpose | Reuses existing capability |
 |---|---|---|
-| `DiscrepancyReport` | Explain which world claim differs, why, impact, mutable scope, and immutable paths | execution result, evaluator, revision request |
 | `CorrectionRequest` | Give an Agent an explicit bounded correction contract | Agent preparation and revision verification |
 | `ImpactGraph` | Map changed world-state paths to claims, assertions, outputs, and action gates | object refs, assertion refs, output contracts |
 | `ReevaluationResult` | Record preserved, invalidated, and recomputed world findings | execution result and control evaluation |

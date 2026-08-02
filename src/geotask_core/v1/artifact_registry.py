@@ -44,6 +44,10 @@ from geotask_core.v1.verification_session import (
     VERIFICATION_SESSION_SCHEMA_ID,
     VERIFICATION_SESSION_SCHEMA_VERSION,
 )
+from geotask_core.v1.discrepancy_report import (
+    DISCREPANCY_REPORT_SCHEMA_ID,
+    DISCREPANCY_REPORT_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -103,6 +107,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "verification-session*.json",
         "verification_session*.json",
         "examples/core/verification_session*.json",
+    ),
+    "geotask.discrepancy-report": (
+        "*.geotask-discrepancy-report.json",
+        "discrepancy-report*.json",
+        "discrepancy_report*.json",
+        "examples/core/discrepancy_report*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -286,6 +296,32 @@ _ARTIFACTS = (
         execution_boundary=(
             "Validation does not validate linked artifact semantics, execute tasks, evaluate controls, "
             "run rechecks, verify external truth, materialize state, or authorize action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.discrepancy-report",
+        title="GeoTask Discrepancy Report v0.1",
+        kind="discrepancy_report",
+        schema_id=DISCREPANCY_REPORT_SCHEMA_ID,
+        schema_version=DISCREPANCY_REPORT_SCHEMA_VERSION,
+        schema_path="schemas/geotask-discrepancy-report-v0.1.schema.json",
+        specification_path="docs/spec/geotask-discrepancy-report-v0.1.md",
+        wrapper_key="discrepancy_report",
+        generation_command=None,
+        generation_note=(
+            "Authored or materialized by an Agent or Runtime after explicit source comparison. "
+            "Core validates the report and explicit bindings but does not discover discrepancies."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.discrepancy-report <discrepancy-report.json>"
+        ),
+        description=(
+            "Auditable discrepancy findings bound to one World State and exact source artifacts, "
+            "including expected/observed values, downstream impact, and bounded correction scope."
+        ),
+        execution_boundary=(
+            "Validation does not compare source contents, create a Correction Request, apply a "
+            "correction, materialize state, run rechecks, verify external truth, or authorize action."
         ),
     ),
     ArtifactDescriptor(
@@ -653,6 +689,8 @@ __all__ = [
     "STATE_TRANSITION_SCHEMA_VERSION",
     "VERIFICATION_SESSION_SCHEMA_ID",
     "VERIFICATION_SESSION_SCHEMA_VERSION",
+    "DISCREPANCY_REPORT_SCHEMA_ID",
+    "DISCREPANCY_REPORT_SCHEMA_VERSION",
     "ARTIFACT_VALIDATION_SCHEMA_ID",
     "ARTIFACT_VALIDATION_SCHEMA_VERSION",
     "AGENT_GENERATION_PREPARATION_SCHEMA_ID",

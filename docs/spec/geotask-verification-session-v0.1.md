@@ -69,7 +69,7 @@ The Session separates linked artifacts into five lists:
 | `execution_result_refs` | `geotask.execution-result` / `1.0` | one or more |
 | `control_evaluation_refs` | `geotask.control-evaluation` / `1.0` | zero or more |
 | `state_transition_refs` | `geotask.state-transition` / `0.1` | zero or more |
-| `discrepancy_refs` | explicitly declared Artifact ID and version | zero or more |
+| `discrepancy_refs` | `geotask.discrepancy-report` / `0.1` | zero or more |
 
 Every artifact reference contains:
 

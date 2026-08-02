@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-discrepancy-report-v0.1.schema.json",
+  "title": "GeoTask Discrepancy Report v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["discrepancy_report"],
+  "properties": {
+    "discrepancy_report": {"$ref": "#/$defs/discrepancyReport"}
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "jsonPointer": {
+      "type": "string",
+      "pattern": "^/(?:[^/~]|~[01])+(?:/(?:[^/~]|~[01])+)*$"
+    },
+    "stringSet": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/nonEmptyString"},
+      "uniqueItems": true
+    },
+    "worldStateRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["world_state_id", "revision", "as_of", "semantic_fingerprint"],
+      "properties": {
+        "world_state_id": {"$ref": "#/$defs/nonEmptyString"},
+        "revision": {"type": "integer", "minimum": 1},
+        "as_of": {"$ref": "#/$defs/timestamp"},
+        "semantic_fingerprint": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref_id", "artifact_id", "schema_version", "instance_id", "content_sha256"],
+      "properties": {
+        "ref_id": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"$ref": "#/$defs/nonEmptyString"},
+        "schema_version": {"$ref": "#/$defs/nonEmptyString"},
+        "instance_id": {"$ref": "#/$defs/nonEmptyString"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reason",
+        "affected_paths",
+        "affected_assertion_refs",
+        "affected_output_refs",
+        "affected_action_refs"
+      ],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["none", "potential", "confirmed", "unknown"]
+        },
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "affected_paths": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/jsonPointer"},
+          "uniqueItems": true
+        },
+        "affected_assertion_refs": {"$ref": "#/$defs/stringSet"},
+        "affected_output_refs": {"$ref": "#/$defs/stringSet"},
+        "affected_action_refs": {"$ref": "#/$defs/stringSet"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "none"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "affected_paths": {"maxItems": 0},
+              "affected_assertion_refs": {"maxItems": 0},
+              "affected_output_refs": {"maxItems": 0},
+              "affected_action_refs": {"maxItems": 0}
+            }
+          }
+        }
+      ]
+    },
+    "correctionScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "reason", "mutable_paths", "immutable_paths"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["allowed", "blocked", "need_review", "not_applicable"]
+        },
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "mutable_paths": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/jsonPointer"},
+          "uniqueItems": true
+        },
+        "immutable_paths": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/jsonPointer"},
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"const": "allowed"}}, "required": ["state"]},
+          "then": {"properties": {"mutable_paths": {"minItems": 1}}}
+        },
+        {
+          "if": {"properties": {"state": {"const": "blocked"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "mutable_paths": {"maxItems": 0},
+              "immutable_paths": {"minItems": 1}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"state": {"const": "not_applicable"}}, "required": ["state"]},
+          "then": {
+            "properties": {
+              "mutable_paths": {"maxItems": 0},
+              "immutable_paths": {"maxItems": 0}
+            }
+          }
+        }
+      ]
+    },
+    "discrepancy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "state",
+        "severity",
+        "subject_kind",
+        "subject_path",
+        "summary",
+        "reason",
+        "basis_refs",
+        "observation_refs",
+        "evidence_refs",
+        "impact",
+        "correction_scope"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmptyString"},
+        "kind": {
+          "type": "string",
+          "enum": [
+            "value_mismatch",
+            "missing_claim",
+            "unexpected_claim",
+            "stale_claim",
+            "source_conflict",
+            "validity_conflict",
+            "uncertainty_conflict",
+            "unsupported_claim"
+          ]
+        },
+        "state": {
+          "type": "string",
+          "enum": ["detected", "confirmed", "need_review", "unknown"]
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"]
+        },
+        "subject_kind": {
+          "type": "string",
+          "enum": ["object", "attribute", "relation", "action_eligibility", "claim", "artifact"]
+        },
+        "subject_path": {"$ref": "#/$defs/jsonPointer"},
+        "summary": {"$ref": "#/$defs/nonEmptyString"},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "basis_refs": {
+          "allOf": [
+            {"$ref": "#/$defs/stringSet"},
+            {"minItems": 1}
+          ]
+        },
+        "observation_refs": {"$ref": "#/$defs/stringSet"},
+        "evidence_refs": {"$ref": "#/$defs/stringSet"},
+        "expected": true,
+        "observed": true,
+        "impact": {"$ref": "#/$defs/impact"},
+        "correction_scope": {"$ref": "#/$defs/correctionScope"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": ["value_mismatch", "source_conflict", "validity_conflict", "uncertainty_conflict"]
+              }
+            },
+            "required": ["kind"]
+          },
+          "then": {"required": ["expected", "observed"]}
+        },
+        {
+          "if": {"properties": {"kind": {"const": "missing_claim"}}, "required": ["kind"]},
+          "then": {
+            "required": ["expected"],
+            "not": {"required": ["observed"]}
+          }
+        },
+        {
+          "if": {"properties": {"kind": {"const": "unexpected_claim"}}, "required": ["kind"]},
+          "then": {
+            "required": ["observed"],
+            "not": {"required": ["expected"]}
+          }
+        },
+        {
+          "if": {
+            "properties": {"kind": {"enum": ["stale_claim", "unsupported_claim"]}},
+            "required": ["kind"]
+          },
+          "then": {"required": ["observed"]}
+        }
+      ]
+    },
+    "discrepancyReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version",
+        "report_id",
+        "recorded_at",
+        "state",
+        "severity",
+        "reason",
+        "world_state",
+        "observation_refs",
+        "evidence_refs",
+        "artifact_refs",
+        "discrepancies"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://stpku.github.io/GeoTask/schemas/geotask-discrepancy-report-v0.1.schema.json"
+        },
+        "schema_version": {"const": "0.1"},
+        "report_id": {"$ref": "#/$defs/nonEmptyString"},
+        "recorded_at": {"$ref": "#/$defs/timestamp"},
+        "state": {
+          "type": "string",
+          "enum": ["detected", "confirmed", "need_review", "unknown"]
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"]
+        },
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "world_state": {"$ref": "#/$defs/worldStateRef"},
+        "observation_refs": {"$ref": "#/$defs/stringSet"},
+        "evidence_refs": {"$ref": "#/$defs/stringSet"},
+        "artifact_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/artifactRef"}
+        },
+        "discrepancies": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/discrepancy"}
+        }
+      }
+    }
+  }
+}

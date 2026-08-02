@@ -60,6 +60,10 @@ from geotask_core.v1.incremental_reevaluation_result import (
     INCREMENTAL_REEVALUATION_RESULT_SCHEMA_ID,
     INCREMENTAL_REEVALUATION_RESULT_SCHEMA_VERSION,
 )
+from geotask_core.v1.world_state_materialization import (
+    WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_ID,
+    WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -143,6 +147,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "incremental-reevaluation-result*.json",
         "incremental_reevaluation_result*.json",
         "examples/core/incremental_reevaluation_result*.json",
+    ),
+    "geotask.world-state-materialization-result": (
+        "*.geotask-world-state-materialization-result.json",
+        "world-state-materialization-result*.json",
+        "world_state_materialization_result*.json",
+        "examples/core/world_state_materialization_result*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -436,6 +446,38 @@ _ARTIFACTS = (
         execution_boundary=(
             "Validation does not run reevaluation, generate a successor World State, discover "
             "impact, execute propagation, authorize an action, or execute an action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.world-state-materialization-result",
+        title="GeoTask World State Materialization Result v0.1",
+        kind="world_state_materialization_result",
+        schema_id=WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_ID,
+        schema_version=WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_VERSION,
+        schema_path=(
+            "schemas/geotask-world-state-materialization-result-v0.1.schema.json"
+        ),
+        specification_path=(
+            "docs/spec/geotask-world-state-materialization-result-v0.1.md"
+        ),
+        wrapper_key="world_state_materialization_result",
+        generation_command=None,
+        generation_note=(
+            "Produced by bounded Core materialization from one exact base World State, "
+            "one required Correction Request, and explicit recompute values."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.world-state-materialization-result "
+            "<world-state-materialization-result.json>"
+        ),
+        description=(
+            "Immutable result binding exact base/request/successor bytes and every applied "
+            "bounded change while preserving output and action gates for later reevaluation."
+        ),
+        execution_boundary=(
+            "Validation does not prove exact bindings or execution; materialization does not "
+            "guess recompute values, merge observations, run reevaluation, release outputs, "
+            "verify external truth, authorize actions, or execute actions."
         ),
     ),
     ArtifactDescriptor(

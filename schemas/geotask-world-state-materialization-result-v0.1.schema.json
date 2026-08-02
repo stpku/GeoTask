@@ -1,0 +1,333 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-materialization-result-v0.1.schema.json",
+  "title": "GeoTask World State Materialization Result v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "world_state_materialization_result"
+  ],
+  "properties": {
+    "world_state_materialization_result": {
+      "$ref": "#/$defs/materializationResult"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "instance_id",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "artifact_id": {
+          "const": "geotask.correction-request"
+        },
+        "schema_version": {
+          "const": "0.1"
+        },
+        "instance_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "worldStateRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "world_state_id",
+        "revision",
+        "as_of",
+        "materialized_at",
+        "semantic_fingerprint",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "artifact_id": {
+          "const": "geotask.world-state"
+        },
+        "schema_version": {
+          "const": "0.1"
+        },
+        "world_state_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "as_of": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "materialized_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "semantic_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "appliedChange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "change_id",
+        "target_path",
+        "operation",
+        "state",
+        "request_basis_refs",
+        "observation_refs",
+        "evidence_refs",
+        "input_fields",
+        "acceptance_criterion_refs"
+      ],
+      "properties": {
+        "change_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "target_path": {
+          "type": "string",
+          "pattern": "^/(objects|relations)/.+"
+        },
+        "operation": {
+          "enum": [
+            "add",
+            "replace",
+            "remove",
+            "recompute"
+          ]
+        },
+        "state": {
+          "const": "applied"
+        },
+        "request_basis_refs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/stringArray"
+            },
+            {
+              "minItems": 1
+            }
+          ]
+        },
+        "observation_refs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "evidence_refs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "input_fields": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "acceptance_criterion_refs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/stringArray"
+            },
+            {
+              "minItems": 1
+            }
+          ]
+        },
+        "before": {},
+        "after": {}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "add"
+              }
+            },
+            "required": [
+              "operation"
+            ]
+          },
+          "then": {
+            "required": [
+              "after"
+            ],
+            "not": {
+              "required": [
+                "before"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "replace",
+                  "recompute"
+                ]
+              }
+            },
+            "required": [
+              "operation"
+            ]
+          },
+          "then": {
+            "required": [
+              "before",
+              "after"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "remove"
+              }
+            },
+            "required": [
+              "operation"
+            ]
+          },
+          "then": {
+            "required": [
+              "before"
+            ],
+            "not": {
+              "required": [
+                "after"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "materializationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version",
+        "materialization_id",
+        "created_at",
+        "state",
+        "reason",
+        "base_world_state",
+        "correction_request_ref",
+        "successor_world_state",
+        "applied_changes",
+        "preserved_observation_refs",
+        "preserved_evidence_refs",
+        "blocked_outputs",
+        "blocked_actions",
+        "next_action",
+        "reevaluation_executed",
+        "outputs_released",
+        "external_truth_verified",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-materialization-result-v0.1.schema.json"
+        },
+        "schema_version": {
+          "const": "0.1"
+        },
+        "materialization_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "state": {
+          "const": "completed"
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "base_world_state": {
+          "$ref": "#/$defs/worldStateRef"
+        },
+        "correction_request_ref": {
+          "$ref": "#/$defs/artifactRef"
+        },
+        "successor_world_state": {
+          "$ref": "#/$defs/worldStateRef"
+        },
+        "applied_changes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/appliedChange"
+          }
+        },
+        "preserved_observation_refs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "preserved_evidence_refs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "blocked_outputs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "blocked_actions": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "next_action": {
+          "const": "reevaluate_successor_state"
+        },
+        "reevaluation_executed": {
+          "const": false
+        },
+        "outputs_released": {
+          "const": false
+        },
+        "external_truth_verified": {
+          "const": false
+        },
+        "action_authorized": {
+          "const": false
+        },
+        "action_executed": {
+          "const": false
+        }
+      }
+    }
+  }
+}

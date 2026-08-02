@@ -10,17 +10,15 @@
       "obs-uav-b-delay-002"
     ],
     "evidence_refs": [
-      "telemetry:fictional/uav-b/delay-002",
       "execution-result:fictional/gt16/spatial-separation",
-      "execution-result:fictional/gt16/temporal-recheck"
+      "execution-result:fictional/gt16/temporal-recheck",
+      "telemetry:fictional/uav-b/delay-002"
     ],
     "objects": [
       {
         "id": "uav-a",
         "type": "uav",
         "verification_status": "verified",
-        "valid_from": "2026-07-16T09:59:00+08:00",
-        "valid_until": "2026-07-16T10:02:00+08:00",
         "observation_refs": [],
         "evidence_refs": [
           "execution-result:fictional/gt16/spatial-separation"
@@ -36,14 +34,14 @@
               "execution-result:fictional/gt16/spatial-separation"
             ]
           }
-        ]
+        ],
+        "valid_from": "2026-07-16T09:59:00+08:00",
+        "valid_until": "2026-07-16T10:02:00+08:00"
       },
       {
         "id": "uav-b",
         "type": "uav",
         "verification_status": "asserted",
-        "valid_from": "2026-07-16T09:59:00+08:00",
-        "valid_until": "2026-07-16T10:02:00+08:00",
         "observation_refs": [
           "obs-uav-b-delay-002"
         ],
@@ -51,6 +49,25 @@
           "telemetry:fictional/uav-b/delay-002"
         ],
         "attributes": [
+          {
+            "name": "delay_seconds",
+            "value": 60,
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "observation_refs": [
+              "obs-uav-b-delay-002"
+            ],
+            "evidence_refs": [
+              "telemetry:fictional/uav-b/delay-002"
+            ],
+            "valid_from": "2026-07-16T10:01:00+08:00",
+            "valid_until": "2026-07-16T10:01:30+08:00",
+            "uncertainty": {
+              "kind": "standard_deviation",
+              "value": 2.0,
+              "unit": "second"
+            }
+          },
           {
             "name": "route_id",
             "value": "route-bravo",
@@ -60,27 +77,10 @@
             "evidence_refs": [
               "execution-result:fictional/gt16/spatial-separation"
             ]
-          },
-          {
-            "name": "delay_seconds",
-            "value": 60,
-            "basis": "direct_observation",
-            "verification_status": "asserted",
-            "valid_from": "2026-07-16T10:01:00+08:00",
-            "valid_until": "2026-07-16T10:01:30+08:00",
-            "uncertainty": {
-              "kind": "standard_deviation",
-              "value": 2,
-              "unit": "second"
-            },
-            "observation_refs": [
-              "obs-uav-b-delay-002"
-            ],
-            "evidence_refs": [
-              "telemetry:fictional/uav-b/delay-002"
-            ]
           }
-        ]
+        ],
+        "valid_from": "2026-07-16T09:59:00+08:00",
+        "valid_until": "2026-07-16T10:02:00+08:00"
       }
     ],
     "relations": [
@@ -92,12 +92,12 @@
         "value": true,
         "basis": "derived",
         "verification_status": "verified",
-        "valid_from": "2026-07-16T09:59:00+08:00",
-        "valid_until": "2026-07-16T10:02:00+08:00",
         "observation_refs": [],
         "evidence_refs": [
           "execution-result:fictional/gt16/spatial-separation"
-        ]
+        ],
+        "valid_from": "2026-07-16T09:59:00+08:00",
+        "valid_until": "2026-07-16T10:02:00+08:00"
       },
       {
         "id": "uav-temporal-separation",
@@ -107,20 +107,20 @@
         "value": 60,
         "basis": "derived",
         "verification_status": "verified",
-        "valid_from": "2026-07-16T10:01:00+08:00",
-        "valid_until": "2026-07-16T10:01:30+08:00",
-        "uncertainty": {
-          "kind": "standard_deviation",
-          "value": 2,
-          "unit": "second"
-        },
         "observation_refs": [
           "obs-uav-b-delay-002"
         ],
         "evidence_refs": [
-          "telemetry:fictional/uav-b/delay-002",
-          "execution-result:fictional/gt16/temporal-recheck"
-        ]
+          "execution-result:fictional/gt16/temporal-recheck",
+          "telemetry:fictional/uav-b/delay-002"
+        ],
+        "valid_from": "2026-07-16T10:01:00+08:00",
+        "valid_until": "2026-07-16T10:01:30+08:00",
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 2.0,
+          "unit": "second"
+        }
       }
     ]
   }

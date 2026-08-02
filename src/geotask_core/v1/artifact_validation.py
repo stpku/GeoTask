@@ -57,6 +57,10 @@ from geotask_core.v1.incremental_reevaluation_result import (
     IncrementalReevaluationResultFormatError,
     load_incremental_reevaluation_result,
 )
+from geotask_core.v1.world_state_materialization import (
+    WorldStateMaterializationError,
+    load_world_state_materialization_result,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1158,6 +1162,65 @@ def _validate_impact_graph_payload(
     )
 
 
+def _validate_world_state_materialization_result_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_world_state_materialization_result(payload)
+    except WorldStateMaterializationError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_world_state_materialization_result",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask World State "
+                        "Materialization Result v0.1. Structural validity does not prove "
+                        "exact bindings, change application, successor generation, "
+                        "reevaluation, output release, or action authorization."
+                    ),
+                ),
+            ),
+        )
+
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "materialization_id": result.materialization_id,
+            "state": result.state,
+            "base_world_state_id": result.base_world_state.world_state_id,
+            "base_world_state_revision": result.base_world_state.revision,
+            "successor_world_state_revision": result.successor_world_state.revision,
+            "applied_change_count": len(result.applied_changes),
+            "blocked_output_count": len(result.blocked_outputs),
+            "blocked_action_count": len(result.blocked_actions),
+            "next_action": result.next_action,
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "base_world_state_binding_verified": False,
+            "correction_request_binding_verified": False,
+            "successor_world_state_binding_verified": False,
+            "changes_applied": False,
+            "successor_world_state_materialized": False,
+            "reevaluation_executed": False,
+            "outputs_released": False,
+            "external_truth_verified": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_incremental_reevaluation_result_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1267,6 +1330,12 @@ def _validate_verified_payload(
         return _validate_impact_graph_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.incremental-reevaluation-result":
         return _validate_incremental_reevaluation_result_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
+    if descriptor.artifact_id == "geotask.world-state-materialization-result":
+        return _validate_world_state_materialization_result_payload(
             descriptor,
             payload,
             file=file,

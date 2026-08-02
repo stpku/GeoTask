@@ -24,7 +24,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - **Verification and control maintain the world:** preserve supported facts, expose conflict and unknown states, constrain correction, and manage action eligibility.
 - **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local predictive models, human review, and production actions.
 
-> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. Observation v0.1 carries source-bound claims, World State v0.1 records versioned snapshots, State Transition v0.1 binds before/after states, Verification Session v0.1 freezes audit context, Discrepancy Report v0.1 records bounded differences, Correction Request v0.1 constrains successor-state changes, Impact Graph v0.1 represents the affected topology, and Incremental Reevaluation Result v0.1 binds base/successor World States, graph-node and target outcomes, acceptance criteria, discrepancy resolution, and output/action gates. Automatic diff computation, Observation merging, automatic successor-state generation, and automatic graph discovery/propagation execution remain under development.
+> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. Observation v0.1 carries source-bound claims, World State v0.1 records versioned snapshots, State Transition v0.1 binds before/after states, Verification Session v0.1 freezes audit context, Discrepancy Report v0.1 records bounded differences, Correction Request v0.1 constrains successor-state changes, Impact Graph v0.1 represents the affected topology, World State Materialization Result v0.1 records bounded successor materialization, and Incremental Reevaluation Result v0.1 closes graph-node, target, acceptance, discrepancy, and output/action-gate outcomes. Automatic diff computation, Observation merging, automatic recompute-value derivation, and automatic graph discovery/propagation execution remain under development.
 
 ## Start here
 
@@ -40,6 +40,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [GeoTask Discrepancy Report v0.1](docs/spec/geotask-discrepancy-report-v0.1.md)
 - [GeoTask Correction Request v0.1](docs/spec/geotask-correction-request-v0.1.md)
 - [GeoTask Impact Graph v0.1](docs/spec/geotask-impact-graph-v0.1.md)
+- [GeoTask World State Materialization Result v0.1](docs/spec/geotask-world-state-materialization-result-v0.1.md)
 - [GeoTask Incremental Reevaluation Result v0.1](docs/spec/geotask-incremental-reevaluation-result-v0.1.md)
 - [GeoTask Agent Integration Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
 - [GeoTask Runtime Interface Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
@@ -73,7 +74,7 @@ flowchart LR
   N[New observation arrives] --> W
 ```
 
-The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation v0.1, World State v0.1, State Transition v0.1, Verification Session v0.1, Discrepancy Report v0.1, Correction Request v0.1, Impact Graph v0.1, Incremental Reevaluation Result v0.1, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. Automatic diff computation, automatic impact-graph discovery and propagation execution, Observation merging, and automatic successor-state generation remain roadmap capabilities.
+The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation v0.1, World State v0.1, State Transition v0.1, Verification Session v0.1, Discrepancy Report v0.1, Correction Request v0.1, Impact Graph v0.1, bounded successor-state materialization, Incremental Reevaluation Result v0.1, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. Automatic diff computation, automatic impact-graph discovery and propagation execution, Observation merging, and automatic recompute-value derivation remain roadmap capabilities.
 
 ## Five-minute quickstart
 

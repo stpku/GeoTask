@@ -35,6 +35,15 @@ The Artifact Registry uses the unified command as its canonical
 | Artifact ID | File format | Validation implementation |
 |---|---|---|
 | `geotask.document` | YAML | strict YAML loading, raw document validation, canonicalization, and canonical validation |
+| `geotask.observation` | JSON | strict source, producer, timestamp, claim, uncertainty, reference, and supersession validation without truth verification |
+| `geotask.world-state` | JSON | strict snapshot identity, revision, time, object/relation, reference-closure, validity, uncertainty, and semantic-fingerprint validation |
+| `geotask.state-transition` | JSON | strict before/after reference and declared-change validation without calculating or applying a diff |
+| `geotask.verification-session` | JSON | strict audit snapshot, state reference, artifact reference, action-eligibility, and recheck-trigger validation |
+| `geotask.discrepancy-report` | JSON | strict discrepancy, impact, correction-scope, World State reference, and source-reference validation |
+| `geotask.correction-request` | JSON | strict bounded-change, acceptance, review, output-contract, and gate validation without applying changes |
+| `geotask.impact-graph` | JSON | strict source-bound DAG, reachability, cycle, entity-reference, edge, and reevaluation-target validation |
+| `geotask.world-state-materialization-result` | JSON | strict exact-reference metadata, applied-change coverage, provenance preservation, blocked-gate, and false operational-boundary validation |
+| `geotask.incremental-reevaluation-result` | JSON | strict node, target, acceptance, discrepancy, output-gate, action-gate, and source-reference result validation |
 | `geotask.execution-result` | JSON | duplicate/non-finite JSON rejection and `GeotaskResult.from_dict()` semantic validation |
 | `geotask.control-evaluation` | JSON | duplicate/non-finite JSON rejection and `load_control_evaluation()` semantic validation |
 | `geotask.agent-generation-preparation` | JSON | strict `agent_generation_preparation/0.1` state, diagnostic, repair, revision-request, summary, and execution cross-field validation |
@@ -78,6 +87,17 @@ geotask artifact validate \
   control-evaluation.json \
   --format json
 ```
+
+Validate a World State Materialization Result without claiming that its exact bindings or operation execution were verified:
+
+```bash
+geotask artifact validate \
+  geotask.world-state-materialization-result \
+  examples/core/world_state_materialization_result_uav_recheck.json \
+  --format json
+```
+
+The generic report keeps `changes_applied`, `successor_world_state_materialized`, `reevaluation_executed`, `outputs_released`, `action_authorized`, and `action_executed` false. Exact execution proof requires `validate_world_state_materialization_result_bindings()` with the base, request, successor, and exact bytes.
 
 Validate Agent preparation and guarded-retry reports without repeating their work:
 

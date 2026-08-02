@@ -38,6 +38,12 @@ INCREMENTAL_REEVALUATION_SPEC = (
 INCREMENTAL_REEVALUATION_SCHEMA = (
     ROOT / "schemas" / "geotask-incremental-reevaluation-result-v0.1.schema.json"
 )
+WORLD_STATE_MATERIALIZATION_SPEC = (
+    ROOT / "docs" / "spec" / "geotask-world-state-materialization-result-v0.1.md"
+)
+WORLD_STATE_MATERIALIZATION_SCHEMA = (
+    ROOT / "schemas" / "geotask-world-state-materialization-result-v0.1.schema.json"
+)
 ARTIFACT_REGISTRY_SPEC = (
     ROOT / "docs" / "spec" / "geotask-artifact-registry-v1.0.md"
 )
@@ -102,6 +108,8 @@ DOCUMENTS = (
     IMPACT_GRAPH_SCHEMA,
     INCREMENTAL_REEVALUATION_SPEC,
     INCREMENTAL_REEVALUATION_SCHEMA,
+    WORLD_STATE_MATERIALIZATION_SPEC,
+    WORLD_STATE_MATERIALIZATION_SCHEMA,
     ARTIFACT_REGISTRY_SPEC,
     ARTIFACT_REGISTRY_SCHEMA,
     VERSIONED_VALIDATION_SPEC,
@@ -533,6 +541,31 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "$ref"
     ] == "#/$defs/incrementalReevaluationResult"
 
+    materialization_text = WORLD_STATE_MATERIALIZATION_SPEC.read_text(
+        encoding="utf-8"
+    )
+    for fragment in (
+        "GeoTask World State Materialization Result v0.1",
+        "geotask.world-state-materialization-result",
+        "materialize_successor_world_state",
+        "validate_world_state_materialization_result_bindings",
+        "explicit recompute values",
+        "Observation and Evidence reference sets are preserved",
+        "does **not**",
+        "action_authorized",
+    ):
+        assert fragment in materialization_text
+    materialization_schema = json.loads(
+        WORLD_STATE_MATERIALIZATION_SCHEMA.read_text(encoding="utf-8")
+    )
+    Draft202012Validator.check_schema(materialization_schema)
+    assert materialization_schema["$id"].endswith(
+        "geotask-world-state-materialization-result-v0.1.schema.json"
+    )
+    assert materialization_schema["properties"][
+        "world_state_materialization_result"
+    ]["$ref"] == "#/$defs/materializationResult"
+
     registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
     for fragment in (
         "GeoTask Artifact Registry v1.0",
@@ -546,6 +579,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.discrepancy-report",
         "geotask.correction-request",
         "geotask.impact-graph",
+        "geotask.world-state-materialization-result",
         "geotask.incremental-reevaluation-result",
         "geotask.execution-result",
         "geotask.control-evaluation",
@@ -557,8 +591,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-request",
         "geotask.runtime-response",
         "geotask.core-benchmark-report",
-        "exactly twenty artifacts",
-        "all twenty-one public JSON Schemas",
+        "exactly twenty-one artifacts",
+        "all twenty-two public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

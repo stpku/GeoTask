@@ -20,8 +20,9 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [Discrepancy Report v0.1](spec/geotask-discrepancy-report-v0.1.md)：绑定World State与精确来源制品，记录差异类型、期望/观测值、影响范围及可变/不可变修订路径，但不自动比较、传播或纠正。
 - [Correction Request v0.1](spec/geotask-correction-request-v0.1.md)：绑定不可变基准World State与Discrepancy Report，限定后继状态的允许变更、验收标准、不可变路径保护及输出/行动门禁，但不应用修订或物化状态。
 - [Impact Graph v0.1](spec/geotask-impact-graph-v0.1.md)：将差异、修订、状态路径、断言、输出、动作与复核目标组织为来源绑定的有向无环图，但不自动发现或执行影响传播。
-- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现19类公共Artifact的Schema、版本及操作命令。
-- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验19类公共制品，包括Observation、World State、State Transition、Verification Session、Discrepancy Report、Correction Request、Impact Graph、Agent报告、Runtime消息、Core基准报告与验证报告自身，并输出统一文本/JSON报告。
+- [Incremental Reevaluation Result v0.1](spec/geotask-incremental-reevaluation-result-v0.1.md)：绑定基准/后继World State、Impact Graph与精确来源文件，记录节点、目标、验收条件、差异消解及输出/动作门禁结果，但不执行复核或授权动作。
+- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现20类公共Artifact的Schema、版本及操作命令。
+- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验20类公共制品，包括Observation、World State、State Transition、Verification Session、Discrepancy Report、Correction Request、Impact Graph、Incremental Reevaluation Result、Agent报告、Runtime消息、Core基准报告与验证报告自身，并输出统一文本/JSON报告。
 - [版本化载荷校验v1.0](spec/geotask-versioned-payload-validation-v1.0.md)：统一执行结果与控制结果的严格加载、Schema元数据、诊断和文本/JSON报告。
 - [控制扩展Profile v1.0](spec/geotask-control-extension-profile-v1.0.md)：对证据请求、证据冲突、决策规则和任务门控进行版本化校验。
 - [控制表达式语言v1.0](spec/geotask-control-expression-language-v1.0.md)：定义安全有限语法、三值逻辑、比较语义和公共解析求值API。

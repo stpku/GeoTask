@@ -32,6 +32,12 @@ CORRECTION_REQUEST_SPEC = ROOT / "docs" / "spec" / "geotask-correction-request-v
 CORRECTION_REQUEST_SCHEMA = ROOT / "schemas" / "geotask-correction-request-v0.1.schema.json"
 IMPACT_GRAPH_SPEC = ROOT / "docs" / "spec" / "geotask-impact-graph-v0.1.md"
 IMPACT_GRAPH_SCHEMA = ROOT / "schemas" / "geotask-impact-graph-v0.1.schema.json"
+INCREMENTAL_REEVALUATION_SPEC = (
+    ROOT / "docs" / "spec" / "geotask-incremental-reevaluation-result-v0.1.md"
+)
+INCREMENTAL_REEVALUATION_SCHEMA = (
+    ROOT / "schemas" / "geotask-incremental-reevaluation-result-v0.1.schema.json"
+)
 ARTIFACT_REGISTRY_SPEC = (
     ROOT / "docs" / "spec" / "geotask-artifact-registry-v1.0.md"
 )
@@ -94,6 +100,8 @@ DOCUMENTS = (
     CORRECTION_REQUEST_SCHEMA,
     IMPACT_GRAPH_SPEC,
     IMPACT_GRAPH_SCHEMA,
+    INCREMENTAL_REEVALUATION_SPEC,
+    INCREMENTAL_REEVALUATION_SCHEMA,
     ARTIFACT_REGISTRY_SPEC,
     ARTIFACT_REGISTRY_SCHEMA,
     VERSIONED_VALIDATION_SPEC,
@@ -502,6 +510,29 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "#/$defs/impactGraph"
     )
 
+    incremental_text = INCREMENTAL_REEVALUATION_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "GeoTask Incremental Reevaluation Result v0.1",
+        "geotask.incremental-reevaluation-result",
+        "immutable, bounded record",
+        "validate_incremental_reevaluation_result_bindings",
+        "Successor-state confinement",
+        "Output and action gates",
+        "authorized` and `executed` are always `false",
+        "does **not** itself prove",
+    ):
+        assert fragment in incremental_text
+    incremental_schema = json.loads(
+        INCREMENTAL_REEVALUATION_SCHEMA.read_text(encoding="utf-8")
+    )
+    Draft202012Validator.check_schema(incremental_schema)
+    assert incremental_schema["$id"].endswith(
+        "geotask-incremental-reevaluation-result-v0.1.schema.json"
+    )
+    assert incremental_schema["properties"]["incremental_reevaluation_result"][
+        "$ref"
+    ] == "#/$defs/incrementalReevaluationResult"
+
     registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
     for fragment in (
         "GeoTask Artifact Registry v1.0",
@@ -515,6 +546,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.discrepancy-report",
         "geotask.correction-request",
         "geotask.impact-graph",
+        "geotask.incremental-reevaluation-result",
         "geotask.execution-result",
         "geotask.control-evaluation",
         "geotask.agent-generation-preparation",
@@ -525,8 +557,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-request",
         "geotask.runtime-response",
         "geotask.core-benchmark-report",
-        "exactly nineteen artifacts",
-        "all twenty public JSON Schemas",
+        "exactly twenty artifacts",
+        "all twenty-one public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

@@ -24,7 +24,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - **验证与控制机制负责维护世界：** 保留已证实事实，标记冲突和未知，限定纠偏范围，并管理行动资格；
 - **Runtime与Domain Pack负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
 
-> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。Observation v0.1表达带来源和不确定性的世界命题，World State v0.1表达可版本化显式快照，State Transition v0.1绑定前后快照，Verification Session v0.1固化审计上下文，Discrepancy Report v0.1记录差异及修订范围，Correction Request v0.1约束后继状态变更，Impact Graph v0.1将差异、修订、状态路径、断言、输出、动作和复核目标组织为可校验的有向无环图；自动差异计算、Observation合并、后继状态物化、影响图自动生成与传播执行、增量重算仍在持续建设。
+> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。Observation v0.1表达带来源和不确定性的世界命题，World State v0.1表达可版本化显式快照，State Transition v0.1绑定前后快照，Verification Session v0.1固化审计上下文，Discrepancy Report v0.1记录差异及修订范围，Correction Request v0.1约束后继状态变更，Impact Graph v0.1组织可校验的影响DAG，Incremental Reevaluation Result v0.1则绑定基准/后继World State、图节点与复核目标结果、验收条件、差异消解以及输出/动作门禁；自动差异计算、Observation合并、后继状态自动生成、影响图自动发现与传播执行仍在持续建设。
 
 ## 从这里开始
 
@@ -41,6 +41,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - [Discrepancy Report v0.1](docs/spec/geotask-discrepancy-report-v0.1.md)
 - [Correction Request v0.1](docs/spec/geotask-correction-request-v0.1.md)
 - [Impact Graph v0.1](docs/spec/geotask-impact-graph-v0.1.md)
+- [Incremental Reevaluation Result v0.1](docs/spec/geotask-incremental-reevaluation-result-v0.1.md)
 - [Agent集成Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
 - [Runtime接口Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
@@ -72,7 +73,7 @@ flowchart LR
   N[新观察到来] --> W
 ```
 
-当前公共Core已经实现世界对象与空间合同、来源与证据绑定、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。自动差异计算、Impact Graph自动生成与传播执行、Observation合并、后继状态物化和增量重算仍属于后续路线图。
+当前公共Core已经实现世界对象与空间合同、来源与证据绑定、Observation v0.1、World State v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Incremental Reevaluation Result v0.1、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。自动差异计算、Impact Graph自动发现与传播执行、Observation合并和后继状态自动生成仍属于后续路线图。
 
 ## 5分钟运行
 

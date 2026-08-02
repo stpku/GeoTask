@@ -56,6 +56,10 @@ from geotask_core.v1.impact_graph import (
     IMPACT_GRAPH_SCHEMA_ID,
     IMPACT_GRAPH_SCHEMA_VERSION,
 )
+from geotask_core.v1.incremental_reevaluation_result import (
+    INCREMENTAL_REEVALUATION_RESULT_SCHEMA_ID,
+    INCREMENTAL_REEVALUATION_RESULT_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -133,6 +137,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "impact-graph*.json",
         "impact_graph*.json",
         "examples/core/impact_graph*.json",
+    ),
+    "geotask.incremental-reevaluation-result": (
+        "*.geotask-incremental-reevaluation-result.json",
+        "incremental-reevaluation-result*.json",
+        "incremental_reevaluation_result*.json",
+        "examples/core/incremental_reevaluation_result*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -395,6 +405,37 @@ _ARTIFACTS = (
         execution_boundary=(
             "Validation does not discover impact, execute propagation, apply correction, materialize "
             "state, evaluate reevaluation targets, release outputs, or authorize actions."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.incremental-reevaluation-result",
+        title="GeoTask Incremental Reevaluation Result v0.1",
+        kind="incremental_reevaluation_result",
+        schema_id=INCREMENTAL_REEVALUATION_RESULT_SCHEMA_ID,
+        schema_version=INCREMENTAL_REEVALUATION_RESULT_SCHEMA_VERSION,
+        schema_path=(
+            "schemas/geotask-incremental-reevaluation-result-v0.1.schema.json"
+        ),
+        specification_path=(
+            "docs/spec/geotask-incremental-reevaluation-result-v0.1.md"
+        ),
+        wrapper_key="incremental_reevaluation_result",
+        generation_command=None,
+        generation_note=(
+            "Authored or materialized by an Agent or Runtime after bounded reevaluation. "
+            "Core validates the result and explicit bindings but does not execute reevaluation."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.incremental-reevaluation-result "
+            "<incremental-reevaluation-result.json>"
+        ),
+        description=(
+            "Immutable bounded result covering an Impact Graph, successor World State, node and "
+            "target outcomes, acceptance criteria, discrepancy resolution, and output/action gates."
+        ),
+        execution_boundary=(
+            "Validation does not run reevaluation, generate a successor World State, discover "
+            "impact, execute propagation, authorize an action, or execute an action."
         ),
     ),
     ArtifactDescriptor(
@@ -766,6 +807,10 @@ __all__ = [
     "DISCREPANCY_REPORT_SCHEMA_VERSION",
     "CORRECTION_REQUEST_SCHEMA_ID",
     "CORRECTION_REQUEST_SCHEMA_VERSION",
+    "IMPACT_GRAPH_SCHEMA_ID",
+    "IMPACT_GRAPH_SCHEMA_VERSION",
+    "INCREMENTAL_REEVALUATION_RESULT_SCHEMA_ID",
+    "INCREMENTAL_REEVALUATION_RESULT_SCHEMA_VERSION",
     "ARTIFACT_VALIDATION_SCHEMA_ID",
     "ARTIFACT_VALIDATION_SCHEMA_VERSION",
     "AGENT_GENERATION_PREPARATION_SCHEMA_ID",

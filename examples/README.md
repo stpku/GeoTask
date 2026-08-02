@@ -48,6 +48,15 @@ patent-sensitive workflows.
   and Correction Request into an eight-node, nine-edge directed acyclic graph from the confirmed discrepancy through
   two correction changes and affected state paths to the temporal assertion, blocked continuation output, blocked
   route action, and two explicit reevaluation targets without discovering or executing propagation.
+- `examples/core/world_state_uav_separation_successor.json`: explicit World State revision 3 used as the already-authored
+  successor snapshot after bounded recomputation; route identity and geometry remain unchanged while the mutable delay
+  and temporal-separation paths are re-materialized with fresh evidence.
+- `examples/core/incremental_reevaluation_uav_execution_result.json`: deterministic reevaluation execution result with
+  fixed timestamps and four verified GT16 checks, including the recomputed `temporal_conflict=false` assertion.
+- `examples/core/incremental_reevaluation_result_uav_recheck.json`: Incremental Reevaluation Result v0.1 binding the
+  base and successor World States, Impact Graph, Correction Request, Discrepancy Report, and execution result; it closes
+  all eight node outcomes, two targets, five acceptance criteria, one discrepancy, one released output, and one action
+  that is eligible but still externally unauthorized and unexecuted.
 - `examples/core/assertions_expected_results.yaml`: schema example for optional
   `assertions` and `expected_results` sections.
 - `examples/core/multi_constraint_conflict.yaml`: three deterministic assertions

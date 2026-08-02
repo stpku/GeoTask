@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, and State Transition v0.1 snapshot bindings, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, Observation merging, state materialization, VerificationSession, impact propagation, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
+GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, State Transition v0.1 snapshot bindings, and Verification Session v0.1 audit snapshots, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, Observation merging, state materialization, discrepancy contracts, impact propagation, and incremental reevaluation remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -301,11 +301,12 @@ World State v0.1 is implemented as a public world-model Artifact. It records one
 
 State Transition v0.1 is implemented as a public audit Artifact. It binds an earlier and later World State by ID, revision, snapshot time, and deterministic semantic fingerprint, then records Observation-supported object, attribute, relation, and action-eligibility changes using identity-based paths. Core can validate those bindings against two loaded snapshots, but it does not calculate the diff, apply the declared changes, materialize a state, verify truth, rerun tasks, or authorize action.
 
+Verification Session v0.1 is implemented as an immutable audit snapshot. It binds one World State semantic fingerprint to exact serialized task, execution-result, control-evaluation, State Transition, and discrepancy references, then records action eligibility and recheck triggers. Core can verify the state binding and raw artifact SHA-256 digests, but linked artifact semantics and operational execution remain separate validation layers.
+
 Remaining planned public abstractions:
 
 | Planned abstraction | Purpose | Reuses existing capability |
 |---|---|---|
-| `VerificationSession` | Provide an auditable verification snapshot for one WorldState, binding observations, tasks, results, controls, discrepancies, eligibility, and recheck triggers | Artifact Registry, Agent reports, control evaluation |
 | `DiscrepancyReport` | Explain which world claim differs, why, impact, mutable scope, and immutable paths | execution result, evaluator, revision request |
 | `CorrectionRequest` | Give an Agent an explicit bounded correction contract | Agent preparation and revision verification |
 | `ImpactGraph` | Map changed world-state paths to claims, assertions, outputs, and action gates | object refs, assertion refs, output contracts |

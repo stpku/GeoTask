@@ -1,0 +1,91 @@
+{
+  "verification_session": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-verification-session-v0.1.schema.json",
+    "schema_version": "0.1",
+    "session_id": "fictional-uav-separation-verification-session",
+    "recorded_at": "2026-07-16T10:01:05+08:00",
+    "state": "blocked",
+    "reason": "The later telemetry update reaches the declared recheck threshold, so continuation without another explicit review is blocked.",
+    "world_state": {
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "semantic_fingerprint": "7b432a7d6ee91a2e4bdaea0b4e1abc55bc93bf91a1cd5354ef57e1ac56b4725d"
+    },
+    "observation_refs": [
+      "obs-uav-b-delay-002"
+    ],
+    "task_refs": [
+      {
+        "ref_id": "task-gt16",
+        "artifact_id": "geotask.document",
+        "schema_version": "1.0",
+        "instance_id": "gt16-uav-route-crossing-temporal-separation",
+        "content_sha256": "4e0ece7f4b2f66cb115f3c523c90bf3bffc452a65b472bc70dc68faeac41252b"
+      }
+    ],
+    "execution_result_refs": [
+      {
+        "ref_id": "result-gt16-initial",
+        "artifact_id": "geotask.execution-result",
+        "schema_version": "1.0",
+        "instance_id": "gt16-uav-route-crossing-temporal-separation",
+        "content_sha256": "d1417586256e12985ef3ea98bd9ba54537706649e86a96dccffb3565579f1cc3"
+      }
+    ],
+    "control_evaluation_refs": [],
+    "state_transition_refs": [
+      {
+        "ref_id": "transition-uav-recheck",
+        "artifact_id": "geotask.state-transition",
+        "schema_version": "0.1",
+        "instance_id": "fictional-uav-separation-recheck-transition",
+        "content_sha256": "1aeffc61c3aa8b3b214cb4e1ee699091269f5df7b13109c727af73cbc19781dc"
+      }
+    ],
+    "discrepancy_refs": [],
+    "action_eligibility": [
+      {
+        "output_ref": "continue_route_without_recheck",
+        "state": "blocked",
+        "reason": "The declared sixty-second recheck threshold has been reached.",
+        "basis_refs": [
+          "transition-uav-recheck"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ]
+      },
+      {
+        "output_ref": "continue_with_active_monitoring",
+        "state": "eligible",
+        "reason": "The initial deterministic route checks remain preserved while another review is required.",
+        "basis_refs": [
+          "task-gt16",
+          "result-gt16-initial",
+          "transition-uav-recheck"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ]
+      }
+    ],
+    "recheck_triggers": [
+      {
+        "id": "recheck-temporal-separation-threshold",
+        "condition": "temporal_separation_seconds <= 60",
+        "state": "satisfied",
+        "reason": "The latest explicit World State records a sixty-second temporal separation.",
+        "affected_output_refs": [
+          "continue_route_without_recheck"
+        ],
+        "basis_refs": [
+          "transition-uav-recheck"
+        ],
+        "observation_refs": [
+          "obs-uav-b-delay-002"
+        ]
+      }
+    ]
+  }
+}

@@ -283,7 +283,9 @@ The next architectural step is an upward world-state composition layer, not a re
 
 ```text
 Observation
-→ world-state materialization
+→ bounded Observation Merge
+→ successor World State
+→ State Transition record
 → relation and claim verification
 → discrepancy / uncertainty detection
 → bounded correction or evidence request
@@ -298,6 +300,8 @@ Observation
 Observation v0.1 carries source-bound, timestamped world claims with producer identity, evidence references, declared uncertainty, validity windows, and optional supersession links. Its validation does not verify truth or update a World State.
 
 World State v0.1 is implemented as a public world-model Artifact. It records one versioned, point-in-time snapshot of objects, attributes, relations, validity, uncertainty, and closed Observation/Evidence references. Its validation does not ingest Observations, fetch evidence, verify external truth, materialize a later state, rerun tasks, or change action eligibility.
+
+Observation Merge Result v0.1 is implemented as the bounded snapshot-update contract. It binds exact base World State, Observation, and successor bytes; requires a complete explicit mapping from every Observation claim to an existing attribute or relation; and deterministically emits one canonical successor revision. It does not infer identity, create missing objects or relations, resolve ambiguous conflicts, calculate a State Transition, verify external truth, release outputs, or authorize action.
 
 State Transition v0.1 is implemented as a public audit Artifact. It binds an earlier and later World State by ID, revision, snapshot time, and deterministic semantic fingerprint, then records Observation-supported object, attribute, relation, and action-eligibility changes using identity-based paths. Core can validate those bindings against two loaded snapshots, but it does not calculate the diff, apply the declared changes, materialize a state, verify truth, rerun tasks, or authorize action.
 
@@ -333,6 +337,8 @@ The intended public interaction is snapshot based:
 initial WorldState
 → auditable VerificationSession
 → new Observation
+→ bounded Observation Merge
+→ successor WorldState
 → StateTransition
 → impact analysis
 → local recheck

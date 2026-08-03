@@ -220,7 +220,7 @@
     <section class="block" id="cases">
       <div class="shell">
         <div class="section-head">
-          <div><h2>GT01—GT22渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及Observation接入与可审计世界状态演化。</p></div>
+          <div><h2>GT01—GT22渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>
           <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/cookbook/gt21-gt28.zh-CN.md">查看世界状态案例手册 →</a>
         </div>
         <div class="stage">
@@ -266,8 +266,8 @@
         <div class="stage">
           <h3 class="stage-heading"><span class="stage-num">5</span>世界状态循环：Observation、快照与增量复核</h3>
           <div class="case-grid">
-            <a class="case" href="gt21/"><span class="case-id">GT21</span><h3>两条观测同时更新同一状态，系统能按到达顺序覆盖吗？</h3><p>同一目标出现60秒与55秒两条命题时默认失败关闭；只有完整显式优先级才能生成可审计后继状态。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt22/"><span class="case-id">GT22</span><h3>两条Observation如何构建第一个可引用World State？</h3><p>严格加载位置与电量Observation，通过显式对象和属性映射构建revision 1快照，并保留引用、有效期、不确定性和稳定语义指纹。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt21/"><span class="case-id">GT21</span><h3>遥测显示延误60秒，运行审核记录显示55秒，AI应该相信哪一个？</h3><p>同一架无人机的延误数据来自两个系统。直接覆盖、取平均或按到达顺序选择都会掩盖冲突，必须使用业务方明确声明的处理规则。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt22/"><span class="case-id">GT22</span><h3>无人机的位置和电量来自两个系统，AI怎样形成同一时刻的可靠运行快照？</h3><p>位置与电量分别到达时，不能简单拼接成“当前状态”。系统必须确认对象、时间和字段归属，才能形成可追溯的统一运行快照。</p><span class="go">进入体验 →</span></a>
           </div>
         </div>
       </div>

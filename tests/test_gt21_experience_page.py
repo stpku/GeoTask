@@ -46,15 +46,20 @@ def test_gt21_page_visualizes_fail_closed_and_auditable_resolution() -> None:
     assert "Core机械执行调用方声明的顺序" in html
 
 
-def test_gt21_page_exposes_only_bounded_conflict_strategies() -> None:
+def test_gt21_page_uses_scenario_first_narrative_and_bounds_conflict_strategies() -> None:
     html = GT21_PAGE.read_text(encoding="utf-8")
 
+    assert "遥测显示延误60秒，运行审核记录显示55秒，AI应该相信哪一个？" in html
+    assert "为什么必须把冲突显式暴露出来？" in html
+    assert "直接覆盖的后果" in html
+    assert "AI常见的“合理化”错误" in html
+    assert "先由业务方说明规则，系统再执行" in html
+    assert "技术实现：GeoTask如何记录这两种处理" in html
     assert "require_equal" in html
     assert "explicit_precedence" in html
     assert "applied + consolidated" in html
     assert "applied + superseded" in html
-    assert "不能使用<code>require_equal</code>" in html
-    assert "不证明审核记录真实或权威" in html
+    assert "不证明该来源天然更真实或更权威" in html
 
 
 def test_gt21_page_recomputes_complete_precedence_locally() -> None:

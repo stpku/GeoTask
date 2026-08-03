@@ -17,6 +17,7 @@ DOC_INDEX_ZH = ROOT / "docs" / "README.md"
 DOC_INDEX_EN = ROOT / "docs" / "README.en.md"
 WHITEPAPER = ROOT / "docs" / "whitepaper" / "GeoTask_White_Paper_v0.1.md"
 WHITEPAPER_BUILD = ROOT / "docs" / "whitepaper" / "README.md"
+ARCHITECTURE = ROOT / "docs" / "architecture.md"
 LANGUAGE_SPEC = ROOT / "docs" / "spec" / "geotask-language-spec-v1.0.md"
 RESULT_SPEC = ROOT / "docs" / "spec" / "geotask-result-v1.0.md"
 RESULT_SCHEMA = ROOT / "schemas" / "geotask-result-v1.0.schema.json"
@@ -103,6 +104,7 @@ DOCUMENTS = (
     DOC_INDEX_EN,
     WHITEPAPER,
     WHITEPAPER_BUILD,
+    ARCHITECTURE,
     LANGUAGE_SPEC,
     RESULT_SPEC,
     RESULT_SCHEMA,
@@ -277,14 +279,16 @@ def test_whitepaper_separates_positioning_implementation_and_roadmap() -> None:
         "八类Canonical对象",
         "九个本地确定性算子",
         "World State",
+        "受限Observation Merge v0.1",
         "State Transition",
-        "仍是后续工程目标",
+        "对象身份发现",
     ):
         assert fragment in text
 
     assert "GeoTask 不负责提供完整地图、原始多模态识别、设备控制" in text
     assert "初始正确不代表后续持续正确" in text
     assert "GeoTask可以连接神经世界模型" in text
+    assert "自动差异计算、Observation合并" not in text
 
 
 def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
@@ -324,6 +328,29 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
     assert "Implemented public profile" in en_text
     assert "System-level target direction" in en_text
     assert "Legacy compatibility" in en_text
+    assert "23类公共Artifact" in zh_text
+    assert "twenty-three public Artifacts" in en_text
+
+
+def test_architecture_and_target_status_include_bounded_observation_merge() -> None:
+    architecture_text = ARCHITECTURE.read_text(encoding="utf-8")
+    target_text = TARGET_SPEC_STATUS.read_text(encoding="utf-8")
+
+    for fragment in (
+        "→ bounded Observation Merge",
+        "Observation Merge Result v0.1 is implemented as the bounded snapshot-update contract",
+        "→ successor WorldState",
+    ):
+        assert fragment in architecture_text
+
+    for fragment in (
+        "7. [GeoTask Observation Merge Result v0.1]",
+        "13. [GeoTask Recompute Derivation Result v0.1]",
+        "14. [GeoTask World State Materialization Result v0.1]",
+        "19. [Operator Registry]",
+        "World State, Observation Merge Result, State Transition",
+    ):
+        assert fragment in target_text
 
 
 def test_whitepaper_states_architecture_and_public_boundary() -> None:

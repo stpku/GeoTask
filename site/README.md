@@ -1,6 +1,6 @@
 # GeoTask项目门户与案例体验站
 
-`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT21互动案例、`robots.txt`和`sitemap.xml`。
+`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT22互动案例、`robots.txt`和`sitemap.xml`。
 
 站点没有后台、统计脚本、Cookie、账号系统、模型密钥或外部JavaScript依赖。案例页只在浏览器中复制任务、执行局部确定性复算，并跳转到用户选择的大模型平台。
 
@@ -20,8 +20,9 @@ site/gt18/index.html     GT18救援机器人安全路线体验
 site/gt19/index.html     GT19无人机地面净空投放体验
 site/gt20/index.html     GT20车辆绿灯下游阻塞体验
 site/gt21/index.html     GT21同目标Observation冲突策略体验
+site/gt22/index.html     GT22首个World State快照体验
 site/robots.txt          搜索引擎规则
-site/sitemap.xml         门户与GT01—GT21索引
+site/sitemap.xml         门户与GT01—GT22索引
 ```
 
 根地址始终代表GeoTask项目本身，不再代表某一个案例。每个案例使用独立稳定地址，并提供返回项目首页的入口。
@@ -49,6 +50,7 @@ site/sitemap.xml         门户与GT01—GT21索引
 - `GT19`：无人机已到达目标上空，但落点人员净空只有10米，低于30米最低投放要求，需悬停并请求清场
 - `GT20`：车辆已获得绿灯，但下游出口仅剩4米，低于整车与安全缓冲所需6.8米，需在停止线前等待
 - `GT21`：两条Observation同时指向`uav-b.delay_seconds`且分别声明60秒与55秒；无策略时失败关闭，完整显式优先级生成revision 2并保留`applied`/`superseded`审计状态
+- `GT22`：位置与电量Observation通过显式对象和属性映射构建`fictional-uav-alpha-initial-state` revision 1，并生成稳定语义指纹；快照引用不等于Observation文件字节绑定
 
 ## 公共访问地址
 
@@ -76,6 +78,7 @@ GitHub Pages是公共Canonical入口：
 - <https://stpku.github.io/GeoTask/gt19/>
 - <https://stpku.github.io/GeoTask/gt20/>
 - <https://stpku.github.io/GeoTask/gt21/>
+- <https://stpku.github.io/GeoTask/gt22/>
 
 当前开发镜像：
 
@@ -101,6 +104,7 @@ GitHub Pages是公共Canonical入口：
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt19/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt20/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt21/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt22/>
 
 公共仓库：<https://github.com/stpku/GeoTask>
 
@@ -134,6 +138,7 @@ test -f /var/www/geotask-experience/gt18/index.html
 test -f /var/www/geotask-experience/gt19/index.html
 test -f /var/www/geotask-experience/gt20/index.html
 test -f /var/www/geotask-experience/gt21/index.html
+test -f /var/www/geotask-experience/gt22/index.html
 test -f /var/www/geotask-experience/robots.txt
 test -f /var/www/geotask-experience/sitemap.xml
 ```

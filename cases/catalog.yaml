@@ -1,6 +1,6 @@
 catalog_version: "1.0"
 base_url: https://stpku.github.io/GeoTask/
-portal_lastmod: "2026-08-03"
+portal_lastmod: "2026-08-04"
 handbook:
   path: docs/cookbook/gt21-gt28.zh-CN.md
   label_zh: 查看世界状态案例手册 →
@@ -191,3 +191,11 @@ cases:
     page: site/gt21/index.html
     example: examples/core/gt21_observation_conflict_precedence.json
     lastmod: "2026-08-03"
+  - id: GT22
+    slug: gt22
+    stage: world_state_cycle
+    title_zh: 两条Observation如何构建第一个可引用World State？
+    summary_zh: 严格加载位置与电量Observation，通过显式对象和属性映射构建revision 1快照，并保留引用、有效期、不确定性和稳定语义指纹。
+    page: site/gt22/index.html
+    example: examples/core/gt22_initial_world_state_snapshot.json
+    lastmod: "2026-08-04"

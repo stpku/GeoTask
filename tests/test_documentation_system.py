@@ -1241,7 +1241,7 @@ def test_cookbooks_cover_all_public_weekly_cases() -> None:
             assert example in text
 
 
-def test_world_state_cycle_cookbooks_publish_gt21_and_bound_gt22_to_gt28() -> None:
+def test_world_state_cycle_cookbooks_publish_gt21_gt22_and_bound_gt23_to_gt28() -> None:
     for path in (WORLD_STATE_COOKBOOK_EN, WORLD_STATE_COOKBOOK_ZH):
         text = path.read_text(encoding="utf-8")
         for number in range(21, 29):
@@ -1255,5 +1255,10 @@ def test_world_state_cycle_cookbooks_publish_gt21_and_bound_gt22_to_gt28() -> No
             "superseded",
             "revision 2",
             "tests/test_gt21_observation_conflict_case.py",
+            "GT22",
+            "revision 1",
+            "asserted",
+            "bb57804b830e08dc361bc04e3ca96f4530ea525c198857492dcb6c304dbe540f",
+            "tests/test_gt22_initial_world_state_case.py",
         ):
             assert fragment in text

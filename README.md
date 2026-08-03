@@ -28,7 +28,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 
 ## 从这里开始
 
-- [立即体验GT01—GT21](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT22](https://stpku.github.io/GeoTask/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [白皮书英文摘要](docs/whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)
@@ -146,7 +146,8 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT18：** 最短路线能够到达目标，不等于它满足环境风险和救援机器人耐受能力约束；
 - **GT19：** 无人机到达目标上空，不等于投放区已经净空并获得载荷释放授权；
 - **GT20：** 车辆获得绿灯，不等于下游出口净空且能够完整驶离路口；
-- **GT21：** 两条Observation指向同一状态路径，不等于可以按到达顺序覆盖；无策略时失败关闭，完整显式优先级生成可审计后继状态。
+- **GT21：** 两条Observation指向同一状态路径，不等于可以按到达顺序覆盖；无策略时失败关闭，完整显式优先级生成可审计后继状态；
+- **GT22：** 两条结构化Observation不等于首个World State已经存在；必须显式映射全部claim，构建revision 1，并保留引用、有效期、不确定性和稳定语义指纹。
 
 GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)。
 

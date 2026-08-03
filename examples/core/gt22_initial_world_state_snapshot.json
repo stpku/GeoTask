@@ -1,0 +1,58 @@
+{
+  "scenario": {
+    "id": "gt22-initial-world-state-snapshot",
+    "title_zh": "两条Observation如何构建第一个可引用World State？",
+    "observations": [
+      "observation_uav_alpha_position_gt22.json",
+      "observation_uav_alpha_battery_gt22.json"
+    ],
+    "snapshot": {
+      "world_state_id": "fictional-uav-alpha-initial-state",
+      "revision": 1,
+      "as_of": "2026-07-16T10:02:00+08:00",
+      "materialized_at": "2026-07-16T10:02:02+08:00"
+    },
+    "object_plan": [
+      {
+        "id": "uav-alpha",
+        "type": "uav",
+        "verification_status": "asserted",
+        "valid_from": "2026-07-16T10:01:58+08:00",
+        "valid_until": "2026-07-16T10:02:30+08:00",
+        "claims": [
+          {
+            "observation_id": "obs-uav-alpha-position-gt22",
+            "claim_id": "uav-alpha-position-local-enu",
+            "attribute_name": "position_local_enu"
+          },
+          {
+            "observation_id": "obs-uav-alpha-battery-gt22",
+            "claim_id": "uav-alpha-battery-percent",
+            "attribute_name": "battery_percent"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "object_count": 1,
+      "relation_count": 0,
+      "attribute_names": [
+        "battery_percent",
+        "position_local_enu"
+      ],
+      "observation_ref_count": 2,
+      "evidence_ref_count": 2,
+      "semantic_fingerprint": "bb57804b830e08dc361bc04e3ca96f4530ea525c198857492dcb6c304dbe540f"
+    },
+    "safety_boundary": {
+      "explicit_object_mapping_required": true,
+      "all_claims_mapped_exactly_once": true,
+      "core_ingests_observations_automatically": false,
+      "object_identity_inferred": false,
+      "observation_bytes_bound_by_world_state": false,
+      "external_truth_verified": false,
+      "state_transition_computed": false,
+      "action_authorized": false
+    }
+  }
+}

@@ -131,6 +131,7 @@ def test_public_identity_schema_and_fingerprint_are_stable() -> None:
     assert result.semantic_fingerprint() == (
         "c02a8b58c1d6cae1c76774b505541337a9a632ad86790bdfcb8e1da6e4d6bd61"
     )
+    assert "conflict_resolutions" not in result.to_dict()["observation_merge_result"]
     assert load_observation_merge_result(result.to_dict()) == result
 
 

@@ -28,7 +28,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 
 ## Start here
 
-- [Try the GT01–GT20 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT21 experience](https://stpku.github.io/GeoTask/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [White paper English abstract](docs/whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)
@@ -49,6 +49,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
 - [VS Code Schema association example](.vscode/settings.json)
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
+- [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md)
 - [v0.3.0 Agent Integration release notes](docs/release_v0_3_0.md)
 - [v0.2.0 artifact-contract release notes](docs/release_v0_2_0.md)
 - [Public roadmap](ROADMAP.md)
@@ -140,8 +141,9 @@ Selected examples:
 - **GT18:** the geometrically shortest route may be unsafe when it crosses a hazard beyond the rescue robot's operating capability.
 - **GT19:** reaching the target overhead does not authorize payload release while the live ground-clearance condition remains false.
 - **GT20:** a green signal does not authorize intersection entry while the downstream exit cannot store and clear the full vehicle.
+- **GT21:** two Observations targeting one state path do not justify arrival-order overwrite; the merge fails closed without a policy and emits an auditable successor only under complete explicit precedence.
 
-See the [Cookbook](docs/cookbook/gt01-gt20.md) for all cases and source files.
+See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md) and the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md).
 
 ## Implemented public Core
 

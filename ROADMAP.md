@@ -61,7 +61,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布Incremental Reevaluation Result v0.1 Artifact，绑定基准/后继World State、Impact Graph、Correction Request、Discrepancy Report与执行结果的精确字节，完整记录节点/目标结果、验收条件、差异消解和输出/动作门禁，同时明确不执行复核、不生成后继状态、不授权或执行动作；
 - ✅ 已提供`geotask verify`与`geotask recheck`高层只读入口，对完整显式Verification Session或Incremental Reevaluation Result制品束执行注册制品语义校验、精确引用覆盖和SHA-256绑定验证，同时明确不执行任务、复核、状态物化、输出释放或动作；
 - 扩展受限Observation Merge的对象身份发现与未声明歧义冲突策略，并扩展重算推导方法注册表，保持本地、显式、可复现的世界状态快照语义；
-- 将GT21—GT28建设为Observation接入、世界状态构建、状态变化、影响传播、限定纠偏和行动门控案例。
+- ✅ 已发布GT21同目标Observation冲突审计案例，以60秒与55秒两条虚构命题展示无策略失败关闭、`require_equal`拒绝不等值、完整`explicit_precedence`确定性选择、输入顺序无关、`applied`/`superseded`审计状态和后继World State revision 2，同时明确不推断来源权威性、不验证外部真实、不计算State Transition或授权行动；
+- 继续建设GT22—GT28，覆盖首个World State构建、显式状态变化、影响传播、限定纠偏、增量复核和行动门控。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
 
@@ -139,7 +140,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published Incremental Reevaluation Result v0.1, binding exact base/successor World States, Impact Graph, Correction Requests, Discrepancy Reports, and execution results while closing graph-node, target, acceptance, discrepancy-resolution, output-gate, and action-eligibility outcomes without executing reevaluation, generating successors, authorizing actions, or executing actions;
 - ✅ Added high-level, read-only `geotask verify` and `geotask recheck` commands that run registered semantic validation, exact reference coverage, and SHA-256 binding checks over complete explicit Verification Session or Incremental Reevaluation Result bundles while explicitly not executing tasks, reevaluation, state materialization, output release, or actions;
 - expand the bounded derivation method registry and extend Observation Merge with object-identity discovery and policies for ambiguous conflicts that lack an explicit caller declaration, while preserving explicit, local, reproducible snapshot semantics;
-- build GT21–GT28 around Observation ingestion, world-state construction, state change, impact propagation, bounded correction, and action gating.
+- ✅ Published GT21 as a same-target Observation conflict audit using fictional 60-second and 55-second claims to demonstrate fail-closed behavior without a policy, `require_equal` rejection of unequal projections, deterministic complete `explicit_precedence`, input-order independence, `applied`/`superseded` audit states, and successor World State revision 2 while explicitly not inferring source authority, verifying external truth, computing a State Transition, or authorizing action;
+- continue GT22–GT28 with first-snapshot construction, explicit state change, impact propagation, bounded correction, incremental reevaluation, and action gating.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem
 

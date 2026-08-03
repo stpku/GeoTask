@@ -1,6 +1,9 @@
 catalog_version: "1.0"
 base_url: https://stpku.github.io/GeoTask/
-portal_lastmod: "2026-08-01"
+portal_lastmod: "2026-08-03"
+handbook:
+  path: docs/cookbook/gt21-gt28.zh-CN.md
+  label_zh: 查看世界状态案例手册 →
 
 stages:
   - id: spatial_relations
@@ -15,6 +18,9 @@ stages:
   - id: action_feasibility
     number: 4
     title_zh: 行动与可行性：从判断走向执行
+  - id: world_state_cycle
+    number: 5
+    title_zh: 世界状态循环：Observation、快照与增量复核
 
 cases:
   - id: GT01
@@ -177,3 +183,11 @@ cases:
     page: site/gt20/index.html
     example: examples/core/vehicle_green_light_downstream_blockage.yaml
     lastmod: "2026-07-28"
+  - id: GT21
+    slug: gt21
+    stage: world_state_cycle
+    title_zh: 两条观测同时更新同一状态，系统能按到达顺序覆盖吗？
+    summary_zh: 同一目标出现60秒与55秒两条命题时默认失败关闭；只有完整显式优先级才能生成可审计后继状态。
+    page: site/gt21/index.html
+    example: examples/core/gt21_observation_conflict_precedence.json
+    lastmod: "2026-08-03"

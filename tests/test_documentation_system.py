@@ -84,6 +84,8 @@ STATUS_MODEL = ROOT / "docs" / "reference" / "status-model.md"
 EVIDENCE_REFERENCE = ROOT / "docs" / "reference" / "evidence-and-recovery.md"
 COOKBOOK_EN = ROOT / "docs" / "cookbook" / "gt01-gt20.md"
 COOKBOOK_ZH = ROOT / "docs" / "cookbook" / "gt01-gt20.zh-CN.md"
+WORLD_STATE_COOKBOOK_EN = ROOT / "docs" / "cookbook" / "gt21-gt28.md"
+WORLD_STATE_COOKBOOK_ZH = ROOT / "docs" / "cookbook" / "gt21-gt28.zh-CN.md"
 CONTRIBUTING_EN = ROOT / "CONTRIBUTING.md"
 CONTRIBUTING_ZH = ROOT / "CONTRIBUTING.zh-CN.md"
 CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
@@ -145,6 +147,8 @@ DOCUMENTS = (
     EVIDENCE_REFERENCE,
     COOKBOOK_EN,
     COOKBOOK_ZH,
+    WORLD_STATE_COOKBOOK_EN,
+    WORLD_STATE_COOKBOOK_ZH,
     CONTRIBUTING_EN,
     CONTRIBUTING_ZH,
     CODE_OF_CONDUCT,
@@ -314,6 +318,8 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "reference/evidence-and-recovery.md",
         "cookbook/gt01-gt20.md",
         "cookbook/gt01-gt20.zh-CN.md",
+        "cookbook/gt21-gt28.md",
+        "cookbook/gt21-gt28.zh-CN.md",
         "release_v0_1_0.md",
         "../ROADMAP.md",
         "../schemas/geotask-v1.0.schema.json",
@@ -1048,6 +1054,8 @@ def test_public_manifest_requires_localized_and_community_entrypoints() -> None:
         "docs/README.en.md",
         "docs/tutorials/quickstart.zh-CN.md",
         "docs/cookbook/gt01-gt20.zh-CN.md",
+        "docs/cookbook/gt21-gt28.md",
+        "docs/cookbook/gt21-gt28.zh-CN.md",
         "docs/spec/geotask-result-v1.0.md",
         "docs/spec/geotask-artifact-registry-v1.0.md",
         "docs/spec/geotask-versioned-payload-validation-v1.0.md",
@@ -1231,3 +1239,21 @@ def test_cookbooks_cover_all_public_weekly_cases() -> None:
             "vehicle_green_light_downstream_blockage.yaml",
         ):
             assert example in text
+
+
+def test_world_state_cycle_cookbooks_publish_gt21_and_bound_gt22_to_gt28() -> None:
+    for path in (WORLD_STATE_COOKBOOK_EN, WORLD_STATE_COOKBOOK_ZH):
+        text = path.read_text(encoding="utf-8")
+        for number in range(21, 29):
+            assert f"GT{number:02d}" in text
+        for fragment in (
+            "GT21",
+            "explicit_precedence",
+            "require_equal",
+            "duplicates target path without explicit conflict policy",
+            "applied",
+            "superseded",
+            "revision 2",
+            "tests/test_gt21_observation_conflict_case.py",
+        ):
+            assert fragment in text

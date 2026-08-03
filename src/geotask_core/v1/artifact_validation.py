@@ -61,6 +61,10 @@ from geotask_core.v1.world_state_materialization import (
     WorldStateMaterializationError,
     load_world_state_materialization_result,
 )
+from geotask_core.v1.recompute_derivation import (
+    RecomputeDerivationError,
+    load_recompute_derivation_result,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1221,6 +1225,67 @@ def _validate_world_state_materialization_result_payload(
     )
 
 
+def _validate_recompute_derivation_result_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_recompute_derivation_result(payload)
+    except RecomputeDerivationError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_recompute_derivation_result",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Recompute Derivation Result "
+                        "v0.1. Structural validity does not prove exact source bindings, evaluate "
+                        "the derivations, materialize state, run reevaluation, release outputs, "
+                        "verify external truth, or authorize actions."
+                    ),
+                ),
+            ),
+        )
+
+    completed = sum(1 for item in result.derivations if item.state == "completed")
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "derivation_id": result.derivation_id,
+            "state": result.state,
+            "base_world_state_id": result.base_world_state.world_state_id,
+            "base_world_state_revision": result.base_world_state.revision,
+            "source_artifact_ref_count": len(result.source_artifact_refs),
+            "derivation_count": len(result.derivations),
+            "completed_derivation_count": completed,
+            "recompute_value_count": len(result.recompute_values),
+            "next_action": result.next_action,
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "base_world_state_binding_verified": False,
+            "correction_request_binding_verified": False,
+            "source_artifact_bindings_verified": False,
+            "derivations_evaluated": False,
+            "recompute_values_verified": False,
+            "successor_world_state_materialized": False,
+            "reevaluation_executed": False,
+            "outputs_released": False,
+            "external_truth_verified": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_incremental_reevaluation_result_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1336,6 +1401,12 @@ def _validate_verified_payload(
         )
     if descriptor.artifact_id == "geotask.world-state-materialization-result":
         return _validate_world_state_materialization_result_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
+    if descriptor.artifact_id == "geotask.recompute-derivation-result":
+        return _validate_recompute_derivation_result_payload(
             descriptor,
             payload,
             file=file,

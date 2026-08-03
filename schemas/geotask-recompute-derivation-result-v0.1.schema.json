@@ -1,0 +1,429 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-recompute-derivation-result-v0.1.schema.json",
+  "title": "GeoTask Recompute Derivation Result v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "recompute_derivation_result"
+  ],
+  "properties": {
+    "recompute_derivation_result": {
+      "$ref": "#/$defs/result"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "worldStateRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "world_state_id",
+        "revision",
+        "as_of",
+        "semantic_fingerprint",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "artifact_id": {
+          "const": "geotask.world-state"
+        },
+        "schema_version": {
+          "const": "0.1"
+        },
+        "world_state_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "as_of": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "semantic_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "correctionRequestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "instance_id",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "artifact_id": {
+          "const": "geotask.correction-request"
+        },
+        "schema_version": {
+          "const": "0.1"
+        },
+        "instance_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "sourceArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "instance_id",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "artifact_id": {
+          "enum": [
+            "geotask.document",
+            "geotask.observation"
+          ]
+        },
+        "schema_version": {
+          "enum": [
+            "0.1",
+            "1.0"
+          ]
+        },
+        "instance_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "artifact_id": {
+                "const": "geotask.document"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "schema_version": {
+                "const": "1.0"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "artifact_id": {
+                "const": "geotask.observation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "schema_version": {
+                "const": "0.1"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "kind": {
+          "enum": [
+            "artifact_path",
+            "literal"
+          ]
+        },
+        "source_ref": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "pointer": {
+          "type": "string",
+          "pattern": "^/(?:[^/]+)(?:/[^/]+)*$"
+        },
+        "value": true
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "artifact_path"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "source_ref",
+              "pointer"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "source_ref"
+                  ]
+                },
+                {
+                  "required": [
+                    "pointer"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "change_id",
+        "target_path",
+        "state",
+        "method",
+        "input_refs",
+        "inputs",
+        "reason",
+        "basis_refs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "change_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "target_path": {
+          "type": "string",
+          "pattern": "^/(?:[^/]+)(?:/[^/]+)*$"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "completed",
+            "failed",
+            "unknown"
+          ]
+        },
+        "method": {
+          "enum": [
+            "copy_input",
+            "interval_gap_minus_delay_seconds",
+            "subtract"
+          ]
+        },
+        "input_refs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/input"
+          }
+        },
+        "result": true,
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "basis_refs": {
+          "$ref": "#/$defs/stringArray"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "completed"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "result"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "result"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "recomputeValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "change_id",
+        "value"
+      ],
+      "properties": {
+        "change_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "value": true
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version",
+        "derivation_id",
+        "created_at",
+        "state",
+        "reason",
+        "base_world_state",
+        "correction_request_ref",
+        "source_artifact_refs",
+        "derivations",
+        "recompute_values",
+        "next_action",
+        "successor_materialized",
+        "reevaluation_executed",
+        "outputs_released",
+        "external_truth_verified",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://stpku.github.io/GeoTask/schemas/geotask-recompute-derivation-result-v0.1.schema.json"
+        },
+        "schema_version": {
+          "const": "0.1"
+        },
+        "derivation_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "state": {
+          "enum": [
+            "blocked",
+            "completed",
+            "failed",
+            "partial",
+            "unknown"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "base_world_state": {
+          "$ref": "#/$defs/worldStateRef"
+        },
+        "correction_request_ref": {
+          "$ref": "#/$defs/correctionRequestRef"
+        },
+        "source_artifact_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/sourceArtifactRef"
+          }
+        },
+        "derivations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/derivation"
+          }
+        },
+        "recompute_values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recomputeValue"
+          }
+        },
+        "next_action": {
+          "enum": [
+            "continue_derivation",
+            "human_review",
+            "materialize_successor_state",
+            "request_evidence"
+          ]
+        },
+        "successor_materialized": {
+          "const": false
+        },
+        "reevaluation_executed": {
+          "const": false
+        },
+        "outputs_released": {
+          "const": false
+        },
+        "external_truth_verified": {
+          "const": false
+        },
+        "action_authorized": {
+          "const": false
+        },
+        "action_executed": {
+          "const": false
+        }
+      }
+    }
+  }
+}

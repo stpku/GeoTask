@@ -43,6 +43,7 @@ EXPECTED_SCHEMA_FILENAMES = {
     "geotask-impact-graph-v0.1.schema.json",
     "geotask-incremental-reevaluation-result-v0.1.schema.json",
     "geotask-world-state-materialization-result-v0.1.schema.json",
+    "geotask-recompute-derivation-result-v0.1.schema.json",
     "geotask-result-v1.0.schema.json",
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",
@@ -59,6 +60,7 @@ REQUIRED_SDIST_PATHS = {
     "src/geotask_core/v1/impact_graph.py",
     "src/geotask_core/v1/incremental_reevaluation_result.py",
     "src/geotask_core/v1/world_state_materialization.py",
+    "src/geotask_core/v1/recompute_derivation.py",
     "src/geotask_core/v1/runtime_interface.py",
     *(f"schemas/{name}" for name in EXPECTED_SCHEMA_FILENAMES),
 }

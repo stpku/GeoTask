@@ -25,6 +25,7 @@ from geotask_core.v1.artifact_registry import (
     IMPACT_GRAPH_SCHEMA_ID,
     INCREMENTAL_REEVALUATION_RESULT_SCHEMA_ID,
     WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_ID,
+    RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID,
     RUNTIME_DESCRIPTOR_SCHEMA_ID,
     RUNTIME_REQUEST_SCHEMA_ID,
     RUNTIME_RESPONSE_SCHEMA_ID,
@@ -52,6 +53,9 @@ _SCHEMA_FILENAME_BY_ID = {
     ),
     WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_ID: (
         "geotask-world-state-materialization-result-v0.1.schema.json"
+    ),
+    RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID: (
+        "geotask-recompute-derivation-result-v0.1.schema.json"
     ),
     GEOTASK_RESULT_SCHEMA_ID: "geotask-result-v1.0.schema.json",
     CONTROL_EVALUATION_SCHEMA_ID: "geotask-control-evaluation-v1.0.schema.json",

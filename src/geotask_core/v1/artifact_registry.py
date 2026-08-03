@@ -64,6 +64,10 @@ from geotask_core.v1.world_state_materialization import (
     WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_ID,
     WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_VERSION,
 )
+from geotask_core.v1.recompute_derivation import (
+    RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID,
+    RECOMPUTE_DERIVATION_RESULT_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -153,6 +157,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "world-state-materialization-result*.json",
         "world_state_materialization_result*.json",
         "examples/core/world_state_materialization_result*.json",
+    ),
+    "geotask.recompute-derivation-result": (
+        "*.geotask-recompute-derivation-result.json",
+        "recompute-derivation-result*.json",
+        "recompute_derivation_result*.json",
+        "examples/core/recompute_derivation_result*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -478,6 +488,34 @@ _ARTIFACTS = (
             "Validation does not prove exact bindings or execution; materialization does not "
             "guess recompute values, merge observations, run reevaluation, release outputs, "
             "verify external truth, authorize actions, or execute actions."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.recompute-derivation-result",
+        title="GeoTask Recompute Derivation Result v0.1",
+        kind="recompute_derivation_result",
+        schema_id=RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID,
+        schema_version=RECOMPUTE_DERIVATION_RESULT_SCHEMA_VERSION,
+        schema_path="schemas/geotask-recompute-derivation-result-v0.1.schema.json",
+        specification_path="docs/spec/geotask-recompute-derivation-result-v0.1.md",
+        wrapper_key="recompute_derivation_result",
+        generation_command=None,
+        generation_note=(
+            "Produced by deterministic Core derivation from one exact base World State, "
+            "one required Correction Request, and exact Observation/GeoTask source paths."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.recompute-derivation-result "
+            "<recompute-derivation-result.json>"
+        ),
+        description=(
+            "Immutable source-bound result that derives every requested recompute value through "
+            "small allowlisted deterministic methods and provides a complete materializer input map."
+        ),
+        execution_boundary=(
+            "Validation does not prove exact source bindings or evaluate derivations. Explicit binding "
+            "validation and evaluation never execute arbitrary code, fetch evidence, call a model, "
+            "materialize state, run reevaluation, release outputs, verify truth, or authorize actions."
         ),
     ),
     ArtifactDescriptor(

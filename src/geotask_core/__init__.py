@@ -266,6 +266,11 @@ from geotask_core.v1.observation_merge import (
     merge_observations_into_world_state,
     validate_observation_merge_result_bindings,
 )
+from geotask_core.v1.world_state_cycle_cli import (
+    WorldStateCycleCommandError,
+    verify_session_bundle,
+    verify_incremental_recheck_bundle,
+)
 from geotask_core.v1.extension_profiles import (
     CONTROL_PROFILE_ID,
     CONTROL_PROFILE_VERSION,
@@ -655,6 +660,9 @@ __all__ = [
     "load_observation_merge_result",
     "merge_observations_into_world_state",
     "validate_observation_merge_result_bindings",
+    "WorldStateCycleCommandError",
+    "verify_session_bundle",
+    "verify_incremental_recheck_bundle",
     "CONTROL_PROFILE_ID",
     "CONTROL_PROFILE_VERSION",
     "validate_extension_profiles",

@@ -345,14 +345,34 @@ initial WorldState
 → updated WorldState and action eligibility
 ```
 
-A future high-level CLI may expose this as:
+The public CLI now exposes two high-level, read-only bundle checks:
 
 ```text
-geotask verify  --observations ... --state ... --task ...
-geotask recheck <verification-session> --observations ...
+geotask verify <verification-session.json> \
+  --state <world-state.json> \
+  --observation <observation.json> ... \
+  --bind <ref-id>=<artifact-file> ...
+
+geotask recheck <incremental-reevaluation-result.json> \
+  --bind <ref-id>=<artifact-file> ...
 ```
 
-Each call should remain local, explicit, reproducible, and Artifact-producing. Long-running observation delivery, storage, monitoring, and external action remain Runtime responsibilities.
+`geotask verify` strictly validates one already-authored Verification Session,
+its bound World State, the exact declared Observation set, and every referenced
+registered Artifact before checking the Session's World State fingerprint and raw
+content hashes. `geotask recheck` strictly validates one already-authored
+Incremental Reevaluation Result and its complete base/successor World State,
+Impact Graph, Correction Request, Discrepancy Report, and execution-result bundle
+before checking the declared outcome semantics and exact byte bindings.
+
+Both calls remain local, explicit, reproducible, and fail closed on missing,
+duplicate, extra, semantically invalid, or hash-mismatched inputs. They produce
+command reports rather than new normative Artifacts. They do not ingest a live
+stream, infer identity, resolve ambiguous conflicts, discover impact, execute a
+task or control profile, perform reevaluation, materialize a state, release an
+external output, authorize an action, or execute an action. Long-running
+observation delivery, storage, monitoring, and external action remain Runtime
+responsibilities.
 
 GT16 demonstrates the intended semantics today through a fictional static replay: an initial WorldState contains a 120-second separation; a new telemetry Observation records a 40-second delay; the predicted relation changes to 80 seconds; the system preserves still-valid spatial findings, invalidates the assumption of permanent safety, and keeps action eligibility behind a 60-second recheck threshold.
 

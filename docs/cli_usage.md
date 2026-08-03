@@ -162,17 +162,17 @@ python -m geotask_core.cli inspect examples
 
 - `inspect operators` lists public-safe Core operator registry metadata.
 - `inspect schema` summarizes the minimal GeoTask document structure.
-- `inspect schemas` lists the public Artifact Registry: the GeoTask document,
-  execution result, control evaluation, four Agent reports, three Runtime
-  interface messages, and Artifact Validation Report. Each entry includes Schema
-  identity, repository paths, generation guidance, validation commands, and
-  execution boundaries. YAML is the default; `--format json` emits clean
-  machine-readable JSON. Supplying one stable Artifact ID returns a one-entry
-  registry envelope; unknown IDs fail explicitly. `--verify` appends a sibling
-  `schema_bundle_verification` report. With no Artifact ID it verifies the Registry
-  Schema and all thirteen Artifact Schemas; with an Artifact ID it verifies only that
-  Artifact's Schema. Without `--verify`, the Artifact Registry v1.0 envelope remains
-  structurally compatible.
+- `inspect schemas` lists all twenty-three public Artifacts, covering the GeoTask
+  document, execution and control results, Agent and Runtime contracts, world-state
+  cycle Artifacts, the Core Benchmark Report, and the Artifact Validation Report.
+  Each entry includes Schema identity, repository paths, generation guidance,
+  validation commands, and execution boundaries. YAML is the default;
+  `--format json` emits clean machine-readable JSON. Supplying one stable Artifact
+  ID returns a one-entry registry envelope; unknown IDs fail explicitly. `--verify`
+  appends a sibling `schema_bundle_verification` report. With no Artifact ID it
+  verifies the Registry Schema and all twenty-three Artifact Schemas; with an
+  Artifact ID it verifies only that Artifact's Schema. Without `--verify`, the
+  Artifact Registry v1.0 envelope remains structurally compatible.
 - `schema export <artifact-id>` writes the installed JSON Schema for one
   registered artifact. Output is formatted JSON on stdout by default;
   `--output <file>` saves it without status text, and `--compact` emits one-line
@@ -181,9 +181,10 @@ python -m geotask_core.cli inspect examples
   generated manifest before returning JSON.
 - `schema verify` checks the versioned Bundle Manifest, expected filenames,
   byte sizes, SHA-256 digests, JSON parsing, and published Schema `$id` values.
-  With no Artifact ID it checks all fourteen bundled Schemas; supplying one stable
-  Artifact ID checks only that artifact. Text is the default and `--format json`
-  emits a machine-readable report with stable non-zero failure behavior.
+  With no Artifact ID it checks all twenty-four bundled Schemas; supplying one
+  stable Artifact ID checks only that artifact. Text is the default and
+  `--format json` emits a machine-readable report with stable non-zero failure
+  behavior.
 - `inspect examples` lists repository examples and marks public-safe Core
   examples separately from domain-pack examples.
 
@@ -259,6 +260,57 @@ rerun a GeoTask, execute `next_action`, or release outputs.
 `result validate` and `control validate` share the same versioned payload
 validation framework for argument handling, schema metadata, diagnostics, and
 text/JSON reports. Their strict loaders remain artifact-specific.
+
+## Verify an Explicit Session Bundle
+
+```bash
+geotask verify examples/core/verification_session_uav_recheck.json \
+  --state examples/core/world_state_uav_separation_recheck.json \
+  --observation examples/core/observation_uav_b_delay_recheck.json \
+  --bind task-gt16=examples/core/uav_route_crossing_temporal_separation.yaml \
+  --bind result-gt16-initial=examples/core/verification_session_uav_execution_result.json \
+  --bind transition-uav-recheck=examples/core/state_transition_uav_separation_recheck.json \
+  --format json
+```
+
+`verify` checks one complete, explicitly supplied Verification Session bundle.
+It strictly validates the Session, bound World State, every declared Observation,
+and each referenced registered Artifact. The set of Observation IDs and the set
+of `--bind` reference IDs must match the Session exactly; missing, duplicate, or
+extra inputs fail closed. After semantic validation, Core verifies the declared
+World State identity and fingerprint plus every raw SHA-256 content binding.
+
+This command validates an already-authored audit bundle. It does not execute the
+GeoTask document, evaluate a control profile, acquire evidence, merge an
+Observation, run a recheck, release an output, authorize an action, or execute an
+action. Text output is the default. `--format json` emits a
+`verification_bundle_check` report; JSON may be written with `--output`, and
+`--compact` produces one-line JSON.
+
+## Validate an Explicit Recheck Bundle
+
+```bash
+geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json \
+  --bind base-world-state=examples/core/world_state_uav_separation_recheck.json \
+  --bind successor-world-state=examples/core/world_state_uav_separation_successor.json \
+  --bind impact-graph-uav-recheck=examples/core/impact_graph_uav_recheck.json \
+  --bind correction-uav-recheck=examples/core/correction_request_uav_recheck.json \
+  --bind discrepancy-uav-recheck=examples/core/discrepancy_report_uav_recheck.json \
+  --bind result-gt16-reevaluation=examples/core/incremental_reevaluation_uav_execution_result.json \
+  --format json
+```
+
+`recheck` validates one already-authored Incremental Reevaluation Result and the
+exact complete source bundle declared by that result. It strictly validates the
+base and successor World States, Impact Graph, Correction Requests, Discrepancy
+Reports, and execution results before checking content hashes, revision ordering,
+requested-path confinement, immutable-path preservation, target coverage,
+acceptance criteria, discrepancy outcomes, and output/action gate closure.
+
+The command does not perform the reevaluation, materialize either state, discover
+impact, release an external output, authorize an action, or execute an action.
+The JSON envelope is `recheck_bundle_check`; text is the default, while
+`--format json`, `--output`, and `--compact` support machine pipelines.
 
 ## Agent Integration Preview
 

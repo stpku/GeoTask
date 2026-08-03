@@ -61,8 +61,8 @@
   },
   {
     "path": "ROADMAP.md",
-    "size": 15390,
-    "sha256": "8302be128926543db8afdf429da1d0034891113b3f17e3ec0a177494195aed88"
+    "size": 16077,
+    "sha256": "f266e51d2c0acb6b448581a09ce299e83da7ecb3b1c108985b4147c59f8d3e1b"
   },
   {
     "path": "SECURITY.md",
@@ -216,8 +216,8 @@
   },
   {
     "path": "tests/test_documentation_system.py",
-    "size": 45869,
-    "sha256": "4d2d32087e3cd7f515ee0a7aa0b0fdef56c70eee0f8c019adda167e5213494f3"
+    "size": 46945,
+    "sha256": "cb1def72d2bb6224e8ddd13623311dca00f26ec6083d3d39147a0e0f6b321b40"
   },
   {
     "path": "tests/test_evaluator.py",
@@ -446,8 +446,8 @@
   },
   {
     "path": "tests/test_project_portal.py",
-    "size": 8350,
-    "sha256": "56cdbb9e90c0c5b216d6b6824ce86b6382ad16e24f241b1f2d4ec3955bca9121"
+    "size": 8473,
+    "sha256": "a913c2a96c7f91eb091677115ad60267d5ce3f2eaf370bb9f4e43d18dfc4bb8f"
   },
   {
     "path": "tests/test_provider_neutral_model_adapter_example.py",
@@ -1241,8 +1241,8 @@
   },
   {
     "path": "site/index.html",
-    "size": 31967,
-    "sha256": "f2cea24fde93623d7d9d619a9141503a5242dafe85b7e301ee0be6317fbb54ef"
+    "size": 32026,
+    "sha256": "05eb66d642889745f5d745eaf95b90fd9450010aaf831343482d34639757b757"
   },
   {
     "path": "site/robots.txt",
@@ -1656,8 +1656,8 @@
   },
   {
     "path": "docs/architecture.md",
-    "size": 21084,
-    "sha256": "e97eb26368ae2ec80c7e8221d46d27f29a86e2c601bb68af4a0d6e90d3f4a709"
+    "size": 21696,
+    "sha256": "f0d14e62257572e5dec2b8d88b9a556f457b29c8dd2911323f65820683fefa86"
   },
   {
     "path": "docs/cli_usage.md",
@@ -1736,8 +1736,8 @@
   },
   {
     "path": "docs/whitepaper/GeoTask_White_Paper_v0.1.md",
-    "size": 26975,
-    "sha256": "4d0022267f79f33286809f2095b786b3ee2b4e1442491e0a2a31798f7162b7fd"
+    "size": 27288,
+    "sha256": "d6a048c1417f00c0ebac7f8f92098a7d9abdc50e54dd2763d50683e4460e8001"
   },
   {
     "path": "docs/whitepaper/README.md",
@@ -1906,8 +1906,8 @@
   },
   {
     "path": "docs/spec/target-specification-status.md",
-    "size": 8304,
-    "sha256": "a4b5dc216266e14bdf1742cb495f256181f57a56858ac81833fc5acd8d29669d"
+    "size": 8416,
+    "sha256": "9dd570ac239e163c5870dc7a3aad9dbc22d4a5ee3b56336d574d2a4f1b4fd490"
   },
   {
     "path": ".release/README.md",

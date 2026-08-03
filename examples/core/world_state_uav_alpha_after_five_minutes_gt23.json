@@ -1,0 +1,90 @@
+{
+  "world_state": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+    "schema_version": "0.1",
+    "world_state_id": "fictional-uav-alpha-initial-state",
+    "revision": 2,
+    "as_of": "2026-07-16T10:07:00+08:00",
+    "materialized_at": "2026-07-16T10:07:02+08:00",
+    "observation_refs": [
+      "obs-uav-alpha-battery-gt22",
+      "obs-uav-alpha-battery-gt23",
+      "obs-uav-alpha-position-gt22",
+      "obs-uav-alpha-position-gt23"
+    ],
+    "evidence_refs": [
+      "telemetry:fictional/uav-alpha/battery-gt22",
+      "telemetry:fictional/uav-alpha/battery-gt23",
+      "telemetry:fictional/uav-alpha/position-gt22",
+      "telemetry:fictional/uav-alpha/position-gt23"
+    ],
+    "objects": [
+      {
+        "id": "uav-alpha",
+        "type": "uav",
+        "verification_status": "asserted",
+        "observation_refs": [
+          "obs-uav-alpha-battery-gt22",
+          "obs-uav-alpha-battery-gt23",
+          "obs-uav-alpha-position-gt22",
+          "obs-uav-alpha-position-gt23"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/battery-gt22",
+          "telemetry:fictional/uav-alpha/battery-gt23",
+          "telemetry:fictional/uav-alpha/position-gt22",
+          "telemetry:fictional/uav-alpha/position-gt23"
+        ],
+        "attributes": [
+          {
+            "name": "battery_percent",
+            "value": 52,
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "observation_refs": [
+              "obs-uav-alpha-battery-gt23"
+            ],
+            "evidence_refs": [
+              "telemetry:fictional/uav-alpha/battery-gt23"
+            ],
+            "valid_from": "2026-07-16T10:06:58+08:00",
+            "valid_until": "2026-07-16T10:07:30+08:00",
+            "uncertainty": {
+              "kind": "standard_deviation",
+              "value": 1.0,
+              "unit": "percent"
+            }
+          },
+          {
+            "name": "position_local_enu",
+            "value": {
+              "x": 260,
+              "y": 180,
+              "z": 48,
+              "crs": "LOCAL_ENU",
+              "unit": "meter"
+            },
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "observation_refs": [
+              "obs-uav-alpha-position-gt23"
+            ],
+            "evidence_refs": [
+              "telemetry:fictional/uav-alpha/position-gt23"
+            ],
+            "valid_from": "2026-07-16T10:07:00+08:00",
+            "valid_until": "2026-07-16T10:08:00+08:00",
+            "uncertainty": {
+              "kind": "standard_deviation",
+              "value": 2.0,
+              "unit": "meter"
+            }
+          }
+        ],
+        "valid_from": "2026-07-16T10:01:58+08:00",
+        "valid_until": "2026-07-16T10:07:30+08:00"
+      }
+    ],
+    "relations": []
+  }
+}

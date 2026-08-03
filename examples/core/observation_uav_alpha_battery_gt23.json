@@ -1,0 +1,37 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-uav-alpha-battery-gt23",
+    "observed_at": "2026-07-16T10:06:58+08:00",
+    "received_at": "2026-07-16T10:07:00+08:00",
+    "source": {
+      "kind": "sensor",
+      "reference": "telemetry:fictional/uav-alpha/battery-gt23",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "producer": {
+      "id": "fictional-uav-energy-adapter",
+      "kind": "software",
+      "version": "0.1.0"
+    },
+    "claims": [
+      {
+        "id": "uav-alpha-battery-percent",
+        "subject_ref": "uav-alpha",
+        "predicate": "battery_percent",
+        "basis": "direct_observation",
+        "value": 52,
+        "valid_until": "2026-07-16T10:07:30+08:00",
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 1,
+          "unit": "percent"
+        },
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/battery-gt23"
+        ]
+      }
+    ]
+  }
+}

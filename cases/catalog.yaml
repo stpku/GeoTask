@@ -199,3 +199,11 @@ cases:
     page: site/gt22/index.html
     example: examples/core/gt22_initial_world_state_snapshot.json
     lastmod: "2026-08-04"
+  - id: GT23
+    slug: gt23
+    stage: world_state_cycle
+    title_zh: 无人机飞行五分钟后位置和电量都变了，系统如何证明“现在”不是“刚才”？
+    summary_zh: 只覆盖最新值会丢失历史和变化依据。系统必须保留前后运行快照，绑定300秒时间差，并明确记录位置、电量和对象有效期变化。
+    page: site/gt23/index.html
+    example: examples/core/gt23_uav_state_change.json
+    lastmod: "2026-08-04"

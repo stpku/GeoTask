@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 22,
+  "case_count": 23,
   "cases": [
     {
       "id": "GT01",
@@ -154,6 +154,13 @@
       "slug": "gt22",
       "title_zh": "无人机的位置和电量来自两个系统，AI怎样形成同一时刻的可靠运行快照？",
       "previous": "gt21",
+      "next": "gt23"
+    },
+    {
+      "id": "GT23",
+      "slug": "gt23",
+      "title_zh": "无人机飞行五分钟后位置和电量都变了，系统如何证明“现在”不是“刚才”？",
+      "previous": "gt22",
       "next": null
     }
   ]

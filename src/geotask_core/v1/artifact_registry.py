@@ -68,6 +68,10 @@ from geotask_core.v1.recompute_derivation import (
     RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID,
     RECOMPUTE_DERIVATION_RESULT_SCHEMA_VERSION,
 )
+from geotask_core.v1.observation_merge import (
+    OBSERVATION_MERGE_RESULT_SCHEMA_ID,
+    OBSERVATION_MERGE_RESULT_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -163,6 +167,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "recompute-derivation-result*.json",
         "recompute_derivation_result*.json",
         "examples/core/recompute_derivation_result*.json",
+    ),
+    "geotask.observation-merge-result": (
+        "*.geotask-observation-merge-result.json",
+        "observation-merge-result*.json",
+        "observation_merge_result*.json",
+        "examples/core/observation_merge_result*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -516,6 +526,34 @@ _ARTIFACTS = (
             "Validation does not prove exact source bindings or evaluate derivations. Explicit binding "
             "validation and evaluation never execute arbitrary code, fetch evidence, call a model, "
             "materialize state, run reevaluation, release outputs, verify truth, or authorize actions."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.observation-merge-result",
+        title="GeoTask Observation Merge Result v0.1",
+        kind="observation_merge_result",
+        schema_id=OBSERVATION_MERGE_RESULT_SCHEMA_ID,
+        schema_version=OBSERVATION_MERGE_RESULT_SCHEMA_VERSION,
+        schema_path="schemas/geotask-observation-merge-result-v0.1.schema.json",
+        specification_path="docs/spec/geotask-observation-merge-result-v0.1.md",
+        wrapper_key="observation_merge_result",
+        generation_command=None,
+        generation_note=(
+            "Produced by bounded Core merge from one exact base World State, exact Observation "
+            "bytes, and an explicit claim-to-existing-target mapping."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.observation-merge-result "
+            "<observation-merge-result.json>"
+        ),
+        description=(
+            "Immutable result binding exact base, Observation, and successor bytes while applying "
+            "every claim once to an existing attribute or relation target."
+        ),
+        execution_boundary=(
+            "Validation does not prove exact bindings or replay the merge. Merge does not create "
+            "objects or relations, infer identities, resolve conflicts, compute a State Transition, "
+            "propagate impact, run reevaluation, release outputs, verify truth, or authorize actions."
         ),
     ),
     ArtifactDescriptor(

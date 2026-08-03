@@ -15,6 +15,7 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [标准执行结果v1.0](spec/geotask-result-v1.0.md)：定义`GeotaskResult.to_dict()`、结果JSON Schema和`geotask result validate`命令。
 - [Observation v0.1](spec/geotask-observation-v0.1.md)：用于表达带来源、时间、生产者和不确定性的世界命题，但不宣称命题真实，也不自动更新World State。
 - [World State v0.1](spec/geotask-world-state-v0.1.md)：用于表达某一时刻版本化的世界对象、属性、关系、有效时间、不确定性及Observation/Evidence引用闭包，但不自动合并Observation或物化后续状态。
+- [Observation Merge Result v0.1](spec/geotask-observation-merge-result-v0.1.md)：将精确Observation字节按完整显式映射写入既有属性或关系，生成规范化后继版本，不推断身份、不解决歧义冲突，也不计算State Transition。
 - [State Transition v0.1](spec/geotask-state-transition-v0.1.md)：以前后World State语义指纹绑定快照，记录Observation支持的逐路径、关系和行动资格变化，但不自动计算差异、应用补丁或授权行动。
 - [Verification Session v0.1](spec/geotask-verification-session-v0.1.md)：将一个World State与任务、结果、控制、State Transition、行动资格和复核触发条件固化为可审计快照，并支持状态指纹与引用文件SHA-256绑定校验。
 - [Discrepancy Report v0.1](spec/geotask-discrepancy-report-v0.1.md)：绑定World State与精确来源制品，记录差异类型、期望/观测值、影响范围及可变/不可变修订路径，但不自动比较、传播或纠正。
@@ -23,8 +24,8 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [Recompute Derivation Result v0.1](spec/geotask-recompute-derivation-result-v0.1.md)：将Correction Request中的每个`recompute`变更绑定到精确Observation/任务文档路径，通过受限确定性方法生成完整重算值映射，不执行任意表达式、模型调用或状态物化。
 - [World State Materialization Result v0.1](spec/geotask-world-state-materialization-result-v0.1.md)：由不可变基准World State、已绑定Correction Request和显式重算值确定性生成后继快照，记录精确字节与逐项变更，同时保留输出/动作门禁。
 - [Incremental Reevaluation Result v0.1](spec/geotask-incremental-reevaluation-result-v0.1.md)：绑定基准/后继World State、Impact Graph与精确来源文件，记录节点、目标、验收条件、差异消解及输出/动作门禁结果，但不执行复核或授权动作。
-- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现22类公共Artifact的Schema、版本及操作命令。
-- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验22类公共制品，包括Observation、World State、State Transition、Verification Session、Discrepancy Report、Correction Request、Impact Graph、Recompute Derivation Result、World State Materialization Result、Incremental Reevaluation Result、Agent报告、Runtime消息、Core基准报告与验证报告自身，并输出统一文本/JSON报告。
+- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现23类公共Artifact的Schema、版本及操作命令。
+- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验23类公共制品，包括Observation、World State、Observation Merge Result、State Transition、Verification Session、Discrepancy Report、Correction Request、Impact Graph、Recompute Derivation Result、World State Materialization Result、Incremental Reevaluation Result、Agent报告、Runtime消息、Core基准报告与验证报告自身，并输出统一文本/JSON报告。
 - [版本化载荷校验v1.0](spec/geotask-versioned-payload-validation-v1.0.md)：统一执行结果与控制结果的严格加载、Schema元数据、诊断和文本/JSON报告。
 - [控制扩展Profile v1.0](spec/geotask-control-extension-profile-v1.0.md)：对证据请求、证据冲突、决策规则和任务门控进行版本化校验。
 - [控制表达式语言v1.0](spec/geotask-control-expression-language-v1.0.md)：定义安全有限语法、三值逻辑、比较语义和公共解析求值API。

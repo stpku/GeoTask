@@ -1,0 +1,112 @@
+{
+  "observation_merge_result": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-merge-result-v0.1.schema.json",
+    "schema_version": "0.1",
+    "merge_id": "fictional-uav-observation-merge",
+    "created_at": "2026-07-16T10:01:04+08:00",
+    "state": "completed",
+    "reason": "Apply the latest telemetry claim without recomputing dependent relations.",
+    "base_world_state": {
+      "ref_id": "base-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 1,
+      "as_of": "2026-07-16T10:00:40+08:00",
+      "materialized_at": "2026-07-16T10:00:42+08:00",
+      "semantic_fingerprint": "256b05cd81de380029f7815f0313bbf6497e2c9394ce2b5c11c54af332ac98ea",
+      "content_sha256": "5db1de004b460a8437f92c10339a0a8bc25af0b2160af38d7eae4d6e778b4b1e"
+    },
+    "observation_refs": [
+      {
+        "ref_id": "observation:obs-uav-b-delay-002",
+        "artifact_id": "geotask.observation",
+        "schema_version": "0.1",
+        "observation_id": "obs-uav-b-delay-002",
+        "observed_at": "2026-07-16T10:01:00+08:00",
+        "received_at": "2026-07-16T10:01:01+08:00",
+        "content_sha256": "4b7fd3e54991f78e6d93c58f16d62adad82b2592ab8317eb3119174c7e4745fc"
+      }
+    ],
+    "successor_world_state": {
+      "ref_id": "successor-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "materialized_at": "2026-07-16T10:01:03+08:00",
+      "semantic_fingerprint": "2f6491c9c7e37e6f948a1e82ff839adcfed7918173940aa3554fc9f67be16521",
+      "content_sha256": "65cade6df4a13f0789beb6815557564e27b3c6ea8f000543b612ad1c2036b96b"
+    },
+    "applied_claims": [
+      {
+        "application_id": "obs-uav-b-delay-002#uav-b-delay-seconds",
+        "observation_ref": "observation:obs-uav-b-delay-002",
+        "claim_id": "uav-b-delay-seconds",
+        "target_path": "/objects/uav-b/attributes/delay_seconds",
+        "target_kind": "attribute",
+        "state": "applied",
+        "before": {
+          "name": "delay_seconds",
+          "value": 40,
+          "basis": "direct_observation",
+          "verification_status": "asserted",
+          "observation_refs": [
+            "obs-uav-b-delay-001"
+          ],
+          "evidence_refs": [
+            "telemetry:fictional/uav-b/delay-001"
+          ],
+          "valid_from": "2026-07-16T10:00:40+08:00",
+          "valid_until": "2026-07-16T10:01:10+08:00",
+          "uncertainty": {
+            "kind": "standard_deviation",
+            "value": 2.0,
+            "unit": "second"
+          }
+        },
+        "after": {
+          "name": "delay_seconds",
+          "value": 60,
+          "basis": "direct_observation",
+          "verification_status": "asserted",
+          "valid_from": "2026-07-16T10:01:00+08:00",
+          "observation_refs": [
+            "obs-uav-b-delay-002"
+          ],
+          "evidence_refs": [
+            "telemetry:fictional/uav-b/delay-002"
+          ],
+          "valid_until": "2026-07-16T10:01:30+08:00",
+          "uncertainty": {
+            "kind": "standard_deviation",
+            "value": 2.0,
+            "unit": "second"
+          }
+        }
+      }
+    ],
+    "preserved_observation_refs": [
+      "obs-uav-b-delay-001"
+    ],
+    "added_observation_refs": [
+      "obs-uav-b-delay-002"
+    ],
+    "preserved_evidence_refs": [
+      "execution-result:fictional/gt16/spatial-separation",
+      "telemetry:fictional/uav-b/delay-001"
+    ],
+    "added_evidence_refs": [
+      "telemetry:fictional/uav-b/delay-002"
+    ],
+    "next_action": "compute_state_transition",
+    "state_transition_computed": false,
+    "impact_propagation_executed": false,
+    "reevaluation_executed": false,
+    "outputs_released": false,
+    "external_truth_verified": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

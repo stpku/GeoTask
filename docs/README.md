@@ -2,7 +2,7 @@
 
 **简体中文** | [English](README.en.md)
 
-GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和GT01—GT20案例掌握当前公共Core已经实现的世界模型基础与能力边界。
+GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和GT01—GT21案例掌握当前公共Core已经实现的世界模型基础与能力边界。
 
 ## 从这里开始
 
@@ -11,6 +11,7 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [白皮书构建说明](whitepaper/README.md)：从Markdown生成HTML、DOCX和可选PDF。
 - [中文快速入门](tutorials/quickstart.zh-CN.md)：安装、验证、执行和检查第一个任务。
 - [GT01—GT20中文案例手册](cookbook/gt01-gt20.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度、设备能力约束和高风险动作门控。
+- [GT21—GT28世界状态循环案例手册](cookbook/gt21-gt28.zh-CN.md)：从同目标Observation冲突开始，逐步进入快照、变化、影响、纠偏、增量复核和行动资格。
 - [当前实现语言与执行规范v1.0](spec/geotask-language-spec-v1.0.md)：当前公共Core真正实现的规范性文本。
 - [标准执行结果v1.0](spec/geotask-result-v1.0.md)：定义`GeotaskResult.to_dict()`、结果JSON Schema和`geotask result validate`命令。
 - [Observation v0.1](spec/geotask-observation-v0.1.md)：用于表达带来源、时间、生产者和不确定性的世界命题，但不宣称命题真实，也不自动更新World State。
@@ -39,7 +40,7 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [v0.1.1 PyPI修正版发布说明](release_v0_1_1.md)：修正发行元数据与模块版本不一致，并完成PyPI安装验证。
 - [v0.1.0 Public Preview发布说明](release_v0_1_0.md)：首个固定版本的能力、资产和验证状态。
 - [公共路线图](../ROADMAP.md)：面向协议、Core、工具和生态的后续方向。
-- [英文Quickstart](tutorials/quickstart.md)与[英文Cookbook](cookbook/gt01-gt20.md)。
+- [英文Quickstart](tutorials/quickstart.md)、[GT01—GT20英文Cookbook](cookbook/gt01-gt20.md)与[GT21—GT28英文世界状态Cookbook](cookbook/gt21-gt28.md)。
 
 ## 工程参考
 

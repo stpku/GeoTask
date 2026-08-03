@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 20,
+  "case_count": 21,
   "cases": [
     {
       "id": "GT01",
@@ -140,6 +140,13 @@
       "slug": "gt20",
       "title_zh": "车辆已经获得绿灯，为什么仍然不能进入路口？",
       "previous": "gt19",
+      "next": "gt21"
+    },
+    {
+      "id": "GT21",
+      "slug": "gt21",
+      "title_zh": "两条观测同时更新同一状态，系统能按到达顺序覆盖吗？",
+      "previous": "gt20",
       "next": null
     }
   ]

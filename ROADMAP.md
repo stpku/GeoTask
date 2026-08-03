@@ -50,7 +50,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 
 - ✅ 已发布Observation v0.1 Artifact，使模型、传感器、地图、权威数据和人工输入以带来源、时间、生产者、不确定性和世界命题的结构化观察进入系统，同时明确不验证命题真实性、不更新World State；
 - ✅ 已发布World State v0.1 Artifact，表达某一时刻版本化的世界对象、属性、关系、证据、有效时间和不确定状态，并提供严格引用闭包、快照时点有效性和确定性语义指纹校验；
-- ✅ 已发布Observation Merge Result v0.1 Artifact，将精确Observation字节按完整显式映射写入既有属性或关系，确定性生成一个后继World State版本，同时明确不推断对象身份、不创建缺失状态、不解决歧义冲突或计算State Transition；
+- ✅ 已发布Observation Merge Result v0.1 Artifact，将精确Observation字节按完整显式映射写入既有属性或关系；当多条命题指向同一目标时，仅接受调用方声明的语义相等合并或完整显式优先级，并记录全部参与命题的`applied`、`consolidated`或`superseded`审计状态，确定性生成后继World State，同时明确不推断对象身份、不发明优先级、不排序来源、不解决未声明策略的歧义冲突或计算State Transition；
 - ✅ 已发布State Transition v0.1 Artifact，以前后World State语义指纹绑定快照，记录Observation支持的对象、属性、关系和行动资格变化，同时明确不自动计算差异、不应用补丁、不物化状态或授权行动；
 - ✅ 已发布Verification Session v0.1 Artifact，绑定一个World State语义指纹与任务、执行结果、控制评估、State Transition及差异制品的精确字节哈希，记录行动资格与复核触发条件，同时明确不验证引用制品语义、不执行任务、控制或复核；
 - ✅ 已发布Discrepancy Report v0.1 Artifact，绑定一个World State语义指纹与精确来源制品字节，记录差异类型、期望值/观测值、影响范围及可变/不可变修订路径，同时明确不自动比较来源、传播影响、生成修订请求或应用纠正；
@@ -60,7 +60,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布受限后继World State物化与World State Materialization Result v0.1，将一个required Correction Request应用于不可变基准快照，绑定精确字节并保留来源、输出门禁和动作门禁；
 - ✅ 已发布Incremental Reevaluation Result v0.1 Artifact，绑定基准/后继World State、Impact Graph、Correction Request、Discrepancy Report与执行结果的精确字节，完整记录节点/目标结果、验收条件、差异消解和输出/动作门禁，同时明确不执行复核、不生成后继状态、不授权或执行动作；
 - ✅ 已提供`geotask verify`与`geotask recheck`高层只读入口，对完整显式Verification Session或Incremental Reevaluation Result制品束执行注册制品语义校验、精确引用覆盖和SHA-256绑定验证，同时明确不执行任务、复核、状态物化、输出释放或动作；
-- 扩展受限Observation Merge的身份与冲突策略和重算推导方法注册表，保持本地、显式、可复现的世界状态快照语义；
+- 扩展受限Observation Merge的对象身份发现与未声明歧义冲突策略，并扩展重算推导方法注册表，保持本地、显式、可复现的世界状态快照语义；
 - 将GT21—GT28建设为Observation接入、世界状态构建、状态变化、影响传播、限定纠偏和行动门控案例。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
@@ -128,7 +128,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 
 - ✅ Published Observation v0.1 so models, sensors, maps, authoritative data, and humans enter the system as structured observations with source, time, producer identity, uncertainty, and world claims, while explicitly not verifying claim truth or updating a World State;
 - ✅ Published World State v0.1 for versioned objects, attributes, relations, evidence, validity time, and uncertainty at one snapshot, with strict reference closure, as-of validity, and deterministic semantic fingerprints;
-- ✅ Published Observation Merge Result v0.1, applying complete explicit mappings from exact Observation bytes to existing attributes or relations and deterministically emitting one successor World State revision, without identity inference, missing-state creation, ambiguous-conflict resolution, or State Transition computation;
+- ✅ Published Observation Merge Result v0.1, applying complete explicit mappings from exact Observation bytes to existing attributes or relations; when multiple claims target one path, Core accepts only caller-declared semantic-equality consolidation or complete explicit precedence, records every participant as `applied`, `consolidated`, or `superseded`, and deterministically emits one successor World State revision without identity inference, invented precedence, source ranking, undeclared ambiguous-conflict resolution, or State Transition computation;
 - ✅ Published State Transition v0.1, binding before/after World State snapshots by semantic fingerprint and recording Observation-supported object, attribute, relation, and action-eligibility changes, while explicitly not calculating diffs, applying patches, materializing state, or authorizing action;
 - ✅ Published Verification Session v0.1, binding one World State semantic fingerprint to exact-byte task, execution-result, control-evaluation, State Transition, and discrepancy references plus action eligibility and recheck triggers, while explicitly not validating linked artifact semantics or executing tasks, controls, or rechecks;
 - ✅ Published Discrepancy Report v0.1, binding one World State semantic fingerprint to exact source-artifact bytes and recording discrepancy kind, expected/observed values, downstream impact, and mutable/immutable correction paths, while explicitly not comparing sources, propagating impact, creating correction requests, or applying corrections;
@@ -138,7 +138,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published Recompute Derivation Result v0.1, binding exact World State, Correction Request, Observation, and GeoTask Document bytes and deriving every requested `recompute` value through small allowlisted deterministic methods, without arbitrary code, model calls, state mutation, reevaluation, release, or action authorization;
 - ✅ Published Incremental Reevaluation Result v0.1, binding exact base/successor World States, Impact Graph, Correction Requests, Discrepancy Reports, and execution results while closing graph-node, target, acceptance, discrepancy-resolution, output-gate, and action-eligibility outcomes without executing reevaluation, generating successors, authorizing actions, or executing actions;
 - ✅ Added high-level, read-only `geotask verify` and `geotask recheck` commands that run registered semantic validation, exact reference coverage, and SHA-256 binding checks over complete explicit Verification Session or Incremental Reevaluation Result bundles while explicitly not executing tasks, reevaluation, state materialization, output release, or actions;
-- expand the bounded derivation method registry and extend Observation Merge beyond explicit existing-target mappings with declared identity/conflict policies while preserving explicit, local, reproducible snapshot semantics;
+- expand the bounded derivation method registry and extend Observation Merge with object-identity discovery and policies for ambiguous conflicts that lack an explicit caller declaration, while preserving explicit, local, reproducible snapshot semantics;
 - build GT21–GT28 around Observation ingestion, world-state construction, state change, impact propagation, bounded correction, and action gating.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem

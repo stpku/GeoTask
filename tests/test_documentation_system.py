@@ -339,6 +339,10 @@ def test_architecture_and_target_status_include_bounded_observation_merge() -> N
     for fragment in (
         "→ bounded Observation Merge",
         "Observation Merge Result v0.1 is implemented as the bounded snapshot-update contract",
+        "caller-declared `require_equal` consolidation",
+        "complete `explicit_precedence`",
+        "does not infer identity",
+        "resolve an undeclared ambiguous conflict",
         "→ successor WorldState",
     ):
         assert fragment in architecture_text
@@ -349,6 +353,8 @@ def test_architecture_and_target_status_include_bounded_observation_merge() -> N
         "14. [GeoTask World State Materialization Result v0.1]",
         "19. [Operator Registry]",
         "World State, Observation Merge Result, State Transition",
+        "caller-declared `require_equal`",
+        "undeclared ambiguous-conflict resolution",
     ):
         assert fragment in target_text
 
@@ -639,6 +645,10 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "validate_observation_merge_result_bindings",
         "Every claim in every supplied Observation must be mapped exactly once",
         "existing object attribute",
+        "require_equal",
+        "explicit_precedence",
+        "conflict_resolutions",
+        "does not infer that it is more authoritative",
         "compute_state_transition",
         "action_authorized",
     ):
@@ -653,6 +663,18 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
     assert observation_merge_schema["properties"]["observation_merge_result"][
         "$ref"
     ] == "#/$defs/result"
+    assert observation_merge_schema["$defs"]["appliedClaim"]["properties"][
+        "state"
+    ]["enum"] == ["applied", "consolidated", "superseded"]
+    assert observation_merge_schema["$defs"]["conflictResolution"]["properties"][
+        "strategy"
+    ]["enum"] == ["require_equal", "explicit_precedence"]
+    assert observation_merge_schema["$defs"]["result"]["properties"][
+        "conflict_resolutions"
+    ]["items"]["$ref"] == "#/$defs/conflictResolution"
+    assert observation_merge_schema["$defs"]["result"]["properties"][
+        "conflict_resolutions"
+    ]["minItems"] == 1
 
     registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
     for fragment in (
@@ -814,6 +836,8 @@ def test_agent_integration_profile_and_skill_define_safe_recovery() -> None:
         "side_effects_executed=false",
         "completed outputs must exactly match",
         "Do not answer `full_conflict=true`",
+        "never invent an `explicit_precedence` order",
+        "independently corroborate one another",
         "next_action_executed = false",
         "model_guess_used = false",
     ):
@@ -903,6 +927,12 @@ def test_root_readmes_match_current_capabilities() -> None:
         assert "geotask runtime check" in text
         assert "geotask runtime mock" in text
         assert "Runtime Interface Profile" in text or "Runtime接口Profile" in text
+
+    zh_text, en_text = texts
+    assert "调用方显式声明的语义相等合并或完整优先级选择" in zh_text
+    assert "未声明策略的歧义命题冲突消解" in zh_text
+    assert "caller-declared semantic-equality consolidation or complete precedence" in en_text
+    assert "ambiguous claims without a declared policy" in en_text
 
 
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:

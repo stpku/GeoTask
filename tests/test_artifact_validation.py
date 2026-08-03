@@ -140,6 +140,8 @@ def test_unified_api_validates_all_registered_artifact_types() -> None:
     merge_body = observation_merge.to_dict()["artifact_validation"]
     assert merge_body["artifact_id"] == "geotask.observation-merge-result"
     assert merge_body["summary"]["applied_claim_count"] == 1
+    assert merge_body["summary"]["conflict_resolution_count"] == 0
+    assert merge_body["summary"]["conflict_strategies"] == []
     assert merge_body["summary"]["merge_replayed"] is False
     assert merge_body["summary"]["state_transition_computed"] is False
     assert merge_body["summary"]["action_authorized"] is False

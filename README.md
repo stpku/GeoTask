@@ -24,7 +24,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - **验证与控制机制负责维护世界：** 保留已证实事实，标记冲突和未知，限定纠偏范围，并管理行动资格；
 - **Runtime与Domain Pack负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
 
-> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。Observation v0.1表达带来源和不确定性的世界命题，World State v0.1表达可版本化显式快照，Observation Merge Result v0.1按完整显式映射将新命题写入既有状态目标并生成绑定的后继版本，State Transition v0.1绑定前后快照，Verification Session v0.1固化审计上下文，Discrepancy Report v0.1记录差异及修订范围，Correction Request v0.1约束后继状态变更，Impact Graph v0.1组织可校验的影响DAG，Recompute Derivation Result v0.1从精确来源路径确定性推导受限重算值，World State Materialization Result v0.1记录受限后继状态物化，Incremental Reevaluation Result v0.1则闭合图节点、复核目标、验收条件、差异消解以及输出/动作门禁；自动差异计算、对象身份发现、歧义命题冲突消解、影响图自动发现与传播执行以及通用推导方法仍在持续建设。
+> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。Observation v0.1表达带来源和不确定性的世界命题，World State v0.1表达可版本化显式快照，Observation Merge Result v0.1按完整显式映射将新命题写入既有状态目标，并对同一目标支持调用方显式声明的语义相等合并或完整优先级选择，生成绑定的后继版本，State Transition v0.1绑定前后快照，Verification Session v0.1固化审计上下文，Discrepancy Report v0.1记录差异及修订范围，Correction Request v0.1约束后继状态变更，Impact Graph v0.1组织可校验的影响DAG，Recompute Derivation Result v0.1从精确来源路径确定性推导受限重算值，World State Materialization Result v0.1记录受限后继状态物化，Incremental Reevaluation Result v0.1则闭合图节点、复核目标、验收条件、差异消解以及输出/动作门禁；自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、影响图自动发现与传播执行以及通用推导方法仍在持续建设。
 
 ## 从这里开始
 
@@ -76,7 +76,7 @@ flowchart LR
   N[新观察到来] --> W
 ```
 
-当前公共Core已经实现世界对象与空间合同、来源与证据绑定、Observation v0.1、World State v0.1、受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、来源绑定的受限重算值推导、受限后继状态物化、Incremental Reevaluation Result v0.1、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。自动差异计算、对象身份发现、歧义命题冲突消解、Impact Graph自动发现与传播执行和通用推导方法仍属于后续路线图。
+当前公共Core已经实现世界对象与空间合同、来源与证据绑定、Observation v0.1、World State v0.1、受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、来源绑定的受限重算值推导、受限后继状态物化、Incremental Reevaluation Result v0.1、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行和通用推导方法仍属于后续路线图。
 
 ## 5分钟运行
 

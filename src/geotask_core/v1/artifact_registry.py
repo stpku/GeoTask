@@ -540,7 +540,8 @@ _ARTIFACTS = (
         generation_command=None,
         generation_note=(
             "Produced by bounded Core merge from one exact base World State, exact Observation "
-            "bytes, and an explicit claim-to-existing-target mapping."
+            "bytes, complete explicit claim-to-existing-target mappings, and an explicit target-scoped "
+            "conflict policy whenever multiple claims target the same path."
         ),
         validation_command=(
             "geotask artifact validate geotask.observation-merge-result "
@@ -548,12 +549,14 @@ _ARTIFACTS = (
         ),
         description=(
             "Immutable result binding exact base, Observation, and successor bytes while applying "
-            "every claim once to an existing attribute or relation target."
+            "every claim once to an existing attribute or relation target and auditing caller-declared "
+            "same-target semantic equality or complete explicit precedence."
         ),
         execution_boundary=(
             "Validation does not prove exact bindings or replay the merge. Merge does not create "
-            "objects or relations, infer identities, resolve conflicts, compute a State Transition, "
-            "propagate impact, run reevaluation, release outputs, verify truth, or authorize actions."
+            "objects or relations, infer identities, invent precedence, rank sources, resolve an "
+            "undeclared ambiguous conflict, compute a State Transition, propagate impact, run "
+            "reevaluation, release outputs, verify truth, or authorize actions."
         ),
     ),
     ArtifactDescriptor(

@@ -94,9 +94,47 @@
           "pattern": "^/(objects/[^/]+/attributes/[^/]+|relations/[^/]+)$"
         },
         "target_kind": {"enum": ["attribute", "relation"]},
-        "state": {"const": "applied"},
+        "state": {"enum": ["applied", "consolidated", "superseded"]},
         "before": {},
         "after": {}
+      }
+    },
+    "conflictResolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_path",
+        "strategy",
+        "participant_application_ids",
+        "precedence",
+        "selected_application_id",
+        "contributing_application_ids"
+      ],
+      "properties": {
+        "target_path": {
+          "type": "string",
+          "pattern": "^/(objects/[^/]+/attributes/[^/]+|relations/[^/]+)$"
+        },
+        "strategy": {"enum": ["require_equal", "explicit_precedence"]},
+        "participant_application_ids": {
+          "allOf": [
+            {"$ref": "#/$defs/stringArray"},
+            {"minItems": 2}
+          ]
+        },
+        "precedence": {"$ref": "#/$defs/stringArray"},
+        "selected_application_id": {
+          "anyOf": [
+            {"$ref": "#/$defs/nonEmptyString"},
+            {"type": "null"}
+          ]
+        },
+        "contributing_application_ids": {
+          "allOf": [
+            {"$ref": "#/$defs/stringArray"},
+            {"minItems": 1}
+          ]
+        }
       }
     },
     "result": {
@@ -146,6 +184,11 @@
           "type": "array",
           "minItems": 1,
           "items": {"$ref": "#/$defs/appliedClaim"}
+        },
+        "conflict_resolutions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/conflictResolution"}
         },
         "preserved_observation_refs": {"$ref": "#/$defs/stringArray"},
         "added_observation_refs": {

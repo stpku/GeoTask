@@ -1262,3 +1262,17 @@ def test_world_state_cycle_cookbooks_publish_gt21_gt22_and_bound_gt23_to_gt28() 
             "tests/test_gt22_initial_world_state_case.py",
         ):
             assert fragment in text
+
+    zh = WORLD_STATE_COOKBOOK_ZH.read_text(encoding="utf-8")
+    assert "现实场景优先、必要性先行、技术概念后置" in zh
+    assert "遥测显示延误60秒，运行审核记录显示55秒" in zh
+    assert "无人机的位置和电量来自两个系统" in zh
+    assert "临时禁飞区发布后" in zh
+    assert "路线安全、天气合格，就可以自动起飞吗" in zh
+
+    en = WORLD_STATE_COOKBOOK_EN.read_text(encoding="utf-8")
+    assert "scenario-first" in en
+    assert "Telemetry says a 60-second delay" in en
+    assert "Position and battery data come from different systems" in en
+    assert "temporary no-fly zone" in en
+    assert "authorize automatic takeoff" in en

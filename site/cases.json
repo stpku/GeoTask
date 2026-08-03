@@ -145,14 +145,14 @@
     {
       "id": "GT21",
       "slug": "gt21",
-      "title_zh": "两条观测同时更新同一状态，系统能按到达顺序覆盖吗？",
+      "title_zh": "遥测显示延误60秒，运行审核记录显示55秒，AI应该相信哪一个？",
       "previous": "gt20",
       "next": "gt22"
     },
     {
       "id": "GT22",
       "slug": "gt22",
-      "title_zh": "两条Observation如何构建第一个可引用World State？",
+      "title_zh": "无人机的位置和电量来自两个系统，AI怎样形成同一时刻的可靠运行快照？",
       "previous": "gt21",
       "next": null
     }

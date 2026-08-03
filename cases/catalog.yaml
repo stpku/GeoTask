@@ -186,16 +186,16 @@ cases:
   - id: GT21
     slug: gt21
     stage: world_state_cycle
-    title_zh: 两条观测同时更新同一状态，系统能按到达顺序覆盖吗？
-    summary_zh: 同一目标出现60秒与55秒两条命题时默认失败关闭；只有完整显式优先级才能生成可审计后继状态。
+    title_zh: 遥测显示延误60秒，运行审核记录显示55秒，AI应该相信哪一个？
+    summary_zh: 同一架无人机的延误数据来自两个系统。直接覆盖、取平均或按到达顺序选择都会掩盖冲突，必须使用业务方明确声明的处理规则。
     page: site/gt21/index.html
     example: examples/core/gt21_observation_conflict_precedence.json
-    lastmod: "2026-08-03"
+    lastmod: "2026-08-04"
   - id: GT22
     slug: gt22
     stage: world_state_cycle
-    title_zh: 两条Observation如何构建第一个可引用World State？
-    summary_zh: 严格加载位置与电量Observation，通过显式对象和属性映射构建revision 1快照，并保留引用、有效期、不确定性和稳定语义指纹。
+    title_zh: 无人机的位置和电量来自两个系统，AI怎样形成同一时刻的可靠运行快照？
+    summary_zh: 位置与电量分别到达时，不能简单拼接成“当前状态”。系统必须确认对象、时间和字段归属，才能形成可追溯的统一运行快照。
     page: site/gt22/index.html
     example: examples/core/gt22_initial_world_state_snapshot.json
     lastmod: "2026-08-04"

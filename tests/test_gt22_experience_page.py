@@ -48,15 +48,20 @@ def test_gt22_page_visualizes_explicit_mapping_to_revision_one() -> None:
     assert "referenceable" in html
 
 
-def test_gt22_page_explains_referenceable_snapshot_boundaries() -> None:
+def test_gt22_page_uses_scenario_first_narrative_and_explains_boundaries() -> None:
     html = GT22_PAGE.read_text(encoding="utf-8")
 
-    assert "可引用不等于已经证明真实" in html
+    assert "无人机的位置和电量来自两个系统，AI怎样形成同一时刻的可靠运行快照？" in html
+    assert "为什么不能把两条数据直接拼在一起？" in html
+    assert "对象可能被拼错" in html
+    assert "时间可能被拼错" in html
+    assert "形成快照后，调度员真正得到了什么？" in html
+    assert "同一对象 · 同一时间 · 字段可追溯" in html
+    assert "记录完整 ≠ 外部事实已核验" in html
+    assert "技术实现：World State、revision和语义指纹" in html
     assert "bb57804b…dbe540f" in html
-    assert "asserted ≠ externally verified" in html
-    assert "没有绑定原始文件字节" in html
     assert "空白字符" in html
-    assert "规范化世界语义与引用" in html
+    assert "原始文件排版" in html
 
 
 def test_gt22_page_recomputes_claim_coverage_and_fingerprint_locally() -> None:

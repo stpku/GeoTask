@@ -34,6 +34,22 @@ CASE_SCRIPT_TAG = (
     '  <script src="../assets/case-navigation.js" defer '
     'data-geotask-case-shared></script>'
 )
+SCENARIO_FIRST_CASE_NUMBER = 21
+SCENARIO_FIRST_FORBIDDEN_TITLE_TERMS = (
+    "Observation",
+    "World State",
+    "State Transition",
+    "Impact Graph",
+    "Correction Request",
+    "Incremental Reevaluation",
+    "Artifact",
+    "revision",
+    "semantic fingerprint",
+    "materialization",
+    "制品",
+    "语义指纹",
+    "物化",
+)
 
 
 class CatalogError(ValueError):
@@ -94,6 +110,18 @@ def validate_catalog(data: dict[str, Any]) -> None:
         for field in ("title_zh", "summary_zh", "page", "lastmod"):
             if not isinstance(case.get(field), str) or not case[field].strip():
                 raise CatalogError(f"{case_id}: missing non-empty {field}")
+        if int(case_id[2:]) >= SCENARIO_FIRST_CASE_NUMBER:
+            normalized_title = case["title_zh"].casefold()
+            forbidden = [
+                term
+                for term in SCENARIO_FIRST_FORBIDDEN_TITLE_TERMS
+                if term.casefold() in normalized_title
+            ]
+            if forbidden:
+                raise CatalogError(
+                    f"{case_id}: scenario-first title must describe the real task; "
+                    f"move technical terms to the explanation: {', '.join(forbidden)}"
+                )
         for path_field in ("page", "example"):
             value = case.get(path_field)
             if value and not (ROOT / value).is_file():
@@ -112,7 +140,7 @@ def render_case_section(data: dict[str, Any]) -> str:
         '    <section class="block" id="cases">',
         '      <div class="shell">',
         '        <div class="section-head">',
-        f'          <div><h2>GT01—{latest_id}渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及Observation接入与可审计世界状态演化。</p></div>',
+        f'          <div><h2>GT01—{latest_id}渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>',
         f'          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/{html.escape(handbook["path"])}">{html.escape(handbook["label_zh"])}</a>',
         '        </div>',
     ]

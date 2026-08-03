@@ -1,7 +1,7 @@
 {
   "scenario": {
     "id": "gt22-initial-world-state-snapshot",
-    "title_zh": "两条Observation如何构建第一个可引用World State？",
+    "title_zh": "无人机的位置和电量来自两个系统，AI怎样形成同一时刻的可靠运行快照？",
     "observations": [
       "observation_uav_alpha_position_gt22.json",
       "observation_uav_alpha_battery_gt22.json"

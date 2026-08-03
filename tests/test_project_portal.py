@@ -27,8 +27,9 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert "30秒看懂一次世界状态更新" in html
     assert "四个平面构成可验证时空世界模型" in html
     assert "六类能力共同维护智能体的世界" in html
-    assert "Observation v0.1、World State v0.1、受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、来源绑定的受限重算值推导、受限后继状态物化、Incremental Reevaluation Result v0.1" in html
-    assert "自动差异计算、对象身份发现、歧义命题冲突消解、Impact Graph自动发现与传播执行以及受限推导方法扩展" in html
+    assert "Observation v0.1、World State v0.1、支持调用方显式同目标冲突策略的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、来源绑定的受限重算值推导、受限后继状态物化、Incremental Reevaluation Result v0.1" in html
+    assert "自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行以及受限推导方法扩展" in html
+    assert "支持调用方显式同目标冲突策略的受限Observation Merge v0.1" in html
     assert "自动差异计算、Observation合并" not in html
     assert "保护商业运行层" not in html
     assert "商业边界" not in html

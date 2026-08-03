@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, bounded Observation Merge v0.1, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, Correction Request v0.1 successor-state correction contracts, Impact Graph v0.1 source-bound impact DAGs, Recompute Derivation Result v0.1 source-bound deterministic value derivation, World State Materialization Result v0.1 bounded successor generation, and Incremental Reevaluation Result v0.1 bounded outcome records, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, identity discovery, ambiguous-claim conflict resolution, expansion of the bounded derivation method registry, and automatic impact discovery and propagation execution remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
+GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, bounded Observation Merge v0.1 with caller-declared semantic-equality consolidation and complete explicit precedence for claims targeting the same path, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, Correction Request v0.1 successor-state correction contracts, Impact Graph v0.1 source-bound impact DAGs, Recompute Derivation Result v0.1 source-bound deterministic value derivation, World State Materialization Result v0.1 bounded successor generation, and Incremental Reevaluation Result v0.1 bounded outcome records, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, identity discovery, resolution of ambiguous claims without a declared policy, expansion of the bounded derivation method registry, and automatic impact discovery and propagation execution remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -301,7 +301,7 @@ Observation v0.1 carries source-bound, timestamped world claims with producer id
 
 World State v0.1 is implemented as a public world-model Artifact. It records one versioned, point-in-time snapshot of objects, attributes, relations, validity, uncertainty, and closed Observation/Evidence references. Its validation does not ingest Observations, fetch evidence, verify external truth, materialize a later state, rerun tasks, or change action eligibility.
 
-Observation Merge Result v0.1 is implemented as the bounded snapshot-update contract. It binds exact base World State, Observation, and successor bytes; requires a complete explicit mapping from every Observation claim to an existing attribute or relation; and deterministically emits one canonical successor revision. It does not infer identity, create missing objects or relations, resolve ambiguous conflicts, calculate a State Transition, verify external truth, release outputs, or authorize action.
+Observation Merge Result v0.1 is implemented as the bounded snapshot-update contract. It binds exact base World State, Observation, and successor bytes; requires a complete explicit mapping from every Observation claim to an existing attribute or relation; supports only caller-declared `require_equal` consolidation or complete `explicit_precedence` when multiple claims target the same path; and deterministically emits one canonical successor revision with an auditable resolution record. It does not infer identity, create missing objects or relations, invent precedence, rank sources, resolve an undeclared ambiguous conflict, calculate a State Transition, verify external truth, release outputs, or authorize action.
 
 State Transition v0.1 is implemented as a public audit Artifact. It binds an earlier and later World State by ID, revision, snapshot time, and deterministic semantic fingerprint, then records Observation-supported object, attribute, relation, and action-eligibility changes using identity-based paths. Core can validate those bindings against two loaded snapshots, but it does not calculate the diff, apply the declared changes, materialize a state, verify truth, rerun tasks, or authorize action.
 
@@ -368,9 +368,10 @@ before checking the declared outcome semantics and exact byte bindings.
 Both calls remain local, explicit, reproducible, and fail closed on missing,
 duplicate, extra, semantically invalid, or hash-mismatched inputs. They produce
 command reports rather than new normative Artifacts. They do not ingest a live
-stream, infer identity, resolve ambiguous conflicts, discover impact, execute a
-task or control profile, perform reevaluation, materialize a state, release an
-external output, authorize an action, or execute an action. Long-running
+stream, infer identity, invent a conflict policy, resolve an undeclared ambiguous
+conflict, discover impact, execute a task or control profile, perform reevaluation,
+materialize a state, release an external output, authorize an action, or execute
+an action. Long-running
 observation delivery, storage, monitoring, and external action remain Runtime
 responsibilities.
 

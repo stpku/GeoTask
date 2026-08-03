@@ -3,9 +3,11 @@
 Observation Merge v0.1 applies every claim from one or more exact Observation
 artifacts to an existing object attribute or existing relation in one immutable
 base World State. The caller must provide an explicit claim-to-target mapping.
-Core does not infer object identity, create objects or relations, resolve
-conflicts, verify claim truth, compute a State Transition, propagate impact, or
-authorize action.
+When multiple claims target the same path, the caller must additionally provide
+one bounded conflict policy: exact semantic equality or complete explicit
+precedence. Core does not infer object identity, create objects or relations,
+resolve undeclared ambiguity, verify claim truth, compute a State Transition,
+propagate impact, or authorize action.
 
 A successful merge emits a new immutable World State revision and one
 ``geotask.observation-merge-result`` artifact binding the exact base,
@@ -46,8 +48,13 @@ OBSERVATION_MERGE_RESULT_SCHEMA_ID = (
 OBSERVATION_MERGE_RESULT_SCHEMA_VERSION = "0.1"
 OBSERVATION_MERGE_RESULT_FORMAT_VERSION = "0.1"
 OBSERVATION_MERGE_STATES = frozenset({"completed"})
-OBSERVATION_MERGE_APPLICATION_STATES = frozenset({"applied"})
+OBSERVATION_MERGE_APPLICATION_STATES = frozenset(
+    {"applied", "consolidated", "superseded"}
+)
 OBSERVATION_MERGE_TARGET_KINDS = frozenset({"attribute", "relation"})
+OBSERVATION_MERGE_CONFLICT_STRATEGIES = frozenset(
+    {"require_equal", "explicit_precedence"}
+)
 OBSERVATION_MERGE_NEXT_ACTIONS = frozenset({"compute_state_transition"})
 
 
@@ -130,6 +137,15 @@ def _string_list(
     *,
     non_empty: bool = False,
 ) -> tuple[str, ...]:
+    return tuple(sorted(_ordered_string_list(value, path, non_empty=non_empty)))
+
+
+def _ordered_string_list(
+    value: object,
+    path: str,
+    *,
+    non_empty: bool = False,
+) -> tuple[str, ...]:
     if not isinstance(value, Sequence) or isinstance(value, (str, bytes, bytearray)):
         _fail(path, "must be an array of non-empty strings")
     if non_empty and not value:
@@ -142,7 +158,7 @@ def _string_list(
             _fail(f"{path}[{index}]", f"duplicates {text!r}")
         seen.add(text)
         items.append(text)
-    return tuple(sorted(items))
+    return tuple(items)
 
 
 def _json_value(value: object, path: str) -> object:
@@ -210,6 +226,15 @@ class ObservationMergeInstruction:
     observation_id: str
     claim_id: str
     target_path: str
+
+
+@dataclass(frozen=True)
+class ObservationMergeConflictPolicy:
+    """Explicit deterministic policy for one multiply-targeted state path."""
+
+    target_path: str
+    strategy: str
+    precedence: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -285,6 +310,32 @@ class AppliedObservationClaim:
 
 
 @dataclass(frozen=True)
+class ObservationMergeConflictResolution:
+    """Auditable outcome for one explicitly declared target conflict."""
+
+    target_path: str
+    strategy: str
+    participant_application_ids: tuple[str, ...]
+    precedence: tuple[str, ...]
+    selected_application_id: str | None
+    contributing_application_ids: tuple[str, ...]
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "target_path": self.target_path,
+            "strategy": self.strategy,
+            "participant_application_ids": sorted(
+                self.participant_application_ids
+            ),
+            "precedence": list(self.precedence),
+            "selected_application_id": self.selected_application_id,
+            "contributing_application_ids": sorted(
+                self.contributing_application_ids
+            ),
+        }
+
+
+@dataclass(frozen=True)
 class ObservationMergeResult:
     merge_id: str
     created_at: str
@@ -306,46 +357,53 @@ class ObservationMergeResult:
     external_truth_verified: bool
     action_authorized: bool
     action_executed: bool
+    conflict_resolutions: tuple[ObservationMergeConflictResolution, ...] = ()
 
     def to_dict(self) -> dict[str, object]:
-        return {
-            "observation_merge_result": {
-                "schema_id": OBSERVATION_MERGE_RESULT_SCHEMA_ID,
-                "schema_version": OBSERVATION_MERGE_RESULT_SCHEMA_VERSION,
-                "merge_id": self.merge_id,
-                "created_at": self.created_at,
-                "state": self.state,
-                "reason": self.reason,
-                "base_world_state": self.base_world_state.to_dict(),
-                "observation_refs": [
-                    item.to_dict()
-                    for item in sorted(
-                        self.observation_refs, key=lambda item: item.observation_id
-                    )
-                ],
-                "successor_world_state": self.successor_world_state.to_dict(),
-                "applied_claims": [
-                    item.to_dict()
-                    for item in sorted(
-                        self.applied_claims, key=lambda item: item.application_id
-                    )
-                ],
-                "preserved_observation_refs": sorted(
-                    self.preserved_observation_refs
-                ),
-                "added_observation_refs": sorted(self.added_observation_refs),
-                "preserved_evidence_refs": sorted(self.preserved_evidence_refs),
-                "added_evidence_refs": sorted(self.added_evidence_refs),
-                "next_action": self.next_action,
-                "state_transition_computed": self.state_transition_computed,
-                "impact_propagation_executed": self.impact_propagation_executed,
-                "reevaluation_executed": self.reevaluation_executed,
-                "outputs_released": self.outputs_released,
-                "external_truth_verified": self.external_truth_verified,
-                "action_authorized": self.action_authorized,
-                "action_executed": self.action_executed,
-            }
+        body: dict[str, object] = {
+            "schema_id": OBSERVATION_MERGE_RESULT_SCHEMA_ID,
+            "schema_version": OBSERVATION_MERGE_RESULT_SCHEMA_VERSION,
+            "merge_id": self.merge_id,
+            "created_at": self.created_at,
+            "state": self.state,
+            "reason": self.reason,
+            "base_world_state": self.base_world_state.to_dict(),
+            "observation_refs": [
+                item.to_dict()
+                for item in sorted(
+                    self.observation_refs, key=lambda item: item.observation_id
+                )
+            ],
+            "successor_world_state": self.successor_world_state.to_dict(),
+            "applied_claims": [
+                item.to_dict()
+                for item in sorted(
+                    self.applied_claims, key=lambda item: item.application_id
+                )
+            ],
+            "preserved_observation_refs": sorted(
+                self.preserved_observation_refs
+            ),
+            "added_observation_refs": sorted(self.added_observation_refs),
+            "preserved_evidence_refs": sorted(self.preserved_evidence_refs),
+            "added_evidence_refs": sorted(self.added_evidence_refs),
+            "next_action": self.next_action,
+            "state_transition_computed": self.state_transition_computed,
+            "impact_propagation_executed": self.impact_propagation_executed,
+            "reevaluation_executed": self.reevaluation_executed,
+            "outputs_released": self.outputs_released,
+            "external_truth_verified": self.external_truth_verified,
+            "action_authorized": self.action_authorized,
+            "action_executed": self.action_executed,
         }
+        if self.conflict_resolutions:
+            body["conflict_resolutions"] = [
+                item.to_dict()
+                for item in sorted(
+                    self.conflict_resolutions, key=lambda item: item.target_path
+                )
+            ]
+        return {"observation_merge_result": body}
 
     def semantic_fingerprint(self) -> str:
         raw = json.dumps(
@@ -571,6 +629,50 @@ def _claim_projection(
     )
 
 
+def _candidate_projection(
+    *,
+    body: dict[str, object],
+    observation: Observation,
+    claim: WorldClaim,
+    target_path: str,
+    successor_as_of: datetime,
+) -> tuple[str, dict[str, object], dict[str, object]]:
+    candidate_body = copy.deepcopy(body)
+    return _claim_projection(
+        body=candidate_body,
+        observation=observation,
+        claim=claim,
+        target_path=target_path,
+        successor_as_of=successor_as_of,
+    )
+
+
+def _projection_semantics(after: Mapping[str, object]) -> dict[str, object]:
+    semantic = copy.deepcopy(dict(after))
+    semantic.pop("observation_refs", None)
+    semantic.pop("evidence_refs", None)
+    return semantic
+
+
+def _write_projection(
+    body: dict[str, object],
+    target_path: str,
+    after: Mapping[str, object],
+) -> None:
+    segments = _decode_pointer(target_path, "conflict_policy.target_path")
+    if len(segments) == 4 and segments[0] == "objects" and segments[2] == "attributes":
+        target = _find_attribute(body, segments[1], segments[3], target_path)
+    elif len(segments) == 2 and segments[0] == "relations":
+        target = _find_relation(body, segments[1], target_path)
+    else:
+        _fail(
+            "conflict_policy.target_path",
+            "must identify an existing attribute or relation",
+        )
+    target.clear()
+    target.update(copy.deepcopy(dict(after)))
+
+
 def _load_world_state_ref(
     value: object, path: str
 ) -> tuple[ObservationMergeWorldStateRef, datetime, datetime]:
@@ -726,6 +828,145 @@ def _load_applied_claim(value: object, index: int) -> AppliedObservationClaim:
     )
 
 
+def _load_conflict_resolution(
+    value: object,
+    index: int,
+    *,
+    applications_by_id: Mapping[str, AppliedObservationClaim],
+) -> ObservationMergeConflictResolution:
+    path = f"observation_merge_result.conflict_resolutions[{index}]"
+    item = _mapping(value, path)
+    _exact_fields(
+        item,
+        path,
+        required={
+            "target_path",
+            "strategy",
+            "participant_application_ids",
+            "precedence",
+            "selected_application_id",
+            "contributing_application_ids",
+        },
+    )
+    target_path = _string(item["target_path"], f"{path}.target_path")
+    strategy = _enum(
+        item["strategy"],
+        f"{path}.strategy",
+        OBSERVATION_MERGE_CONFLICT_STRATEGIES,
+    )
+    participants = _string_list(
+        item["participant_application_ids"],
+        f"{path}.participant_application_ids",
+        non_empty=True,
+    )
+    if len(participants) < 2:
+        _fail(
+            f"{path}.participant_application_ids",
+            "must contain at least two applications",
+        )
+    precedence = _ordered_string_list(
+        item["precedence"],
+        f"{path}.precedence",
+    )
+    raw_selected = item["selected_application_id"]
+    selected = (
+        None
+        if raw_selected is None
+        else _string(raw_selected, f"{path}.selected_application_id")
+    )
+    contributing = _string_list(
+        item["contributing_application_ids"],
+        f"{path}.contributing_application_ids",
+        non_empty=True,
+    )
+
+    participant_set = set(participants)
+    if not participant_set.issubset(applications_by_id):
+        missing = sorted(participant_set - set(applications_by_id))
+        _fail(
+            f"{path}.participant_application_ids",
+            "references unknown applications: " + ", ".join(missing),
+        )
+    target_applications = [applications_by_id[item_id] for item_id in participants]
+    if any(application.target_path != target_path for application in target_applications):
+        _fail(
+            f"{path}.participant_application_ids",
+            "all applications must target conflict_resolutions.target_path",
+        )
+    before_values = [application.before for application in target_applications]
+    after_values = [application.after for application in target_applications]
+    if any(value != before_values[0] for value in before_values[1:]):
+        _fail(path, "all participant before values must match")
+    if any(value != after_values[0] for value in after_values[1:]):
+        _fail(path, "all participant after values must match")
+
+    state_by_id = {
+        application.application_id: application.state
+        for application in target_applications
+    }
+    if strategy == "require_equal":
+        if precedence:
+            _fail(f"{path}.precedence", "must be empty for require_equal")
+        if selected is not None:
+            _fail(
+                f"{path}.selected_application_id",
+                "must be null for require_equal",
+            )
+        if set(contributing) != participant_set:
+            _fail(
+                f"{path}.contributing_application_ids",
+                "must include every participant for require_equal",
+            )
+        applied = [item_id for item_id, state in state_by_id.items() if state == "applied"]
+        consolidated = [
+            item_id for item_id, state in state_by_id.items() if state == "consolidated"
+        ]
+        if len(applied) != 1 or set(applied + consolidated) != participant_set:
+            _fail(
+                f"{path}.participant_application_ids",
+                "require_equal needs one applied application and all others consolidated",
+            )
+    else:
+        if set(precedence) != participant_set or len(precedence) != len(participants):
+            _fail(
+                f"{path}.precedence",
+                "must list every participant exactly once",
+            )
+        if selected != precedence[0]:
+            _fail(
+                f"{path}.selected_application_id",
+                "must equal the first explicit precedence application",
+            )
+        if contributing != (selected,):
+            _fail(
+                f"{path}.contributing_application_ids",
+                "must contain only the selected application",
+            )
+        if state_by_id[selected] != "applied":
+            _fail(
+                f"{path}.selected_application_id",
+                "selected application must have state applied",
+            )
+        if any(
+            state_by_id[item_id] != "superseded"
+            for item_id in participants
+            if item_id != selected
+        ):
+            _fail(
+                f"{path}.participant_application_ids",
+                "non-selected applications must have state superseded",
+            )
+
+    return ObservationMergeConflictResolution(
+        target_path=target_path,
+        strategy=strategy,
+        participant_application_ids=participants,
+        precedence=precedence,
+        selected_application_id=selected,
+        contributing_application_ids=contributing,
+    )
+
+
 def load_observation_merge_result(
     payload: Mapping[str, object],
 ) -> ObservationMergeResult:
@@ -761,6 +1002,7 @@ def load_observation_merge_result(
             "action_authorized",
             "action_executed",
         },
+        optional={"conflict_resolutions"},
     )
     if body["schema_id"] != OBSERVATION_MERGE_RESULT_SCHEMA_ID:
         _fail(
@@ -852,12 +1094,12 @@ def load_observation_merge_result(
     if not raw_claims:
         _fail("observation_merge_result.applied_claims", "must contain at least one item")
     applications: list[AppliedObservationClaim] = []
-    application_ids: set[str] = set()
+    applications_by_id: dict[str, AppliedObservationClaim] = {}
     claim_keys: set[tuple[str, str]] = set()
-    target_paths: set[str] = set()
+    applications_by_target: dict[str, list[AppliedObservationClaim]] = {}
     for index, raw in enumerate(raw_claims):
         application = _load_applied_claim(raw, index)
-        if application.application_id in application_ids:
+        if application.application_id in applications_by_id:
             _fail(
                 f"observation_merge_result.applied_claims[{index}].application_id",
                 f"duplicates {application.application_id!r}",
@@ -873,15 +1115,74 @@ def load_observation_merge_result(
                 f"observation_merge_result.applied_claims[{index}].claim_id",
                 "duplicates an Observation claim application",
             )
-        if application.target_path in target_paths:
-            _fail(
-                f"observation_merge_result.applied_claims[{index}].target_path",
-                f"duplicates target path {application.target_path!r}",
-            )
-        application_ids.add(application.application_id)
+        applications_by_id[application.application_id] = application
         claim_keys.add(claim_key)
-        target_paths.add(application.target_path)
+        applications_by_target.setdefault(application.target_path, []).append(
+            application
+        )
         applications.append(application)
+
+    raw_resolutions = body.get("conflict_resolutions", [])
+    if not isinstance(raw_resolutions, Sequence) or isinstance(
+        raw_resolutions, (str, bytes, bytearray)
+    ):
+        _fail("observation_merge_result.conflict_resolutions", "must be an array")
+    if "conflict_resolutions" in body and not raw_resolutions:
+        _fail(
+            "observation_merge_result.conflict_resolutions",
+            "must contain at least one item when present",
+        )
+    conflict_resolutions: list[ObservationMergeConflictResolution] = []
+    resolution_targets: set[str] = set()
+    for index, raw in enumerate(raw_resolutions):
+        resolution = _load_conflict_resolution(
+            raw,
+            index,
+            applications_by_id=applications_by_id,
+        )
+        if resolution.target_path in resolution_targets:
+            _fail(
+                f"observation_merge_result.conflict_resolutions[{index}].target_path",
+                f"duplicates {resolution.target_path!r}",
+            )
+        expected_participants = {
+            application.application_id
+            for application in applications_by_target.get(
+                resolution.target_path, []
+            )
+        }
+        if set(resolution.participant_application_ids) != expected_participants:
+            _fail(
+                f"observation_merge_result.conflict_resolutions[{index}].participant_application_ids",
+                "must exactly match every application for the target path",
+            )
+        resolution_targets.add(resolution.target_path)
+        conflict_resolutions.append(resolution)
+
+    duplicate_targets = {
+        target_path
+        for target_path, target_applications in applications_by_target.items()
+        if len(target_applications) > 1
+    }
+    if resolution_targets != duplicate_targets:
+        missing = sorted(duplicate_targets - resolution_targets)
+        extra = sorted(resolution_targets - duplicate_targets)
+        details: list[str] = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if extra:
+            details.append("unexpected " + ", ".join(extra))
+        _fail(
+            "observation_merge_result.conflict_resolutions",
+            "must cover every multiply-targeted path exactly once: "
+            + "; ".join(details),
+        )
+    for target_path, target_applications in applications_by_target.items():
+        if len(target_applications) == 1 and target_applications[0].state != "applied":
+            _fail(
+                "observation_merge_result.applied_claims",
+                f"single-target application for {target_path!r} must be applied",
+            )
 
     preserved_observation_refs = _string_list(
         body["preserved_observation_refs"],
@@ -964,6 +1265,9 @@ def load_observation_merge_result(
         external_truth_verified=boundaries["external_truth_verified"],
         action_authorized=boundaries["action_authorized"],
         action_executed=boundaries["action_executed"],
+        conflict_resolutions=tuple(
+            sorted(conflict_resolutions, key=lambda item: item.target_path)
+        ),
     )
 
 
@@ -977,13 +1281,15 @@ def merge_observations_into_world_state(
     instructions: Sequence[ObservationMergeInstruction],
     successor_as_of: str,
     successor_materialized_at: str,
+    conflict_policies: Sequence[ObservationMergeConflictPolicy] = (),
 ) -> ObservationMergeOutput:
     """Apply every supplied Observation claim to one explicit existing target.
 
     The function consumes exact serialized inputs, validates every claim and
     target, and returns canonical successor/result bytes. Every claim in every
-    supplied Observation must be mapped exactly once; every target may be written
-    at most once.
+    supplied Observation must be mapped exactly once. A multiply-targeted path
+    requires one explicit bounded conflict policy; undeclared ambiguity fails
+    closed.
     """
 
     merge_id = _string(merge_id, "merge_id")
@@ -1050,7 +1356,7 @@ def merge_observations_into_world_state(
     if not instructions:
         _fail("instructions", "must contain at least one claim mapping")
     instruction_by_claim: dict[tuple[str, str], ObservationMergeInstruction] = {}
-    target_paths: set[str] = set()
+    instructions_by_target: dict[str, list[ObservationMergeInstruction]] = {}
     for index, instruction in enumerate(instructions):
         if not isinstance(instruction, ObservationMergeInstruction):
             _fail(f"instructions[{index}]", "must be ObservationMergeInstruction")
@@ -1070,17 +1376,25 @@ def merge_observations_into_world_state(
         key = (observation_id, claim_id)
         if key in instruction_by_claim:
             _fail(f"instructions[{index}].claim_id", "duplicates a claim mapping")
-        if target_path in target_paths:
-            _fail(
-                f"instructions[{index}].target_path",
-                f"duplicates target path {target_path!r}",
-            )
-        instruction_by_claim[key] = ObservationMergeInstruction(
+        normalized_instruction = ObservationMergeInstruction(
             observation_id=observation_id,
             claim_id=claim_id,
             target_path=target_path,
         )
-        target_paths.add(target_path)
+        instruction_by_claim[key] = normalized_instruction
+        instructions_by_target.setdefault(target_path, []).append(
+            normalized_instruction
+        )
+
+    application_ids = [
+        f"{instruction.observation_id}#{instruction.claim_id}"
+        for instruction in instruction_by_claim.values()
+    ]
+    if len(set(application_ids)) != len(application_ids):
+        _fail(
+            "instructions",
+            "observation_id and claim_id combinations produce duplicate application IDs",
+        )
 
     expected_claims = {
         (observation.observation_id, claim.id)
@@ -1096,6 +1410,79 @@ def merge_observations_into_world_state(
         if extra:
             details.append("unexpected " + ", ".join(f"{a}#{b}" for a, b in extra))
         _fail("instructions", "must cover every supplied claim exactly once: " + "; ".join(details))
+
+    if not isinstance(conflict_policies, Sequence) or isinstance(
+        conflict_policies, (str, bytes, bytearray)
+    ):
+        _fail("conflict_policies", "must be a sequence")
+    duplicate_targets = {
+        target_path
+        for target_path, target_instructions in instructions_by_target.items()
+        if len(target_instructions) > 1
+    }
+    policies_by_target: dict[str, ObservationMergeConflictPolicy] = {}
+    for index, policy in enumerate(conflict_policies):
+        if not isinstance(policy, ObservationMergeConflictPolicy):
+            _fail(
+                f"conflict_policies[{index}]",
+                "must be ObservationMergeConflictPolicy",
+            )
+        target_path = _string(
+            policy.target_path,
+            f"conflict_policies[{index}].target_path",
+        )
+        strategy = _enum(
+            policy.strategy,
+            f"conflict_policies[{index}].strategy",
+            OBSERVATION_MERGE_CONFLICT_STRATEGIES,
+        )
+        if target_path in policies_by_target:
+            _fail(
+                f"conflict_policies[{index}].target_path",
+                f"duplicates conflict policy for {target_path!r}",
+            )
+        if target_path not in duplicate_targets:
+            _fail(
+                f"conflict_policies[{index}].target_path",
+                "must identify a path targeted by at least two claims",
+            )
+        precedence = _ordered_string_list(
+            policy.precedence,
+            f"conflict_policies[{index}].precedence",
+        )
+        participants = {
+            f"{instruction.observation_id}#{instruction.claim_id}"
+            for instruction in instructions_by_target[target_path]
+        }
+        if strategy == "require_equal":
+            if precedence:
+                _fail(
+                    f"conflict_policies[{index}].precedence",
+                    "must be empty for require_equal",
+                )
+        elif set(precedence) != participants or len(precedence) != len(participants):
+            _fail(
+                f"conflict_policies[{index}].precedence",
+                "must list every conflicting application exactly once",
+            )
+        policies_by_target[target_path] = ObservationMergeConflictPolicy(
+            target_path=target_path,
+            strategy=strategy,
+            precedence=precedence,
+        )
+
+    if set(policies_by_target) != duplicate_targets:
+        missing = sorted(duplicate_targets - set(policies_by_target))
+        extra = sorted(set(policies_by_target) - duplicate_targets)
+        details: list[str] = []
+        if missing:
+            details.append(
+                "duplicates target path without explicit conflict policy: "
+                + ", ".join(missing)
+            )
+        if extra:
+            details.append("unexpected policy: " + ", ".join(extra))
+        _fail("conflict_policies", "; ".join(details))
 
     body = copy.deepcopy(base_world_state.to_dict()["world_state"])
     body["revision"] = base_world_state.revision + 1
@@ -1130,27 +1517,159 @@ def merge_observations_into_world_state(
     )
 
     applications: list[AppliedObservationClaim] = []
-    for observation_id, claim_id in sorted(instruction_by_claim):
-        instruction = instruction_by_claim[(observation_id, claim_id)]
-        observation = observations[observation_id]
-        claim = _find_claim(observation, claim_id)
-        target_kind, before, after = _claim_projection(
-            body=body,
-            observation=observation,
-            claim=claim,
-            target_path=instruction.target_path,
-            successor_as_of=successor_as_of_dt,
+    conflict_resolutions: list[ObservationMergeConflictResolution] = []
+    instruction_by_application_id = {
+        f"{instruction.observation_id}#{instruction.claim_id}": instruction
+        for instruction in instruction_by_claim.values()
+    }
+    for target_path in sorted(instructions_by_target):
+        target_instructions = sorted(
+            instructions_by_target[target_path],
+            key=lambda item: (item.observation_id, item.claim_id),
         )
-        applications.append(
-            AppliedObservationClaim(
-                application_id=f"{observation_id}#{claim_id}",
-                observation_ref=f"observation:{observation_id}",
-                claim_id=claim_id,
-                target_path=instruction.target_path,
-                target_kind=target_kind,
-                state="applied",
-                before=before,
-                after=after,
+        if len(target_instructions) == 1:
+            instruction = target_instructions[0]
+            observation = observations[instruction.observation_id]
+            claim = _find_claim(observation, instruction.claim_id)
+            target_kind, before, after = _claim_projection(
+                body=body,
+                observation=observation,
+                claim=claim,
+                target_path=target_path,
+                successor_as_of=successor_as_of_dt,
+            )
+            applications.append(
+                AppliedObservationClaim(
+                    application_id=(
+                        f"{instruction.observation_id}#{instruction.claim_id}"
+                    ),
+                    observation_ref=f"observation:{instruction.observation_id}",
+                    claim_id=instruction.claim_id,
+                    target_path=target_path,
+                    target_kind=target_kind,
+                    state="applied",
+                    before=before,
+                    after=after,
+                )
+            )
+            continue
+
+        candidate_by_id: dict[
+            str, tuple[str, dict[str, object], dict[str, object]]
+        ] = {}
+        for instruction in target_instructions:
+            observation = observations[instruction.observation_id]
+            claim = _find_claim(observation, instruction.claim_id)
+            application_id = f"{instruction.observation_id}#{instruction.claim_id}"
+            candidate_by_id[application_id] = _candidate_projection(
+                body=body,
+                observation=observation,
+                claim=claim,
+                target_path=target_path,
+                successor_as_of=successor_as_of_dt,
+            )
+
+        participant_ids = tuple(sorted(candidate_by_id))
+        target_kinds = {candidate_by_id[item_id][0] for item_id in participant_ids}
+        before_values = [candidate_by_id[item_id][1] for item_id in participant_ids]
+        if len(target_kinds) != 1:
+            _fail(
+                "conflict_policies",
+                f"conflicting claims for {target_path!r} disagree on target kind",
+            )
+        if any(value != before_values[0] for value in before_values[1:]):
+            _fail(
+                "conflict_policies",
+                f"conflicting claims for {target_path!r} do not share one before value",
+            )
+        target_kind = next(iter(target_kinds))
+        before = before_values[0]
+        policy = policies_by_target[target_path]
+
+        if policy.strategy == "require_equal":
+            semantic_values = [
+                _projection_semantics(candidate_by_id[item_id][2])
+                for item_id in participant_ids
+            ]
+            if any(value != semantic_values[0] for value in semantic_values[1:]):
+                _fail(
+                    "conflict_policies",
+                    f"require_equal claims for {target_path!r} are not semantically equal",
+                )
+            final_after = copy.deepcopy(candidate_by_id[participant_ids[0]][2])
+            final_after["observation_refs"] = sorted(
+                {
+                    observation_ref
+                    for item_id in participant_ids
+                    for observation_ref in candidate_by_id[item_id][2].get(
+                        "observation_refs", []
+                    )
+                }
+            )
+            final_after["evidence_refs"] = sorted(
+                {
+                    evidence_ref
+                    for item_id in participant_ids
+                    for evidence_ref in candidate_by_id[item_id][2].get(
+                        "evidence_refs", []
+                    )
+                }
+            )
+            applied_id = participant_ids[0]
+            _write_projection(body, target_path, final_after)
+            for item_id in participant_ids:
+                instruction = instruction_by_application_id[item_id]
+                applications.append(
+                    AppliedObservationClaim(
+                        application_id=item_id,
+                        observation_ref=f"observation:{instruction.observation_id}",
+                        claim_id=instruction.claim_id,
+                        target_path=target_path,
+                        target_kind=target_kind,
+                        state=(
+                            "applied" if item_id == applied_id else "consolidated"
+                        ),
+                        before=before,
+                        after=final_after,
+                    )
+                )
+            conflict_resolutions.append(
+                ObservationMergeConflictResolution(
+                    target_path=target_path,
+                    strategy=policy.strategy,
+                    participant_application_ids=participant_ids,
+                    precedence=(),
+                    selected_application_id=None,
+                    contributing_application_ids=participant_ids,
+                )
+            )
+            continue
+
+        selected_id = policy.precedence[0]
+        final_after = copy.deepcopy(candidate_by_id[selected_id][2])
+        _write_projection(body, target_path, final_after)
+        for item_id in participant_ids:
+            instruction = instruction_by_application_id[item_id]
+            applications.append(
+                AppliedObservationClaim(
+                    application_id=item_id,
+                    observation_ref=f"observation:{instruction.observation_id}",
+                    claim_id=instruction.claim_id,
+                    target_path=target_path,
+                    target_kind=target_kind,
+                    state="applied" if item_id == selected_id else "superseded",
+                    before=before,
+                    after=final_after,
+                )
+            )
+        conflict_resolutions.append(
+            ObservationMergeConflictResolution(
+                target_path=target_path,
+                strategy=policy.strategy,
+                participant_application_ids=participant_ids,
+                precedence=policy.precedence,
+                selected_application_id=selected_id,
+                contributing_application_ids=(selected_id,),
             )
         )
 
@@ -1201,6 +1720,9 @@ def merge_observations_into_world_state(
         external_truth_verified=False,
         action_authorized=False,
         action_executed=False,
+        conflict_resolutions=tuple(
+            sorted(conflict_resolutions, key=lambda item: item.target_path)
+        ),
     )
     result = load_observation_merge_result(result.to_dict())
     result_bytes = serialize_observation_merge_result(result)
@@ -1229,6 +1751,14 @@ def validate_observation_merge_result_bindings(
         )
         for application in result.applied_claims
     )
+    conflict_policies = tuple(
+        ObservationMergeConflictPolicy(
+            target_path=resolution.target_path,
+            strategy=resolution.strategy,
+            precedence=resolution.precedence,
+        )
+        for resolution in result.conflict_resolutions
+    )
     replay = merge_observations_into_world_state(
         merge_id=result.merge_id,
         created_at=result.created_at,
@@ -1238,6 +1768,7 @@ def validate_observation_merge_result_bindings(
         instructions=instructions,
         successor_as_of=result.successor_world_state.as_of,
         successor_materialized_at=result.successor_world_state.materialized_at,
+        conflict_policies=conflict_policies,
     )
     if replay.world_state_bytes != successor_world_state_bytes:
         _fail(
@@ -1272,12 +1803,15 @@ __all__ = [
     "OBSERVATION_MERGE_STATES",
     "OBSERVATION_MERGE_APPLICATION_STATES",
     "OBSERVATION_MERGE_TARGET_KINDS",
+    "OBSERVATION_MERGE_CONFLICT_STRATEGIES",
     "OBSERVATION_MERGE_NEXT_ACTIONS",
     "ObservationMergeError",
     "ObservationMergeInstruction",
+    "ObservationMergeConflictPolicy",
     "ObservationMergeWorldStateRef",
     "ObservationMergeObservationRef",
     "AppliedObservationClaim",
+    "ObservationMergeConflictResolution",
     "ObservationMergeResult",
     "ObservationMergeOutput",
     "serialize_observation_merge_world_state",

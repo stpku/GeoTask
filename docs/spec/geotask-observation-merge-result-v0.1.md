@@ -6,7 +6,7 @@
 
 The contract closes a specific world-model gap: a valid Observation can describe a newer claim, while a World State remains an explicit point-in-time snapshot. Observation Merge v0.1 applies those claims to declared existing targets and emits a new World State revision plus an immutable result that binds the exact input and output bytes.
 
-It is not an identity-resolution engine, conflict-resolution engine, state-diff engine, impact engine, workflow runner, or action authorization mechanism.
+It is not an identity-resolution engine, general conflict-resolution engine, state-diff engine, impact engine, workflow runner, or action authorization mechanism. It supports only two caller-declared, deterministic policies for claims already mapped to the same existing target: exact semantic equality and complete explicit precedence.
 
 ## 2. Binding model
 
@@ -15,8 +15,9 @@ One result binds:
 - one immutable base `geotask.world-state` by ID, revision, `as_of`, `materialized_at`, semantic fingerprint, and raw-byte SHA-256;
 - one or more exact `geotask.observation` artifacts by Observation ID, timestamps, and raw-byte SHA-256;
 - one explicit claim-to-target mapping for every supplied Observation claim;
+- when two or more claims map to one target, one exact target-scoped conflict policy and its auditable resolution;
 - one generated successor `geotask.world-state` by ID, revision, timestamps, semantic fingerprint, and raw-byte SHA-256;
-- one before/after application record for every mapped claim.
+- one before/after application record for every mapped claim, including consolidated or superseded participants.
 
 `validate_observation_merge_result_bindings` replays the merge over the supplied exact bytes and requires the generated canonical successor bytes and result semantics to match the declared Artifact.
 
@@ -33,18 +34,33 @@ The target path is an identity path, not an array index path. This keeps the map
 
 v0.1 does not create objects, create attributes, create relations, delete state, or change object/relation identity.
 
-## 4. Complete claim coverage
+## 4. Complete claim and policy coverage
 
 Every claim in every supplied Observation must be mapped exactly once. A merge fails closed when:
 
 - a claim has no mapping;
 - a mapping references an unknown Observation or claim;
 - the same claim is mapped more than once;
-- two claims target the same state path;
+- two or more claims target the same state path without exactly one target-scoped conflict policy;
+- a conflict policy targets a path with fewer than two mapped claims;
+- an `explicit_precedence` policy does not list every participating `<observation-id>#<claim-id>` exactly once;
 - a target object, attribute, or relation does not already exist;
 - a target identity disagrees with the claim identity.
 
-This rule prevents a caller from silently dropping inconvenient claims or applying multiple competing values to one target in an order-dependent way.
+This prevents a caller from silently dropping inconvenient claims or relying on iteration order. Duplicate targets remain invalid by default.
+
+### 4.1 Bounded conflict strategies
+
+Observation Merge v0.1 supports only:
+
+| Strategy | Requirement | Successor projection | Application audit states |
+|---|---|---|---|
+| `require_equal` | All candidate projections must be semantically identical after excluding only `observation_refs` and `evidence_refs`. | The shared projection is written once; Observation and evidence references are unioned. | One deterministic participant is `applied`; the rest are `consolidated`. All participants contribute. |
+| `explicit_precedence` | The caller supplies a complete ordered list of every participating application ID. | The first application in the declared order is selected exactly; no source ranking is inferred. | The selected participant is `applied`; every other participant is `superseded`. Only the selected participant contributes to the target projection. |
+
+The result records each conflict in `conflict_resolutions`, including target path, strategy, all participants, declared precedence, selected application when applicable, and contributing applications. An absent policy, incomplete precedence list, semantic disagreement under `require_equal`, or tampered result fails closed.
+
+These strategies do not determine which sensor, model, authority, or human is trustworthy. Any precedence is caller-authored policy and must come from a Runtime or Domain Pack when it represents domain authority.
 
 ## 5. Claim projection
 
@@ -85,9 +101,11 @@ Each `applied_claims` entry records:
 - deterministic `application_id` as `<observation-id>#<claim-id>`;
 - source `observation_ref` and `claim_id`;
 - explicit target path and target kind;
-- `state: applied`;
+- state `applied`, `consolidated`, or `superseded`;
 - the complete target value before merge;
-- the complete target value after merge.
+- the complete final target value after merge.
+
+For a conflict group, every participant carries the same before/final-after pair so the result cannot hide the selected projection behind a loser-specific intermediate state. `conflict_resolutions` closes the relationship between participant states and the declared policy.
 
 The aggregate result state is `completed`. `next_action` is `compute_state_transition`, because the merge only materializes the successor snapshot. It does not calculate or assert what changed across snapshots as a State Transition Artifact.
 
@@ -119,8 +137,9 @@ Explicit binding validation additionally proves:
 Observation Merge v0.1 does not:
 
 - discover object or relation identity;
-- merge ambiguous or conflicting claims;
-- choose claim precedence;
+- invent a conflict policy or resolve an undeclared ambiguous conflict;
+- rank sources or choose claim precedence without a complete caller-declared order;
+- treat `require_equal` as independent corroboration or external truth verification;
 - create missing objects, attributes, or relations;
 - verify external evidence or claim truth;
 - compute a State Transition;
@@ -141,3 +160,20 @@ Accordingly, these result fields are required to remain `false`: `state_transiti
 - `examples/core/world_state_uav_separation_observation_merged.json` as revision 2.
 
 The merge changes `uav-b.delay_seconds` from 40 to 60 and preserves the dependent `uav-temporal-separation` relation at 80. That preserved stale derived value is intentional: Observation Merge does not replace State Transition calculation, impact discovery, recompute derivation, or incremental reevaluation.
+
+## 11. Bounded conflict API
+
+```python
+from geotask_core import ObservationMergeConflictPolicy
+
+policy = ObservationMergeConflictPolicy(
+    target_path="/objects/uav-b/attributes/delay_seconds",
+    strategy="explicit_precedence",
+    precedence=(
+        "obs-authoritative#uav-b-delay-seconds",
+        "obs-telemetry#uav-b-delay-seconds",
+    ),
+)
+```
+
+The precedence tuple must contain every claim mapped to that target exactly once. The first entry is selected mechanically; Core does not infer that it is more authoritative. Use `strategy="require_equal"` with an empty precedence tuple only when all candidate projections must be semantically equal.

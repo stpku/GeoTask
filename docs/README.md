@@ -15,7 +15,7 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [标准执行结果v1.0](spec/geotask-result-v1.0.md)：定义`GeotaskResult.to_dict()`、结果JSON Schema和`geotask result validate`命令。
 - [Observation v0.1](spec/geotask-observation-v0.1.md)：用于表达带来源、时间、生产者和不确定性的世界命题，但不宣称命题真实，也不自动更新World State。
 - [World State v0.1](spec/geotask-world-state-v0.1.md)：用于表达某一时刻版本化的世界对象、属性、关系、有效时间、不确定性及Observation/Evidence引用闭包，但不自动合并Observation或物化后续状态。
-- [Observation Merge Result v0.1](spec/geotask-observation-merge-result-v0.1.md)：将精确Observation字节按完整显式映射写入既有属性或关系，生成规范化后继版本，不推断身份、不解决歧义冲突，也不计算State Transition。
+- [Observation Merge Result v0.1](spec/geotask-observation-merge-result-v0.1.md)：将精确Observation字节按完整显式映射写入既有属性或关系；同一目标出现多条命题时，仅按调用方声明的语义相等合并或完整显式优先级生成规范化后继版本，不推断身份、不发明优先级、不解决未声明策略的歧义冲突，也不计算State Transition。
 - [State Transition v0.1](spec/geotask-state-transition-v0.1.md)：以前后World State语义指纹绑定快照，记录Observation支持的逐路径、关系和行动资格变化，但不自动计算差异、应用补丁或授权行动。
 - [Verification Session v0.1](spec/geotask-verification-session-v0.1.md)：将一个World State与任务、结果、控制、State Transition、行动资格和复核触发条件固化为可审计快照，并支持状态指纹与引用文件SHA-256绑定校验。
 - [Discrepancy Report v0.1](spec/geotask-discrepancy-report-v0.1.md)：绑定World State与精确来源制品，记录差异类型、期望/观测值、影响范围及可变/不可变修订路径，但不自动比较、传播或纠正。

@@ -287,7 +287,7 @@ and non-execution boundary.
   "artifact_registry": {
     "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-artifact-registry-v1.0.schema.json",
     "registry_version": "1.0",
-    "artifact_count": 22,
+    "artifact_count": 23,
     "artifacts": [
       {
         "artifact_id": "geotask.document",

@@ -18,6 +18,8 @@ Usage:
     geotask runtime inspect [runtime-descriptor.json] [--profile] [--format text|json]
     geotask runtime check <runtime-descriptor.json> <runtime-request.json> [--format text|json]
     geotask runtime mock <runtime-request.json> [--format text|json]
+    geotask verify <verification-session.json> --state <world-state.json> --observation <observation.json> --bind <ref-id>=<file>
+    geotask recheck <incremental-reevaluation-result.json> --bind <ref-id>=<file>
     geotask benchmark core [--iterations N] [--enforce-performance]
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
@@ -88,6 +90,11 @@ from geotask_core.v1.runtime_interface import (
     runtime_interface_profile_payload,
     submit_runtime_request,
     validate_runtime_request_contract,
+)
+from geotask_core.v1.world_state_cycle_cli import (
+    WorldStateCycleCommandError,
+    verify_incremental_recheck_bundle,
+    verify_session_bundle,
 )
 
 
@@ -2136,6 +2143,274 @@ def cmd_runtime(args: list[str]):
         sys.exit(1)
 
 
+def _print_verify_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask verify <verification-session.json> "
+        "--state <world-state.json> --observation <observation.json> "
+        "[--observation <observation.json> ...] "
+        "--bind <ref-id>=<artifact-file> [--bind <ref-id>=<artifact-file> ...] "
+        "[--format text|json] [--output <file>|-] [--compact]",
+        file=out,
+    )
+    print(
+        "Validates one explicit Verification Session bundle. It does not execute "
+        "the task, evaluate controls, run rechecks, or authorize actions.",
+        file=out,
+    )
+
+
+def _print_recheck_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask recheck <incremental-reevaluation-result.json> "
+        "--bind <ref-id>=<artifact-file> [--bind <ref-id>=<artifact-file> ...] "
+        "[--format text|json] [--output <file>|-] [--compact]",
+        file=out,
+    )
+    print(
+        "Validates an already-authored Incremental Reevaluation Result and all "
+        "exact source bindings. It does not execute reevaluation or actions.",
+        file=out,
+    )
+
+
+def _parse_ref_binding(value: str, *, command: str) -> tuple[str, str]:
+    ref_id, separator, path = value.partition("=")
+    if not separator or not ref_id.strip() or not path.strip():
+        raise ValueError(
+            f"{command} --bind must use a non-empty <ref-id>=<artifact-file> value"
+        )
+    return ref_id.strip(), path.strip()
+
+
+def _parse_verify_args(args: list[str]) -> dict[str, object]:
+    if not args or args[0].startswith("-"):
+        raise ValueError("verify requires a Verification Session JSON file")
+    parsed: dict[str, object] = {
+        "session_path": args[0],
+        "state_path": None,
+        "observation_paths": [],
+        "bindings": {},
+        "format": "text",
+        "output_path": None,
+        "compact": False,
+    }
+    seen_single: set[str] = set()
+    index = 1
+    while index < len(args):
+        arg = args[index]
+        if arg in {"--help", "-h"}:
+            _print_verify_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in {"--state", "--observation", "--bind", "--format", "--output"}:
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a value")
+            value = args[index + 1]
+            if arg in {"--state", "--format", "--output"}:
+                if arg in seen_single:
+                    raise ValueError(f"{arg} may be provided only once")
+                seen_single.add(arg)
+            if arg == "--state":
+                parsed["state_path"] = value
+            elif arg == "--observation":
+                observation_paths = parsed["observation_paths"]
+                assert isinstance(observation_paths, list)
+                observation_paths.append(value)
+            elif arg == "--bind":
+                ref_id, path = _parse_ref_binding(value, command="verify")
+                bindings = parsed["bindings"]
+                assert isinstance(bindings, dict)
+                if ref_id in bindings:
+                    raise ValueError(f"verify --bind duplicates ref-id {ref_id!r}")
+                bindings[ref_id] = path
+            elif arg == "--format":
+                parsed["format"] = value
+            else:
+                parsed["output_path"] = value
+            index += 2
+            continue
+        raise ValueError(f"unknown verify option: {arg}")
+
+    if parsed["state_path"] is None:
+        raise ValueError("verify requires --state <world-state.json>")
+    if not parsed["observation_paths"]:
+        raise ValueError("verify requires at least one --observation file")
+    if not parsed["bindings"]:
+        raise ValueError("verify requires at least one --bind <ref-id>=<artifact-file>")
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("verify --format must be text or json")
+    if parsed["compact"] and parsed["format"] != "json":
+        raise ValueError("--compact is supported only with --format json")
+    if parsed["format"] == "text" and parsed["output_path"] is not None:
+        raise ValueError("--output is supported only with --format json")
+    return parsed
+
+
+def _parse_recheck_args(args: list[str]) -> dict[str, object]:
+    if not args or args[0].startswith("-"):
+        raise ValueError(
+            "recheck requires an Incremental Reevaluation Result JSON file"
+        )
+    parsed: dict[str, object] = {
+        "result_path": args[0],
+        "bindings": {},
+        "format": "text",
+        "output_path": None,
+        "compact": False,
+    }
+    seen_single: set[str] = set()
+    index = 1
+    while index < len(args):
+        arg = args[index]
+        if arg in {"--help", "-h"}:
+            _print_recheck_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in {"--bind", "--format", "--output"}:
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a value")
+            value = args[index + 1]
+            if arg in {"--format", "--output"}:
+                if arg in seen_single:
+                    raise ValueError(f"{arg} may be provided only once")
+                seen_single.add(arg)
+            if arg == "--bind":
+                ref_id, path = _parse_ref_binding(value, command="recheck")
+                bindings = parsed["bindings"]
+                assert isinstance(bindings, dict)
+                if ref_id in bindings:
+                    raise ValueError(f"recheck --bind duplicates ref-id {ref_id!r}")
+                bindings[ref_id] = path
+            elif arg == "--format":
+                parsed["format"] = value
+            else:
+                parsed["output_path"] = value
+            index += 2
+            continue
+        raise ValueError(f"unknown recheck option: {arg}")
+
+    if not parsed["bindings"]:
+        raise ValueError("recheck requires at least one --bind <ref-id>=<artifact-file>")
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("recheck --format must be text or json")
+    if parsed["compact"] and parsed["format"] != "json":
+        raise ValueError("--compact is supported only with --format json")
+    if parsed["format"] == "text" and parsed["output_path"] is not None:
+        raise ValueError("--output is supported only with --format json")
+    return parsed
+
+
+def cmd_verify(args: list[str]):
+    """Validate one explicit Verification Session bundle without execution."""
+
+    try:
+        if args and args[0] in {"--help", "-h"}:
+            _print_verify_usage()
+            return None
+        parsed = _parse_verify_args(args)
+        if parsed.get("help"):
+            return None
+        session_path = str(parsed["session_path"])
+        state_path = str(parsed["state_path"])
+        observation_paths = [str(path) for path in parsed["observation_paths"]]
+        bindings = {
+            str(ref_id): str(path)
+            for ref_id, path in dict(parsed["bindings"]).items()
+        }
+        payload = verify_session_bundle(
+            session_path,
+            state_path,
+            observation_paths,
+            bindings,
+        )
+        body = payload["verification_bundle_check"]
+        if parsed["format"] == "json":
+            input_paths = [Path(session_path), Path(state_path)]
+            input_paths.extend(Path(path) for path in observation_paths)
+            input_paths.extend(Path(path) for path in bindings.values())
+            _write_or_print_output(
+                _render_json(payload, compact=bool(parsed["compact"])),
+                output_path=parsed["output_path"],
+                input_paths=input_paths,
+            )
+        else:
+            print(f"Verification bundle valid: {body['session_id']}")
+            print(f"  Session state: {body['session_state']}")
+            print(
+                "  World State: "
+                f"{body['world_state_id']} revision {body['world_state_revision']}"
+            )
+            print(f"  Observations: {len(body['observation_refs'])}")
+            print(f"  Bound Artifacts: {body['artifact_ref_count']}")
+            print("  Semantic validation complete: true")
+            print("  Exact bindings verified: true")
+            print("  Task/recheck/action executed by command: false")
+        return payload
+    except SystemExit:
+        raise
+    except (WorldStateCycleCommandError, ValueError, TypeError, OSError) as exc:
+        print(f"verify_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_recheck(args: list[str]):
+    """Validate one explicit Incremental Reevaluation Result bundle."""
+
+    try:
+        if args and args[0] in {"--help", "-h"}:
+            _print_recheck_usage()
+            return None
+        parsed = _parse_recheck_args(args)
+        if parsed.get("help"):
+            return None
+        result_path = str(parsed["result_path"])
+        bindings = {
+            str(ref_id): str(path)
+            for ref_id, path in dict(parsed["bindings"]).items()
+        }
+        payload = verify_incremental_recheck_bundle(result_path, bindings)
+        body = payload["recheck_bundle_check"]
+        if parsed["format"] == "json":
+            input_paths = [Path(result_path)]
+            input_paths.extend(Path(path) for path in bindings.values())
+            _write_or_print_output(
+                _render_json(payload, compact=bool(parsed["compact"])),
+                output_path=parsed["output_path"],
+                input_paths=input_paths,
+            )
+        else:
+            print(f"Recheck bundle valid: {body['result_id']}")
+            print(f"  Result state: {body['result_state']}")
+            print(
+                "  World State revisions: "
+                f"{body['base_world_state']['revision']} -> "
+                f"{body['successor_world_state']['revision']}"
+            )
+            print(f"  Impact Graph: {body['impact_graph_id']}")
+            print(f"  Next action: {body['next_action']}")
+            print("  Semantic validation complete: true")
+            print("  Exact bindings verified: true")
+            print("  Reevaluation/action executed by command: false")
+        return payload
+    except SystemExit:
+        raise
+    except (WorldStateCycleCommandError, ValueError, TypeError, OSError) as exc:
+        print(f"recheck_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
 def cmd_benchmark(args: list[str]):
     """Run public offline Core conformance and local performance checks."""
     try:
@@ -2183,12 +2458,12 @@ def main():
 
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, benchmark, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, verify, recheck, benchmark, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, benchmark, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, verify, recheck, benchmark, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -2258,6 +2533,14 @@ def main():
         cmd_runtime(sys.argv[2:])
         return
 
+    if command == "verify":
+        cmd_verify(sys.argv[2:])
+        return
+
+    if command == "recheck":
+        cmd_recheck(sys.argv[2:])
+        return
+
     if command == "benchmark":
         cmd_benchmark(sys.argv[2:])
         return
@@ -2313,7 +2596,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, benchmark, normalize, eval, version")
+        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, verify, recheck, benchmark, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

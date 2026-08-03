@@ -1,7 +1,7 @@
 {
   "scenario": {
     "id": "gt21-observation-conflict-precedence",
-    "title_zh": "两条观测同时更新同一状态，系统能按到达顺序覆盖吗？",
+    "title_zh": "遥测显示延误60秒，运行审核记录显示55秒，AI应该相信哪一个？",
     "base_world_state": "world_state_uav_separation.json",
     "observations": [
       "observation_uav_b_delay_recheck.json",

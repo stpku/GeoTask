@@ -141,8 +141,8 @@ Selected examples:
 - **GT18:** the geometrically shortest route may be unsafe when it crosses a hazard beyond the rescue robot's operating capability.
 - **GT19:** reaching the target overhead does not authorize payload release while the live ground-clearance condition remains false.
 - **GT20:** a green signal does not authorize intersection entry while the downstream exit cannot store and clear the full vehicle.
-- **GT21:** two Observations targeting one state path do not justify arrival-order overwrite; the merge fails closed without a policy and emits an auditable successor only under complete explicit precedence.
-- **GT22:** two structured Observations do not create the first World State by themselves; every claim must be explicitly mapped into revision 1 with closed references, validity, uncertainty, and a stable semantic fingerprint.
+- **GT21:** when telemetry says a 60-second delay and an operations review says 55 seconds, the AI must not overwrite by arrival order, average the values, or invent source authority; it must expose the conflict and apply a caller-declared rule.
+- **GT22:** when position and battery data come from different systems, the AI must not assemble a “current state” from the latest fields alone; it must first bind object identity, time, and field ownership into one traceable operational snapshot.
 
 See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md) and the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md).
 

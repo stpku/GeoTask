@@ -7,6 +7,8 @@ sync without adding one assertion block per new case.
 
 from __future__ import annotations
 
+import copy
+import importlib.util
 import json
 import re
 import subprocess
@@ -14,6 +16,7 @@ import sys
 from pathlib import Path
 from xml.etree import ElementTree
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +38,14 @@ def _catalog() -> dict:
     return yaml.safe_load(CATALOG.read_text(encoding="utf-8"))
 
 
+def _generator_module():
+    spec = importlib.util.spec_from_file_location("case_catalog_generator", GENERATOR)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_catalog_has_contiguous_case_ids_and_existing_assets() -> None:
     data = _catalog()
     cases = data["cases"]
@@ -54,6 +65,25 @@ def test_catalog_has_contiguous_case_ids_and_existing_assets() -> None:
         assert case["summary_zh"].strip()
         assert (ROOT / case["page"]).is_file(), case["page"]
         assert (ROOT / case["example"]).is_file(), case["example"]
+
+
+def test_world_state_cycle_titles_are_scenario_first() -> None:
+    module = _generator_module()
+    data = _catalog()
+    forbidden = tuple(
+        term.casefold() for term in module.SCENARIO_FIRST_FORBIDDEN_TITLE_TERMS
+    )
+
+    for case in data["cases"]:
+        if int(case["id"][2:]) < module.SCENARIO_FIRST_CASE_NUMBER:
+            continue
+        title = case["title_zh"].casefold()
+        assert not any(term in title for term in forbidden), case["id"]
+
+    invalid = copy.deepcopy(data)
+    invalid["cases"][20]["title_zh"] = "用World State revision处理Observation冲突"
+    with pytest.raises(module.CatalogError, match="scenario-first title"):
+        module.validate_catalog(invalid)
 
 
 def test_generated_case_outputs_are_current() -> None:

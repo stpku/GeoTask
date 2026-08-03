@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 32771,
-    "sha256": "b9b3cff7d263f1ece80974c1e0f60ee8094e40de15584ab797369082f1bc417f"
+    "size": 33415,
+    "sha256": "93dcb4de2d14477cc47aee625f2bf48db43bec45acdfc3d9a79a90ef80b2f8ba"
   },
   {
     "path": "CITATION.cff",
@@ -51,18 +51,18 @@
   },
   {
     "path": "README.en.md",
-    "size": 20733,
-    "sha256": "ac27a981b19e93e7e3fae2018557a7544257412fb6c5ac57ffa2a31a1460dc35"
+    "size": 20796,
+    "sha256": "a2f139a36be1381f3b6757bbb973231aaec00d53e9d925ba347f1e0b6254a203"
   },
   {
     "path": "README.md",
-    "size": 19524,
-    "sha256": "abc5a6b5fa88054286993ea5d468cb72e4865a9a74d294984ef4c4a920162021"
+    "size": 19556,
+    "sha256": "09a59bab59f213b4fd711b349d545401d76dd890b921cc2609eefe9d32acb4a5"
   },
   {
     "path": "ROADMAP.md",
-    "size": 18984,
-    "sha256": "701550d15c5189109f8a6e4d81bc93f9976d2fbccd121948d70ea1bb71bac4de"
+    "size": 18989,
+    "sha256": "f9fc64ebb7e9a0fa19813563ab04248e8dd50c0514404bc4f1069a26ec988c00"
   },
   {
     "path": "SECURITY.md",
@@ -176,8 +176,8 @@
   },
   {
     "path": "tests/test_case_catalog.py",
-    "size": 6302,
-    "sha256": "f8c2dfe2b43fd206ef294bfead7c94987017b9a22c7651e4262035ec64a1c4bb"
+    "size": 7331,
+    "sha256": "8df2faad3cc6837300734682a6fd39f6da17c465a9ee8cdf21edf12efc189fc1"
   },
   {
     "path": "tests/test_case_scaffold.py",
@@ -216,8 +216,8 @@
   },
   {
     "path": "tests/test_documentation_system.py",
-    "size": 49633,
-    "sha256": "64c4b285395fa9e1bd8409f789d386d1f4b9a5039693d3cd47cb688245fe3138"
+    "size": 50339,
+    "sha256": "8bf33db80b4a48e3f181e0b14e51faa9ba9121fdf54a03058e3ab6a067dd482a"
   },
   {
     "path": "tests/test_evaluator.py",
@@ -396,8 +396,8 @@
   },
   {
     "path": "tests/test_gt21_experience_page.py",
-    "size": 3923,
-    "sha256": "025b4f445aad2e67c4760d65e47dd7f86036f09062481b4add363b90b557f52f"
+    "size": 4300,
+    "sha256": "37daf6305fb72ef9e32aaf593d888f2aa5af8a22c5eff9b5a54e11c51e425b8f"
   },
   {
     "path": "tests/test_gt21_observation_conflict_case.py",
@@ -406,8 +406,8 @@
   },
   {
     "path": "tests/test_gt22_experience_page.py",
-    "size": 4115,
-    "sha256": "bbdcecbc24d2750c1b1426c87b411bd51597bd102a7a8817dec9bf350b1aa3ea"
+    "size": 4505,
+    "sha256": "8bed7c883fe74280046936708548b98efe5edbf6bc522e7c43149b60fd9790cc"
   },
   {
     "path": "tests/test_gt22_initial_world_state_case.py",
@@ -886,8 +886,8 @@
   },
   {
     "path": "examples/core/gt21_observation_conflict_precedence.json",
-    "size": 1934,
-    "sha256": "d6db8c95658f0bafac290f4a20fcba8bcafe1898f6e0d70a1b0d08daeedad9a5"
+    "size": 1943,
+    "sha256": "66ceaa41c8c6a6ef0d97eb873b2869d5d743a6133e80f2e8d2920970c7c9c299"
   },
   {
     "path": "examples/core/gt22_build_initial_world_state.py",
@@ -896,8 +896,8 @@
   },
   {
     "path": "examples/core/gt22_initial_world_state_snapshot.json",
-    "size": 1854,
-    "sha256": "f7b57c052a845a6c9a1dd976f5cb23f4064c1f581438374b0e0dc3d641fce6cb"
+    "size": 1891,
+    "sha256": "fafc28fc873ae7bb5d1b9f4dace9a52a42b8bf7d3fd6f63c0851b5a7c04afb83"
   },
   {
     "path": "examples/core/impact_graph_uav_recheck.json",
@@ -1281,13 +1281,13 @@
   },
   {
     "path": "site/README.md",
-    "size": 9917,
-    "sha256": "e1121780ac185e529b703d6354e5e7b02f90a9596cb3c5d5e1b7520d7a560b70"
+    "size": 9920,
+    "sha256": "854434e31c77b7fb8bcee0b3daabfa9c1513d45afd78d08f64c85f7ecebeae52"
   },
   {
     "path": "site/cases.json",
-    "size": 4009,
-    "sha256": "5dd97bd2eefd7f6c4faf85dfa89f1f166118fe22bfc42b215c96eab2951ca4b5"
+    "size": 4055,
+    "sha256": "376edbf086ad9267c0d109dff06159c8fc4ec446b53b408438126df43b126970"
   },
   {
     "path": "site/cases.txt",
@@ -1301,8 +1301,8 @@
   },
   {
     "path": "site/index.html",
-    "size": 33016,
-    "sha256": "4b7009cf1fad3192c13b096a324efbcf6c03ae935f8423adfd5813ed326fdcdd"
+    "size": 33119,
+    "sha256": "e7b39454d73fc93b82f3b0b2674a359e3a3ef6ecacf14925d3eaec8cd3cd42e6"
   },
   {
     "path": "site/robots.txt",
@@ -1312,7 +1312,7 @@
   {
     "path": "site/sitemap.xml",
     "size": 3485,
-    "sha256": "2bb0af1d1c1aa4ff6a877ffbcba435a3613f996ea3ccc3d57a3ac7276fbbd6d1"
+    "sha256": "1939962947e21c546212d0567eab8e32036d65a4280b5ab633963d68d5ea425d"
   },
   {
     "path": "site/gt12/index.html",
@@ -1376,8 +1376,8 @@
   },
   {
     "path": "site/gt21/index.html",
-    "size": 17914,
-    "sha256": "d498fe7a0225373421d1f63ba5082205aeb76a5eff0d9d6207249e892a5ee763"
+    "size": 19176,
+    "sha256": "2faf6f2e745111fb4051b9570307ca62bf71662a36fa8271158dd6b97ae4bb23"
   },
   {
     "path": "site/gt04/index.html",
@@ -1401,8 +1401,8 @@
   },
   {
     "path": "site/gt22/index.html",
-    "size": 20005,
-    "sha256": "fd782e97d3ffb3228a30a72d9366282bcf82c17ef3cb7f4d9f91e8d52f33d261"
+    "size": 21375,
+    "sha256": "4d494ac7958e47403ae630580e1a98598e8eac24e56df5d67ae12c44217d8bb6"
   },
   {
     "path": "site/gt10/index.html",
@@ -1716,8 +1716,8 @@
   },
   {
     "path": "cases/catalog.yaml",
-    "size": 8379,
-    "sha256": "ad4db5c33a32e344514fd29c010a3326afbdc2c4978bc591144e099bc6b16939"
+    "size": 8475,
+    "sha256": "e51759753b5a26f8cad61393df68280e1a1d995677149836c99c8a3640bb32f5"
   },
   {
     "path": "docs/README.en.md",
@@ -1841,13 +1841,13 @@
   },
   {
     "path": "docs/cookbook/gt21-gt28.md",
-    "size": 3634,
-    "sha256": "146f26f952aabb23da4dce0ffa125c6997417d7867c044d41ba67352dc927739"
+    "size": 4924,
+    "sha256": "f718c9be212b8096208b2e1790d48374006fa0cc6be0acf65ec21b32e248a9ec"
   },
   {
     "path": "docs/cookbook/gt21-gt28.zh-CN.md",
-    "size": 4466,
-    "sha256": "f9a6abdf4a38b9376bc457cbfc0f52d0f9520d96c187a9750318ac5dd1cf3067"
+    "size": 5635,
+    "sha256": "7d04fa4a9ab1e2dd9582abdeb45ce4d344122e5c6b630296a54c2f6b8b3ff9bb"
   },
   {
     "path": "docs/architecture_decisions/ADR-001-core-runtime-domain-pack.md",
@@ -2046,8 +2046,8 @@
   },
   {
     "path": "tools/generate_case_catalog.py",
-    "size": 10654,
-    "sha256": "814113ffe6486554101e91a111f4a3c8101ce5ba22e8dae782e0db8249d61023"
+    "size": 11558,
+    "sha256": "05d30cfd2da794566cdc36afba56ac2850324957605596a7fae77e40ed897601"
   },
   {
     "path": "tools/scaffold_case.py",

@@ -44,6 +44,12 @@ WORLD_STATE_MATERIALIZATION_SPEC = (
 WORLD_STATE_MATERIALIZATION_SCHEMA = (
     ROOT / "schemas" / "geotask-world-state-materialization-result-v0.1.schema.json"
 )
+RECOMPUTE_DERIVATION_SPEC = (
+    ROOT / "docs" / "spec" / "geotask-recompute-derivation-result-v0.1.md"
+)
+RECOMPUTE_DERIVATION_SCHEMA = (
+    ROOT / "schemas" / "geotask-recompute-derivation-result-v0.1.schema.json"
+)
 ARTIFACT_REGISTRY_SPEC = (
     ROOT / "docs" / "spec" / "geotask-artifact-registry-v1.0.md"
 )
@@ -566,6 +572,29 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "world_state_materialization_result"
     ]["$ref"] == "#/$defs/materializationResult"
 
+    recompute_text = RECOMPUTE_DERIVATION_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "GeoTask Recompute Derivation Result v0.1",
+        "geotask.recompute-derivation-result",
+        "validate_recompute_derivation_bindings",
+        "copy_input",
+        "interval_gap_minus_delay_seconds",
+        "Arbitrary Python",
+        "materialize_successor_world_state",
+        "action_authorized",
+    ):
+        assert fragment in recompute_text
+    recompute_schema = json.loads(
+        RECOMPUTE_DERIVATION_SCHEMA.read_text(encoding="utf-8")
+    )
+    Draft202012Validator.check_schema(recompute_schema)
+    assert recompute_schema["$id"].endswith(
+        "geotask-recompute-derivation-result-v0.1.schema.json"
+    )
+    assert recompute_schema["properties"]["recompute_derivation_result"]["$ref"] == (
+        "#/$defs/result"
+    )
+
     registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
     for fragment in (
         "GeoTask Artifact Registry v1.0",
@@ -579,6 +608,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.discrepancy-report",
         "geotask.correction-request",
         "geotask.impact-graph",
+        "geotask.recompute-derivation-result",
         "geotask.world-state-materialization-result",
         "geotask.incremental-reevaluation-result",
         "geotask.execution-result",
@@ -591,8 +621,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-request",
         "geotask.runtime-response",
         "geotask.core-benchmark-report",
-        "exactly twenty-one artifacts",
-        "all twenty-two public JSON Schemas",
+        "exactly twenty-two artifacts",
+        "all twenty-three public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

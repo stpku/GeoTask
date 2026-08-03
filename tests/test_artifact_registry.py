@@ -77,6 +77,10 @@ from geotask_core.v1.world_state_materialization import (
     WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_ID,
     WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_VERSION,
 )
+from geotask_core.v1.recompute_derivation import (
+    RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID,
+    RECOMPUTE_DERIVATION_RESULT_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import GEOTASK_RESULT_SCHEMA_ID
 from geotask_core.v1.runtime_interface import (
     RUNTIME_DESCRIPTOR_SCHEMA_ID,
@@ -123,7 +127,7 @@ def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
-def test_registry_contains_exactly_twenty_one_stable_public_artifacts() -> None:
+def test_registry_contains_exactly_twenty_two_stable_public_artifacts() -> None:
     artifacts = list_artifact_descriptors()
     payload = artifact_registry_payload()["artifact_registry"]
 
@@ -145,6 +149,7 @@ def test_registry_contains_exactly_twenty_one_stable_public_artifacts() -> None:
         "geotask.impact-graph",
         "geotask.incremental-reevaluation-result",
         "geotask.world-state-materialization-result",
+        "geotask.recompute-derivation-result",
         "geotask.execution-result",
         "geotask.control-evaluation",
         "geotask.agent-generation-preparation",
@@ -158,7 +163,7 @@ def test_registry_contains_exactly_twenty_one_stable_public_artifacts() -> None:
         "geotask.artifact-validation-report",
     ]
     assert len({item.artifact_id for item in artifacts}) == len(artifacts)
-    assert artifact_registry_payload()["artifact_registry"]["artifact_count"] == 21
+    assert artifact_registry_payload()["artifact_registry"]["artifact_count"] == 22
 
 
 def test_registry_payload_matches_its_public_json_schema() -> None:
@@ -206,6 +211,10 @@ def test_registry_schema_metadata_matches_published_json_schemas() -> None:
         "geotask.world-state-materialization-result": (
             WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_ID,
             WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_VERSION,
+        ),
+        "geotask.recompute-derivation-result": (
+            RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID,
+            RECOMPUTE_DERIVATION_RESULT_SCHEMA_VERSION,
         ),
         "geotask.execution-result": (GEOTASK_RESULT_SCHEMA_ID, "1.0"),
         "geotask.control-evaluation": (CONTROL_EVALUATION_SCHEMA_ID, "1.0"),
@@ -274,6 +283,7 @@ def test_schema_bundle_exposes_all_public_schema_ids_offline() -> None:
         IMPACT_GRAPH_SCHEMA_ID,
         INCREMENTAL_REEVALUATION_RESULT_SCHEMA_ID,
         WORLD_STATE_MATERIALIZATION_RESULT_SCHEMA_ID,
+        RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID,
         GEOTASK_RESULT_SCHEMA_ID,
         CONTROL_EVALUATION_SCHEMA_ID,
         AGENT_GENERATION_PREPARATION_SCHEMA_ID,
@@ -316,8 +326,8 @@ def test_schema_bundle_manifest_matches_authoritative_schema_bytes() -> None:
     assert SCHEMA_BUNDLE_VERSION == "1.0"
     assert SCHEMA_BUNDLE_MANIFEST_FILENAME == "schema-bundle-manifest-v1.0.json"
     assert manifest["bundle_version"] == SCHEMA_BUNDLE_VERSION
-    assert manifest["schema_count"] == 22
-    assert len(manifest["schemas"]) == 22
+    assert manifest["schema_count"] == 23
+    assert len(manifest["schemas"]) == 23
 
     for entry in manifest["schemas"]:
         raw = (REPO_ROOT / "schemas" / entry["filename"]).read_bytes()
@@ -334,7 +344,7 @@ def test_schema_bundle_verification_supports_all_and_one_artifact() -> None:
 
     assert all_report["valid"] is True
     assert all_report["bundle_version"] == SCHEMA_BUNDLE_VERSION
-    assert all_report["checked_count"] == 22
+    assert all_report["checked_count"] == 23
     assert all(item["valid"] for item in all_report["schemas"])
     assert all_report["diagnostics"] == []
 
@@ -430,6 +440,7 @@ def test_schema_bundle_build_configuration_is_public_and_complete() -> None:
         "geotask-impact-graph-v0.1.schema.json",
         "geotask-incremental-reevaluation-result-v0.1.schema.json",
         "geotask-world-state-materialization-result-v0.1.schema.json",
+        "geotask-recompute-derivation-result-v0.1.schema.json",
         "geotask-runtime-descriptor-v0.1.schema.json",
         "geotask-runtime-request-v0.1.schema.json",
         "geotask-runtime-response-v0.1.schema.json",
@@ -456,6 +467,9 @@ def test_registry_generation_and_validation_guidance_is_explicit() -> None:
     )
     materialization_result = get_artifact_descriptor(
         "geotask.world-state-materialization-result"
+    )
+    recompute_result = get_artifact_descriptor(
+        "geotask.recompute-derivation-result"
     )
     execution = get_artifact_descriptor("geotask.execution-result")
     control = get_artifact_descriptor("geotask.control-evaluation")
@@ -533,6 +547,13 @@ def test_registry_generation_and_validation_guidance_is_explicit() -> None:
     assert incremental_result.schema_version == "0.1"
     assert "does not run reevaluation" in incremental_result.execution_boundary
     assert "execute an action" in incremental_result.execution_boundary
+
+    assert recompute_result.generation_command is None
+    assert recompute_result.wrapper_key == "recompute_derivation_result"
+    assert recompute_result.schema_id == RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID
+    assert recompute_result.schema_version == "0.1"
+    assert "arbitrary code" in recompute_result.execution_boundary
+    assert "materialize state" in recompute_result.execution_boundary
 
     assert "--format v1-json" in str(execution.generation_command)
     assert execution.validation_command.startswith(
@@ -657,6 +678,7 @@ def test_public_manifest_requires_artifact_registry_assets() -> None:
         "src/geotask_core/v1/impact_graph.py",
         "src/geotask_core/v1/incremental_reevaluation_result.py",
         "src/geotask_core/v1/world_state_materialization.py",
+        "src/geotask_core/v1/recompute_derivation.py",
         "src/geotask_core/v1/core_benchmark_contract.py",
         "src/geotask_core/v1/core_benchmark_cases.py",
         "src/geotask_core/v1/core_benchmark_report.py",
@@ -679,8 +701,10 @@ def test_public_manifest_requires_artifact_registry_assets() -> None:
         "docs/spec/geotask-impact-graph-v0.1.md",
         "docs/spec/geotask-incremental-reevaluation-result-v0.1.md",
         "docs/spec/geotask-world-state-materialization-result-v0.1.md",
+        "docs/spec/geotask-recompute-derivation-result-v0.1.md",
         "examples/core/runtime_validate_artifact_request.json",
         "examples/core/observation_uav_delay.json",
+        "examples/core/observation_uav_b_delay_recheck.json",
         "examples/core/world_state_uav_separation.json",
         "examples/core/world_state_uav_separation_recheck.json",
         "examples/core/state_transition_uav_separation_recheck.json",
@@ -693,6 +717,7 @@ def test_public_manifest_requires_artifact_registry_assets() -> None:
         "examples/core/incremental_reevaluation_uav_execution_result.json",
         "examples/core/incremental_reevaluation_result_uav_recheck.json",
         "examples/core/world_state_materialization_result_uav_recheck.json",
+        "examples/core/recompute_derivation_result_uav_recheck.json",
         "schemas/geotask-agent-generation-preparation-v0.1.schema.json",
         "schemas/geotask-agent-revision-verification-v0.1.schema.json",
         "schemas/geotask-agent-revision-retry-v0.1.schema.json",
@@ -709,6 +734,7 @@ def test_public_manifest_requires_artifact_registry_assets() -> None:
         "schemas/geotask-impact-graph-v0.1.schema.json",
         "schemas/geotask-incremental-reevaluation-result-v0.1.schema.json",
         "schemas/geotask-world-state-materialization-result-v0.1.schema.json",
+        "schemas/geotask-recompute-derivation-result-v0.1.schema.json",
         "schemas/geotask-artifact-registry-v1.0.schema.json",
         "schemas/geotask-artifact-validation-v1.0.schema.json",
         "tests/test_artifact_registry.py",
@@ -725,6 +751,8 @@ def test_public_manifest_requires_artifact_registry_assets() -> None:
         "tests/v1/test_correction_request_v0_5.py",
         "tests/v1/test_impact_graph_v0_5.py",
         "tests/v1/test_incremental_reevaluation_result_v0_5.py",
+        "tests/v1/test_world_state_materialization_v0_5.py",
+        "tests/v1/test_recompute_derivation_v0_5.py",
     ):
         assert path in required
 
@@ -857,14 +885,14 @@ def test_schema_verify_supports_text_json_and_exact_artifact() -> None:
 
     assert text_result.returncode == 0
     assert text_result.stderr == ""
-    assert "Schema Bundle valid: 22 schema(s), version 1.0" in text_result.stdout
-    assert text_result.stdout.count("sha256=") == 22
+    assert "Schema Bundle valid: 23 schema(s), version 1.0" in text_result.stdout
+    assert text_result.stdout.count("sha256=") == 23
 
     assert json_result.returncode == 0
     assert json_result.stderr == ""
     all_report = json.loads(json_result.stdout)["schema_bundle_verification"]
     assert all_report["valid"] is True
-    assert all_report["checked_count"] == 22
+    assert all_report["checked_count"] == 23
     assert all_report["diagnostics"] == []
 
     assert exact_result.returncode == 0
@@ -948,7 +976,7 @@ def test_inspect_schemas_default_yaml_is_parseable() -> None:
     payload = yaml.safe_load(result.stdout)
     registry = payload["artifact_registry"]
     assert registry["registry_version"] == "1.0"
-    assert registry["artifact_count"] == 21
+    assert registry["artifact_count"] == 22
     assert registry["artifacts"][0]["artifact_id"] == "geotask.document"
     assert registry["artifacts"][0]["generation_command"] is None
 
@@ -978,6 +1006,7 @@ def test_inspect_schemas_json_is_stable_machine_readable_output() -> None:
                     "geotask.correction-request",
                     "geotask.impact-graph",
                     "geotask.incremental-reevaluation-result",
+                    "geotask.recompute-derivation-result",
                 )
             )
             else "1.0"
@@ -1024,10 +1053,10 @@ def test_inspect_schemas_can_include_bundle_integrity_results() -> None:
     assert all_result.returncode == 0
     assert all_result.stderr == ""
     all_payload = json.loads(all_result.stdout)
-    assert all_payload["artifact_registry"]["artifact_count"] == 21
+    assert all_payload["artifact_registry"]["artifact_count"] == 22
     all_verification = all_payload["schema_bundle_verification"]
     assert all_verification["valid"] is True
-    assert all_verification["checked_count"] == 22
+    assert all_verification["checked_count"] == 23
     assert all_verification["diagnostics"] == []
 
     assert exact_result.returncode == 0
@@ -1075,7 +1104,7 @@ def test_inspect_schemas_verify_emits_json_before_nonzero_exit(
     assert exc_info.value.code == 1
     assert captured.err == ""
     payload = json.loads(captured.out)
-    assert payload["artifact_registry"]["artifact_count"] == 21
+    assert payload["artifact_registry"]["artifact_count"] == 22
     assert payload["schema_bundle_verification"]["valid"] is False
     assert payload["schema_bundle_verification"]["diagnostics"][0]["code"] == (
         "invalid_bundled_schema"

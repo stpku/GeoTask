@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 21,
+  "case_count": 22,
   "cases": [
     {
       "id": "GT01",
@@ -147,6 +147,13 @@
       "slug": "gt21",
       "title_zh": "两条观测同时更新同一状态，系统能按到达顺序覆盖吗？",
       "previous": "gt20",
+      "next": "gt22"
+    },
+    {
+      "id": "GT22",
+      "slug": "gt22",
+      "title_zh": "两条Observation如何构建第一个可引用World State？",
+      "previous": "gt21",
       "next": null
     }
   ]

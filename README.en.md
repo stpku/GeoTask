@@ -28,7 +28,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 
 ## Start here
 
-- [Try the GT01–GT21 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT22 experience](https://stpku.github.io/GeoTask/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [White paper English abstract](docs/whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)
@@ -142,6 +142,7 @@ Selected examples:
 - **GT19:** reaching the target overhead does not authorize payload release while the live ground-clearance condition remains false.
 - **GT20:** a green signal does not authorize intersection entry while the downstream exit cannot store and clear the full vehicle.
 - **GT21:** two Observations targeting one state path do not justify arrival-order overwrite; the merge fails closed without a policy and emits an auditable successor only under complete explicit precedence.
+- **GT22:** two structured Observations do not create the first World State by themselves; every claim must be explicitly mapped into revision 1 with closed references, validity, uncertainty, and a stable semantic fingerprint.
 
 See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md) and the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md).
 

@@ -1,0 +1,173 @@
+{
+  "recompute_derivation_result": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-recompute-derivation-result-v0.1.schema.json",
+    "schema_version": "0.1",
+    "derivation_id": "fictional-uav-recompute-derivation",
+    "created_at": "2026-07-16T10:01:15+08:00",
+    "state": "completed",
+    "reason": "Derive the telemetry-backed delay and dependent temporal separation from exact Observation and GeoTask Document paths without caller-supplied recompute values.",
+    "base_world_state": {
+      "ref_id": "base-world-state",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-separation-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:01:00+08:00",
+      "semantic_fingerprint": "7b432a7d6ee91a2e4bdaea0b4e1abc55bc93bf91a1cd5354ef57e1ac56b4725d",
+      "content_sha256": "77b8edace03ad6261a22c675630b847dca054dfa5de5f9c12c715c7ddd10df7f"
+    },
+    "correction_request_ref": {
+      "ref_id": "correction-uav-recheck",
+      "artifact_id": "geotask.correction-request",
+      "schema_version": "0.1",
+      "instance_id": "fictional-uav-separation-correction-request",
+      "content_sha256": "41a3f73cf9a11b862e0c8a5a6f4b3c243ef74fbd22f0fc9c3cf117a45ca3342b"
+    },
+    "source_artifact_refs": [
+      {
+        "ref_id": "observation-uav-b-delay",
+        "artifact_id": "geotask.observation",
+        "schema_version": "0.1",
+        "instance_id": "obs-uav-b-delay-002",
+        "content_sha256": "4b7fd3e54991f78e6d93c58f16d62adad82b2592ab8317eb3119174c7e4745fc"
+      },
+      {
+        "ref_id": "task-gt16",
+        "artifact_id": "geotask.document",
+        "schema_version": "1.0",
+        "instance_id": "gt16-uav-route-crossing-temporal-separation",
+        "content_sha256": "4e0ece7f4b2f66cb115f3c523c90bf3bffc452a65b472bc70dc68faeac41252b"
+      }
+    ],
+    "derivations": [
+      {
+        "id": "derive-uav-b-delay",
+        "change_id": "recompute-uav-b-delay",
+        "target_path": "/objects/uav-b/attributes/delay_seconds/value",
+        "state": "completed",
+        "method": "copy_input",
+        "input_refs": [
+          "delay_seconds"
+        ],
+        "inputs": [
+          {
+            "name": "observation_id",
+            "kind": "artifact_path",
+            "source_ref": "observation-uav-b-delay",
+            "pointer": "/observation/observation_id",
+            "value": "obs-uav-b-delay-002"
+          },
+          {
+            "name": "observed_at",
+            "kind": "artifact_path",
+            "source_ref": "observation-uav-b-delay",
+            "pointer": "/observation/observed_at",
+            "value": "2026-07-16T10:01:00+08:00"
+          },
+          {
+            "name": "delay_seconds",
+            "kind": "artifact_path",
+            "source_ref": "observation-uav-b-delay",
+            "pointer": "/observation/claims/0/value",
+            "value": 60
+          },
+          {
+            "name": "source_reference",
+            "kind": "artifact_path",
+            "source_ref": "observation-uav-b-delay",
+            "pointer": "/observation/source/reference",
+            "value": "telemetry:fictional/uav-b/delay-002"
+          },
+          {
+            "name": "verified_at",
+            "kind": "literal",
+            "value": "2026-07-16T10:01:14+08:00"
+          }
+        ],
+        "result": 60,
+        "reason": "Copy the exact telemetry claim value after binding the Observation identity, time, and source reference.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "observation-uav-b-delay"
+        ]
+      },
+      {
+        "id": "derive-temporal-separation",
+        "change_id": "recompute-temporal-separation",
+        "target_path": "/relations/uav-temporal-separation/value",
+        "state": "completed",
+        "method": "interval_gap_minus_delay_seconds",
+        "input_refs": [
+          "uav_a_crossing_time",
+          "uav_b_crossing_time",
+          "delay_seconds"
+        ],
+        "inputs": [
+          {
+            "name": "uav_a_crossing_time",
+            "kind": "artifact_path",
+            "source_ref": "task-gt16",
+            "pointer": "/objects/crossing_time_a",
+            "value": {
+              "type": "time_interval",
+              "start": "09:00",
+              "end": "09:01"
+            }
+          },
+          {
+            "name": "uav_b_crossing_time",
+            "kind": "artifact_path",
+            "source_ref": "task-gt16",
+            "pointer": "/objects/crossing_time_b",
+            "value": {
+              "type": "time_interval",
+              "start": "09:03",
+              "end": "09:04"
+            }
+          },
+          {
+            "name": "delay_seconds",
+            "kind": "artifact_path",
+            "source_ref": "observation-uav-b-delay",
+            "pointer": "/observation/claims/0/value",
+            "value": 60
+          },
+          {
+            "name": "calculation_method",
+            "kind": "literal",
+            "value": "interval_gap_minus_delay_seconds"
+          },
+          {
+            "name": "verified_at",
+            "kind": "literal",
+            "value": "2026-07-16T10:01:14+08:00"
+          }
+        ],
+        "result": 60,
+        "reason": "Compute the 120-second planned interval gap and subtract the exact 60-second telemetry delay.",
+        "basis_refs": [
+          "correction-uav-recheck",
+          "observation-uav-b-delay",
+          "task-gt16"
+        ]
+      }
+    ],
+    "recompute_values": [
+      {
+        "change_id": "recompute-temporal-separation",
+        "value": 60
+      },
+      {
+        "change_id": "recompute-uav-b-delay",
+        "value": 60
+      }
+    ],
+    "next_action": "materialize_successor_state",
+    "successor_materialized": false,
+    "reevaluation_executed": false,
+    "outputs_released": false,
+    "external_truth_verified": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

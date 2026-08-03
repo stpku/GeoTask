@@ -55,8 +55,10 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布Discrepancy Report v0.1 Artifact，绑定一个World State语义指纹与精确来源制品字节，记录差异类型、期望值/观测值、影响范围及可变/不可变修订路径，同时明确不自动比较来源、传播影响、生成修订请求或应用纠正；
 - ✅ 已发布Correction Request v0.1 Artifact，绑定不可变基准World State与Discrepancy Report，限定后继状态允许变更、验收标准、不可变路径保护及输出/行动门禁，同时明确不原地修改快照、不应用修订、不物化后继状态或释放输出；
 - ✅ 已发布Impact Graph v0.1 Artifact，将差异、修订、状态路径、断言、输出、动作和复核目标组织为来源绑定的有向无环图，并验证根可达性、无环性、精确文件绑定和关键边语义，同时明确不自动生成图、不执行传播或复核；
+- ✅ 已发布Recompute Derivation Result v0.1 Artifact，将Correction Request中的每项`recompute`变更绑定到精确Observation/GeoTask Document路径，并通过有限白名单方法确定性生成完整重算值映射，同时明确不执行任意代码、模型调用、状态物化、复核或动作授权；
+- ✅ 已发布受限后继World State物化与World State Materialization Result v0.1，将一个required Correction Request应用于不可变基准快照，绑定精确字节并保留来源、输出门禁和动作门禁；
 - ✅ 已发布Incremental Reevaluation Result v0.1 Artifact，绑定基准/后继World State、Impact Graph、Correction Request、Discrepancy Report与执行结果的精确字节，完整记录节点/目标结果、验收条件、差异消解和输出/动作门禁，同时明确不执行复核、不生成后继状态、不授权或执行动作；
-- 提供自动后继World State生成以及`geotask verify`、`geotask recheck`高层命令，保持本地、显式、可复现的世界状态快照语义；
+- 提供Observation合并以及`geotask verify`、`geotask recheck`高层命令，保持本地、显式、可复现的世界状态快照语义；
 - 将GT21—GT28建设为Observation接入、世界状态构建、状态变化、影响传播、限定纠偏和行动门控案例。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
@@ -130,8 +132,9 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published Correction Request v0.1, binding one immutable base World State to exact Discrepancy Reports and constraining successor-state changes, acceptance criteria, immutable-path preservation, and output/action gates while explicitly not editing snapshots, applying changes, materializing successors, or releasing outputs;
 - ✅ Published Impact Graph v0.1, representing discrepancies, corrections, state paths, assertions, outputs, actions, and reevaluation targets as a source-bound directed acyclic graph with root reachability, exact-byte bindings, and key edge-semantic checks, while explicitly not discovering the graph or executing propagation or reevaluation;
 - ✅ Published bounded successor-World-State materialization and World State Materialization Result v0.1, applying one required Correction Request to one immutable base snapshot with exact-byte bindings and explicit recompute values while preserving provenance, output gates, and action gates;
+- ✅ Published Recompute Derivation Result v0.1, binding exact World State, Correction Request, Observation, and GeoTask Document bytes and deriving every requested `recompute` value through small allowlisted deterministic methods, without arbitrary code, model calls, state mutation, reevaluation, release, or action authorization;
 - ✅ Published Incremental Reevaluation Result v0.1, binding exact base/successor World States, Impact Graph, Correction Requests, Discrepancy Reports, and execution results while closing graph-node, target, acceptance, discrepancy-resolution, output-gate, and action-eligibility outcomes without executing reevaluation, generating successors, authorizing actions, or executing actions;
-- provide automatic recompute-value derivation, Observation merging, and high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible snapshot semantics;
+- expand the bounded derivation method registry, provide Observation merging, and add high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible snapshot semantics;
 - build GT21–GT28 around Observation ingestion, world-state construction, state change, impact propagation, bounded correction, and action gating.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem

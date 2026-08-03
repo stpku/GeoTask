@@ -33,12 +33,13 @@ GeoTask documentation is organized from world-model positioning to implemented c
 - [VS Code Schema association example](../.vscode/settings.json) — binds local GeoTask files to the repository JSON Schema.
 - [Quickstart](tutorials/quickstart.md) — install, validate, execute, inspect, and extend a first task.
 - [GT01–GT20 Cookbook](cookbook/gt01-gt20.md) — progressive examples from distance calculation to evidence governance, object-specific feasibility, emergency dispatch, equipment capability, and high-risk action gating.
+- [GT21–GT28 World-State Cycle Cookbook](cookbook/gt21-gt28.md) — Observation conflict, snapshots, state change, impact, bounded correction, incremental reevaluation, and action eligibility.
 - [v0.3.0 Agent Integration release notes](release_v0_3_0.md) — adds generated-task preparation, guarded revision, evidence recovery, four Agent report Artifacts, and unified validation across eight Artifacts and nine Schemas.
 - [v0.2.0 artifact-contract release notes](release_v0_2_0.md) — adds the Artifact Registry, offline Schema Bundle, unified Artifact validation, and validation-report self-validation.
 - [v0.1.1 PyPI hotfix release notes](release_v0_1_1.md) — fixes package/runtime version consistency and records clean-environment installation verification.
 - [v0.1.0 Public Preview release notes](release_v0_1_0.md) — fixed-version capabilities, assets, and verification status.
 - [Public roadmap](../ROADMAP.md) — planned protocol, Core, tooling, and ecosystem directions.
-- [中文快速入门](tutorials/quickstart.zh-CN.md) and [中文案例手册](cookbook/gt01-gt20.zh-CN.md).
+- [中文快速入门](tutorials/quickstart.zh-CN.md), [GT01—GT20中文案例手册](cookbook/gt01-gt20.zh-CN.md), and [GT21—GT28世界状态循环案例手册](cookbook/gt21-gt28.zh-CN.md).
 
 ## Reference
 

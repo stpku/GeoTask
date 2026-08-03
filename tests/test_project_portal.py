@@ -33,7 +33,7 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert "自动差异计算、Observation合并" not in html
     assert "保护商业运行层" not in html
     assert "商业边界" not in html
-    assert "GT01—GT20渐进式案例" in html
+    assert "GT01—GT21渐进式案例" in html
     assert 'id="demo"' in html
     assert 'id="cases"' in html
     assert 'id="architecture"' in html
@@ -65,7 +65,7 @@ def test_portal_exposes_gt16_world_state_update_demo() -> None:
 def test_portal_links_all_public_cases() -> None:
     html = PORTAL.read_text(encoding="utf-8")
 
-    for number in range(1, 21):
+    for number in range(1, 22):
         case = f"gt{number:02d}/"
         assert f'href="{case}"' in html
         assert f"GT{number:02d}" in html
@@ -86,7 +86,7 @@ def test_portal_links_primary_public_resources() -> None:
         "docs/spec/geotask-impact-graph-v0.1.md",
         "docs/spec/geotask-incremental-reevaluation-result-v0.1.md",
         "docs/tutorials/quickstart.zh-CN.md",
-        "docs/cookbook/gt01-gt20.zh-CN.md",
+        "docs/cookbook/gt21-gt28.zh-CN.md",
         "schemas/geotask-v1.0.schema.json",
     )
     for fragment in required:
@@ -137,7 +137,7 @@ def test_gt01_moved_to_stable_nested_route() -> None:
 
 
 def test_all_case_pages_link_back_to_project_portal() -> None:
-    for number in range(1, 21):
+    for number in range(1, 22):
         path = SITE / f"gt{number:02d}" / "index.html"
         assert path.is_file(), path
         html = path.read_text(encoding="utf-8")
@@ -176,7 +176,7 @@ def test_robots_and_sitemap_cover_portal_and_all_cases() -> None:
     expected = {"https://stpku.github.io/GeoTask/"}
     expected.update(
         f"https://stpku.github.io/GeoTask/gt{number:02d}/"
-        for number in range(1, 21)
+        for number in range(1, 22)
     )
     assert urls == expected
 
@@ -196,7 +196,7 @@ def test_deployment_checks_portal_gt01_and_search_files() -> None:
     assert 'require_file "$TARGET/sitemap.xml"' in script
     assert "Portal: $TARGET/index.html" in script
     assert 'echo "  ${slug^^}: $TARGET/$slug/index.html"' in script
-    assert case_slugs == [f"gt{number:02d}" for number in range(1, 21)]
+    assert case_slugs == [f"gt{number:02d}" for number in range(1, 22)]
 
     assert "GitHub Pages是公共Canonical入口" in readme
     assert "site/gt01/index.html" in readme
@@ -217,6 +217,7 @@ def test_public_manifest_requires_portal_routes_and_search_files() -> None:
         "site/gt18/index.html",
         "site/gt19/index.html",
         "site/gt20/index.html",
+        "site/gt21/index.html",
         "site/robots.txt",
         "site/sitemap.xml",
         ".github/workflows/pages.yml",

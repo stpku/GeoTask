@@ -56,6 +56,16 @@ def validate_catalog(data: dict[str, Any]) -> None:
     if not isinstance(cases, list) or not cases:
         raise CatalogError("cases must be a non-empty list")
 
+    handbook = data.get("handbook")
+    if handbook is not None:
+        if not isinstance(handbook, dict):
+            raise CatalogError("handbook must be a mapping")
+        for field in ("path", "label_zh"):
+            if not isinstance(handbook.get(field), str) or not handbook[field].strip():
+                raise CatalogError(f"handbook requires non-empty {field}")
+        if not (ROOT / handbook["path"]).is_file():
+            raise CatalogError(f"missing handbook file {handbook['path']}")
+
     stage_ids = [stage.get("id") for stage in stages]
     if len(stage_ids) != len(set(stage_ids)):
         raise CatalogError("stage ids must be unique")
@@ -93,13 +103,17 @@ def validate_catalog(data: dict[str, Any]) -> None:
 def render_case_section(data: dict[str, Any]) -> str:
     cases = data["cases"]
     latest_id = cases[-1]["id"]
+    handbook = data.get("handbook") or {
+        "path": f"docs/cookbook/gt01-{latest_id.lower()}.zh-CN.md",
+        "label_zh": "查看中文案例手册 →",
+    }
     lines = [
         START_MARKER,
         '    <section class="block" id="cases">',
         '      <div class="shell">',
         '        <div class="section-head">',
-        f'          <div><h2>GT01—{latest_id}渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、机器人协同、对象可行性、应急救援调度、设备能力约束和高风险动作门控。</p></div>',
-        f'          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/cookbook/gt01-{latest_id.lower()}.zh-CN.md">查看中文案例手册 →</a>',
+        f'          <div><h2>GT01—{latest_id}渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及Observation接入与可审计世界状态演化。</p></div>',
+        f'          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/{html.escape(handbook["path"])}">{html.escape(handbook["label_zh"])}</a>',
         '        </div>',
     ]
     for stage in data["stages"]:

@@ -1,0 +1,37 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-uav-b-delay-ops-review",
+    "observed_at": "2026-07-16T10:01:02+08:00",
+    "received_at": "2026-07-16T10:01:03+08:00",
+    "source": {
+      "kind": "external_system",
+      "reference": "operations-record:fictional/uav-b/delay-review-003",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "producer": {
+      "id": "fictional-operations-review-system",
+      "kind": "organization",
+      "version": "0.1.0"
+    },
+    "claims": [
+      {
+        "id": "uav-b-delay-seconds",
+        "subject_ref": "uav-b",
+        "predicate": "delay_seconds",
+        "basis": "external_assertion",
+        "value": 55,
+        "valid_until": "2026-07-16T10:01:32+08:00",
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 1,
+          "unit": "second"
+        },
+        "evidence_refs": [
+          "operations-record:fictional/uav-b/delay-review-003"
+        ]
+      }
+    ]
+  }
+}

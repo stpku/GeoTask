@@ -28,11 +28,12 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 
 ## 从这里开始
 
-- [立即体验GT01—GT20](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT21](https://stpku.github.io/GeoTask/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [白皮书英文摘要](docs/whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)
 - [GT01—GT20中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)
+- [GT21—GT28世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)
 - [当前实现语言与执行规范v1.0](docs/spec/geotask-language-spec-v1.0.md)
 - [Observation v0.1](docs/spec/geotask-observation-v0.1.md)
 - [World State v0.1](docs/spec/geotask-world-state-v0.1.md)
@@ -144,9 +145,10 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT17：** 十次上报不等于十起事件，应合并为一个任务并保留十份来源证据；
 - **GT18：** 最短路线能够到达目标，不等于它满足环境风险和救援机器人耐受能力约束；
 - **GT19：** 无人机到达目标上空，不等于投放区已经净空并获得载荷释放授权；
-- **GT20：** 车辆获得绿灯，不等于下游出口净空且能够完整驶离路口。
+- **GT20：** 车辆获得绿灯，不等于下游出口净空且能够完整驶离路口；
+- **GT21：** 两条Observation指向同一状态路径，不等于可以按到达顺序覆盖；无策略时失败关闭，完整显式优先级生成可审计后继状态。
 
-完整案例、源码和学习路径见[中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)。
+GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)。
 
 ## 当前公共Core真正支持什么
 
@@ -278,8 +280,10 @@ geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json -
 - [English documentation index](docs/README.en.md)
 - [中文快速入门](docs/tutorials/quickstart.zh-CN.md)
 - [英文快速入门](docs/tutorials/quickstart.md)
-- [中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)
-- [英文Cookbook](docs/cookbook/gt01-gt20.md)
+- [GT01—GT20中文案例手册](docs/cookbook/gt01-gt20.zh-CN.md)
+- [GT01—GT20 English Cookbook](docs/cookbook/gt01-gt20.md)
+- [GT21—GT28世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)
+- [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md)
 - [JSON Schema](schemas/geotask-v1.0.schema.json)
 - [状态与可信等级](docs/reference/status-model.md)
 - [证据、冲突、阻断与恢复](docs/reference/evidence-and-recovery.md)

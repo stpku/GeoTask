@@ -59,7 +59,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布Recompute Derivation Result v0.1 Artifact，将Correction Request中的每项`recompute`变更绑定到精确Observation/GeoTask Document路径，并通过有限白名单方法确定性生成完整重算值映射，同时明确不执行任意代码、模型调用、状态物化、复核或动作授权；
 - ✅ 已发布受限后继World State物化与World State Materialization Result v0.1，将一个required Correction Request应用于不可变基准快照，绑定精确字节并保留来源、输出门禁和动作门禁；
 - ✅ 已发布Incremental Reevaluation Result v0.1 Artifact，绑定基准/后继World State、Impact Graph、Correction Request、Discrepancy Report与执行结果的精确字节，完整记录节点/目标结果、验收条件、差异消解和输出/动作门禁，同时明确不执行复核、不生成后继状态、不授权或执行动作；
-- 扩展受限Observation Merge的身份与冲突策略和重算推导方法注册表，并提供`geotask verify`、`geotask recheck`高层命令，保持本地、显式、可复现的世界状态快照语义；
+- ✅ 已提供`geotask verify`与`geotask recheck`高层只读入口，对完整显式Verification Session或Incremental Reevaluation Result制品束执行注册制品语义校验、精确引用覆盖和SHA-256绑定验证，同时明确不执行任务、复核、状态物化、输出释放或动作；
+- 扩展受限Observation Merge的身份与冲突策略和重算推导方法注册表，保持本地、显式、可复现的世界状态快照语义；
 - 将GT21—GT28建设为Observation接入、世界状态构建、状态变化、影响传播、限定纠偏和行动门控案例。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
@@ -136,7 +137,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published bounded successor-World-State materialization and World State Materialization Result v0.1, applying one required Correction Request to one immutable base snapshot with exact-byte bindings and explicit recompute values while preserving provenance, output gates, and action gates;
 - ✅ Published Recompute Derivation Result v0.1, binding exact World State, Correction Request, Observation, and GeoTask Document bytes and deriving every requested `recompute` value through small allowlisted deterministic methods, without arbitrary code, model calls, state mutation, reevaluation, release, or action authorization;
 - ✅ Published Incremental Reevaluation Result v0.1, binding exact base/successor World States, Impact Graph, Correction Requests, Discrepancy Reports, and execution results while closing graph-node, target, acceptance, discrepancy-resolution, output-gate, and action-eligibility outcomes without executing reevaluation, generating successors, authorizing actions, or executing actions;
-- expand the bounded derivation method registry, extend Observation Merge beyond explicit existing-target mappings with declared identity/conflict policies, and add high-level `geotask verify` and `geotask recheck` commands with explicit, local, reproducible snapshot semantics;
+- ✅ Added high-level, read-only `geotask verify` and `geotask recheck` commands that run registered semantic validation, exact reference coverage, and SHA-256 binding checks over complete explicit Verification Session or Incremental Reevaluation Result bundles while explicitly not executing tasks, reevaluation, state materialization, output release, or actions;
+- expand the bounded derivation method registry and extend Observation Merge beyond explicit existing-target mappings with declared identity/conflict policies while preserving explicit, local, reproducible snapshot semantics;
 - build GT21–GT28 around Observation ingestion, world-state construction, state change, impact propagation, bounded correction, and action gating.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem

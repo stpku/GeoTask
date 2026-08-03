@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 29733,
-    "sha256": "d2dd9193e36722d2836885dd85e7a02ec436ec88d2b7feacd6eaa25141ac49a9"
+    "size": 30520,
+    "sha256": "c1e249e8a926e881d65eff7c65a86ce9584d45c9b2a0bc593cf716fede8fee33"
   },
   {
     "path": "CITATION.cff",
@@ -51,18 +51,18 @@
   },
   {
     "path": "README.en.md",
-    "size": 18960,
-    "sha256": "f503853bc8dcc719ef508ab87d8bc4dba0356dd7dff71a61f029464a1d6997e8"
+    "size": 20010,
+    "sha256": "b41f0bddfc8c866c9b564d52845e8a5f3d63d74ee8f33cef918cf31844a3d8ca"
   },
   {
     "path": "README.md",
-    "size": 17656,
-    "sha256": "d4119d79a82f6d855a5fa306f278877a295586922df3a1d2965488a0d2a07282"
+    "size": 18706,
+    "sha256": "3eb12808b30ca98d3357861725efda1cb14da36e2826e5fd6ebd66a8fd56e60f"
   },
   {
     "path": "ROADMAP.md",
-    "size": 16077,
-    "sha256": "f266e51d2c0acb6b448581a09ce299e83da7ecb3b1c108985b4147c59f8d3e1b"
+    "size": 16635,
+    "sha256": "961f454e21c0acd2c81f09c9ab82a755c4090b64e57e3a7a6439dc51af49a0a4"
   },
   {
     "path": "SECURITY.md",
@@ -191,8 +191,8 @@
   },
   {
     "path": "tests/test_cli_foundation_commands.py",
-    "size": 3840,
-    "sha256": "6362d5d68cf1b2337944dc15b6859b4bd9c8bc7164ae9b4bc6000e5fc3069435"
+    "size": 3985,
+    "sha256": "4dafe4f494ee00bd4671c2f6ccf7ec6ddaf6f62e7a9e169d114196b31b636765"
   },
   {
     "path": "tests/test_cli_inspect.py",
@@ -498,6 +498,11 @@
     "path": "tests/test_version_consistency.py",
     "size": 689,
     "sha256": "f709bfce8a8e8de534c4faef699bb70ff68318d1b1d1d7fc35b78188dd2f1c75"
+  },
+  {
+    "path": "tests/test_world_state_cycle_cli.py",
+    "size": 7798,
+    "sha256": "fe60c707ecffe15c8b05a7fdeed5863c863823d3f95d918ff7ca78e1d0f9b335"
   },
   {
     "path": "tests/v1/__init__.py",
@@ -1371,8 +1376,8 @@
   },
   {
     "path": "src/geotask_core/__init__.py",
-    "size": 25608,
-    "sha256": "d5a522624f26a842cc05aca5e6707716a24123ddad41242572432eb5f21fa5b9"
+    "size": 25866,
+    "sha256": "e9fe4458ebda1b27385acb34560f92f39a75311968d4357a779d0168cb9de94a"
   },
   {
     "path": "src/geotask_core/_version.py",
@@ -1381,8 +1386,8 @@
   },
   {
     "path": "src/geotask_core/cli.py",
-    "size": 83135,
-    "sha256": "08819f74e398375b727de47edfef98501c5b3ede00206d9ec1339bba7c175bc4"
+    "size": 94582,
+    "sha256": "30845fb79e42db5c9c9a5c0c2ec0d33179bd943a4f06d7cc3c9534b91c7a32df"
   },
   {
     "path": "src/geotask_core/evaluator.py",
@@ -1446,8 +1451,8 @@
   },
   {
     "path": "src/geotask_core/v1/__init__.py",
-    "size": 24128,
-    "sha256": "2de902dfadbe6a5e9e9596eed31434eedbaf9dc4f9438bdbfbd08d99a1dfd320"
+    "size": 24386,
+    "sha256": "b37f014a1573d377eb81f6da34bda8da5b32407cdf8cc04b32f3279b3bb414e3"
   },
   {
     "path": "src/geotask_core/v1/agent_artifacts.py",
@@ -1630,6 +1635,11 @@
     "sha256": "9cd98fb7e31f6847de2d2f771d8f93647c5669c849de224759893fd2d9f8fcb1"
   },
   {
+    "path": "src/geotask_core/v1/world_state_cycle_cli.py",
+    "size": 14155,
+    "sha256": "6c4750324e1f3a9ec62d860eddd62ddb2cdc05d56208777b77d0799dde375e25"
+  },
+  {
     "path": "src/geotask_core/v1/world_state_materialization.py",
     "size": 54916,
     "sha256": "d9195456cad7bf6b697bea2be07fc7c6682a0577e5cb8098d36aca72c946a6dc"
@@ -1656,13 +1666,13 @@
   },
   {
     "path": "docs/architecture.md",
-    "size": 21696,
-    "sha256": "f0d14e62257572e5dec2b8d88b9a556f457b29c8dd2911323f65820683fefa86"
+    "size": 22778,
+    "sha256": "4fdd70bf39716f01e81620c93d14233bbc1b1cf1fd79545d52f6e85e1b3078b2"
   },
   {
     "path": "docs/cli_usage.md",
-    "size": 21832,
-    "sha256": "ae80d3ad77b8ce43245cd482b8b622e3f54d72cc992bbc61df9dabf1a56e1425"
+    "size": 24758,
+    "sha256": "996b0cb0d32cabe83a378a4c57475b406291c4904fe8edd42fb9c1c6e6c523f2"
   },
   {
     "path": "docs/design_principles.md",
@@ -1926,8 +1936,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 22640,
-    "sha256": "e405f196f2cf3b7925f3d60b132ebb46841e4158870a8a9cf1cc1ba119ab6b6f"
+    "size": 22682,
+    "sha256": "1e61ab73e4bd6a3e1bc59017be20c09b625e1d5d14d0f5c84ec851e31038ce66"
   },
   {
     "path": ".release/release_public.py",

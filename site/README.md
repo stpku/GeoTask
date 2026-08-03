@@ -1,6 +1,6 @@
 # GeoTask项目门户与案例体验站
 
-`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT22互动案例、`robots.txt`和`sitemap.xml`。
+`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT23互动案例、`robots.txt`和`sitemap.xml`。
 
 站点没有后台、统计脚本、Cookie、账号系统、模型密钥或外部JavaScript依赖。案例页只在浏览器中复制任务、执行局部确定性复算，并跳转到用户选择的大模型平台。
 
@@ -21,8 +21,9 @@ site/gt19/index.html     GT19无人机地面净空投放体验
 site/gt20/index.html     GT20车辆绿灯下游阻塞体验
 site/gt21/index.html     GT21同目标Observation冲突策略体验
 site/gt22/index.html     GT22首个World State快照体验
+site/gt23/index.html     GT23无人机连续飞行状态变化体验
 site/robots.txt          搜索引擎规则
-site/sitemap.xml         门户与GT01—GT22索引
+site/sitemap.xml         门户与GT01—GT23索引
 ```
 
 根地址始终代表GeoTask项目本身，不再代表某一个案例。每个案例使用独立稳定地址，并提供返回项目首页的入口。
@@ -51,6 +52,7 @@ site/sitemap.xml         门户与GT01—GT22索引
 - `GT20`：车辆已获得绿灯，但下游出口仅剩4米，低于整车与安全缓冲所需6.8米，需在停止线前等待
 - `GT21`：遥测显示延误60秒、运行审核记录显示55秒；页面先说明静默覆盖、取平均和擅自判断来源权威会造成什么业务风险，再在技术折叠区解释失败关闭与显式优先级
 - `GT22`：无人机位置和电量来自两个系统；页面先说明对象、时间和字段可能被错误拼接，再展示如何形成同一时刻、可追溯的统一运行快照
+- `GT23`：无人机飞行五分钟后位置与电量发生变化；页面先说明覆盖最新值为何无法证明状态变化，再展示前后快照、300秒时间差和3项显式变化的绑定
 
 ## 公共访问地址
 
@@ -79,6 +81,7 @@ GitHub Pages是公共Canonical入口：
 - <https://stpku.github.io/GeoTask/gt20/>
 - <https://stpku.github.io/GeoTask/gt21/>
 - <https://stpku.github.io/GeoTask/gt22/>
+- <https://stpku.github.io/GeoTask/gt23/>
 
 当前开发镜像：
 
@@ -105,6 +108,7 @@ GitHub Pages是公共Canonical入口：
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt20/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt21/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt22/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt23/>
 
 公共仓库：<https://github.com/stpku/GeoTask>
 

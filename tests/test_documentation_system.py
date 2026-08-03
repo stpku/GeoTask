@@ -1241,7 +1241,7 @@ def test_cookbooks_cover_all_public_weekly_cases() -> None:
             assert example in text
 
 
-def test_world_state_cycle_cookbooks_publish_gt21_gt22_and_bound_gt23_to_gt28() -> None:
+def test_world_state_cycle_cookbooks_publish_gt21_to_gt23_and_bound_gt24_to_gt28() -> None:
     for path in (WORLD_STATE_COOKBOOK_EN, WORLD_STATE_COOKBOOK_ZH):
         text = path.read_text(encoding="utf-8")
         for number in range(21, 29):
@@ -1260,6 +1260,11 @@ def test_world_state_cycle_cookbooks_publish_gt21_gt22_and_bound_gt23_to_gt28() 
             "asserted",
             "bb57804b830e08dc361bc04e3ca96f4530ea525c198857492dcb6c304dbe540f",
             "tests/test_gt22_initial_world_state_case.py",
+            "GT23",
+            "300",
+            "4a5112aa71e7286ef37c69ef25af961e15894b25cbe5b7f948dbc4d3b81e1419",
+            "bc12e7c9332e824f27386a43eeae137e493b759fe7dea20b5383539dfaf313e7",
+            "tests/test_gt23_uav_state_change_case.py",
         ):
             assert fragment in text
 
@@ -1267,6 +1272,7 @@ def test_world_state_cycle_cookbooks_publish_gt21_gt22_and_bound_gt23_to_gt28() 
     assert "现实场景优先、必要性先行、技术概念后置" in zh
     assert "遥测显示延误60秒，运行审核记录显示55秒" in zh
     assert "无人机的位置和电量来自两个系统" in zh
+    assert "无人机飞行五分钟后位置和电量都变了" in zh
     assert "临时禁飞区发布后" in zh
     assert "路线安全、天气合格，就可以自动起飞吗" in zh
 
@@ -1274,5 +1280,6 @@ def test_world_state_cycle_cookbooks_publish_gt21_gt22_and_bound_gt23_to_gt28() 
     assert "scenario-first" in en
     assert "Telemetry says a 60-second delay" in en
     assert "Position and battery data come from different systems" in en
+    assert "Five minutes later, both position and battery have changed" in en
     assert "temporary no-fly zone" in en
     assert "authorize automatic takeoff" in en

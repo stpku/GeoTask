@@ -1,0 +1,64 @@
+{
+  "scenario": {
+    "id": "gt23-uav-state-change",
+    "title_zh": "无人机飞行五分钟后位置和电量都变了，系统如何证明“现在”不是“刚才”？",
+    "base_world_state": "world_state_uav_alpha_initial_gt22.json",
+    "observations": [
+      "observation_uav_alpha_position_gt23.json",
+      "observation_uav_alpha_battery_gt23.json"
+    ],
+    "mappings": [
+      {
+        "change_id": "uav-alpha-position-change",
+        "observation_id": "obs-uav-alpha-position-gt23",
+        "claim_id": "uav-alpha-position-local-enu",
+        "target_path": "/objects/uav-alpha/attributes/position_local_enu",
+        "reason": "Five minutes of flight moved uav-alpha to a new local ENU position."
+      },
+      {
+        "change_id": "uav-alpha-battery-change",
+        "observation_id": "obs-uav-alpha-battery-gt23",
+        "claim_id": "uav-alpha-battery-percent",
+        "target_path": "/objects/uav-alpha/attributes/battery_percent",
+        "reason": "Five minutes of flight reduced the reported battery level."
+      }
+    ],
+    "merge": {
+      "merge_id": "gt23-uav-alpha-five-minute-merge",
+      "created_at": "2026-07-16T10:07:03+08:00",
+      "reason": "Apply the two new fictional telemetry claims to the existing uav-alpha attributes.",
+      "successor_as_of": "2026-07-16T10:07:00+08:00",
+      "successor_materialized_at": "2026-07-16T10:07:02+08:00"
+    },
+    "transition": {
+      "transition_id": "gt23-uav-alpha-five-minute-transition",
+      "occurred_at": "2026-07-16T10:07:00+08:00",
+      "recorded_at": "2026-07-16T10:07:03+08:00"
+    },
+    "expected": {
+      "from_revision": 1,
+      "to_revision": 2,
+      "elapsed_seconds": 300,
+      "changed_attribute_count": 2,
+      "transition_change_count": 3,
+      "successor_semantic_fingerprint": "4a5112aa71e7286ef37c69ef25af961e15894b25cbe5b7f948dbc4d3b81e1419",
+      "transition_semantic_fingerprint": "bc12e7c9332e824f27386a43eeae137e493b759fe7dea20b5383539dfaf313e7",
+      "before_position": {"x": 120, "y": 80, "z": 35, "crs": "LOCAL_ENU", "unit": "meter"},
+      "after_position": {"x": 260, "y": 180, "z": 48, "crs": "LOCAL_ENU", "unit": "meter"},
+      "before_battery_percent": 68,
+      "after_battery_percent": 52,
+      "next_action": "assess_impact",
+      "impact_assessed": false,
+      "external_truth_verified": false,
+      "action_authorized": false
+    },
+    "safety_boundary": {
+      "generic_diff_computed_by_core": false,
+      "declared_changes_checked_against_snapshots": true,
+      "snapshot_fingerprints_bound": true,
+      "impact_propagation_executed": false,
+      "external_truth_verified": false,
+      "action_authorized": false
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "state_transition": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-state-transition-v0.1.schema.json",
+    "schema_version": "0.1",
+    "transition_id": "gt23-uav-alpha-five-minute-transition",
+    "occurred_at": "2026-07-16T10:07:00+08:00",
+    "recorded_at": "2026-07-16T10:07:03+08:00",
+    "from_state": {
+      "world_state_id": "fictional-uav-alpha-initial-state",
+      "revision": 1,
+      "as_of": "2026-07-16T10:02:00+08:00",
+      "semantic_fingerprint": "bb57804b830e08dc361bc04e3ca96f4530ea525c198857492dcb6c304dbe540f"
+    },
+    "to_state": {
+      "world_state_id": "fictional-uav-alpha-initial-state",
+      "revision": 2,
+      "as_of": "2026-07-16T10:07:00+08:00",
+      "semantic_fingerprint": "4a5112aa71e7286ef37c69ef25af961e15894b25cbe5b7f948dbc4d3b81e1419"
+    },
+    "observation_refs": [
+      "obs-uav-alpha-battery-gt23",
+      "obs-uav-alpha-position-gt23"
+    ],
+    "evidence_refs": [
+      "telemetry:fictional/uav-alpha/battery-gt23",
+      "telemetry:fictional/uav-alpha/position-gt23"
+    ],
+    "changes": [
+      {
+        "id": "uav-alpha-battery-change",
+        "kind": "attribute",
+        "operation": "replace",
+        "path": "/objects/uav-alpha/attributes/battery_percent/value",
+        "basis": "direct_observation",
+        "verification_status": "asserted",
+        "reason": "Five minutes of flight reduced the reported battery level.",
+        "observation_refs": [
+          "obs-uav-alpha-battery-gt23"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/battery-gt23"
+        ],
+        "before": 68,
+        "after": 52
+      },
+      {
+        "id": "uav-alpha-position-change",
+        "kind": "attribute",
+        "operation": "replace",
+        "path": "/objects/uav-alpha/attributes/position_local_enu/value",
+        "basis": "direct_observation",
+        "verification_status": "asserted",
+        "reason": "Five minutes of flight moved uav-alpha to a new local ENU position.",
+        "observation_refs": [
+          "obs-uav-alpha-position-gt23"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/position-gt23"
+        ],
+        "before": {
+          "x": 120,
+          "y": 80,
+          "z": 35,
+          "crs": "LOCAL_ENU",
+          "unit": "meter"
+        },
+        "after": {
+          "x": 260,
+          "y": 180,
+          "z": 48,
+          "crs": "LOCAL_ENU",
+          "unit": "meter"
+        }
+      },
+      {
+        "id": "uav-alpha-validity-refresh",
+        "kind": "object",
+        "operation": "replace",
+        "path": "/objects/uav-alpha/valid_until",
+        "basis": "direct_observation",
+        "verification_status": "asserted",
+        "reason": "The coherent object window is refreshed to the earliest expiry of the new telemetry claims.",
+        "observation_refs": [
+          "obs-uav-alpha-battery-gt23",
+          "obs-uav-alpha-position-gt23"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/battery-gt23",
+          "telemetry:fictional/uav-alpha/position-gt23"
+        ],
+        "before": "2026-07-16T10:02:30+08:00",
+        "after": "2026-07-16T10:07:30+08:00"
+      }
+    ],
+    "action_eligibility_changes": []
+  }
+}

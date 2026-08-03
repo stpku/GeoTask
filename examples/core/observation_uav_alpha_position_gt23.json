@@ -1,0 +1,43 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-uav-alpha-position-gt23",
+    "observed_at": "2026-07-16T10:07:00+08:00",
+    "received_at": "2026-07-16T10:07:01+08:00",
+    "source": {
+      "kind": "sensor",
+      "reference": "telemetry:fictional/uav-alpha/position-gt23",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "producer": {
+      "id": "fictional-uav-position-adapter",
+      "kind": "software",
+      "version": "0.1.0"
+    },
+    "claims": [
+      {
+        "id": "uav-alpha-position-local-enu",
+        "subject_ref": "uav-alpha",
+        "predicate": "position_local_enu",
+        "basis": "direct_observation",
+        "value": {
+          "x": 260,
+          "y": 180,
+          "z": 48,
+          "crs": "LOCAL_ENU",
+          "unit": "meter"
+        },
+        "valid_until": "2026-07-16T10:08:00+08:00",
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 2,
+          "unit": "meter"
+        },
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/position-gt23"
+        ]
+      }
+    ]
+  }
+}

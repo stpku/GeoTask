@@ -14,7 +14,7 @@
 
 GeoTask 将自身定位为面向智能体的显式、可验证时空世界模型。它把多模态模型、传感器、地图、权威数据和人工输入转化为世界对象、时空关系、状态、证据、约束与行动资格，使智能体依赖的现实事实能够被计算、验证、更新、追溯和纠偏。验错、补证、限定修订、状态复核和行动门控不是最高层定义，而是GeoTask维护可信世界状态的核心机制。
 
-GeoTask不是以视频生成或隐式神经动力学预测为核心的单体世界模型。公共 Core 提供可验证时空世界模型的状态契约、任务与Artifact表示、本地确定性验证、证据绑定、Observation v0.1、World State v0.1、受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Recompute Derivation Result v0.1、受限后继状态物化、Incremental Reevaluation Result v0.1、控制评估和Agent修订基础；Runtime与Domain Pack负责权威数据、行业规则、本地预测模型、人工复核和生产动作。“可验证时空任务协议”是当前工程实现形式，而自动差异计算、对象身份发现、歧义命题冲突消解、影响图自动发现与传播执行以及受限推导方法扩展是下一阶段公共抽象。
+GeoTask不是以视频生成或隐式神经动力学预测为核心的单体世界模型。公共 Core 提供可验证时空世界模型的状态契约、任务与Artifact表示、本地确定性验证、证据绑定、Observation v0.1、World State v0.1、支持调用方显式同目标冲突策略的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Recompute Derivation Result v0.1、受限后继状态物化、Incremental Reevaluation Result v0.1、控制评估和Agent修订基础；Runtime与Domain Pack负责权威数据、行业规则、本地预测模型、人工复核和生产动作。“可验证时空任务协议”是当前工程实现形式，而自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、影响图自动发现与传播执行以及受限推导方法扩展是下一阶段公共抽象。
 
 ## English Abstract
 
@@ -22,7 +22,7 @@ Multimodal foundation models are moving from answering questions to interpreting
 
 GeoTask is an **explicit and verifiable spatiotemporal world model for AI agents**. It converts multimodal-model outputs, sensor observations, maps, authoritative data, and human input into explicit world objects, spatiotemporal relations, state, evidence, constraints, and action eligibility. This makes operational facts computable, verifiable, updateable, traceable, and correctable. Error detection, evidence recovery, bounded revision, state reevaluation, and action gating are mechanisms for maintaining a trustworthy world state rather than the complete definition of GeoTask.
 
-GeoTask is not a monolithic neural world model centered on video generation or implicit dynamics prediction. The public Core provides state and Artifact contracts, task representation, deterministic local verification, provenance and evidence binding, Observation v0.1, World State v0.1, bounded Observation Merge v0.1, State Transition v0.1, Verification Session v0.1, Discrepancy Report v0.1, Correction Request v0.1, Impact Graph v0.1, Recompute Derivation Result v0.1, bounded successor-state materialization, Incremental Reevaluation Result v0.1, control evaluation, and guarded Agent revision. External Runtimes and Domain Packs remain responsible for authoritative sources, domain rules, local predictive models, human review, credentials, and production actions. The verifiable spatiotemporal task protocol is the current engineering form; automatic diff computation, identity discovery, ambiguous-claim conflict resolution, automatic impact-graph discovery and propagation execution, and expansion of the bounded derivation method registry remain the next public abstractions.
+GeoTask is not a monolithic neural world model centered on video generation or implicit dynamics prediction. The public Core provides state and Artifact contracts, task representation, deterministic local verification, provenance and evidence binding, Observation v0.1, World State v0.1, bounded Observation Merge v0.1 with caller-declared same-target conflict policies, State Transition v0.1, Verification Session v0.1, Discrepancy Report v0.1, Correction Request v0.1, Impact Graph v0.1, Recompute Derivation Result v0.1, bounded successor-state materialization, Incremental Reevaluation Result v0.1, control evaluation, and guarded Agent revision. External Runtimes and Domain Packs remain responsible for authoritative sources, domain rules, local predictive models, human review, credentials, and production actions. The verifiable spatiotemporal task protocol is the current engineering form; automatic diff computation, identity discovery, resolution of ambiguous claims without a declared policy, automatic impact-graph discovery and propagation execution, and expansion of the bounded derivation method registry remain the next public abstractions.
 
 | 中文核心术语 | English term |
 |---|---|
@@ -109,7 +109,7 @@ State Update / Bounded Correction ← New Observation
         Action Eligibility Gate
 ```
 
-当前公共 Core 已实现世界对象和空间合同、来源与证据绑定、Observation v0.1、World State v0.1、受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Recompute Derivation Result v0.1、受限后继状态物化、Incremental Reevaluation Result v0.1、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。自动差异计算、对象身份发现、歧义命题冲突消解、Impact Graph自动发现与传播执行以及受限推导方法扩展仍是后续工程目标。
+当前公共 Core 已实现世界对象和空间合同、来源与证据绑定、Observation v0.1、World State v0.1、支持`require_equal`与完整显式优先级的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Recompute Derivation Result v0.1、受限后继状态物化、Incremental Reevaluation Result v0.1、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行以及受限推导方法扩展仍是后续工程目标。
 
 ---
 
@@ -157,10 +157,10 @@ GeoTask更接近一种外显、符号—计算、组合式的世界模型：
 | 状态来源 | 主要来自训练与感知模型 | 模型、传感器、地图、权威数据和人工均可接入 |
 | 计算方式 | 神经预测或生成 | 确定性算子、规则、本地模型和人工复核组合 |
 | 可信机制 | 置信度或评测指标 | 来源、证据、验证状态、冲突、有效范围和审计链 |
-| 状态更新 | 更新上下文或隐状态 | Observation v0.1记录变化输入；World State v0.1记录时点快照；受限Observation Merge v0.1按完整显式映射生成后继快照；State Transition v0.1绑定前后快照并记录变化；自动差异、身份发现、歧义冲突消解与Recheck编排仍在建设 |
+| 状态更新 | 更新上下文或隐状态 | Observation v0.1记录变化输入；World State v0.1记录时点快照；受限Observation Merge v0.1按完整显式映射生成后继快照，并对同一目标支持调用方声明的语义相等合并或完整优先级；State Transition v0.1绑定前后快照并记录变化；自动差异、身份发现、未声明策略的歧义冲突消解与Recheck编排仍在建设 |
 | 行动边界 | 通常由外围系统处理 | 行动资格和阻断条件是世界状态合同的一部分 |
 
-因此，GeoTask可以连接神经世界模型，将其输出作为带来源和不确定性的Observation，以World State v0.1表达共享时点快照，通过受限Observation Merge v0.1把完整显式映射写入既有状态目标并生成后继版本，再用State Transition v0.1绑定前后快照、记录显式变化；自动计算差异、推断对象身份、解决歧义冲突并编排增量复核，仍属于后续状态演化阶段。
+因此，GeoTask可以连接神经世界模型，将其输出作为带来源和不确定性的Observation，以World State v0.1表达共享时点快照，通过受限Observation Merge v0.1把完整显式映射写入既有状态目标，对同一目标仅按调用方声明的`require_equal`或完整显式优先级生成后继版本，再用State Transition v0.1绑定前后快照、记录显式变化；自动计算差异、推断对象身份、解决未声明策略的歧义冲突并编排增量复核，仍属于后续状态演化阶段。
 
 ---
 

@@ -1332,6 +1332,10 @@ def _validate_observation_merge_result_payload(
             "successor_world_state_revision": result.successor_world_state.revision,
             "observation_count": len(result.observation_refs),
             "applied_claim_count": len(result.applied_claims),
+            "conflict_resolution_count": len(result.conflict_resolutions),
+            "conflict_strategies": sorted(
+                {item.strategy for item in result.conflict_resolutions}
+            ),
             "next_action": result.next_action,
             "semantic_fingerprint": result.semantic_fingerprint(),
             "base_world_state_binding_verified": False,

@@ -130,7 +130,7 @@ The contract records declared uncertainty. It does not calibrate, normalize, com
 
 An Observation may list earlier Observation IDs in `supersedes`. This records an author-declared replacement relationship. The current Observation cannot supersede itself, and duplicate IDs are rejected.
 
-Supersession does not delete prior evidence, merge claims, or update a World State. The published Observation Merge Result v0.1 can apply complete explicit claim mappings to existing attributes or relations and emit a bound successor revision; it does not infer identity, create missing state, resolve ambiguous conflicts, or calculate a State Transition. State Transition v0.1 can then record an explicit change between already materialized snapshots.
+Supersession does not delete prior evidence, merge claims, or update a World State. The published Observation Merge Result v0.1 can apply complete explicit claim mappings to existing attributes or relations and emit a bound successor revision. When multiple claims target one path, it accepts only caller-declared `require_equal` consolidation or complete `explicit_precedence`; it does not infer identity, create missing state, invent precedence, rank sources, resolve an undeclared ambiguous conflict, or calculate a State Transition. State Transition v0.1 can then record an explicit change between already materialized snapshots.
 
 ## 8. Trust and execution boundary
 

@@ -50,6 +50,12 @@ RECOMPUTE_DERIVATION_SPEC = (
 RECOMPUTE_DERIVATION_SCHEMA = (
     ROOT / "schemas" / "geotask-recompute-derivation-result-v0.1.schema.json"
 )
+OBSERVATION_MERGE_SPEC = (
+    ROOT / "docs" / "spec" / "geotask-observation-merge-result-v0.1.md"
+)
+OBSERVATION_MERGE_SCHEMA = (
+    ROOT / "schemas" / "geotask-observation-merge-result-v0.1.schema.json"
+)
 ARTIFACT_REGISTRY_SPEC = (
     ROOT / "docs" / "spec" / "geotask-artifact-registry-v1.0.md"
 )
@@ -116,6 +122,10 @@ DOCUMENTS = (
     INCREMENTAL_REEVALUATION_SCHEMA,
     WORLD_STATE_MATERIALIZATION_SPEC,
     WORLD_STATE_MATERIALIZATION_SCHEMA,
+    RECOMPUTE_DERIVATION_SPEC,
+    RECOMPUTE_DERIVATION_SCHEMA,
+    OBSERVATION_MERGE_SPEC,
+    OBSERVATION_MERGE_SCHEMA,
     ARTIFACT_REGISTRY_SPEC,
     ARTIFACT_REGISTRY_SCHEMA,
     VERSIONED_VALIDATION_SPEC,
@@ -595,6 +605,28 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "#/$defs/result"
     )
 
+    observation_merge_text = OBSERVATION_MERGE_SPEC.read_text(encoding="utf-8")
+    for fragment in (
+        "GeoTask Observation Merge Result v0.1",
+        "geotask.observation-merge-result",
+        "validate_observation_merge_result_bindings",
+        "Every claim in every supplied Observation must be mapped exactly once",
+        "existing object attribute",
+        "compute_state_transition",
+        "action_authorized",
+    ):
+        assert fragment in observation_merge_text
+    observation_merge_schema = json.loads(
+        OBSERVATION_MERGE_SCHEMA.read_text(encoding="utf-8")
+    )
+    Draft202012Validator.check_schema(observation_merge_schema)
+    assert observation_merge_schema["$id"].endswith(
+        "geotask-observation-merge-result-v0.1.schema.json"
+    )
+    assert observation_merge_schema["properties"]["observation_merge_result"][
+        "$ref"
+    ] == "#/$defs/result"
+
     registry_text = ARTIFACT_REGISTRY_SPEC.read_text(encoding="utf-8")
     for fragment in (
         "GeoTask Artifact Registry v1.0",
@@ -609,6 +641,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.correction-request",
         "geotask.impact-graph",
         "geotask.recompute-derivation-result",
+        "geotask.observation-merge-result",
         "geotask.world-state-materialization-result",
         "geotask.incremental-reevaluation-result",
         "geotask.execution-result",
@@ -621,8 +654,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-request",
         "geotask.runtime-response",
         "geotask.core-benchmark-report",
-        "exactly twenty-two artifacts",
-        "all twenty-three public JSON Schemas",
+        "exactly twenty-three artifacts",
+        "all twenty-four public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

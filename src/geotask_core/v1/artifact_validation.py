@@ -65,6 +65,10 @@ from geotask_core.v1.recompute_derivation import (
     RecomputeDerivationError,
     load_recompute_derivation_result,
 )
+from geotask_core.v1.observation_merge import (
+    ObservationMergeError,
+    load_observation_merge_result,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1286,6 +1290,66 @@ def _validate_recompute_derivation_result_payload(
     )
 
 
+def _validate_observation_merge_result_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_observation_merge_result(payload)
+    except ObservationMergeError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_observation_merge_result",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Observation Merge Result "
+                        "v0.1. Structural validity does not prove exact source bindings, replay "
+                        "the merge, compute a State Transition, propagate impact, run reevaluation, "
+                        "release outputs, verify external truth, or authorize actions."
+                    ),
+                ),
+            ),
+        )
+
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "merge_id": result.merge_id,
+            "state": result.state,
+            "base_world_state_id": result.base_world_state.world_state_id,
+            "base_world_state_revision": result.base_world_state.revision,
+            "successor_world_state_revision": result.successor_world_state.revision,
+            "observation_count": len(result.observation_refs),
+            "applied_claim_count": len(result.applied_claims),
+            "next_action": result.next_action,
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "base_world_state_binding_verified": False,
+            "observation_bindings_verified": False,
+            "claim_target_bindings_verified": False,
+            "merge_replayed": False,
+            "successor_world_state_binding_verified": False,
+            "state_transition_computed": False,
+            "impact_propagation_executed": False,
+            "reevaluation_executed": False,
+            "outputs_released": False,
+            "external_truth_verified": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_incremental_reevaluation_result_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1407,6 +1471,12 @@ def _validate_verified_payload(
         )
     if descriptor.artifact_id == "geotask.recompute-derivation-result":
         return _validate_recompute_derivation_result_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
+    if descriptor.artifact_id == "geotask.observation-merge-result":
+        return _validate_observation_merge_result_payload(
             descriptor,
             payload,
             file=file,

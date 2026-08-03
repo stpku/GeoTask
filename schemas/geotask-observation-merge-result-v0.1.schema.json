@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-merge-result-v0.1.schema.json",
+  "title": "GeoTask Observation Merge Result v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["observation_merge_result"],
+  "properties": {
+    "observation_merge_result": {
+      "$ref": "#/$defs/result"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/nonEmptyString"},
+      "uniqueItems": true
+    },
+    "worldStateRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "world_state_id",
+        "revision",
+        "as_of",
+        "materialized_at",
+        "semantic_fingerprint",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"const": "geotask.world-state"},
+        "schema_version": {"const": "0.1"},
+        "world_state_id": {"$ref": "#/$defs/nonEmptyString"},
+        "revision": {"type": "integer", "minimum": 1},
+        "as_of": {"type": "string", "format": "date-time"},
+        "materialized_at": {"type": "string", "format": "date-time"},
+        "semantic_fingerprint": {"$ref": "#/$defs/sha256"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "observationRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "schema_version",
+        "observation_id",
+        "observed_at",
+        "received_at",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {"type": "string", "pattern": "^observation:.+"},
+        "artifact_id": {"const": "geotask.observation"},
+        "schema_version": {"const": "0.1"},
+        "observation_id": {"$ref": "#/$defs/nonEmptyString"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "received_at": {"type": "string", "format": "date-time"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "appliedClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "application_id",
+        "observation_ref",
+        "claim_id",
+        "target_path",
+        "target_kind",
+        "state",
+        "before",
+        "after"
+      ],
+      "properties": {
+        "application_id": {"$ref": "#/$defs/nonEmptyString"},
+        "observation_ref": {"type": "string", "pattern": "^observation:.+"},
+        "claim_id": {"$ref": "#/$defs/nonEmptyString"},
+        "target_path": {
+          "type": "string",
+          "pattern": "^/(objects/[^/]+/attributes/[^/]+|relations/[^/]+)$"
+        },
+        "target_kind": {"enum": ["attribute", "relation"]},
+        "state": {"const": "applied"},
+        "before": {},
+        "after": {}
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_version",
+        "merge_id",
+        "created_at",
+        "state",
+        "reason",
+        "base_world_state",
+        "observation_refs",
+        "successor_world_state",
+        "applied_claims",
+        "preserved_observation_refs",
+        "added_observation_refs",
+        "preserved_evidence_refs",
+        "added_evidence_refs",
+        "next_action",
+        "state_transition_computed",
+        "impact_propagation_executed",
+        "reevaluation_executed",
+        "outputs_released",
+        "external_truth_verified",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://stpku.github.io/GeoTask/schemas/geotask-observation-merge-result-v0.1.schema.json"
+        },
+        "schema_version": {"const": "0.1"},
+        "merge_id": {"$ref": "#/$defs/nonEmptyString"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "state": {"const": "completed"},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "base_world_state": {"$ref": "#/$defs/worldStateRef"},
+        "observation_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/observationRef"}
+        },
+        "successor_world_state": {"$ref": "#/$defs/worldStateRef"},
+        "applied_claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/appliedClaim"}
+        },
+        "preserved_observation_refs": {"$ref": "#/$defs/stringArray"},
+        "added_observation_refs": {
+          "allOf": [
+            {"$ref": "#/$defs/stringArray"},
+            {"minItems": 1}
+          ]
+        },
+        "preserved_evidence_refs": {"$ref": "#/$defs/stringArray"},
+        "added_evidence_refs": {"$ref": "#/$defs/stringArray"},
+        "next_action": {"const": "compute_state_transition"},
+        "state_transition_computed": {"const": false},
+        "impact_propagation_executed": {"const": false},
+        "reevaluation_executed": {"const": false},
+        "outputs_released": {"const": false},
+        "external_truth_verified": {"const": false},
+        "action_authorized": {"const": false},
+        "action_executed": {"const": false}
+      }
+    }
+  }
+}

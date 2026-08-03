@@ -31,6 +31,9 @@ from geotask_core.v1.executor import execute_canonical
 
 ROOT = Path(__file__).resolve().parents[1]
 GT19 = ROOT / "examples" / "core" / "uav_arrival_ground_clearance_release.yaml"
+OBSERVATION_MERGE_RESULT = (
+    ROOT / "examples" / "core" / "observation_merge_result_uav_recheck.json"
+)
 ARTIFACT_VALIDATION_SCHEMA_PATH = (
     ROOT / "schemas" / "geotask-artifact-validation-v1.0.schema.json"
 )
@@ -96,6 +99,10 @@ def test_unified_api_validates_all_registered_artifact_types() -> None:
         _control_payload(),
         file="control-evaluation.json",
     )
+    observation_merge = validate_artifact_file(
+        "geotask.observation-merge-result",
+        OBSERVATION_MERGE_RESULT,
+    )
     validation_report = validate_artifact_payload(
         "geotask.artifact-validation-report",
         execution.to_dict(),
@@ -104,7 +111,7 @@ def test_unified_api_validates_all_registered_artifact_types() -> None:
 
     assert isinstance(document, ArtifactValidationReport)
     assert ARTIFACT_VALIDATION_REPORT_VERSION == "1.0"
-    for report in (document, execution, control, validation_report):
+    for report in (document, execution, control, observation_merge, validation_report):
         payload = report.to_dict()["artifact_validation"]
         assert report.valid is True
         assert payload["report_version"] == "1.0"
@@ -129,6 +136,13 @@ def test_unified_api_validates_all_registered_artifact_types() -> None:
         "gt19-uav-arrival-ground-clearance-release"
     )
     assert control_body["summary"]["evaluation_count"] == 1
+
+    merge_body = observation_merge.to_dict()["artifact_validation"]
+    assert merge_body["artifact_id"] == "geotask.observation-merge-result"
+    assert merge_body["summary"]["applied_claim_count"] == 1
+    assert merge_body["summary"]["merge_replayed"] is False
+    assert merge_body["summary"]["state_transition_computed"] is False
+    assert merge_body["summary"]["action_authorized"] is False
 
     validation_body = validation_report.to_dict()["artifact_validation"]
     assert validation_body["artifact_id"] == "geotask.artifact-validation-report"
@@ -314,6 +328,11 @@ def test_artifact_validate_cli_supports_all_registered_artifacts(
         ("geotask.document", GT19, "object_count"),
         ("geotask.execution-result", result_path, "check_count"),
         ("geotask.control-evaluation", control_path, "evaluation_count"),
+        (
+            "geotask.observation-merge-result",
+            OBSERVATION_MERGE_RESULT,
+            "applied_claim_count",
+        ),
         (
             "geotask.artifact-validation-report",
             validation_path,

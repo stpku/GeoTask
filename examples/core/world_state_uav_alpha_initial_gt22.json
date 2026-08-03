@@ -1,0 +1,82 @@
+{
+  "world_state": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+    "schema_version": "0.1",
+    "world_state_id": "fictional-uav-alpha-initial-state",
+    "revision": 1,
+    "as_of": "2026-07-16T10:02:00+08:00",
+    "materialized_at": "2026-07-16T10:02:02+08:00",
+    "observation_refs": [
+      "obs-uav-alpha-battery-gt22",
+      "obs-uav-alpha-position-gt22"
+    ],
+    "evidence_refs": [
+      "telemetry:fictional/uav-alpha/battery-gt22",
+      "telemetry:fictional/uav-alpha/position-gt22"
+    ],
+    "objects": [
+      {
+        "id": "uav-alpha",
+        "type": "uav",
+        "verification_status": "asserted",
+        "observation_refs": [
+          "obs-uav-alpha-battery-gt22",
+          "obs-uav-alpha-position-gt22"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/battery-gt22",
+          "telemetry:fictional/uav-alpha/position-gt22"
+        ],
+        "attributes": [
+          {
+            "name": "battery_percent",
+            "value": 68,
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "observation_refs": [
+              "obs-uav-alpha-battery-gt22"
+            ],
+            "evidence_refs": [
+              "telemetry:fictional/uav-alpha/battery-gt22"
+            ],
+            "valid_from": "2026-07-16T10:01:58+08:00",
+            "valid_until": "2026-07-16T10:02:30+08:00",
+            "uncertainty": {
+              "kind": "standard_deviation",
+              "value": 1.0,
+              "unit": "percent"
+            }
+          },
+          {
+            "name": "position_local_enu",
+            "value": {
+              "x": 120,
+              "y": 80,
+              "z": 35,
+              "crs": "LOCAL_ENU",
+              "unit": "meter"
+            },
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "observation_refs": [
+              "obs-uav-alpha-position-gt22"
+            ],
+            "evidence_refs": [
+              "telemetry:fictional/uav-alpha/position-gt22"
+            ],
+            "valid_from": "2026-07-16T10:02:00+08:00",
+            "valid_until": "2026-07-16T10:03:00+08:00",
+            "uncertainty": {
+              "kind": "standard_deviation",
+              "value": 2.0,
+              "unit": "meter"
+            }
+          }
+        ],
+        "valid_from": "2026-07-16T10:01:58+08:00",
+        "valid_until": "2026-07-16T10:02:30+08:00"
+      }
+    ],
+    "relations": []
+  }
+}

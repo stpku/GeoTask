@@ -1,0 +1,58 @@
+{
+  "scenario": {
+    "id": "gt24-temporary-no-fly-zone-impact",
+    "title_zh": "临时禁飞区发布后，哪些航线、任务和审批结论必须重新检查？",
+    "observation": "observation_temporary_no_fly_zone_gt24.json",
+    "world_state": "world_state_temporary_no_fly_zone_gt24.json",
+    "discrepancy": {
+      "report_id": "gt24-temporary-no-fly-zone-discrepancy",
+      "recorded_at": "2026-08-04T14:05:05+08:00",
+      "finding_id": "route-medical-a-clearance-stale",
+      "subject_path": "/objects/mission-medical-17/attributes/dispatch_clearance/value"
+    },
+    "impact_graph": {
+      "graph_id": "gt24-temporary-no-fly-zone-impact-graph",
+      "recorded_at": "2026-08-04T14:05:08+08:00"
+    },
+    "declared_scope": {
+      "impacted": [
+        "world_state_path:/relations/route-medical-a-zone-riverside/value",
+        "assertion:route_medical_a_avoids_active_no_fly_zone",
+        "assertion:mission_medical_17_dispatch_allowed",
+        "output:mission_medical_17_dispatch_clearance",
+        "output:approval_medical_17_release_decision",
+        "action:launch_mission_medical_17"
+      ],
+      "unaffected": [
+        "world_state_path:/relations/route-inspection-b-zone-riverside/value",
+        "assertion:route_inspection_b_avoids_active_no_fly_zone",
+        "output:mission_inspection_08_dispatch_clearance",
+        "output:approval_inspection_08_release_decision",
+        "action:launch_mission_inspection_08"
+      ]
+    },
+    "expected": {
+      "world_state_revision": 2,
+      "world_state_semantic_fingerprint": "819d68c21176a6d0f5b78946b37ed80a7c7d31074b30c823fc0ddded6af348f0",
+      "route_medical_a_intersects": true,
+      "route_inspection_b_intersects": false,
+      "impact_node_count": 7,
+      "impact_edge_count": 7,
+      "reevaluation_target_count": 4,
+      "blocked_output_count": 2,
+      "blocked_action_count": 1,
+      "discrepancy_semantic_fingerprint": "250aa032c3908dff58f1bad5e85c5eba36cc195fa76d4ff6e40ba0bd34fd1512",
+      "impact_graph_semantic_fingerprint": "12e7908066d35dc9d7cbe161996b7d22aaddeec32b0cb6013eddf5c1a83a2a2e"
+    },
+    "safety_boundary": {
+      "geometry_intersection_computed_by_core": false,
+      "impact_discovered_by_core": false,
+      "declared_scope_validated": true,
+      "propagation_executed": false,
+      "reevaluation_executed": false,
+      "outputs_released": false,
+      "external_truth_verified": false,
+      "action_authorized": false
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-riverside-temporary-no-fly-zone-gt24",
+    "observed_at": "2026-08-04T14:00:00+08:00",
+    "received_at": "2026-08-04T14:00:12+08:00",
+    "source": {
+      "kind": "authoritative_data",
+      "reference": "notice:fictional/riverside-temporary-no-fly-zone-gt24",
+      "sha256": "abababababababababababababababababababababababababababababababab"
+    },
+    "producer": {
+      "id": "fictional-airspace-notice-adapter",
+      "kind": "software",
+      "version": "0.1.0"
+    },
+    "claims": [
+      {
+        "id": "riverside-zone-active-window",
+        "subject_ref": "zone-riverside-temporary-gt24",
+        "predicate": "temporary_no_fly_zone_active_window",
+        "basis": "direct_observation",
+        "value": {
+          "active": true,
+          "effective_start": "2026-08-04T14:00:00+08:00",
+          "effective_end": "2026-08-04T16:00:00+08:00",
+          "polygon_local_xy": [
+            [40, 40],
+            [80, 40],
+            [80, 80],
+            [40, 80]
+          ],
+          "crs": "LOCAL_XY",
+          "unit": "meter"
+        },
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "evidence_refs": [
+          "notice:fictional/riverside-temporary-no-fly-zone-gt24"
+        ]
+      }
+    ]
+  }
+}

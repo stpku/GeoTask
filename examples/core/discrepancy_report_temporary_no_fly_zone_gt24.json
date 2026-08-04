@@ -1,0 +1,86 @@
+{
+  "discrepancy_report": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-discrepancy-report-v0.1.schema.json",
+    "schema_version": "0.1",
+    "report_id": "gt24-temporary-no-fly-zone-discrepancy",
+    "recorded_at": "2026-08-04T14:05:05+08:00",
+    "state": "confirmed",
+    "severity": "high",
+    "reason": "The temporary no-fly-zone notice makes the earlier medical-route dispatch and approval conclusions stale, while the independent inspection route remains outside the declared impact scope.",
+    "world_state": {
+      "world_state_id": "fictional-riverside-airspace-operations-gt24",
+      "revision": 2,
+      "as_of": "2026-08-04T14:05:00+08:00",
+      "semantic_fingerprint": "819d68c21176a6d0f5b78946b37ed80a7c7d31074b30c823fc0ddded6af348f0"
+    },
+    "observation_refs": [
+      "obs-riverside-temporary-no-fly-zone-gt24"
+    ],
+    "evidence_refs": [
+      "notice:fictional/riverside-temporary-no-fly-zone-gt24"
+    ],
+    "artifact_refs": [
+      {
+        "ref_id": "notice-observation-gt24",
+        "artifact_id": "geotask.observation",
+        "schema_version": "0.1",
+        "instance_id": "obs-riverside-temporary-no-fly-zone-gt24",
+        "content_sha256": "6dcd2c66b06a15d315fd2d5aeac48b25edcc277a5430637afcbac9deed3190ab"
+      }
+    ],
+    "discrepancies": [
+      {
+        "id": "route-medical-a-clearance-stale",
+        "kind": "stale_claim",
+        "state": "confirmed",
+        "severity": "high",
+        "subject_kind": "attribute",
+        "subject_path": "/objects/mission-medical-17/attributes/dispatch_clearance/value",
+        "summary": "The medical mission clearance predates an active temporary no-fly zone intersecting its declared route.",
+        "reason": "The World State records route-medical-a as intersecting the active zone during the mission window, so prior dispatch and approval conclusions cannot be reused without recheck.",
+        "basis_refs": [
+          "notice-observation-gt24"
+        ],
+        "observation_refs": [
+          "obs-riverside-temporary-no-fly-zone-gt24"
+        ],
+        "evidence_refs": [
+          "notice:fictional/riverside-temporary-no-fly-zone-gt24"
+        ],
+        "impact": {
+          "state": "confirmed",
+          "reason": "The declared dependency chain reaches the medical route assertions, mission dispatch output, approval output, and launch action, but not the independent inspection chain.",
+          "affected_paths": [
+            "/objects/approval-medical-17/attributes/decision/value",
+            "/objects/mission-medical-17/attributes/dispatch_clearance/value",
+            "/relations/route-medical-a-zone-riverside/value"
+          ],
+          "affected_assertion_refs": [
+            "mission_medical_17_dispatch_allowed",
+            "route_medical_a_avoids_active_no_fly_zone"
+          ],
+          "affected_output_refs": [
+            "approval_medical_17_release_decision",
+            "mission_medical_17_dispatch_clearance"
+          ],
+          "affected_action_refs": [
+            "launch_mission_medical_17"
+          ]
+        },
+        "correction_scope": {
+          "state": "need_review",
+          "reason": "A later bounded correction may update the medical mission and approval decisions, but must not rewrite the notice or route geometry as part of this impact-mapping step.",
+          "mutable_paths": [
+            "/objects/approval-medical-17/attributes/decision/value",
+            "/objects/mission-medical-17/attributes/dispatch_clearance/value"
+          ],
+          "immutable_paths": [
+            "/objects/route-medical-a/attributes/polyline_local_xy/value",
+            "/objects/zone-riverside-temporary-gt24/attributes/polygon_local_xy/value"
+          ]
+        },
+        "observed": "clear_before_zone_notice"
+      }
+    ]
+  }
+}

@@ -207,3 +207,11 @@ cases:
     page: site/gt23/index.html
     example: examples/core/gt23_uav_state_change.json
     lastmod: "2026-08-04"
+  - id: GT24
+    slug: gt24
+    stage: world_state_cycle
+    title_zh: 临时禁飞区发布后，哪些航线、任务和审批结论必须重新检查？
+    summary_zh: 医疗航线穿越临时禁飞区，巡检航线绕开。系统只将医疗航线、任务、审批和起飞动作纳入复核链，避免全量重算或只更新地图。
+    page: site/gt24/index.html
+    example: examples/core/gt24_temporary_no_fly_zone_impact.json
+    lastmod: "2026-08-04"

@@ -143,7 +143,8 @@ Selected examples:
 - **GT20:** a green signal does not authorize intersection entry while the downstream exit cannot store and clear the full vehicle.
 - **GT21:** when telemetry says a 60-second delay and an operations review says 55 seconds, the AI must not overwrite by arrival order, average the values, or invent source authority; it must expose the conflict and apply a caller-declared rule.
 - **GT22:** when position and battery data come from different systems, the AI must not assemble a “current state” from the latest fields alone; it must first bind object identity, time, and field ownership into one traceable operational snapshot;
-- **GT23:** when position and battery change over five minutes, the system must not overwrite the earlier values; it must retain both snapshots, bind the 300-second interval, and explicitly record position, battery, and object-validity changes.
+- **GT23:** when position and battery change over five minutes, the system must not overwrite the earlier values; it must retain both snapshots, bind the 300-second interval, and explicitly record position, battery, and object-validity changes;
+- **GT24:** when a temporary no-fly zone is published, the system must neither recompute every operation nor update only the map; it must follow an explicit dependency chain and recheck only the intersecting route, its mission, approval conclusion, and launch action.
 
 See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md) and the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md).
 

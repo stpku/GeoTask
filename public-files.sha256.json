@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 34254,
-    "sha256": "7dcad12a776e930dd97fb1c02d8d954c66bd6114f05824ace17da5c6b7a404c9"
+    "size": 35011,
+    "sha256": "89171cec809c0490e460463338c5645163599318386d7584b23d8ad63a4add01"
   },
   {
     "path": "CITATION.cff",
@@ -51,18 +51,18 @@
   },
   {
     "path": "README.en.md",
-    "size": 21041,
-    "sha256": "b2616f2179b6931ca6fa95736626bcd31a3f916fd30234759cf540c19b19aa69"
+    "size": 21309,
+    "sha256": "01d98f555108ee2b55db0c48fcdb111a43f9164b388dbb8c477396eb34185667"
   },
   {
     "path": "README.md",
-    "size": 19763,
-    "sha256": "e040c45a291079eb7e933fd95271a08638e8fbc0a07124aa028f0fe66a4a3961"
+    "size": 19961,
+    "sha256": "a31692b9dc4a1584d9107d51cf1e8d68a16c126bfbcad2b0f992996f798e79cf"
   },
   {
     "path": "ROADMAP.md",
-    "size": 19862,
-    "sha256": "68743d3547fff3f04b300dc46d1c6315cb9f4bb6c1174f966190bf524c25b914"
+    "size": 20800,
+    "sha256": "92105b0c43598bfd6b148bd9e9a7d1c84eb9beaf96a7864b41778fd07767cb18"
   },
   {
     "path": "SECURITY.md",
@@ -216,8 +216,8 @@
   },
   {
     "path": "tests/test_documentation_system.py",
-    "size": 50746,
-    "sha256": "ffd8a5981db457cf85296b42786584e7bbc123cdf63b971c028d5e3c2cd6fb42"
+    "size": 51074,
+    "sha256": "ca7b68d40dc56516330064e564914f279a2d5b5d682a667293b602ef4fe9e493"
   },
   {
     "path": "tests/test_evaluator.py",
@@ -425,6 +425,16 @@
     "sha256": "e8d31ae1cb614c60d1b7fa276442b5f830d87c3be12f8832f91a16b5d531e50f"
   },
   {
+    "path": "tests/test_gt24_experience_page.py",
+    "size": 4558,
+    "sha256": "d6ca784da6b810f84ccd2d801b905eecdb4c8b23810a00e84ae5c839052aba4d"
+  },
+  {
+    "path": "tests/test_gt24_temporary_no_fly_zone_impact_case.py",
+    "size": 7807,
+    "sha256": "e758982551dbbdfab713a2b7bee7d7b597344137b00ada3f1f4ba0da10bd9081"
+  },
+  {
     "path": "tests/test_http_json_runtime_adapter_example.py",
     "size": 9552,
     "sha256": "c67deb4459dad459411e06cde87a1d6b427fbf2660d646cbe6092e1066ced9eb"
@@ -476,8 +486,8 @@
   },
   {
     "path": "tests/test_project_portal.py",
-    "size": 8727,
-    "sha256": "0ad8845c114766c318b486e20a09f2ecae6834cb00746582119a6f462efaed28"
+    "size": 8759,
+    "sha256": "a17f613e63d701fdc200bfd9982c8640f174d2d2cc5c221832bc1fac7ce8b252"
   },
   {
     "path": "tests/test_provider_neutral_model_adapter_example.py",
@@ -870,6 +880,11 @@
     "sha256": "41a3f73cf9a11b862e0c8a5a6f4b3c243ef74fbd22f0fc9c3cf117a45ca3342b"
   },
   {
+    "path": "examples/core/discrepancy_report_temporary_no_fly_zone_gt24.json",
+    "size": 3818,
+    "sha256": "087e4667a404cd37f0ac61ef10cc5fac64bbc5be1f6da821afe791995e0c315d"
+  },
+  {
     "path": "examples/core/discrepancy_report_uav_recheck.json",
     "size": 6215,
     "sha256": "8e8ebf064066b056f511f8567387e05535088969e1662d84c1a42fe950480945"
@@ -920,6 +935,21 @@
     "sha256": "5b189dfba1dbad30ab14967624bc59ce4dd320202ddfa03c75be1952fb37ed85"
   },
   {
+    "path": "examples/core/gt24_build_impact_scope.py",
+    "size": 23855,
+    "sha256": "f470f5099874a8ac9cfa044a82db8c3f1001d3bd3659fa78980205df218e3826"
+  },
+  {
+    "path": "examples/core/gt24_temporary_no_fly_zone_impact.json",
+    "size": 2465,
+    "sha256": "88cfe4ad9e6ddb767d02555012451e8b03f3b0a22a721d6b03a1cebd317bb7c0"
+  },
+  {
+    "path": "examples/core/impact_graph_temporary_no_fly_zone_gt24.json",
+    "size": 8735,
+    "sha256": "83b3631595768d0d77a5c931ba3a6ab6918ae5b03997396880373e08736a513b"
+  },
+  {
     "path": "examples/core/impact_graph_uav_recheck.json",
     "size": 10541,
     "sha256": "707b4ec94f4f7759a67faac3e3e3321bce8a0b5f5e194dc31bc68764f9752005"
@@ -948,6 +978,11 @@
     "path": "examples/core/observation_merge_result_uav_recheck.json",
     "size": 4035,
     "sha256": "a79060a56f7e917d032350dce103fe3f6839df9ec28da92a23f709561742f2da"
+  },
+  {
+    "path": "examples/core/observation_temporary_no_fly_zone_gt24.json",
+    "size": 1409,
+    "sha256": "6dcd2c66b06a15d315fd2d5aeac48b25edcc277a5430637afcbac9deed3190ab"
   },
   {
     "path": "examples/core/observation_uav_alpha_battery_gt22.json",
@@ -1118,6 +1153,11 @@
     "path": "examples/core/world_state_materialization_result_uav_recheck.json",
     "size": 4199,
     "sha256": "faec5e46c9df1e2c5d19bb992c6c8b98118609e026e474e26b2bf48e8d651dae"
+  },
+  {
+    "path": "examples/core/world_state_temporary_no_fly_zone_gt24.json",
+    "size": 13429,
+    "sha256": "44ed575ad628219b71a62009c1e3e127cdf4444c7994a951e3116a8d7976f2fd"
   },
   {
     "path": "examples/core/world_state_uav_alpha_after_five_minutes_gt23.json",
@@ -1321,18 +1361,18 @@
   },
   {
     "path": "site/README.md",
-    "size": 10283,
-    "sha256": "507196c2c5b806471b9aee3e99387b179dd1383af51db433d50c9d32f27a50e8"
+    "size": 10625,
+    "sha256": "8dd30942f25852e3288978a7a73eb79c2c05264bba652b340350ae5f504a3b3e"
   },
   {
     "path": "site/cases.json",
-    "size": 4284,
-    "sha256": "e318a47869ea00e44779c18180b0d4425a36f2643b52ef721dad82564b5b5445"
+    "size": 4492,
+    "sha256": "a2a891e9aa8179bc22beca8a7feba0edd810bba17d57cc37f8404da8011d763f"
   },
   {
     "path": "site/cases.txt",
-    "size": 115,
-    "sha256": "446974e75b077685de89da34ebc61a1a08e0bbab12e4b9577e65eb98cbbe682d"
+    "size": 120,
+    "sha256": "a265ddd00063ac6fae0fb7d9a6ae5a98d2f2b889168e9b88636bd5e769c1b17b"
   },
   {
     "path": "site/deploy-nginx.sh",
@@ -1341,8 +1381,8 @@
   },
   {
     "path": "site/index.html",
-    "size": 33530,
-    "sha256": "a0868ca91b002442e4eaa0685d4e63fdbaa3ab4fcdb942ea8016af2004633352"
+    "size": 33920,
+    "sha256": "805880e30326c452445826665e2123e6ac15c5c1bf73795be345b217faf1cc4e"
   },
   {
     "path": "site/robots.txt",
@@ -1351,8 +1391,8 @@
   },
   {
     "path": "site/sitemap.xml",
-    "size": 3632,
-    "sha256": "aff79f3d420f835cd559b35238707f1c46b6df2c3e3aae7fc271fb4519987e0d"
+    "size": 3779,
+    "sha256": "4877c105188a54ac586f35e0f312521d2f44b90891a0f25d03d3c46262ec2c66"
   },
   {
     "path": "site/gt12/index.html",
@@ -1415,6 +1455,11 @@
     "sha256": "907c26f28915a843a6d671608ef2627ca3a86121518d2eafe591d50da852e912"
   },
   {
+    "path": "site/gt24/index.html",
+    "size": 19620,
+    "sha256": "04138b6281ed308e141650783859c253e26cb1fa847f0bb81a308d222ab21375"
+  },
+  {
     "path": "site/gt21/index.html",
     "size": 19176,
     "sha256": "2faf6f2e745111fb4051b9570307ca62bf71662a36fa8271158dd6b97ae4bb23"
@@ -1471,8 +1516,8 @@
   },
   {
     "path": "site/gt23/index.html",
-    "size": 18030,
-    "sha256": "7b28bfbc133b122fda90037e6384b169df7ba9df16f0bba7ff28f0606c8eb6ea"
+    "size": 18078,
+    "sha256": "7cb8e086d02a7cdb9bf3d68712a7c346d4a88d590377f71b0d2478f0463a848e"
   },
   {
     "path": "site/gt05/index.html",
@@ -1761,8 +1806,8 @@
   },
   {
     "path": "cases/catalog.yaml",
-    "size": 8951,
-    "sha256": "61dc756b05532484bf08aa8e1c084d4aaf9eba9159606e19fe7ab8a417accb35"
+    "size": 9418,
+    "sha256": "a3e89aebe88ae7737e69071ffe3ec6506b3ea15b1c84629815c0cb65002c0d4a"
   },
   {
     "path": "docs/README.en.md",
@@ -1772,7 +1817,7 @@
   {
     "path": "docs/README.md",
     "size": 10473,
-    "sha256": "331bf81d79226d14e61168a52149a4ae63562a01fd2cb8483653c35281633777"
+    "sha256": "91e7a238f9cbb59c665619f04107f44bab519ce80a6c48ec4b71aa8b7ea45ee2"
   },
   {
     "path": "docs/architecture.md",
@@ -1886,13 +1931,13 @@
   },
   {
     "path": "docs/cookbook/gt21-gt28.md",
-    "size": 6997,
-    "sha256": "38d9d0c4474e5b773a3888e2c7f7807fe7ee47f3c891708422c398b7849bba91"
+    "size": 9459,
+    "sha256": "fc5a9b21cde6f2209bedef0976900e7d91a3b00c055b466e5839796f68e04f3c"
   },
   {
     "path": "docs/cookbook/gt21-gt28.zh-CN.md",
-    "size": 7591,
-    "sha256": "203992555e28775780d9647e113b7d3ac46be9689d71cf1cfc7ae056fdce73dd"
+    "size": 10098,
+    "sha256": "d5badc1446d49da81bce4452f97af41227d4e4ba5e4368cb42db5bb975cb2025"
   },
   {
     "path": "docs/architecture_decisions/ADR-001-core-runtime-domain-pack.md",
@@ -2056,8 +2101,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 24213,
-    "sha256": "36dac8845003d057005e52dc42da9d2b430537c56c8800cdb8f51ede15142577"
+    "size": 24810,
+    "sha256": "af19aabecf54fcc2dfeb84128c6a79111ef4bcea37d2f68a9c3f41802adf0b51"
   },
   {
     "path": ".release/release_public.py",

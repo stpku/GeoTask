@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 23,
+  "case_count": 24,
   "cases": [
     {
       "id": "GT01",
@@ -161,6 +161,13 @@
       "slug": "gt23",
       "title_zh": "无人机飞行五分钟后位置和电量都变了，系统如何证明“现在”不是“刚才”？",
       "previous": "gt22",
+      "next": "gt24"
+    },
+    {
+      "id": "GT24",
+      "slug": "gt24",
+      "title_zh": "临时禁飞区发布后，哪些航线、任务和审批结论必须重新检查？",
+      "previous": "gt23",
       "next": null
     }
   ]

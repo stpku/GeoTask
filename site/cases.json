@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 26,
+  "case_count": 27,
   "cases": [
     {
       "id": "GT01",
@@ -182,6 +182,13 @@
       "slug": "gt26",
       "title_zh": "飞行服务站营业时间已经失效，系统应该改哪条数据，而不是推翻全部结果？",
       "previous": "gt25",
+      "next": "gt27"
+    },
+    {
+      "id": "GT27",
+      "slug": "gt27",
+      "title_zh": "一条气象数据更新后，如何只复核受影响的飞行任务？",
+      "previous": "gt26",
       "next": null
     }
   ]

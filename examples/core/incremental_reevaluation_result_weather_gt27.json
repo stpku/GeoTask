@@ -1,0 +1,410 @@
+{
+  "incremental_reevaluation_result": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-incremental-reevaluation-result-v0.1.schema.json",
+    "schema_version": "0.1",
+    "result_id": "gt27-weather-bounded-incremental-reevaluation",
+    "recorded_at": "2026-08-04T14:00:12+08:00",
+    "state": "completed",
+    "reason": "Only mission A and mission D were reevaluated against revision 8; mission A changed from suitable to unsuitable, mission D remained suitable after recheck, and mission B and mission C were preserved outside the declared target set.",
+    "base_world_state": {
+      "ref_id": "base-world-state-gt27",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-weather-mission-state-gt27",
+      "revision": 7,
+      "as_of": "2026-08-04T14:00:00+08:00",
+      "semantic_fingerprint": "f229b9b3f6d6b0bf358c15b19cb563f11c3d8930d948681b69fd02bcbbef2899",
+      "content_sha256": "33bd862d7cceb54ca7bea8deb7e2fd2c24422eb14f26818f4203859843381a04"
+    },
+    "successor_world_state": {
+      "ref_id": "successor-world-state-gt27",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-weather-mission-state-gt27",
+      "revision": 8,
+      "as_of": "2026-08-04T14:00:05+08:00",
+      "semantic_fingerprint": "58b48884c3d70a2cd565e2791acdc121207b28fce4e66aff8ec68c9ccc3df4c6",
+      "content_sha256": "f1942cd1eed0862877a54461f180e42d51d8b5da8c4000401671213e19db12ac"
+    },
+    "impact_graph_ref": {
+      "ref_id": "impact-graph-weather-gt27",
+      "artifact_id": "geotask.impact-graph",
+      "schema_version": "0.1",
+      "instance_id": "gt27-weather-mission-impact-graph",
+      "content_sha256": "40116e38f80e76392444275e683b6d1c8317d4feb8708939e199c033a9fef543"
+    },
+    "correction_request_refs": [
+      {
+        "ref_id": "correction-weather-gt27",
+        "artifact_id": "geotask.correction-request",
+        "schema_version": "0.1",
+        "instance_id": "gt27-weather-bounded-reevaluation-request",
+        "content_sha256": "a833bac51ead3aeae1d039a8876ccbe3a080429509cf00edc3989918ab349646"
+      }
+    ],
+    "discrepancy_report_refs": [
+      {
+        "ref_id": "discrepancy-weather-gt27",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "gt27-weather-wind-speed-discrepancy",
+        "content_sha256": "88696d490dc28f005903a2ea0ffa103f4cd4186e62edb265d1d92316f54e8e0f"
+      }
+    ],
+    "execution_result_refs": [
+      {
+        "ref_id": "execution-weather-gt27",
+        "artifact_id": "geotask.execution-result",
+        "schema_version": "1.0",
+        "instance_id": "gt27-weather-affected-mission-recheck",
+        "content_sha256": "1f0172e288ca0165ebbf9073300efd0daf507a5e4ceb3f3ece78c4aac6e3a6db"
+      }
+    ],
+    "node_results": [
+      {
+        "id": "result-node-assert-mission-a",
+        "node_ref": "node-assert-mission-a",
+        "state": "recomputed",
+        "reason": "The bound execution result reports Mission A wind suitability as false.",
+        "basis_refs": [
+          "base-world-state-gt27",
+          "execution-weather-gt27",
+          "successor-world-state-gt27"
+        ],
+        "previous": true,
+        "current": false
+      },
+      {
+        "id": "result-node-assert-mission-d",
+        "node_ref": "node-assert-mission-d",
+        "state": "recomputed",
+        "reason": "The bound execution result reports Mission D wind suitability as true.",
+        "basis_refs": [
+          "base-world-state-gt27",
+          "execution-weather-gt27",
+          "successor-world-state-gt27"
+        ],
+        "previous": true,
+        "current": true
+      },
+      {
+        "id": "result-node-change-mission-a",
+        "node_ref": "node-change-mission-a",
+        "state": "recomputed",
+        "reason": "Mission A suitability was recomputed from 12 m/s and its 10 m/s threshold.",
+        "basis_refs": [
+          "base-world-state-gt27",
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ],
+        "previous": true,
+        "current": false
+      },
+      {
+        "id": "result-node-change-mission-d",
+        "node_ref": "node-change-mission-d",
+        "state": "recomputed",
+        "reason": "Mission D suitability was rerun from 12 m/s and its 15 m/s threshold.",
+        "basis_refs": [
+          "base-world-state-gt27",
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ],
+        "previous": true,
+        "current": true
+      },
+      {
+        "id": "result-node-change-wind",
+        "node_ref": "node-change-wind",
+        "state": "recomputed",
+        "reason": "The already observed east-zone wind path was explicitly carried into revision 8.",
+        "basis_refs": [
+          "base-world-state-gt27",
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ],
+        "previous": 12,
+        "current": 12
+      },
+      {
+        "id": "result-node-mission-a-path",
+        "node_ref": "node-mission-a-path",
+        "state": "recomputed",
+        "reason": "Mission A suitability changed from true to false.",
+        "basis_refs": [
+          "base-world-state-gt27",
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ],
+        "previous": true,
+        "current": false
+      },
+      {
+        "id": "result-node-mission-d-path",
+        "node_ref": "node-mission-d-path",
+        "state": "recomputed",
+        "reason": "Mission D suitability was recomputed and remained true.",
+        "basis_refs": [
+          "base-world-state-gt27",
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ],
+        "previous": true,
+        "current": true
+      },
+      {
+        "id": "result-node-output-mission-a",
+        "node_ref": "node-output-mission-a",
+        "state": "released",
+        "reason": "Mission A weather assessment was released after its affected assertion completed.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "execution-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "result-node-output-mission-d",
+        "node_ref": "node-output-mission-d",
+        "state": "released",
+        "reason": "Mission D weather assessment was released after its affected assertion completed.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "execution-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "result-node-wind-discrepancy",
+        "node_ref": "node-wind-discrepancy",
+        "state": "resolved",
+        "reason": "Revision 8 contains 12 m/s instead of the stale 6 m/s value.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "result-node-wind-path",
+        "node_ref": "node-wind-path",
+        "state": "recomputed",
+        "reason": "The successor wind path explicitly preserves the observed 12 m/s value.",
+        "basis_refs": [
+          "base-world-state-gt27",
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ],
+        "previous": 12,
+        "current": 12
+      }
+    ],
+    "target_results": [
+      {
+        "id": "result-target-mission-a-wind",
+        "target_ref": "target-mission-a-wind",
+        "node_ref": "node-assert-mission-a",
+        "node_result_ref": "result-node-assert-mission-a",
+        "state": "completed",
+        "reason": "Mission A was reevaluated against revision 8 and changed to false.",
+        "basis_refs": [
+          "execution-weather-gt27",
+          "impact-graph-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "result-target-mission-d-wind",
+        "target_ref": "target-mission-d-wind",
+        "node_ref": "node-assert-mission-d",
+        "node_result_ref": "result-node-assert-mission-d",
+        "state": "completed",
+        "reason": "Mission D was reevaluated against revision 8 and remained true.",
+        "basis_refs": [
+          "execution-weather-gt27",
+          "impact-graph-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "result-target-output-mission-a",
+        "target_ref": "target-output-mission-a",
+        "node_ref": "node-output-mission-a",
+        "node_result_ref": "result-node-output-mission-a",
+        "state": "completed",
+        "reason": "Mission A weather assessment target completed after the assertion recheck.",
+        "basis_refs": [
+          "execution-weather-gt27",
+          "impact-graph-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "result-target-output-mission-d",
+        "target_ref": "target-output-mission-d",
+        "node_ref": "node-output-mission-d",
+        "node_result_ref": "result-node-output-mission-d",
+        "state": "completed",
+        "reason": "Mission D weather assessment target completed after the assertion recheck.",
+        "basis_refs": [
+          "execution-weather-gt27",
+          "impact-graph-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      }
+    ],
+    "acceptance_results": [
+      {
+        "id": "accept-affected-weather-outputs-rechecked",
+        "request_ref": "correction-weather-gt27",
+        "criterion_id": "affected-weather-outputs-rechecked",
+        "state": "satisfied",
+        "reason": "Both affected mission weather outputs completed after their assertion rechecks.",
+        "node_result_refs": [
+          "result-node-output-mission-a",
+          "result-node-output-mission-d"
+        ],
+        "target_result_refs": [
+          "result-target-output-mission-a",
+          "result-target-output-mission-d"
+        ],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "execution-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "accept-mission-a-path-recomputed",
+        "request_ref": "correction-weather-gt27",
+        "criterion_id": "mission-a-path-recomputed",
+        "state": "satisfied",
+        "reason": "The Mission A change and successor path are both recorded as recomputed.",
+        "node_result_refs": [
+          "result-node-change-mission-a",
+          "result-node-mission-a-path"
+        ],
+        "target_result_refs": [],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "accept-mission-d-path-recomputed",
+        "request_ref": "correction-weather-gt27",
+        "criterion_id": "mission-d-path-recomputed",
+        "state": "satisfied",
+        "reason": "The Mission D change and successor path are both recorded as recomputed.",
+        "node_result_refs": [
+          "result-node-change-mission-d",
+          "result-node-mission-d-path"
+        ],
+        "target_result_refs": [],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "accept-successor-world-state-valid",
+        "request_ref": "correction-weather-gt27",
+        "criterion_id": "successor-world-state-valid",
+        "state": "satisfied",
+        "reason": "The bound revision-8 World State passes strict loading and fingerprint checks.",
+        "node_result_refs": [],
+        "target_result_refs": [],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "accept-wind-discrepancy-resolved",
+        "request_ref": "correction-weather-gt27",
+        "criterion_id": "wind-discrepancy-resolved",
+        "state": "satisfied",
+        "reason": "The discrepancy node is resolved by the 12 m/s successor value.",
+        "node_result_refs": [
+          "result-node-wind-discrepancy"
+        ],
+        "target_result_refs": [],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      },
+      {
+        "id": "accept-wind-path-recomputed",
+        "request_ref": "correction-weather-gt27",
+        "criterion_id": "wind-path-recomputed",
+        "state": "satisfied",
+        "reason": "Revision 8 explicitly carries the observed 12 m/s value through the wind recompute change.",
+        "node_result_refs": [
+          "result-node-change-wind",
+          "result-node-wind-path"
+        ],
+        "target_result_refs": [],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      }
+    ],
+    "discrepancy_results": [
+      {
+        "id": "result-east-wind-speed-mismatch",
+        "request_ref": "correction-weather-gt27",
+        "discrepancy_ref": "wind-speed-mismatch",
+        "state": "resolved",
+        "reason": "Revision 8 contains 12 m/s and the two declared affected assertions completed.",
+        "node_result_refs": [
+          "result-node-wind-discrepancy"
+        ],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27",
+          "execution-weather-gt27",
+          "successor-world-state-gt27"
+        ]
+      }
+    ],
+    "output_gates": [
+      {
+        "output_ref": "mission_a_weather_assessment",
+        "state": "released",
+        "reason": "Mission A weather assessment was released after its output target completed and all correction criteria were satisfied.",
+        "target_result_refs": [
+          "result-target-output-mission-a"
+        ],
+        "criterion_result_refs": [
+          "accept-affected-weather-outputs-rechecked",
+          "accept-mission-a-path-recomputed",
+          "accept-mission-d-path-recomputed",
+          "accept-successor-world-state-valid",
+          "accept-wind-discrepancy-resolved",
+          "accept-wind-path-recomputed"
+        ]
+      },
+      {
+        "output_ref": "mission_d_weather_assessment",
+        "state": "released",
+        "reason": "Mission D weather assessment was released after its output target completed and all correction criteria were satisfied.",
+        "target_result_refs": [
+          "result-target-output-mission-d"
+        ],
+        "criterion_result_refs": [
+          "accept-affected-weather-outputs-rechecked",
+          "accept-mission-a-path-recomputed",
+          "accept-mission-d-path-recomputed",
+          "accept-successor-world-state-valid",
+          "accept-wind-discrepancy-resolved",
+          "accept-wind-path-recomputed"
+        ]
+      }
+    ],
+    "action_gates": [],
+    "next_action": "none"
+  }
+}

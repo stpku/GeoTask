@@ -1,0 +1,411 @@
+{
+  "impact_graph": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-impact-graph-v0.1.schema.json",
+    "schema_version": "0.1",
+    "graph_id": "gt27-weather-mission-impact-graph",
+    "recorded_at": "2026-08-04T14:00:07+08:00",
+    "state": "blocked",
+    "reason": "The declared impact scope links one wind discrepancy to three bounded changes, two mission assertion rechecks, and two blocked weather-assessment outputs, excluding the west-zone and pre-update missions.",
+    "world_state": {
+      "ref_id": "base-world-state-gt27",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-weather-mission-state-gt27",
+      "revision": 7,
+      "as_of": "2026-08-04T14:00:00+08:00",
+      "semantic_fingerprint": "f229b9b3f6d6b0bf358c15b19cb563f11c3d8930d948681b69fd02bcbbef2899",
+      "content_sha256": "33bd862d7cceb54ca7bea8deb7e2fd2c24422eb14f26818f4203859843381a04"
+    },
+    "artifact_refs": [
+      {
+        "ref_id": "correction-weather-gt27",
+        "artifact_id": "geotask.correction-request",
+        "schema_version": "0.1",
+        "instance_id": "gt27-weather-bounded-reevaluation-request",
+        "content_sha256": "a833bac51ead3aeae1d039a8876ccbe3a080429509cf00edc3989918ab349646"
+      },
+      {
+        "ref_id": "discrepancy-weather-gt27",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "gt27-weather-wind-speed-discrepancy",
+        "content_sha256": "88696d490dc28f005903a2ea0ffa103f4cd4186e62edb265d1d92316f54e8e0f"
+      }
+    ],
+    "entity_refs": [
+      {
+        "id": "entity-change-mission-a",
+        "kind": "correction_change",
+        "artifact_ref": "correction-weather-gt27",
+        "entity_id": "recompute-mission-a-wind-suitability"
+      },
+      {
+        "id": "entity-change-mission-d",
+        "kind": "correction_change",
+        "artifact_ref": "correction-weather-gt27",
+        "entity_id": "recompute-mission-d-wind-suitability"
+      },
+      {
+        "id": "entity-change-wind",
+        "kind": "correction_change",
+        "artifact_ref": "correction-weather-gt27",
+        "entity_id": "recompute-east-wind-speed"
+      },
+      {
+        "id": "entity-wind-discrepancy",
+        "kind": "discrepancy",
+        "artifact_ref": "discrepancy-weather-gt27",
+        "entity_id": "east-wind-speed-value-mismatch"
+      }
+    ],
+    "root_node_refs": [
+      "node-wind-discrepancy"
+    ],
+    "nodes": [
+      {
+        "id": "node-assert-mission-a",
+        "kind": "assertion",
+        "identity": "mission_a_wind_within_limit",
+        "impact_state": "requires_recheck",
+        "reason": "Mission A is in the east zone after the update and must be rechecked.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "node-assert-mission-d",
+        "kind": "assertion",
+        "identity": "mission_d_wind_within_limit",
+        "impact_state": "requires_recheck",
+        "reason": "Mission D is in the east zone after the update and must also be rechecked.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "node-change-mission-a",
+        "kind": "correction_change",
+        "identity": "entity-change-mission-a",
+        "impact_state": "affected",
+        "reason": "Mission A suitability must be recomputed from the updated wind.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ],
+        "entity_ref": "entity-change-mission-a"
+      },
+      {
+        "id": "node-change-mission-d",
+        "kind": "correction_change",
+        "identity": "entity-change-mission-d",
+        "impact_state": "affected",
+        "reason": "Mission D suitability must be rerun even if the boolean remains true.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ],
+        "entity_ref": "entity-change-mission-d"
+      },
+      {
+        "id": "node-change-wind",
+        "kind": "correction_change",
+        "identity": "entity-change-wind",
+        "impact_state": "affected",
+        "reason": "The stale wind value must be replaced in revision 8.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ],
+        "entity_ref": "entity-change-wind"
+      },
+      {
+        "id": "node-mission-a-path",
+        "kind": "world_state_path",
+        "identity": "/relations/mission-a-weather-suitable/value",
+        "impact_state": "affected",
+        "reason": "Mission A suitability is an affected derived path.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "node-mission-d-path",
+        "kind": "world_state_path",
+        "identity": "/relations/mission-d-weather-suitable/value",
+        "impact_state": "affected",
+        "reason": "Mission D suitability is an affected derived path even when its value is unchanged.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "node-output-mission-a",
+        "kind": "output",
+        "identity": "mission_a_weather_assessment",
+        "impact_state": "blocked",
+        "reason": "Mission A weather assessment remains blocked until its assertion recheck completes.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "node-output-mission-d",
+        "kind": "output",
+        "identity": "mission_d_weather_assessment",
+        "impact_state": "blocked",
+        "reason": "Mission D weather assessment remains blocked until its assertion recheck completes.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "node-wind-discrepancy",
+        "kind": "discrepancy",
+        "identity": "entity-wind-discrepancy",
+        "impact_state": "root",
+        "reason": "The confirmed east wind mismatch is the root of the declared scope.",
+        "basis_refs": [
+          "discrepancy-weather-gt27"
+        ],
+        "entity_ref": "entity-wind-discrepancy"
+      },
+      {
+        "id": "node-wind-path",
+        "kind": "world_state_path",
+        "identity": "/objects/weather-cell-east/attributes/wind_speed_mps/value",
+        "impact_state": "affected",
+        "reason": "The east-zone wind input changes from 6 to 12 m/s.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-discrepancy-requires-mission-a-change",
+        "kind": "requires",
+        "from_node": "node-wind-discrepancy",
+        "to_node": "node-change-mission-a",
+        "state": "confirmed",
+        "reason": "The declared discrepancy scope requires Mission A to be recomputed because it is in the east zone after 14:00.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-discrepancy-requires-mission-d-change",
+        "kind": "requires",
+        "from_node": "node-wind-discrepancy",
+        "to_node": "node-change-mission-d",
+        "state": "confirmed",
+        "reason": "The declared discrepancy scope requires Mission D to be recomputed because it is in the east zone after 14:00.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-discrepancy-requires-wind-change",
+        "kind": "requires",
+        "from_node": "node-wind-discrepancy",
+        "to_node": "node-change-wind",
+        "state": "confirmed",
+        "reason": "The discrepancy requires replacement of the stale wind input.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-mission-a-assertion-blocks-output",
+        "kind": "blocks",
+        "from_node": "node-assert-mission-a",
+        "to_node": "node-output-mission-a",
+        "state": "confirmed",
+        "reason": "Mission A weather assessment remains blocked until its assertion recheck completes.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-mission-a-change-updates-path",
+        "kind": "changes",
+        "from_node": "node-change-mission-a",
+        "to_node": "node-mission-a-path",
+        "state": "confirmed",
+        "reason": "The Mission A recompute change targets its suitability path.",
+        "basis_refs": [
+          "correction-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-mission-a-path-requires-recheck",
+        "kind": "requires_recheck",
+        "from_node": "node-mission-a-path",
+        "to_node": "node-assert-mission-a",
+        "state": "confirmed",
+        "reason": "The changed Mission A path requires its assertion to be rerun.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-mission-d-assertion-blocks-output",
+        "kind": "blocks",
+        "from_node": "node-assert-mission-d",
+        "to_node": "node-output-mission-d",
+        "state": "confirmed",
+        "reason": "Mission D weather assessment remains blocked until its assertion recheck completes.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-mission-d-change-updates-path",
+        "kind": "changes",
+        "from_node": "node-change-mission-d",
+        "to_node": "node-mission-d-path",
+        "state": "confirmed",
+        "reason": "The Mission D recompute change targets its suitability path.",
+        "basis_refs": [
+          "correction-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-mission-d-path-requires-recheck",
+        "kind": "requires_recheck",
+        "from_node": "node-mission-d-path",
+        "to_node": "node-assert-mission-d",
+        "state": "confirmed",
+        "reason": "The Mission D path requires recheck even when the result remains true.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-wind-change-updates-path",
+        "kind": "changes",
+        "from_node": "node-change-wind",
+        "to_node": "node-wind-path",
+        "state": "confirmed",
+        "reason": "The declared replacement targets the wind-speed path.",
+        "basis_refs": [
+          "correction-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-wind-path-affects-mission-a-path",
+        "kind": "affects",
+        "from_node": "node-wind-path",
+        "to_node": "node-mission-a-path",
+        "state": "confirmed",
+        "reason": "Mission A suitability depends on the east-zone wind input.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "edge-wind-path-affects-mission-d-path",
+        "kind": "affects",
+        "from_node": "node-wind-path",
+        "to_node": "node-mission-d-path",
+        "state": "confirmed",
+        "reason": "Mission D suitability depends on the east-zone wind input.",
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      }
+    ],
+    "reevaluation_targets": [
+      {
+        "id": "target-mission-a-wind",
+        "node_ref": "node-assert-mission-a",
+        "state": "required",
+        "reason": "Rerun Mission A wind suitability against the successor state.",
+        "input_node_refs": [
+          "node-mission-a-path",
+          "node-wind-path"
+        ],
+        "prerequisite_node_refs": [
+          "node-change-mission-a",
+          "node-change-wind"
+        ],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "target-mission-d-wind",
+        "node_ref": "node-assert-mission-d",
+        "state": "required",
+        "reason": "Rerun Mission D wind suitability against the successor state.",
+        "input_node_refs": [
+          "node-mission-d-path",
+          "node-wind-path"
+        ],
+        "prerequisite_node_refs": [
+          "node-change-mission-d",
+          "node-change-wind"
+        ],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "target-output-mission-a",
+        "node_ref": "node-output-mission-a",
+        "state": "blocked",
+        "reason": "Mission A weather assessment cannot be released until the affected assertion completes.",
+        "input_node_refs": [
+          "node-assert-mission-a"
+        ],
+        "prerequisite_node_refs": [
+          "node-change-mission-a",
+          "node-change-wind"
+        ],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      },
+      {
+        "id": "target-output-mission-d",
+        "node_ref": "node-output-mission-d",
+        "state": "blocked",
+        "reason": "Mission D weather assessment cannot be released until the affected assertion completes.",
+        "input_node_refs": [
+          "node-assert-mission-d"
+        ],
+        "prerequisite_node_refs": [
+          "node-change-mission-d",
+          "node-change-wind"
+        ],
+        "basis_refs": [
+          "correction-weather-gt27",
+          "discrepancy-weather-gt27"
+        ]
+      }
+    ],
+    "blocked_outputs": [
+      "mission_a_weather_assessment",
+      "mission_d_weather_assessment"
+    ],
+    "blocked_actions": []
+  }
+}

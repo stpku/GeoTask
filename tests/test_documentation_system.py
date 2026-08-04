@@ -1241,7 +1241,7 @@ def test_cookbooks_cover_all_public_weekly_cases() -> None:
             assert example in text
 
 
-def test_world_state_cycle_cookbooks_publish_gt21_to_gt26_and_bound_gt27_to_gt28() -> None:
+def test_world_state_cycle_cookbooks_publish_gt21_to_gt27_and_bound_gt28() -> None:
     for path in (WORLD_STATE_COOKBOOK_EN, WORLD_STATE_COOKBOOK_ZH):
         text = path.read_text(encoding="utf-8")
         for number in range(21, 29):
@@ -1281,6 +1281,11 @@ def test_world_state_cycle_cookbooks_publish_gt21_to_gt26_and_bound_gt27_to_gt28
             "bcbc6d5644c9bcbde03163dc9024f9c5a9d0e9dc0c3cdcd8df8ba2bff0f91b83",
             "aa165ba2e6ee673008c8bcbaeab719c4d99ce19ab5a103f1f7ef5303b700b259",
             "tests/test_gt26_flight_service_station_schedule_correction_case.py",
+            "GT27",
+            "f229b9b3f6d6b0bf358c15b19cb563f11c3d8930d948681b69fd02bcbbef2899",
+            "58b48884c3d70a2cd565e2791acdc121207b28fce4e66aff8ec68c9ccc3df4c6",
+            "0e20bf36957b46ea1739b280faec424b4c23314f411346322bdc8439af82002f",
+            "tests/test_gt27_weather_incremental_reevaluation_case.py",
         ):
             assert fragment in text
 
@@ -1292,6 +1297,7 @@ def test_world_state_cycle_cookbooks_publish_gt21_to_gt26_and_bound_gt27_to_gt28
     assert "临时禁飞区发布后" in zh
     assert "无人机位置更新后，哪些安全距离需要重算" in zh
     assert "飞行服务站营业时间已经失效" in zh
+    assert "一条气象数据更新后，如何只复核受影响的飞行任务" in zh
     assert "路线安全、天气合格，就可以自动起飞吗" in zh
 
     en = WORLD_STATE_COOKBOOK_EN.read_text(encoding="utf-8")
@@ -1302,4 +1308,5 @@ def test_world_state_cycle_cookbooks_publish_gt21_to_gt26_and_bound_gt27_to_gt28
     assert "temporary no-fly zone" in en
     assert "Which safety distances must be recomputed" in en
     assert "flight-service station schedule is stale" in en
+    assert "One weather value changes" in en
     assert "authorize automatic takeoff" in en

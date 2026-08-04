@@ -1,0 +1,104 @@
+{
+  "scenario": {
+    "id": "gt27-weather-incremental-reevaluation",
+    "title_zh": "一条气象数据更新后，如何只复核受影响的飞行任务？",
+    "observation": "observation_weather_wind_speed_gt27.json",
+    "base_world_state": "world_state_weather_missions_base_gt27.json",
+    "successor_world_state": "world_state_weather_missions_successor_gt27.json",
+    "discrepancy_report": "discrepancy_report_weather_wind_gt27.json",
+    "correction_request": "correction_request_weather_wind_gt27.json",
+    "impact_graph": "impact_graph_weather_missions_gt27.json",
+    "execution_result": "incremental_reevaluation_weather_execution_result_gt27.json",
+    "incremental_result": "incremental_reevaluation_result_weather_gt27.json",
+    "weather_update": {
+      "region": "east",
+      "old_wind_mps": 6,
+      "new_wind_mps": 12,
+      "effective_at": "2026-08-04T14:00:00+08:00"
+    },
+    "missions": [
+      {
+        "id": "mission-a-delivery",
+        "region": "east",
+        "planned_time": "14:30",
+        "max_wind_mps": 10,
+        "reevaluate": true,
+        "previous": true,
+        "current": false,
+        "reason": "same_region_and_active_time"
+      },
+      {
+        "id": "mission-b-inspection",
+        "region": "west",
+        "planned_time": "14:30",
+        "max_wind_mps": 10,
+        "reevaluate": false,
+        "previous": true,
+        "current": true,
+        "reason": "different_region"
+      },
+      {
+        "id": "mission-c-survey",
+        "region": "east",
+        "planned_time": "12:30",
+        "max_wind_mps": 10,
+        "reevaluate": false,
+        "previous": true,
+        "current": true,
+        "reason": "before_update_effective_time"
+      },
+      {
+        "id": "mission-d-emergency",
+        "region": "east",
+        "planned_time": "14:45",
+        "max_wind_mps": 15,
+        "reevaluate": true,
+        "previous": true,
+        "current": true,
+        "reason": "same_region_and_active_time"
+      }
+    ],
+    "declared_scope": {
+      "mutable_paths": [
+        "/objects/weather-cell-east/attributes/wind_speed_mps/value",
+        "/relations/mission-a-weather-suitable/value",
+        "/relations/mission-d-weather-suitable/value"
+      ],
+      "immutable_paths": [
+        "/relations/mission-b-weather-suitable/value",
+        "/relations/mission-c-weather-suitable/value"
+      ],
+      "reevaluation_targets": [
+        "mission_a_wind_within_limit",
+        "mission_d_wind_within_limit"
+      ],
+      "excluded_targets": [
+        "mission_b_wind_within_limit",
+        "mission_c_wind_within_limit"
+      ]
+    },
+    "expected": {
+      "base_revision": 7,
+      "successor_revision": 8,
+      "affected_mission_count": 2,
+      "reused_mission_count": 2,
+      "base_world_state_semantic_fingerprint": "f229b9b3f6d6b0bf358c15b19cb563f11c3d8930d948681b69fd02bcbbef2899",
+      "successor_world_state_semantic_fingerprint": "58b48884c3d70a2cd565e2791acdc121207b28fce4e66aff8ec68c9ccc3df4c6",
+      "discrepancy_semantic_fingerprint": "4a186e7aa1f2356514fff2c919637d499721fd641fa9ea79800faf5aca26dbcd",
+      "correction_semantic_fingerprint": "acb1eda22bed606baf2021dd1ddfcfa94e16e0ac497a2c49cfeb2c37da7d7ba6",
+      "impact_graph_semantic_fingerprint": "4e4ead4d30532ed61309188df2f2a9d283a0f5b9a804e2ffc1d94778d9358e44",
+      "incremental_result_semantic_fingerprint": "0e20bf36957b46ea1739b280faec424b4c23314f411346322bdc8439af82002f"
+    },
+    "safety_boundary": {
+      "scope_discovered_by_core": false,
+      "successor_materialized_by_core": false,
+      "reevaluation_executed_by_generic_core": false,
+      "unaffected_tasks_proven_permanently_safe": false,
+      "external_truth_verified": false,
+      "artifact_output_gates_recorded_released": true,
+      "production_outputs_released": false,
+      "action_authorized": false,
+      "action_executed": false
+    }
+  }
+}

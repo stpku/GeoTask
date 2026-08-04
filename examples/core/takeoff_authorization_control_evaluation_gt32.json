@@ -1,0 +1,170 @@
+{
+  "control_evaluation": {
+    "schema_version": "1.0",
+    "task_id": "gt28-uav-takeoff-authorization-gate",
+    "profile": {
+      "id": "geotask.control",
+      "version": "1.0"
+    },
+    "state": "satisfied",
+    "gate_satisfied": true,
+    "control_context": {
+      "values": {
+        "route_intersects_restricted_zone": false,
+        "altitude_within_operating_corridor": true,
+        "weather_window_valid": true,
+        "wind_speed_mps": 8,
+        "max_wind_mps": 12,
+        "airspace_authorized": true,
+        "operator_authorized": true,
+        "departure_site_authorized": true,
+        "weather_release_authorized": true,
+        "mission_authorized": true
+      },
+      "entries": {
+        "airspace_authorized": {
+          "name": "airspace_authorized",
+          "value": true,
+          "source": "domain_state",
+          "assertion_status": "",
+          "assurance_level": "",
+          "deterministic": false,
+          "evidence_refs": []
+        },
+        "altitude_within_operating_corridor": {
+          "name": "altitude_within_operating_corridor",
+          "value": true,
+          "source": "assertion_result",
+          "assertion_status": "verified",
+          "assurance_level": "local_deterministic",
+          "deterministic": true,
+          "evidence_refs": []
+        },
+        "departure_site_authorized": {
+          "name": "departure_site_authorized",
+          "value": true,
+          "source": "domain_state",
+          "assertion_status": "",
+          "assurance_level": "",
+          "deterministic": false,
+          "evidence_refs": []
+        },
+        "max_wind_mps": {
+          "name": "max_wind_mps",
+          "value": 12,
+          "source": "domain_state",
+          "assertion_status": "",
+          "assurance_level": "",
+          "deterministic": false,
+          "evidence_refs": []
+        },
+        "mission_authorized": {
+          "name": "mission_authorized",
+          "value": true,
+          "source": "domain_state",
+          "assertion_status": "",
+          "assurance_level": "",
+          "deterministic": false,
+          "evidence_refs": []
+        },
+        "operator_authorized": {
+          "name": "operator_authorized",
+          "value": true,
+          "source": "domain_state",
+          "assertion_status": "",
+          "assurance_level": "",
+          "deterministic": false,
+          "evidence_refs": []
+        },
+        "route_intersects_restricted_zone": {
+          "name": "route_intersects_restricted_zone",
+          "value": false,
+          "source": "assertion_result",
+          "assertion_status": "verified",
+          "assurance_level": "local_deterministic",
+          "deterministic": true,
+          "evidence_refs": []
+        },
+        "weather_release_authorized": {
+          "name": "weather_release_authorized",
+          "value": true,
+          "source": "domain_state",
+          "assertion_status": "",
+          "assurance_level": "",
+          "deterministic": false,
+          "evidence_refs": []
+        },
+        "weather_window_valid": {
+          "name": "weather_window_valid",
+          "value": true,
+          "source": "assertion_result",
+          "assertion_status": "verified",
+          "assurance_level": "local_deterministic",
+          "deterministic": true,
+          "evidence_refs": []
+        },
+        "wind_speed_mps": {
+          "name": "wind_speed_mps",
+          "value": 8,
+          "source": "domain_state",
+          "assertion_status": "",
+          "assurance_level": "",
+          "deterministic": false,
+          "evidence_refs": []
+        }
+      }
+    },
+    "evaluations": [
+      {
+        "block": "task_gate",
+        "expression_field": "resume_when",
+        "expression": "route_intersects_restricted_zone == false AND altitude_within_operating_corridor == true AND weather_window_valid == true AND wind_speed_mps <= max_wind_mps AND airspace_authorized == true AND operator_authorized == true AND departure_site_authorized == true AND weather_release_authorized == true AND mission_authorized == true",
+        "value": true,
+        "state": "satisfied",
+        "satisfied": true,
+        "referenced_identifiers": [
+          "airspace_authorized",
+          "altitude_within_operating_corridor",
+          "departure_site_authorized",
+          "max_wind_mps",
+          "mission_authorized",
+          "operator_authorized",
+          "route_intersects_restricted_zone",
+          "weather_release_authorized",
+          "weather_window_valid",
+          "wind_speed_mps"
+        ],
+        "unknown_identifiers": [],
+        "blocked_outputs": [],
+        "eligible_outputs": [
+          "automatic_takeoff_authorization",
+          "takeoff_command"
+        ],
+        "selected_action": "hold_at_departure_site_and_request_authorization_bundle",
+        "next_action": "request_authorization_bundle_and_reverify",
+        "required_controls": [
+          "verify_airspace_authorization",
+          "verify_operator_authorization",
+          "verify_departure_site_authorization",
+          "verify_weather_release_authorization",
+          "verify_mission_authorization"
+        ],
+        "rejected_actions": [
+          "take_off_because_route_and_weather_are_safe",
+          "infer_missing_authorizations_from_safe_conditions"
+        ],
+        "declared_status": "blocked_pending_authorization_bundle",
+        "evaluation_error": "",
+        "action_executed": false
+      }
+    ],
+    "unknown_identifiers": [],
+    "blocked_outputs": [],
+    "eligible_outputs": [
+      "automatic_takeoff_authorization",
+      "takeoff_command"
+    ],
+    "diagnostics": [],
+    "action_executed": false
+  }
+}

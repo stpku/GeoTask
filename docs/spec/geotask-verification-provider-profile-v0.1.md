@@ -132,6 +132,12 @@ GT31 adds a fictional human-review Provider after the GT30 conflict. The Request
 
 The human Response is still unable to self-assign Assurance or action authority. A separate Assurance evaluation makes `weather_condition_verified` eligible for the scoped claim. The existing takeoff Control Evaluation remains independent and keeps automatic takeoff authorization and the takeoff command blocked by five missing authorizations. Weather eligibility therefore does not imply production release, authorization, command emission, or action execution.
 
+## GT32 reference case
+
+GT32 keeps the GT31 weather result and reuses the existing GT28 control expression. Five fictional caller-supplied authorization records arrive one at a time: airspace, operator, departure site, weather release, and mission authorization. The reference builder reevaluates the same finite control profile after each cumulative arrival, reducing unknown identifiers from five to zero without inferring a missing authorization from any other record.
+
+Until the fifth record arrives, automatic takeoff authorization and the takeoff command remain blocked. After all five explicit values are true, the Control Evaluation state becomes `satisfied` and both outputs become `eligible`. Eligibility still does not mean production publication, command delivery, real-world authorization, or flight execution; all of those fields remain false and belong to an external Runtime.
+
 ## Security and commercial boundary
 
 This public profile contains only contracts, strict validation, offline reference logic, and fictional examples. Production connectors, credentials, Provider governance, source-quality scoring, conflict arbitration policies, industry rules, customer workflows, output publication, and action execution belong outside GeoTask Core.

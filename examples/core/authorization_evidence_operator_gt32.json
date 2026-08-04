@@ -1,0 +1,23 @@
+{
+  "authorization_evidence": {
+    "evidence_version": "0.1",
+    "evidence_id": "fictional-operator-authorization-gt32",
+    "authorization_field": "operator_authorized",
+    "authorization_value": true,
+    "subject": "fictional-uav-alpha-mission-gt32",
+    "scope": "fictional-east-departure-operation",
+    "issued_at": "2026-08-04T14:09:20+08:00",
+    "valid_from": "2026-08-04T14:08:00+08:00",
+    "valid_until": "2026-08-04T14:35:00+08:00",
+    "source_type": "fictional_authorization_record",
+    "source_label": "Fictional Operator Authorization Record",
+    "caller_asserted": true,
+    "fictional_record": true,
+    "external_truth_verified_by_core": false,
+    "real_authority_contacted": false,
+    "production_output_released": false,
+    "command_sent": false,
+    "action_authorized_by_core": false,
+    "action_executed": false
+  }
+}

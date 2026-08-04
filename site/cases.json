@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 31,
+  "case_count": 32,
   "cases": [
     {
       "id": "GT01",
@@ -217,6 +217,13 @@
       "slug": "gt31",
       "title_zh": "人工复核解决气象冲突后，天气合格就能自动起飞吗？",
       "previous": "gt30",
+      "next": "gt32"
+    },
+    {
+      "id": "GT32",
+      "slug": "gt32",
+      "title_zh": "五项授权陆续到达后，什么时候才算可起飞？",
+      "previous": "gt31",
       "next": null
     }
   ]

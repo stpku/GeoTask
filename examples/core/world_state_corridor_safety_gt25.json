@@ -1,0 +1,166 @@
+{
+  "world_state": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+    "schema_version": "0.1",
+    "world_state_id": "fictional-uav-corridor-safety-gt25",
+    "revision": 2,
+    "as_of": "2026-08-04T10:05:00+08:00",
+    "materialized_at": "2026-08-04T10:05:04+08:00",
+    "observation_refs": [
+      "obs-uav-alpha-corridor-position-gt25"
+    ],
+    "evidence_refs": [
+      "telemetry:fictional/uav-alpha/corridor-position-gt25",
+      "task:fictional/gt25/corridor-safety-distance-recompute",
+      "telemetry:fictional/uav-alpha/battery-gt25"
+    ],
+    "objects": [
+      {
+        "id": "uav-alpha",
+        "type": "uav",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T10:05:00+08:00",
+        "valid_until": "2026-08-04T10:05:30+08:00",
+        "observation_refs": [
+          "obs-uav-alpha-corridor-position-gt25"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/corridor-position-gt25",
+          "telemetry:fictional/uav-alpha/battery-gt25"
+        ],
+        "attributes": [
+          {
+            "name": "corridor_position_m",
+            "value": 130,
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "valid_from": "2026-08-04T10:05:00+08:00",
+            "valid_until": "2026-08-04T10:05:30+08:00",
+            "uncertainty": {
+              "kind": "standard_deviation",
+              "value": 1,
+              "unit": "meter"
+            },
+            "observation_refs": [
+              "obs-uav-alpha-corridor-position-gt25"
+            ],
+            "evidence_refs": [
+              "telemetry:fictional/uav-alpha/corridor-position-gt25"
+            ]
+          },
+          {
+            "name": "battery_percent",
+            "value": 48,
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "valid_from": "2026-08-04T10:04:50+08:00",
+            "valid_until": "2026-08-04T10:10:00+08:00",
+            "observation_refs": [],
+            "evidence_refs": [
+              "telemetry:fictional/uav-alpha/battery-gt25"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "crane",
+        "type": "fixed_obstacle",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T09:00:00+08:00",
+        "valid_until": "2026-08-04T18:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "task:fictional/gt25/corridor-safety-distance-recompute"
+        ],
+        "attributes": [
+          {
+            "name": "corridor_position_m",
+            "value": 150,
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "task:fictional/gt25/corridor-safety-distance-recompute"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "communication-tower",
+        "type": "fixed_obstacle",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T09:00:00+08:00",
+        "valid_until": "2026-08-04T18:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "task:fictional/gt25/corridor-safety-distance-recompute"
+        ],
+        "attributes": [
+          {
+            "name": "corridor_position_m",
+            "value": 260,
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "task:fictional/gt25/corridor-safety-distance-recompute"
+            ]
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "id": "uav-alpha-crane-distance",
+        "subject_ref": "uav-alpha",
+        "predicate": "distance_along_corridor_m",
+        "object_ref": "crane",
+        "value": 50,
+        "basis": "derived",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T10:00:00+08:00",
+        "valid_until": "2026-08-04T10:05:30+08:00",
+        "observation_refs": [
+          "obs-uav-alpha-corridor-position-gt25"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/corridor-position-gt25",
+          "task:fictional/gt25/corridor-safety-distance-recompute"
+        ]
+      },
+      {
+        "id": "uav-alpha-tower-distance",
+        "subject_ref": "uav-alpha",
+        "predicate": "distance_along_corridor_m",
+        "object_ref": "communication-tower",
+        "value": 160,
+        "basis": "derived",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T10:00:00+08:00",
+        "valid_until": "2026-08-04T10:05:30+08:00",
+        "observation_refs": [
+          "obs-uav-alpha-corridor-position-gt25"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/corridor-position-gt25",
+          "task:fictional/gt25/corridor-safety-distance-recompute"
+        ]
+      },
+      {
+        "id": "crane-tower-distance",
+        "subject_ref": "crane",
+        "predicate": "distance_along_corridor_m",
+        "object_ref": "communication-tower",
+        "value": 110,
+        "basis": "derived",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T09:00:00+08:00",
+        "valid_until": "2026-08-04T18:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "task:fictional/gt25/corridor-safety-distance-recompute"
+        ]
+      }
+    ]
+  }
+}

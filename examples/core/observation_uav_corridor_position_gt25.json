@@ -1,0 +1,37 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-uav-alpha-corridor-position-gt25",
+    "observed_at": "2026-08-04T10:05:00+08:00",
+    "received_at": "2026-08-04T10:05:03+08:00",
+    "source": {
+      "kind": "sensor",
+      "reference": "telemetry:fictional/uav-alpha/corridor-position-gt25",
+      "sha256": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+    },
+    "producer": {
+      "id": "fictional-uav-alpha-position-sensor",
+      "kind": "sensor",
+      "version": "1.0.0"
+    },
+    "claims": [
+      {
+        "id": "uav-alpha-corridor-position-m",
+        "subject_ref": "uav-alpha",
+        "predicate": "corridor_position_m",
+        "basis": "direct_observation",
+        "value": 130,
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 1,
+          "unit": "meter"
+        },
+        "valid_until": "2026-08-04T10:05:30+08:00",
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/corridor-position-gt25"
+        ]
+      }
+    ]
+  }
+}

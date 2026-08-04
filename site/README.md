@@ -1,6 +1,6 @@
 # GeoTask项目门户与案例体验站
 
-`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT24互动案例、`robots.txt`和`sitemap.xml`。
+`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT25互动案例、`robots.txt`和`sitemap.xml`。
 
 站点没有后台、统计脚本、Cookie、账号系统、模型密钥或外部JavaScript依赖。案例页只在浏览器中复制任务、执行局部确定性复算，并跳转到用户选择的大模型平台。
 
@@ -23,8 +23,9 @@ site/gt21/index.html     GT21同目标Observation冲突策略体验
 site/gt22/index.html     GT22首个World State快照体验
 site/gt23/index.html     GT23无人机连续飞行状态变化体验
 site/gt24/index.html     GT24临时禁飞区影响范围体验
+site/gt25/index.html     GT25局部安全距离重算体验
 site/robots.txt          搜索引擎规则
-site/sitemap.xml         门户与GT01—GT24索引
+site/sitemap.xml         门户与GT01—GT25索引
 ```
 
 根地址始终代表GeoTask项目本身，不再代表某一个案例。每个案例使用独立稳定地址，并提供返回项目首页的入口。
@@ -55,6 +56,7 @@ site/sitemap.xml         门户与GT01—GT24索引
 - `GT22`：无人机位置和电量来自两个系统；页面先说明对象、时间和字段可能被错误拼接，再展示如何形成同一时刻、可追溯的统一运行快照
 - `GT23`：无人机飞行五分钟后位置与电量发生变化；页面先说明覆盖最新值为何无法证明状态变化，再展示前后快照、300秒时间差和3项显式变化的绑定
 - `GT24`：临时禁飞区在14:00—16:00生效；医疗航线穿越、巡检航线绕开，页面展示如何只将医疗航线、任务、审批和起飞动作纳入有限复核链
+- `GT25`：无人机从走廊100米移动到130米；页面展示如何只重算20米和130米两项相关距离，并保留110米固定设施间距与48%电池余量
 
 ## 公共访问地址
 
@@ -85,6 +87,7 @@ GitHub Pages是公共Canonical入口：
 - <https://stpku.github.io/GeoTask/gt22/>
 - <https://stpku.github.io/GeoTask/gt23/>
 - <https://stpku.github.io/GeoTask/gt24/>
+- <https://stpku.github.io/GeoTask/gt25/>
 
 当前开发镜像：
 
@@ -113,6 +116,7 @@ GitHub Pages是公共Canonical入口：
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt22/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt23/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt24/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt25/>
 
 公共仓库：<https://github.com/stpku/GeoTask>
 

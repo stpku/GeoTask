@@ -1,0 +1,195 @@
+{
+  "correction_request": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-correction-request-v0.1.schema.json",
+    "schema_version": "0.1",
+    "request_id": "gt27-weather-bounded-reevaluation-request",
+    "created_at": "2026-08-04T14:00:06+08:00",
+    "state": "required",
+    "reason": "Materialize revision 8 with the updated east-zone wind value and recompute only mission A and mission D weather suitability.",
+    "base_world_state": {
+      "ref_id": "base-world-state-gt27",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-weather-mission-state-gt27",
+      "revision": 7,
+      "as_of": "2026-08-04T14:00:00+08:00",
+      "semantic_fingerprint": "f229b9b3f6d6b0bf358c15b19cb563f11c3d8930d948681b69fd02bcbbef2899",
+      "content_sha256": "33bd862d7cceb54ca7bea8deb7e2fd2c24422eb14f26818f4203859843381a04"
+    },
+    "discrepancy_report_refs": [
+      {
+        "ref_id": "discrepancy-weather-gt27",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "gt27-weather-wind-speed-discrepancy",
+        "content_sha256": "88696d490dc28f005903a2ea0ffa103f4cd4186e62edb265d1d92316f54e8e0f"
+      }
+    ],
+    "supporting_artifact_refs": [],
+    "observation_refs": [
+      "obs-weather-east-wind-speed-gt27"
+    ],
+    "evidence_refs": [
+      "weather:fictional/east/wind-speed-gt27"
+    ],
+    "discrepancy_refs": [
+      {
+        "id": "wind-speed-mismatch",
+        "report_ref": "discrepancy-weather-gt27",
+        "discrepancy_id": "east-wind-speed-value-mismatch"
+      }
+    ],
+    "changes": [
+      {
+        "id": "recompute-east-wind-speed",
+        "discrepancy_ref": "wind-speed-mismatch",
+        "subject_kind": "attribute",
+        "target_path": "/objects/weather-cell-east/attributes/wind_speed_mps/value",
+        "operation": "recompute",
+        "reason": "Carry the already observed 12 m/s wind value into the successor snapshot before reevaluating dependent missions.",
+        "basis_refs": [
+          "discrepancy-weather-gt27"
+        ],
+        "observation_refs": [
+          "obs-weather-east-wind-speed-gt27"
+        ],
+        "evidence_refs": [
+          "weather:fictional/east/wind-speed-gt27"
+        ],
+        "input_fields": [
+          "observation_id",
+          "observed_at",
+          "source_reference",
+          "wind_speed_mps"
+        ],
+        "acceptance_criterion_refs": [
+          "successor-world-state-valid",
+          "wind-path-recomputed"
+        ],
+        "before": 12
+      },
+      {
+        "id": "recompute-mission-a-wind-suitability",
+        "discrepancy_ref": "wind-speed-mismatch",
+        "subject_kind": "relation",
+        "target_path": "/relations/mission-a-weather-suitable/value",
+        "operation": "recompute",
+        "reason": "Mission A is in the east zone after 14:00 and its 10 m/s threshold depends on the updated wind value.",
+        "basis_refs": [
+          "discrepancy-weather-gt27"
+        ],
+        "observation_refs": [
+          "obs-weather-east-wind-speed-gt27"
+        ],
+        "evidence_refs": [
+          "weather:fictional/east/wind-speed-gt27"
+        ],
+        "input_fields": [
+          "max_wind_mps",
+          "planned_time",
+          "region_code",
+          "wind_speed_mps"
+        ],
+        "acceptance_criterion_refs": [
+          "affected-weather-outputs-rechecked",
+          "mission-a-path-recomputed",
+          "successor-world-state-valid",
+          "wind-discrepancy-resolved"
+        ],
+        "before": true
+      },
+      {
+        "id": "recompute-mission-d-wind-suitability",
+        "discrepancy_ref": "wind-speed-mismatch",
+        "subject_kind": "relation",
+        "target_path": "/relations/mission-d-weather-suitable/value",
+        "operation": "recompute",
+        "reason": "Mission D is also in the east zone after 14:00, so it must be rerun even though 12 m/s remains within its 15 m/s threshold.",
+        "basis_refs": [
+          "discrepancy-weather-gt27"
+        ],
+        "observation_refs": [
+          "obs-weather-east-wind-speed-gt27"
+        ],
+        "evidence_refs": [
+          "weather:fictional/east/wind-speed-gt27"
+        ],
+        "input_fields": [
+          "max_wind_mps",
+          "planned_time",
+          "region_code",
+          "wind_speed_mps"
+        ],
+        "acceptance_criterion_refs": [
+          "affected-weather-outputs-rechecked",
+          "mission-d-path-recomputed",
+          "successor-world-state-valid",
+          "wind-discrepancy-resolved"
+        ],
+        "before": true
+      }
+    ],
+    "review_requirements": [],
+    "acceptance_criteria": [
+      {
+        "id": "affected-weather-outputs-rechecked",
+        "kind": "recheck_completed",
+        "reason": "Both affected mission weather assessments must be rerun before their outputs are released.",
+        "output_refs": [
+          "mission_a_weather_assessment",
+          "mission_d_weather_assessment"
+        ]
+      },
+      {
+        "id": "mission-a-path-recomputed",
+        "kind": "path_recomputed",
+        "reason": "Mission A wind suitability must be recomputed from the updated wind and its own threshold.",
+        "output_refs": [],
+        "target_path": "/relations/mission-a-weather-suitable/value"
+      },
+      {
+        "id": "mission-d-path-recomputed",
+        "kind": "path_recomputed",
+        "reason": "Mission D wind suitability must be recomputed even when the boolean result remains true.",
+        "output_refs": [],
+        "target_path": "/relations/mission-d-weather-suitable/value"
+      },
+      {
+        "id": "successor-world-state-valid",
+        "kind": "artifact_valid",
+        "reason": "The revision-8 successor snapshot must pass the registered World State validator.",
+        "output_refs": [],
+        "artifact_id": "geotask.world-state"
+      },
+      {
+        "id": "wind-discrepancy-resolved",
+        "kind": "discrepancy_resolved",
+        "reason": "The successor state must no longer retain 6 m/s as the current east-zone wind value.",
+        "output_refs": [],
+        "discrepancy_ref": "wind-speed-mismatch"
+      },
+      {
+        "id": "wind-path-recomputed",
+        "kind": "path_recomputed",
+        "reason": "The successor state must carry the observed wind value through an explicit recompute change.",
+        "output_refs": [],
+        "target_path": "/objects/weather-cell-east/attributes/wind_speed_mps/value"
+      }
+    ],
+    "output_contract": {
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-weather-mission-state-gt27",
+      "minimum_revision": 8,
+      "preserve_immutable_paths": true,
+      "require_semantic_fingerprint": true
+    },
+    "blocked_outputs": [
+      "mission_a_weather_assessment",
+      "mission_d_weather_assessment"
+    ],
+    "blocked_actions": [],
+    "resume_when": "successor_world_state_valid == true and affected_weather_outputs_rechecked == true",
+    "next_action": "materialize_successor_state"
+  }
+}

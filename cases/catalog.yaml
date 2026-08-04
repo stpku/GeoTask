@@ -231,3 +231,11 @@ cases:
     page: site/gt26/index.html
     example: examples/core/gt26_flight_service_station_schedule_correction.json
     lastmod: "2026-08-04"
+  - id: GT27
+    slug: gt27
+    stage: world_state_cycle
+    title_zh: 一条气象数据更新后，如何只复核受影响的飞行任务？
+    summary_zh: 东区风速由6升至12米/秒后，只复核同区域且处于更新生效时段的配送和应急任务；一个结果变为不适飞，另一个复核后仍适飞，西区和更新前任务继续复用。
+    page: site/gt27/index.html
+    example: examples/core/gt27_weather_incremental_reevaluation.json
+    lastmod: "2026-08-04"

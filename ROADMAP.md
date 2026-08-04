@@ -68,7 +68,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布GT24临时禁飞区影响范围案例：一条医疗航线穿越有效禁飞区，另一条巡检航线绕开；案例以显式声明的有限依赖链将医疗航线、任务、审批输出和起飞动作纳入复核，同时排除巡检链，并验证7节点、7条边、4个复核目标、精确文件绑定和无环结构，明确不执行几何求交、自动影响发现、传播、复核、输出释放或动作授权；
 - ✅ 已发布GT25局部安全距离重算案例：无人机从走廊100米移动到130米后，只对两条无人机相关距离执行白名单`subtract`推导，将50/160米重算为20/130米，同时把110米固定设施间距和48%电池余量列为不可变复用路径；案例验证范围完整、范围互斥、精确字节绑定和未注册方法拒绝，并明确不自动发现依赖、不执行任意代码、状态物化、复核、输出释放或行动授权；
 - ✅ 已发布GT26飞行服务站营业时间限定纠偏案例：新公告将营业计划从08:00—22:00调整为09:00—18:00，案例只允许替换1条营业计划路径，保留位置编码、通信频率、服务类型和联系方式4项不可变属性，并阻断20:30任务输出与派发动作直至后继状态有效且完成复核；案例明确不获取或比较真实公告、不应用修订、不物化状态、不发布输出或授权动作；
-- 继续建设GT27—GT28：气象更新后的增量复核，以及条件满足但仍未获得自动起飞授权。
+- ✅ 已发布GT27气象更新增量复核案例：东区风速由6升至12米/秒后，revision 7先吸收新气象值，再仅将同区域且处于更新生效时段的任务A、D纳入复核；任务A由适飞变为不适飞，任务D复核后仍适飞，任务B、C保持复用。案例绑定前后状态、差异、纠偏、影响图、执行结果和输出门禁，明确不自动发现依赖、不证明生产输出已发布或飞行动作获授权；
+- 继续建设GT28：路线和天气条件满足后，系统为何仍不能自动起飞。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
 
@@ -153,7 +154,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published GT24 as a bounded temporary-no-fly-zone impact case: one medical route intersects the active zone while an inspection route avoids it. The case validates an explicit finite dependency chain covering the medical route, mission, approval outputs, and launch action while excluding the inspection chain, with seven nodes, seven edges, four reevaluation targets, exact-byte bindings, and acyclic structure; it does not compute geometry, discover impact automatically, execute propagation or reevaluation, release outputs, or authorize action;
 - ✅ Published GT25 as a bounded safety-distance recompute case: after a UAV moves from corridor chainage 100 to 130 metres, only two UAV-dependent distances are derived through the allowlisted `subtract` method, changing 50/160 metres to 20/130 metres, while 110-metre fixed-facility spacing and 48% battery remain immutable reusable paths. The case validates complete and disjoint scope, exact-byte bindings, and rejection of unregistered methods while explicitly not discovering dependencies automatically, executing arbitrary code, materializing state, rerunning checks, releasing outputs, or authorizing action;
 - ✅ Published GT26 as a bounded flight-service-station schedule correction case: a fictional notice narrows the schedule from 08:00–22:00 to 09:00–18:00; the case permits one schedule-path replacement, preserves four immutable station attributes, and blocks the 20:30 mission output and dispatch action until a valid successor state and completed recheck exist, while explicitly not fetching real notices, applying correction, materializing state, releasing output, or authorizing action;
-- continue GT27–GT28 through concrete scenarios covering weather-triggered incremental reevaluation and conditions that still do not authorize automatic takeoff.
+- ✅ Published GT27 as a weather-triggered incremental reevaluation case: after east-zone wind rises from 6 to 12 m/s, revision 7 first absorbs the new weather value and only Missions A and D in the matching region and active time window enter recheck. Mission A changes from suitable to unsuitable, Mission D remains suitable after explicit recheck, and Missions B and C are reused. The case binds both states, discrepancy, correction, impact graph, execution result, and output gates while not claiming automatic dependency discovery, production output release, or flight authorization;
+- continue GT28 with the concrete question of why route and weather conditions still do not authorize automatic takeoff.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem
 

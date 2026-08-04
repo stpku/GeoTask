@@ -1,0 +1,69 @@
+{
+  "geotask_result": {
+    "schema_version": "1.0",
+    "task_id": "gt27-weather-affected-mission-recheck",
+    "execution": {
+      "mode": "local_only",
+      "status": "completed",
+      "started_at": "2026-08-04T14:00:09+08:00",
+      "finished_at": "2026-08-04T14:00:10+08:00"
+    },
+    "checks": [
+      {
+        "assertion_id": "mission_a_wind_within_limit",
+        "operator": "gt27_case_wind_threshold",
+        "object_refs": [
+          "weather-cell-east",
+          "mission-a-delivery"
+        ],
+        "executor": "local",
+        "value": false,
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [
+          "weather:fictional/east/wind-speed-gt27"
+        ],
+        "error": null
+      },
+      {
+        "assertion_id": "mission_d_wind_within_limit",
+        "operator": "gt27_case_wind_threshold",
+        "object_refs": [
+          "weather-cell-east",
+          "mission-d-emergency"
+        ],
+        "executor": "local",
+        "value": true,
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [
+          "weather:fictional/east/wind-speed-gt27"
+        ],
+        "error": null
+      }
+    ],
+    "outputs": {
+      "mission_a_wind_within_limit": false,
+      "mission_d_wind_within_limit": true
+    },
+    "summary": {
+      "total_checks": 2,
+      "verified": 2,
+      "contradicted": 0,
+      "need_review": 0,
+      "invalid": 0
+    },
+    "overall": {
+      "status": "verified",
+      "assurance_level": "local_deterministic"
+    },
+    "warnings": [
+      "gt27_case_wind_threshold is a case-specific deterministic comparison, not a registered generic GeoTask weather operator."
+    ],
+    "errors": []
+  }
+}

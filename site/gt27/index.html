@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#315b68">
+  <meta name="description" content="GeoTask第27期：东区风速由6升至12米/秒后，只复核区域与时段相关的两个任务，保留另外两个任务结果。">
+  <title>GeoTask GT27｜气象更新后的增量复核</title>
+  <style>
+    :root{color-scheme:light;--ink:#18282e;--navy:#315b68;--blue:#287a91;--teal:#158170;--green:#187a52;--red:#b4463f;--amber:#a66a10;--muted:#65767d;--line:#d5e0e3;--soft:#f1f6f7;--good:#e6f6ef;--bad:#fff0ee;--warm:#fff5df;--shadow:0 15px 42px rgba(49,91,104,.13)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at 90% 0,rgba(40,122,145,.16),transparent 34%),linear-gradient(180deg,#edf4f5,#fff 65%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}.shell{width:min(100%,880px);margin:auto;padding:22px 16px 50px}.brand{display:flex;justify-content:space-between;align-items:center;margin:0 2px 16px}.brand strong{color:var(--navy)}.back{color:var(--blue);font-weight:800;text-decoration:none}.hero{padding:32px 24px;border-radius:24px;color:#fff;background:linear-gradient(145deg,#315b68,#147d75);box-shadow:var(--shadow)}.hero p{color:#eaf5f4}.eyebrow{margin:0 0 8px!important;color:#bde9df!important;font-weight:850}h1{margin:0;font-size:clamp(28px,7vw,43px);line-height:1.2}.formula{margin-top:19px;padding:14px;border-radius:15px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);text-align:center;font-weight:850}.card{margin-top:16px;padding:24px 20px;border-radius:20px;background:rgba(255,255,255,.97);border:1px solid var(--line);box-shadow:0 9px 28px rgba(49,91,104,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px}h3{margin:0 0 7px;color:var(--navy)}p{margin:8px 0}.weather{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:14px}.wind{padding:18px;border-radius:16px;text-align:center;border:1px solid var(--line);background:var(--soft)}.wind.old{background:var(--warm)}.wind.new{background:#e9f2f7}.wind b{display:block;font:900 30px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--navy)}.arrow{font-size:28px;color:var(--teal);font-weight:900}.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.mission{padding:16px;border-radius:16px;border:1px solid var(--line);background:var(--soft)}.mission.affected{border-color:#e6b6b1;background:var(--bad)}.mission.reused{border-color:#afd8c8;background:var(--good)}.tag{display:inline-block;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:850;background:#dfe9ec;color:var(--navy)}.affected .tag{background:#f0cfcb;color:#9b3933}.reused .tag{background:#caeadf;color:#0f705e}.result{margin-top:9px;font-weight:850}.false{color:var(--red)}.true{color:var(--green)}.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.box{padding:16px;border-radius:16px;background:var(--bad);border:1px solid #e6b6b1}.notice{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#714c0a;font-size:14px}.metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px}.metric{padding:12px;border-radius:13px;background:var(--soft);text-align:center}.metric b{display:block;color:var(--navy);font-size:21px}.path{padding:12px;border-radius:12px;background:#112029;color:#dcecf1;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}.primary,.secondary,.choice{border:0;cursor:pointer;font:inherit;font-weight:800}.primary,.secondary{width:100%;min-height:53px;border-radius:15px}.primary{background:var(--teal);color:white}.secondary{margin-top:10px;background:#e6eef1;color:var(--navy)}.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice{min-height:62px;border-radius:15px;background:var(--soft);color:var(--navy)}.choice.wide{grid-column:1/-1}.choice.active{outline:3px solid rgba(40,122,145,.18);background:#dfeef2}.status{min-height:28px;margin-top:9px;color:var(--teal);text-align:center;font-weight:750;font-size:14px}.verification{margin-top:14px;padding:16px;border-radius:16px;border:1px solid var(--line);background:var(--soft)}.verification.verified{background:var(--good);border-color:#afd8c8}.verification.contradicted{background:var(--bad);border-color:#e6b6b1}.head{display:flex;justify-content:space-between;gap:12px}.badge{padding:4px 9px;border-radius:999px;background:#dfe8eb;font-size:12px;font-weight:850}.verified .badge{background:#c9eadf;color:#0d705e}.contradicted .badge{background:#f0cfcb;color:#9d3933}details{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}summary{cursor:pointer;color:var(--blue);font-weight:800}pre{max-height:640px;overflow:auto;padding:14px;border-radius:14px;background:#111d24;color:#dcebf0;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre}.links{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.links a{display:flex;justify-content:center;align-items:center;min-height:46px;border:1px solid var(--line);border-radius:13px;color:var(--navy);font-weight:800;text-decoration:none}footer{text-align:center;padding-top:26px;color:var(--muted);font-size:12px}@media(max-width:650px){.weather,.mission-grid,.compare,.metric-row,.choices,.links{grid-template-columns:1fr}.choice.wide{grid-column:auto}.arrow{text-align:center;transform:rotate(90deg)}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+  <a href="../" aria-label="返回GeoTask项目首页" style="position:fixed;right:12px;bottom:12px;z-index:50;padding:9px 13px;border-radius:13px;background:rgba(255,255,255,.95);color:#315b68;text-decoration:none;font:700 13px/1.2 sans-serif;box-shadow:0 6px 20px rgba(49,91,104,.16)">项目首页</a>
+  <main class="shell">
+    <div class="brand"><strong>GeoTask 世界状态循环 · GT27</strong><a class="back" href="../gt26/">← GT26</a></div>
+    <section class="hero"><p class="eyebrow">气象更新 · 增量复核</p><h1>一条气象数据更新后，如何只复核受影响的飞行任务？</h1><p>东区14:00风速由原先6米/秒更新为12米/秒。系统中有四项任务，但只有区域和时段都与这条更新相关的任务需要重新检查。</p><div class="formula">数据已更新 ≠ 所有任务都重算；结果仍为true ≠ 无需复核</div></section>
+
+    <section class="card"><h2>气象发生了什么变化？</h2><div class="weather"><div class="wind old"><span>原运行假设</span><b>6 m/s</b></div><div class="arrow">→</div><div class="wind new"><span>14:00新观测</span><b>12 m/s</b></div></div><p class="notice">revision 7已经吸收12米/秒的新观测，但四项任务仍保留旧的“适飞=true”结果。GT27要解决的是哪些依赖结论必须复核。</p></section>
+
+    <section class="card"><h2>四项任务，只有两项进入复核</h2><div class="mission-grid">
+      <div class="mission affected"><span class="tag">复核</span><h3>任务A · 东区配送</h3><p>14:30，风速上限10 m/s</p><p class="result false">12 ≤ 10 → false</p><p>同区域、更新生效后，结果由适飞变为不适飞。</p></div>
+      <div class="mission reused"><span class="tag">复用</span><h3>任务B · 西区巡检</h3><p>14:30，风速上限10 m/s</p><p class="result true">保持 true</p><p>时段相同，但区域不同，不进入本次东区影响范围。</p></div>
+      <div class="mission reused"><span class="tag">复用</span><h3>任务C · 东区测绘</h3><p>12:30，风速上限10 m/s</p><p class="result true">保持 true</p><p>区域相同，但任务时刻早于14:00更新生效时间。</p></div>
+      <div class="mission affected"><span class="tag">复核</span><h3>任务D · 东区应急</h3><p>14:45，风速上限15 m/s</p><p class="result true">12 ≤ 15 → true</p><p>结果仍为true，但必须留下确实用新风速复核过的记录。</p></div>
+    </div><div class="metric-row"><div class="metric"><b>2</b><span>复核任务</span></div><div class="metric"><b>2</b><span>复用任务</span></div><div class="metric"><b>1</b><span>结果改变</span></div><div class="metric"><b>1</b><span>复核后不变</span></div></div></section>
+
+    <section class="card"><h2>普通AI容易犯什么错误？</h2><div class="compare"><div class="box"><h3>把四项任务全部重算</h3><p>忽略区域和生效时刻，扩大计算、复核和业务影响范围。</p></div><div class="box"><h3>只复核结果会变化的任务</h3><p>任务D虽然最终仍为true，也必须证明它已用12米/秒重新检查，而不是沿用旧结论。</p></div></div><p class="notice">GT27先使用调用方声明的区域—时段依赖范围，再对任务A、D执行确定性阈值比较；Core不主动发现这份依赖关系。</p></section>
+
+    <section class="card"><h2>限定复核链</h2><div class="path">12 m/s Observation → revision 7已吸收新值 → Impact Graph只标记A/D → revision 8更新A/D结果 → 两项输出门禁在Artifact内记录released</div><p>任务A输出为false，任务D输出为true；任务B、C不进入图，也不发生状态修改。</p><p class="notice">Artifact内的<code>released</code>只表示这份固定增量结果满足了自身门禁，不代表生产系统已经发布结果，更不代表任何飞行动作获得授权。</p></section>
+
+    <section class="card"><h2>第一步：让模型选择处理范围</h2><button class="primary" id="copy-open" type="button">复制 GT27 并打开 DeepSeek</button><button class="secondary" id="copy-only" type="button">只复制 GT27 场景</button><div class="status" id="copy-status"></div><details><summary>查看完整场景摘要</summary><pre id="task-source">scenario:
+  id: "gt27-weather-incremental-reevaluation"
+  weather_update:
+    region: east
+    old_wind_mps: 6
+    new_wind_mps: 12
+    effective_at: "2026-08-04T14:00:00+08:00"
+  missions:
+    - {id: mission-a-delivery, region: east, time: "14:30", limit: 10, reevaluate: true, result: false}
+    - {id: mission-b-inspection, region: west, time: "14:30", limit: 10, reevaluate: false, result: true}
+    - {id: mission-c-survey, region: east, time: "12:30", limit: 10, reevaluate: false, result: true}
+    - {id: mission-d-emergency, region: east, time: "14:45", limit: 15, reevaluate: true, result: true}
+  fingerprints:
+    base: "f229b9b3f6d6b0bf358c15b19cb563f11c3d8930d948681b69fd02bcbbef2899"
+    successor: "58b48884c3d70a2cd565e2791acdc121207b28fce4e66aff8ec68c9ccc3df4c6"
+    discrepancy: "4a186e7aa1f2356514fff2c919637d499721fd641fa9ea79800faf5aca26dbcd"
+    correction: "acb1eda22bed606baf2021dd1ddfcfa94e16e0ac497a2c49cfeb2c37da7d7ba6"
+    impact_graph: "4e4ead4d30532ed61309188df2f2a9d283a0f5b9a804e2ffc1d94778d9358e44"
+    incremental_result: "0e20bf36957b46ea1739b280faec424b4c23314f411346322bdc8439af82002f"
+  boundaries:
+    scope_discovered_by_core: false
+    reevaluation_executed_by_generic_core: false
+    unaffected_tasks_proven_permanently_safe: false
+    artifact_output_gates_recorded_released: true
+    production_outputs_released: false
+    action_authorized: false
+    action_executed: false
+instructions_for_model:
+  - "Choose one action: reevaluate_all_missions, reevaluate_only_changed_outcome, or reevaluate_declared_region_time_scope."
+  - "Reevaluate missions A and D; reuse B and C."
+  - "Do not claim that Core discovered the scope, released production output, or authorized flight."</pre></details></section>
+
+    <section class="card"><h2>第二步：验证候选处理方式</h2><div class="choices"><button class="choice" id="btn-all">四项任务全部重算</button><button class="choice" id="btn-changed">只复核最终会变成false的任务A</button><button class="choice wide" id="btn-bounded">按区域和生效时段复核A、D，复用B、C</button></div><button class="primary" id="verify" style="margin-top:10px">本地验证</button><div class="status" id="verify-status"></div><div class="verification" id="verification"><div class="head"><strong>验证结果</strong><span class="badge" id="badge">等待选择</span></div><p id="message">模型提出候选范围；浏览器用固定场景规则检查两项复核、两项复用和结果变化。</p></div><details><summary>技术实现：Incremental Reevaluation记录了什么？</summary><p>固定制品绑定revision 7和revision 8、差异报告、纠偏请求、影响图及两项本地确定性检查。它记录任务A由true变false、任务D由true保持true，并证明任务B、C未被本次修订修改。</p></details></section>
+
+    <section class="card"><h2>查看项目与继续体验</h2><div class="links"><a href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a href="../gt26/">← GT26</a><a href="../">全部案例</a></div></section>
+    <footer>GeoTask Core · MIT License · 虚构数据 · 无账号、无模型密钥、无后台模型调用</footer>
+  </main>
+  <script>
+    (()=>{const allowed="reevaluate_declared_region_time_scope";let selected=null;const $=id=>document.getElementById(id);function select(value,button){selected=value;document.querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));button.classList.add('active');$('verify-status').textContent=`已选择：${value}`} $('btn-all').onclick=()=>select('reevaluate_all_missions',$('btn-all'));$('btn-changed').onclick=()=>select('reevaluate_only_changed_outcome',$('btn-changed'));$('btn-bounded').onclick=()=>select(allowed,$('btn-bounded'));function localCheck(){const missions=[['A','east','14:30',10,true,false],['B','west','14:30',10,false,true],['C','east','12:30',10,false,true],['D','east','14:45',15,true,true]];return missions.filter(x=>x[4]).length===2&&missions.filter(x=>!x[4]).length===2&&12>10&&12<=15} $('verify').onclick=()=>{if(!selected){$('verify-status').textContent='请先选择一种处理方式。';return}const valid=selected===allowed&&localCheck();$('verification').className=`verification ${valid?'verified':'contradicted'}`;$('badge').textContent=valid?'verified':'contradicted';if(valid){$('message').textContent='任务A、D进入复核；A变为false，D复核后仍为true；任务B、C保持复用。';$('verify-status').textContent='验证通过：增量复核范围完整且没有扩大。'}else if(selected==='reevaluate_all_missions'){$('message').textContent='西区任务B和更新前任务C不属于本次东区14:00气象更新范围，全量重算扩大了影响。';$('verify-status').textContent='发现冲突：复核范围过大。'}else{$('message').textContent='任务D虽然最终仍为true，也依赖新风速且必须复核；只看结果变化会漏掉它。';$('verify-status').textContent='发现冲突：遗漏受影响任务。'}};async function copy(open){const text=$('task-source').textContent.trim()+'\n';let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch(_){ }if(!ok){const a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();ok=document.execCommand('copy');a.remove()}$('copy-status').textContent=ok?(open?'已复制，即将打开 DeepSeek。':'已复制，可粘贴到任意大模型。'):'复制失败，请手动复制。';if(ok&&open)setTimeout(()=>location.assign('https://chat.deepseek.com/'),600)}$('copy-open').onclick=()=>copy(true);$('copy-only').onclick=()=>copy(false)})();
+  </script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

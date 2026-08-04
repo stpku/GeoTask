@@ -215,3 +215,11 @@ cases:
     page: site/gt24/index.html
     example: examples/core/gt24_temporary_no_fly_zone_impact.json
     lastmod: "2026-08-04"
+  - id: GT25
+    slug: gt25
+    stage: world_state_cycle
+    title_zh: 无人机位置更新后，哪些安全距离需要重算，哪些结果可以继续沿用？
+    summary_zh: 无人机从走廊100米移动到130米后，只重算与无人机位置相关的两项安全距离，同时保留固定设施间距和电池余量。
+    page: site/gt25/index.html
+    example: examples/core/gt25_corridor_safety_recompute.json
+    lastmod: "2026-08-04"

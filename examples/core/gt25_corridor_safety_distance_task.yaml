@@ -1,0 +1,59 @@
+geotask:
+  id: "gt25-corridor-safety-distance-recompute"
+  name: "GT25 Corridor Safety Distance Recompute"
+  description: "Recompute only UAV-dependent safety distances after a corridor-position update."
+  schema_version: "1.0"
+  language: "en"
+  domain: "general_spatial"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "fictional_corridor_xy_m"
+  axes:
+    x: "corridor_chainage"
+    y: "cross_track"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+  precision:
+    decimal_places: 3
+    tolerance: 0.01
+
+objects:
+  corridor_origin:
+    type: "point"
+    coordinates: [0, 0]
+  crane:
+    type: "point"
+    coordinates: [150, 0]
+  communication_tower:
+    type: "point"
+    coordinates: [260, 0]
+
+operator_set:
+  - distance_2d
+
+tasks:
+  - id: "fixed-facility-spacing"
+    family: "measurement"
+    goal: "Confirm the fixed spacing between the crane and communication tower."
+    assertions:
+      - id: "crane_tower_distance"
+        operator: "distance_2d"
+        object_refs: ["crane", "communication_tower"]
+        expected_type: "number"
+        unit: "meter"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "measure-fixed-spacing"
+      executor: "local"
+      assertion_refs: ["crane_tower_distance"]
+      depends_on: []
+
+output_contract:
+  format: "structured"
+  required_fields:
+    - "crane_tower_distance"
+  allow_additional_fields: true

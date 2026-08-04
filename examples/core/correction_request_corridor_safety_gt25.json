@@ -1,0 +1,167 @@
+{
+  "correction_request": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-correction-request-v0.1.schema.json",
+    "schema_version": "0.1",
+    "request_id": "gt25-corridor-distance-recompute-request",
+    "created_at": "2026-08-04T10:05:08+08:00",
+    "state": "required",
+    "reason": "Derive only the two UAV-dependent corridor distances and keep unrelated results unchanged until a successor state and safety recheck are complete.",
+    "base_world_state": {
+      "ref_id": "base-world-state-gt25",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-corridor-safety-gt25",
+      "revision": 2,
+      "as_of": "2026-08-04T10:05:00+08:00",
+      "semantic_fingerprint": "1f472e30422fdc1d2c56e88876157affd06b3de7aefb6b900e657aa4910067c1",
+      "content_sha256": "63362deb2c285b19b0646513705d43e4085ff49111e2d73b19e67f04eb8c4403"
+    },
+    "discrepancy_report_refs": [
+      {
+        "ref_id": "discrepancy-gt25",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "gt25-corridor-distance-stale-report",
+        "content_sha256": "2e78478e6a9e4fec21211b2185ae63bc901a6d27d3c7d7592430e0715da6ff78"
+      }
+    ],
+    "supporting_artifact_refs": [
+      {
+        "ref_id": "task-gt25",
+        "artifact_id": "geotask.document",
+        "schema_version": "1.0",
+        "instance_id": "gt25-corridor-safety-distance-recompute",
+        "content_sha256": "03f28d469d776a7cd64679da19e371025d111b23019267cf19633981700c67b4"
+      }
+    ],
+    "observation_refs": [
+      "obs-uav-alpha-corridor-position-gt25"
+    ],
+    "evidence_refs": [
+      "task:fictional/gt25/corridor-safety-distance-recompute",
+      "telemetry:fictional/uav-alpha/corridor-position-gt25"
+    ],
+    "discrepancy_refs": [
+      {
+        "id": "stale-distance-finding",
+        "report_ref": "discrepancy-gt25",
+        "discrepancy_id": "uav-dependent-distances-stale"
+      }
+    ],
+    "changes": [
+      {
+        "id": "recompute-uav-crane-distance",
+        "discrepancy_ref": "stale-distance-finding",
+        "subject_kind": "relation",
+        "target_path": "/relations/uav-alpha-crane-distance/value",
+        "operation": "recompute",
+        "reason": "Subtract the current UAV corridor position from the fixed crane position.",
+        "basis_refs": [
+          "discrepancy-gt25",
+          "task-gt25"
+        ],
+        "observation_refs": [
+          "obs-uav-alpha-corridor-position-gt25"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/corridor-position-gt25"
+        ],
+        "input_fields": [
+          "calculation_method",
+          "obstacle_position",
+          "uav_position",
+          "verified_at"
+        ],
+        "acceptance_criterion_refs": [
+          "successor-world-state-valid",
+          "uav-crane-distance-recomputed"
+        ],
+        "before": 50
+      },
+      {
+        "id": "recompute-uav-tower-distance",
+        "discrepancy_ref": "stale-distance-finding",
+        "subject_kind": "relation",
+        "target_path": "/relations/uav-alpha-tower-distance/value",
+        "operation": "recompute",
+        "reason": "Subtract the current UAV corridor position from the fixed tower position.",
+        "basis_refs": [
+          "discrepancy-gt25",
+          "task-gt25"
+        ],
+        "observation_refs": [
+          "obs-uav-alpha-corridor-position-gt25"
+        ],
+        "evidence_refs": [
+          "telemetry:fictional/uav-alpha/corridor-position-gt25"
+        ],
+        "input_fields": [
+          "calculation_method",
+          "obstacle_position",
+          "uav_position",
+          "verified_at"
+        ],
+        "acceptance_criterion_refs": [
+          "successor-world-state-valid",
+          "uav-tower-distance-recomputed"
+        ],
+        "before": 160
+      }
+    ],
+    "review_requirements": [],
+    "acceptance_criteria": [
+      {
+        "id": "corridor-safety-rechecked",
+        "kind": "recheck_completed",
+        "reason": "The corridor-safety output must be reevaluated before release.",
+        "output_refs": [
+          "corridor_safety_summary"
+        ]
+      },
+      {
+        "id": "stale-distance-discrepancy-resolved",
+        "kind": "discrepancy_resolved",
+        "reason": "The successor state and affected results must no longer reuse the stale 50- and 160-metre distances as current truth.",
+        "output_refs": [],
+        "discrepancy_ref": "stale-distance-finding"
+      },
+      {
+        "id": "successor-world-state-valid",
+        "kind": "artifact_valid",
+        "reason": "The successor snapshot must pass the World State validator and preserve immutable paths.",
+        "output_refs": [],
+        "artifact_id": "geotask.world-state"
+      },
+      {
+        "id": "uav-crane-distance-recomputed",
+        "kind": "path_recomputed",
+        "reason": "The successor state must contain the derived 20-metre UAV-to-crane distance.",
+        "output_refs": [],
+        "target_path": "/relations/uav-alpha-crane-distance/value"
+      },
+      {
+        "id": "uav-tower-distance-recomputed",
+        "kind": "path_recomputed",
+        "reason": "The successor state must contain the derived 130-metre UAV-to-tower distance.",
+        "output_refs": [],
+        "target_path": "/relations/uav-alpha-tower-distance/value"
+      }
+    ],
+    "output_contract": {
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-corridor-safety-gt25",
+      "minimum_revision": 3,
+      "preserve_immutable_paths": true,
+      "require_semantic_fingerprint": true
+    },
+    "blocked_outputs": [
+      "corridor_safety_summary"
+    ],
+    "blocked_actions": [
+      "continue_corridor_inspection"
+    ],
+    "resume_when": "successor_world_state_valid == true and corridor_safety_rechecked == true",
+    "next_action": "materialize_successor_state"
+  }
+}

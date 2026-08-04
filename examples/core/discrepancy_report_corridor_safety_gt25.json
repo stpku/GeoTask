@@ -1,0 +1,94 @@
+{
+  "discrepancy_report": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-discrepancy-report-v0.1.schema.json",
+    "schema_version": "0.1",
+    "report_id": "gt25-corridor-distance-stale-report",
+    "recorded_at": "2026-08-04T10:05:06+08:00",
+    "state": "confirmed",
+    "severity": "high",
+    "reason": "The latest UAV position is 130 metres, so the two prior UAV-dependent safety distances are stale while fixed-facility spacing and battery remain reusable.",
+    "world_state": {
+      "world_state_id": "fictional-uav-corridor-safety-gt25",
+      "revision": 2,
+      "as_of": "2026-08-04T10:05:00+08:00",
+      "semantic_fingerprint": "1f472e30422fdc1d2c56e88876157affd06b3de7aefb6b900e657aa4910067c1"
+    },
+    "observation_refs": [
+      "obs-uav-alpha-corridor-position-gt25"
+    ],
+    "evidence_refs": [
+      "task:fictional/gt25/corridor-safety-distance-recompute",
+      "telemetry:fictional/uav-alpha/corridor-position-gt25"
+    ],
+    "artifact_refs": [
+      {
+        "ref_id": "observation-position-gt25",
+        "artifact_id": "geotask.observation",
+        "schema_version": "0.1",
+        "instance_id": "obs-uav-alpha-corridor-position-gt25",
+        "content_sha256": "9a9b1ad3c921825474a72854df9edd602b45583127e9e39d35195c319b6a31cf"
+      },
+      {
+        "ref_id": "task-gt25",
+        "artifact_id": "geotask.document",
+        "schema_version": "1.0",
+        "instance_id": "gt25-corridor-safety-distance-recompute",
+        "content_sha256": "03f28d469d776a7cd64679da19e371025d111b23019267cf19633981700c67b4"
+      }
+    ],
+    "discrepancies": [
+      {
+        "id": "uav-dependent-distances-stale",
+        "kind": "stale_claim",
+        "state": "confirmed",
+        "severity": "high",
+        "subject_kind": "relation",
+        "subject_path": "/relations/uav-alpha-crane-distance/value",
+        "summary": "The UAV-to-crane and UAV-to-tower distances still reflect the earlier 100-metre position.",
+        "reason": "The current position claim is 130 metres but the stored derived distances remain 50 and 160 metres.",
+        "basis_refs": [
+          "observation-position-gt25",
+          "task-gt25"
+        ],
+        "observation_refs": [
+          "obs-uav-alpha-corridor-position-gt25"
+        ],
+        "evidence_refs": [
+          "task:fictional/gt25/corridor-safety-distance-recompute",
+          "telemetry:fictional/uav-alpha/corridor-position-gt25"
+        ],
+        "impact": {
+          "state": "confirmed",
+          "reason": "Only the two UAV-dependent safety distances and their downstream corridor-safety conclusion require recompute and recheck.",
+          "affected_paths": [
+            "/relations/uav-alpha-crane-distance/value",
+            "/relations/uav-alpha-tower-distance/value"
+          ],
+          "affected_assertion_refs": [
+            "uav_crane_clearance",
+            "uav_tower_clearance"
+          ],
+          "affected_output_refs": [
+            "corridor_safety_summary"
+          ],
+          "affected_action_refs": [
+            "continue_corridor_inspection"
+          ]
+        },
+        "correction_scope": {
+          "state": "allowed",
+          "reason": "Recompute only UAV-dependent distances; preserve fixed-facility spacing and current battery state.",
+          "mutable_paths": [
+            "/relations/uav-alpha-crane-distance/value",
+            "/relations/uav-alpha-tower-distance/value"
+          ],
+          "immutable_paths": [
+            "/objects/uav-alpha/attributes/battery_percent/value",
+            "/relations/crane-tower-distance/value"
+          ]
+        },
+        "observed": 50
+      }
+    ]
+  }
+}

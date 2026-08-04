@@ -1,0 +1,150 @@
+{
+  "recompute_derivation_result": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-recompute-derivation-result-v0.1.schema.json",
+    "schema_version": "0.1",
+    "derivation_id": "gt25-corridor-distance-derivation",
+    "created_at": "2026-08-04T10:05:10+08:00",
+    "state": "completed",
+    "reason": "Derive exactly the two UAV-dependent distances from the position Observation and fixed obstacle coordinates.",
+    "base_world_state": {
+      "ref_id": "base-world-state-gt25",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-uav-corridor-safety-gt25",
+      "revision": 2,
+      "as_of": "2026-08-04T10:05:00+08:00",
+      "semantic_fingerprint": "1f472e30422fdc1d2c56e88876157affd06b3de7aefb6b900e657aa4910067c1",
+      "content_sha256": "63362deb2c285b19b0646513705d43e4085ff49111e2d73b19e67f04eb8c4403"
+    },
+    "correction_request_ref": {
+      "ref_id": "correction-gt25",
+      "artifact_id": "geotask.correction-request",
+      "schema_version": "0.1",
+      "instance_id": "gt25-corridor-distance-recompute-request",
+      "content_sha256": "205aeb5c301d8e8ea72d35ead948123363af7301320e7648325ab5ebb755adc5"
+    },
+    "source_artifact_refs": [
+      {
+        "ref_id": "observation-position-gt25",
+        "artifact_id": "geotask.observation",
+        "schema_version": "0.1",
+        "instance_id": "obs-uav-alpha-corridor-position-gt25",
+        "content_sha256": "9a9b1ad3c921825474a72854df9edd602b45583127e9e39d35195c319b6a31cf"
+      },
+      {
+        "ref_id": "task-gt25",
+        "artifact_id": "geotask.document",
+        "schema_version": "1.0",
+        "instance_id": "gt25-corridor-safety-distance-recompute",
+        "content_sha256": "03f28d469d776a7cd64679da19e371025d111b23019267cf19633981700c67b4"
+      }
+    ],
+    "derivations": [
+      {
+        "id": "derive-uav-crane-distance",
+        "change_id": "recompute-uav-crane-distance",
+        "target_path": "/relations/uav-alpha-crane-distance/value",
+        "state": "completed",
+        "method": "subtract",
+        "input_refs": [
+          "obstacle_position",
+          "uav_position"
+        ],
+        "inputs": [
+          {
+            "name": "calculation_method",
+            "kind": "literal",
+            "value": "subtract"
+          },
+          {
+            "name": "obstacle_position",
+            "kind": "artifact_path",
+            "value": 150,
+            "source_ref": "task-gt25",
+            "pointer": "/objects/crane/coordinates/0"
+          },
+          {
+            "name": "uav_position",
+            "kind": "artifact_path",
+            "value": 130,
+            "source_ref": "observation-position-gt25",
+            "pointer": "/observation/claims/0/value"
+          },
+          {
+            "name": "verified_at",
+            "kind": "literal",
+            "value": "2026-08-04T10:05:09+08:00"
+          }
+        ],
+        "reason": "Apply the allowlisted subtract method to exact source values.",
+        "basis_refs": [
+          "correction-gt25",
+          "observation-position-gt25",
+          "task-gt25"
+        ],
+        "result": 20
+      },
+      {
+        "id": "derive-uav-tower-distance",
+        "change_id": "recompute-uav-tower-distance",
+        "target_path": "/relations/uav-alpha-tower-distance/value",
+        "state": "completed",
+        "method": "subtract",
+        "input_refs": [
+          "obstacle_position",
+          "uav_position"
+        ],
+        "inputs": [
+          {
+            "name": "calculation_method",
+            "kind": "literal",
+            "value": "subtract"
+          },
+          {
+            "name": "obstacle_position",
+            "kind": "artifact_path",
+            "value": 260,
+            "source_ref": "task-gt25",
+            "pointer": "/objects/communication_tower/coordinates/0"
+          },
+          {
+            "name": "uav_position",
+            "kind": "artifact_path",
+            "value": 130,
+            "source_ref": "observation-position-gt25",
+            "pointer": "/observation/claims/0/value"
+          },
+          {
+            "name": "verified_at",
+            "kind": "literal",
+            "value": "2026-08-04T10:05:09+08:00"
+          }
+        ],
+        "reason": "Apply the allowlisted subtract method to exact source values.",
+        "basis_refs": [
+          "correction-gt25",
+          "observation-position-gt25",
+          "task-gt25"
+        ],
+        "result": 130
+      }
+    ],
+    "recompute_values": [
+      {
+        "change_id": "recompute-uav-crane-distance",
+        "value": 20
+      },
+      {
+        "change_id": "recompute-uav-tower-distance",
+        "value": 130
+      }
+    ],
+    "next_action": "materialize_successor_state",
+    "successor_materialized": false,
+    "reevaluation_executed": false,
+    "outputs_released": false,
+    "external_truth_verified": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

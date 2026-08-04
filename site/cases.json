@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 24,
+  "case_count": 25,
   "cases": [
     {
       "id": "GT01",
@@ -168,6 +168,13 @@
       "slug": "gt24",
       "title_zh": "临时禁飞区发布后，哪些航线、任务和审批结论必须重新检查？",
       "previous": "gt23",
+      "next": "gt25"
+    },
+    {
+      "id": "GT25",
+      "slug": "gt25",
+      "title_zh": "无人机位置更新后，哪些安全距离需要重算，哪些结果可以继续沿用？",
+      "previous": "gt24",
       "next": null
     }
   ]

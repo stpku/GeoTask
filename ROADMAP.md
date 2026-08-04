@@ -66,7 +66,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ GT21—GT28统一采用“现实场景优先、必要性先行、技术概念后置”的案例叙事规范，主标题不得由Artifact、revision、semantic fingerprint或materialization等术语主导；
 - ✅ 已发布GT23连续飞行状态案例，以10:02与10:07两个无人机运行快照展示只覆盖最新值为何会丢失历史和变化依据；案例显式记录位置、电量和对象有效期3项变化，绑定revision 1/2及语义指纹，并通过案例级路径核验确认before/after值，同时明确公共State Transition不执行通用diff、影响传播、风险重算或行动授权；
 - ✅ 已发布GT24临时禁飞区影响范围案例：一条医疗航线穿越有效禁飞区，另一条巡检航线绕开；案例以显式声明的有限依赖链将医疗航线、任务、审批输出和起飞动作纳入复核，同时排除巡检链，并验证7节点、7条边、4个复核目标、精确文件绑定和无环结构，明确不执行几何求交、自动影响发现、传播、复核、输出释放或动作授权；
-- 继续建设GT25—GT28：位置更新后的局部重算、营业时间失效后的限定纠偏、气象更新后的增量复核，以及条件满足但仍未获得自动起飞授权。
+- ✅ 已发布GT25局部安全距离重算案例：无人机从走廊100米移动到130米后，只对两条无人机相关距离执行白名单`subtract`推导，将50/160米重算为20/130米，同时把110米固定设施间距和48%电池余量列为不可变复用路径；案例验证范围完整、范围互斥、精确字节绑定和未注册方法拒绝，并明确不自动发现依赖、不执行任意代码、状态物化、复核、输出释放或行动授权；
+- 继续建设GT26—GT28：营业时间失效后的限定纠偏、气象更新后的增量复核，以及条件满足但仍未获得自动起飞授权。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
 
@@ -149,7 +150,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Adopted a scenario-first narrative contract for GT21–GT28: real task and necessity lead, generic-AI failure modes follow, and Artifact/revision/semantic-fingerprint/materialization terminology is deferred to technical implementation;
 - ✅ Published GT23 as a continuous-flight state-change case using the 10:02 and 10:07 UAV snapshots to show why overwriting the latest fields loses history and change evidence. The case explicitly records position, battery, and object-validity changes, binds revisions 1 and 2 by semantic fingerprints, and checks every declared before/after value against the snapshots while preserving the boundary that public State Transition does not compute a generic diff, propagate impact, recompute risk, or authorize action;
 - ✅ Published GT24 as a bounded temporary-no-fly-zone impact case: one medical route intersects the active zone while an inspection route avoids it. The case validates an explicit finite dependency chain covering the medical route, mission, approval outputs, and launch action while excluding the inspection chain, with seven nodes, seven edges, four reevaluation targets, exact-byte bindings, and acyclic structure; it does not compute geometry, discover impact automatically, execute propagation or reevaluation, release outputs, or authorize action;
-- continue GT25–GT28 through concrete scenarios covering local safety-distance recompute, bounded schedule correction, weather-triggered incremental reevaluation, and conditions that still do not authorize automatic takeoff.
+- ✅ Published GT25 as a bounded safety-distance recompute case: after a UAV moves from corridor chainage 100 to 130 metres, only two UAV-dependent distances are derived through the allowlisted `subtract` method, changing 50/160 metres to 20/130 metres, while 110-metre fixed-facility spacing and 48% battery remain immutable reusable paths. The case validates complete and disjoint scope, exact-byte bindings, and rejection of unregistered methods while explicitly not discovering dependencies automatically, executing arbitrary code, materializing state, rerunning checks, releasing outputs, or authorizing action;
+- continue GT26–GT28 through concrete scenarios covering bounded schedule correction, weather-triggered incremental reevaluation, and conditions that still do not authorize automatic takeoff.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem
 

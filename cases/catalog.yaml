@@ -239,3 +239,11 @@ cases:
     page: site/gt27/index.html
     example: examples/core/gt27_weather_incremental_reevaluation.json
     lastmod: "2026-08-04"
+  - id: GT28
+    slug: gt28
+    stage: world_state_cycle
+    title_zh: 路线安全、天气合格，就可以自动起飞吗？
+    summary_zh: 路线、高度、天气窗口和风速预检全部通过，但空域、运营人、起降场、气象放行和任务授权仍缺失；预检结论可引用，自动起飞授权与起飞指令保持阻断。
+    page: site/gt28/index.html
+    example: examples/core/gt28_takeoff_authorization_gate.json
+    lastmod: "2026-08-04"

@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 37703,
-    "sha256": "dd4d9a5429f9f44378bd9d6ba7bc2ebc28939d4004b44929f2672666d24bbd0b"
+    "size": 38438,
+    "sha256": "463273eccaa7e3e2e02ba45b71a38bd5e77c8a0a2aeee8d1102206fd1ef6de87"
   },
   {
     "path": "CITATION.cff",
@@ -51,18 +51,18 @@
   },
   {
     "path": "README.en.md",
-    "size": 22036,
-    "sha256": "5e5d4728c33d463b67b7e6c9a628dded33a21b1a0845bc1b43b63e8c59267fc6"
+    "size": 22307,
+    "sha256": "c3a6205abdbe565447a35f01f56c3579d94ace4f158750ce5310a0e7f8f22573"
   },
   {
     "path": "README.md",
-    "size": 20524,
-    "sha256": "cc92bd6ef8121b8ed18cb5cb805d7077c2a9bbc453fd45d5cb743d5c4282c8a0"
+    "size": 20746,
+    "sha256": "a88910f7c20acf3aa9428d49ac9bf15a873132b631ef85b9f143e5219174f58f"
   },
   {
     "path": "ROADMAP.md",
-    "size": 23698,
-    "sha256": "1fd26fb765bfdcfd2931713914b526ca831889a6c1b10f9f4bb30130bf5ea08b"
+    "size": 24538,
+    "sha256": "190e8a8bc259153209da7394d7698a2ac803c684753dce226ad6e14b71ae60f0"
   },
   {
     "path": "SECURITY.md",
@@ -216,8 +216,8 @@
   },
   {
     "path": "tests/test_documentation_system.py",
-    "size": 52536,
-    "sha256": "b100dd31fedbaad3b937ed71f430e112d32a69b2166275d2a001efcfa3f3b0e8"
+    "size": 52847,
+    "sha256": "9ddcc914f8083a093751bb054056b17a6481114262197310cf25b9c98a07f33c"
   },
   {
     "path": "tests/test_evaluator.py",
@@ -465,6 +465,16 @@
     "sha256": "0f0d65698d5c88a0b2689ba6a1f22956efb66571474b6dba3c84a881f816adae"
   },
   {
+    "path": "tests/test_gt28_experience_page.py",
+    "size": 4045,
+    "sha256": "4edc09f59a4355b9c752989773c935e0d6caaf504d02a8c8901bcad394e89420"
+  },
+  {
+    "path": "tests/test_gt28_takeoff_authorization_gate_case.py",
+    "size": 7903,
+    "sha256": "3bc50ad018151728605f32bc150f0e35da48de000ab3ba646b6d89ac939afb17"
+  },
+  {
     "path": "tests/test_http_json_runtime_adapter_example.py",
     "size": 9552,
     "sha256": "c67deb4459dad459411e06cde87a1d6b427fbf2660d646cbe6092e1066ced9eb"
@@ -516,8 +526,8 @@
   },
   {
     "path": "tests/test_project_portal.py",
-    "size": 8855,
-    "sha256": "22f43e3bbcaa54c002e27decf6c11a3c99c4be66439f5c4952c8604e45e4cc3c"
+    "size": 8887,
+    "sha256": "791feb07a817fb73470e0de5ee1db8e9ee4a5d9cfd9330a308c8cb83a9f22c66"
   },
   {
     "path": "tests/test_provider_neutral_model_adapter_example.py",
@@ -1040,6 +1050,21 @@
     "sha256": "ac4a40ddce0689ee415bb07bed0d6cdc1de3a743e3602887743289d37f4c5659"
   },
   {
+    "path": "examples/core/gt28_build_takeoff_gate.py",
+    "size": 15980,
+    "sha256": "33abe8178cc72ca894c1111c6320dfc000b7c47437a52d33c8392230420df0be"
+  },
+  {
+    "path": "examples/core/gt28_takeoff_authorization_gate.json",
+    "size": 2826,
+    "sha256": "6870c43b7317796325fda94d2af23365b2a71164e5aa8b75d778af8f3da62423"
+  },
+  {
+    "path": "examples/core/gt28_uav_takeoff_authorization_gate.yaml",
+    "size": 3781,
+    "sha256": "6f0c8d3aef7579ee20196fb8c5b34a4a44436c0156b693f7b645b4c000c92a1b"
+  },
+  {
     "path": "examples/core/impact_graph_temporary_no_fly_zone_gt24.json",
     "size": 8735,
     "sha256": "83b3631595768d0d77a5c931ba3a6ab6918ae5b03997396880373e08736a513b"
@@ -1095,6 +1120,11 @@
     "sha256": "a79060a56f7e917d032350dce103fe3f6839df9ec28da92a23f709561742f2da"
   },
   {
+    "path": "examples/core/observation_takeoff_authorization_inventory_gt28.json",
+    "size": 1431,
+    "sha256": "b7d7047b8119acf13eb3ce7945ec9a197071440d37ec8b6cb18ebaea62190825"
+  },
+  {
     "path": "examples/core/observation_temporary_no_fly_zone_gt24.json",
     "size": 1409,
     "sha256": "6dcd2c66b06a15d315fd2d5aeac48b25edcc277a5430637afcbac9deed3190ab"
@@ -1138,6 +1168,16 @@
     "path": "examples/core/observation_uav_delay.json",
     "size": 1379,
     "sha256": "9ef33e6be57c583b39947ab166c8fe3bc0fcb1e5afea0447c780a40c6fcaccce"
+  },
+  {
+    "path": "examples/core/observation_uav_route_preflight_gt28.json",
+    "size": 911,
+    "sha256": "d91ed796758e5da1b728ff5561f79c6874cad08c7d860d923728f828fa305d23"
+  },
+  {
+    "path": "examples/core/observation_weather_preflight_gt28.json",
+    "size": 1348,
+    "sha256": "a3fd516009d340655e01c8db27d4a3174c0750624acdbcd2ad03d2df3d4dcdc2"
   },
   {
     "path": "examples/core/observation_weather_wind_speed_gt27.json",
@@ -1193,6 +1233,16 @@
     "path": "examples/core/state_transition_uav_separation_recheck.json",
     "size": 2748,
     "sha256": "1aeffc61c3aa8b3b214cb4e1ee699091269f5df7b13109c727af73cbc19781dc"
+  },
+  {
+    "path": "examples/core/takeoff_authorization_control_evaluation_gt28.json",
+    "size": 4437,
+    "sha256": "7377d9e3f1db7b16aa4c806f90c64efd27107815f394bf3792b7a29ee8ebd0e1"
+  },
+  {
+    "path": "examples/core/takeoff_preflight_execution_result_gt28.json",
+    "size": 2106,
+    "sha256": "837a17b9843f4f2a4343eba3956800729225b14d2b21085ddf640a2a8ccedab6"
   },
   {
     "path": "examples/core/time_altitude_overlap.yaml",
@@ -1270,6 +1320,11 @@
     "sha256": "896b76fef30fd12043f7ebb23691528d954f2e365db32fcd520f475b10263a4f"
   },
   {
+    "path": "examples/core/verification_session_takeoff_gate_gt28.json",
+    "size": 4381,
+    "sha256": "0a0044514abad97289e7147fe12590df1b0748b853b72f711a85ed256d4daaf5"
+  },
+  {
     "path": "examples/core/verification_session_uav_execution_result.json",
     "size": 2495,
     "sha256": "d1417586256e12985ef3ea98bd9ba54537706649e86a96dccffb3565579f1cc3"
@@ -1328,6 +1383,11 @@
     "path": "examples/core/world_state_uav_separation_successor.json",
     "size": 3878,
     "sha256": "f5cd0b3da1c8ff55feac6ba17589db592d5b280c742a6f575c8bbf82af9beeb6"
+  },
+  {
+    "path": "examples/core/world_state_uav_takeoff_gate_gt28.json",
+    "size": 6250,
+    "sha256": "3c657f41da6a9a1374a362d4de9dcfe70b7f84a5b20733af184699ae194b3af7"
   },
   {
     "path": "examples/core/world_state_weather_missions_base_gt27.json",
@@ -1511,18 +1571,18 @@
   },
   {
     "path": "site/README.md",
-    "size": 11611,
-    "sha256": "f7bc00f2296e3612a562dca6e9c99f613e6539165b22fa58a3e1662250b41c4c"
+    "size": 11964,
+    "sha256": "14dfa9421bfb4bc4584a8876cb1da7711de65e6aaeedf57c6cd39e32f72049e2"
   },
   {
     "path": "site/cases.json",
-    "size": 5131,
-    "sha256": "538db3fd9dce61accfefe025d14278a0e2a6cdf24b58308335815b90ddb0564b"
+    "size": 5312,
+    "sha256": "e86690f2e9ef8a31000485748418b956edc1e371ed4d4293c0af4a5f19bf5c42"
   },
   {
     "path": "site/cases.txt",
-    "size": 135,
-    "sha256": "91353f1cc26c38c859a9855a535ec3fbb0443d9fd97a04a24023eebb926371a9"
+    "size": 140,
+    "sha256": "02a4dcb6d0290830b04e203f5522be42977410a5a6544d3f1ed4f13d749ba2a2"
   },
   {
     "path": "site/deploy-nginx.sh",
@@ -1531,8 +1591,8 @@
   },
   {
     "path": "site/index.html",
-    "size": 35137,
-    "sha256": "6e0f3b65996ce30a840c26534ad8cacf61dbbd82ef2f0627903cb888a0cd296d"
+    "size": 35536,
+    "sha256": "ec247d8bde8a6c74a3f09ddb4529f852109d2ae8442dfb163b627d1ff6812a63"
   },
   {
     "path": "site/robots.txt",
@@ -1541,8 +1601,8 @@
   },
   {
     "path": "site/sitemap.xml",
-    "size": 4220,
-    "sha256": "edd714c096c79f9eaebae9747d5755f72f7672fac17020b03e47870532aefeea"
+    "size": 4367,
+    "sha256": "6f2a9a61527626d1ad29812610097a47959a405415a0c74bb1540299fc3eb7ac"
   },
   {
     "path": "site/gt12/index.html",
@@ -1630,6 +1690,11 @@
     "sha256": "c6c8d57695a0bfbc160dda0719f435ca1c6d691cf1efcadf2f6ed8ba5c9431e6"
   },
   {
+    "path": "site/gt28/index.html",
+    "size": 14564,
+    "sha256": "e39a5db11ba44bc3d0be5978cf8b976c23f8b5e497847dff54991c4751e0dca7"
+  },
+  {
     "path": "site/gt03/index.html",
     "size": 28729,
     "sha256": "e092686a6ae5ed6b50340ab332e8cde984d5fc758d7cde022da63d7544c38b23"
@@ -1671,8 +1736,8 @@
   },
   {
     "path": "site/gt27/index.html",
-    "size": 15835,
-    "sha256": "4388feb5ddabc0c2a68a8ea899309be80a9a8961e4c61834d768a2d4a55471e0"
+    "size": 15836,
+    "sha256": "087aad2699f12aaf50d8e289e8006fcd0a1c72264d384d75b94a29ef4807ad3b"
   },
   {
     "path": "site/gt23/index.html",
@@ -1971,8 +2036,8 @@
   },
   {
     "path": "cases/catalog.yaml",
-    "size": 10881,
-    "sha256": "ae52c8da3cfacdf0a4eb3314104ba1ef87ea387eef45054ca386c6d96461eaf2"
+    "size": 11355,
+    "sha256": "13d27bd755c719b5197befe29cecfb36972bc3e6705883dda563f7fa72cdb284"
   },
   {
     "path": "docs/README.en.md",
@@ -1982,7 +2047,7 @@
   {
     "path": "docs/README.md",
     "size": 10473,
-    "sha256": "54219861ae9b5bbf31145b5528b31cfe7834f94884f7729f30936489de3b7121"
+    "sha256": "d4d414de78356ab443bc30178960ea77934bf75a4921dcb4e86a3b9905965982"
   },
   {
     "path": "docs/architecture.md",
@@ -2096,13 +2161,13 @@
   },
   {
     "path": "docs/cookbook/gt21-gt28.md",
-    "size": 15217,
-    "sha256": "0ccf857f71a632a775e265a3591edaccdeb97448f1be5c31945f893b6bd32d4c"
+    "size": 16923,
+    "sha256": "ecc36b1be8adee88f91bc199adbb210ef6219295a014e45626555d442cc9bfa3"
   },
   {
     "path": "docs/cookbook/gt21-gt28.zh-CN.md",
-    "size": 17487,
-    "sha256": "d6c625c54f3c51a2c49306ffaddf0f27abbb8d6786eeac24aaab9e8242af45db"
+    "size": 19682,
+    "sha256": "9fa7d69e958b878bbc00984ef419278b14de1beb1ea1b84101155178e71034b5"
   },
   {
     "path": "docs/architecture_decisions/ADR-001-core-runtime-domain-pack.md",
@@ -2266,8 +2331,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 27075,
-    "sha256": "589aeff5a2aac453559107f7d56bec834d04013cd3d0e5ca0232402907bce775"
+    "size": 27918,
+    "sha256": "f47f4c10980eb8da7cb172e695f4a0995d3013fbf15ffa7f6ec7c9f34867d305"
   },
   {
     "path": ".release/release_public.py",

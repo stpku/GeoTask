@@ -1,0 +1,44 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-weather-preflight-gt28",
+    "observed_at": "2026-08-04T14:00:00+08:00",
+    "received_at": "2026-08-04T14:00:03+08:00",
+    "source": {
+      "kind": "sensor",
+      "reference": "weather:fictional/gt28/departure-site"
+    },
+    "producer": {
+      "id": "gt28-fictional-weather-station",
+      "kind": "sensor",
+      "version": "1.0"
+    },
+    "claims": [
+      {
+        "id": "claim-wind-speed-gt28",
+        "subject_ref": "departure-weather-gt28",
+        "predicate": "wind_speed_mps",
+        "basis": "direct_observation",
+        "value": 8,
+        "observed_at": "2026-08-04T14:00:00+08:00",
+        "valid_until": "2026-08-04T14:30:00+08:00",
+        "evidence_refs": [
+          "weather:fictional/gt28/departure-site"
+        ]
+      },
+      {
+        "id": "claim-forecast-window-valid-gt28",
+        "subject_ref": "departure-weather-gt28",
+        "predicate": "forecast_window_valid",
+        "basis": "external_assertion",
+        "value": true,
+        "observed_at": "2026-08-04T14:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "evidence_refs": [
+          "forecast:fictional/gt28/window"
+        ]
+      }
+    ]
+  }
+}

@@ -1241,7 +1241,7 @@ def test_cookbooks_cover_all_public_weekly_cases() -> None:
             assert example in text
 
 
-def test_world_state_cycle_cookbooks_publish_gt21_to_gt27_and_bound_gt28() -> None:
+def test_world_state_cycle_cookbooks_publish_gt21_to_gt28() -> None:
     for path in (WORLD_STATE_COOKBOOK_EN, WORLD_STATE_COOKBOOK_ZH):
         text = path.read_text(encoding="utf-8")
         for number in range(21, 29):
@@ -1286,6 +1286,11 @@ def test_world_state_cycle_cookbooks_publish_gt21_to_gt27_and_bound_gt28() -> No
             "58b48884c3d70a2cd565e2791acdc121207b28fce4e66aff8ec68c9ccc3df4c6",
             "0e20bf36957b46ea1739b280faec424b4c23314f411346322bdc8439af82002f",
             "tests/test_gt27_weather_incremental_reevaluation_case.py",
+            "GT28",
+            "e7f181dae9be455fba6ffcbeba84271214778efb6052f13094782ffb95ad3c2b",
+            "7377d9e3f1db7b16aa4c806f90c64efd27107815f394bf3792b7a29ee8ebd0e1",
+            "cc955b90955a5f90c20464500aacdc093b528aa402e9e9b1c9c337bb2e41df75",
+            "tests/test_gt28_takeoff_authorization_gate_case.py",
         ):
             assert fragment in text
 

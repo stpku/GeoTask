@@ -1,0 +1,40 @@
+{
+  "verification_response": {
+    "response_version": "0.1",
+    "response_id": "weather-response-onsite-sensor-gt29",
+    "request_ref": {
+      "request_id": "verify-east-current-wind-speed-gt29",
+      "sha256": "25ad22f273887e7fe2f4996777836076c8ae23bf1e8b3a192233a594e4034d94"
+    },
+    "provider_ref": {
+      "provider_id": "geotask.provider.mock-onsite-wind-sensor",
+      "provider_version": "0.1.0",
+      "sha256": "b533efc0662ffd957c7a0a839234005dc1391bc3fe6b2a632700601bce158053"
+    },
+    "state": "verified",
+    "result": {
+      "claim_id": "east-current-wind-speed",
+      "claim_type": "weather.wind_speed",
+      "value": 13,
+      "unit": "meter_per_second",
+      "observed_at": "2026-08-04T14:04:00+08:00",
+      "valid_until": "2026-08-04T14:09:00+08:00"
+    },
+    "verification_method": "measure_current_wind_speed",
+    "evidence_refs": [
+      "weather:fictional/east/b"
+    ],
+    "assurance_declarations": {
+      "independence_group": "fictional-onsite-sensor-network",
+      "reproducibility": "repeatable",
+      "calibration_status": "calibrated",
+      "confidence": null
+    },
+    "diagnostics": [],
+    "completed_at": "2026-08-04T14:05:10+08:00",
+    "independently_verified": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

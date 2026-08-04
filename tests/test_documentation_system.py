@@ -311,6 +311,10 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "spec/geotask-control-evaluation-v1.0.md",
         "spec/geotask-agent-integration-profile-v0.1.md",
         "spec/geotask-runtime-interface-profile-v0.1.md",
+        "spec/geotask-verification-provider-profile-v0.1.md",
+        "spec/geotask-verification-provider-profile-v0.1.zh-CN.md",
+        "terminology.en.md",
+        "terminology.zh-CN.md",
         "../skills/geotask-core/SKILL.md",
         "tutorials/quickstart.md",
         "tutorials/quickstart.zh-CN.md",
@@ -334,8 +338,8 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
     assert "Implemented public profile" in en_text
     assert "System-level target direction" in en_text
     assert "Legacy compatibility" in en_text
-    assert "23类公共Artifact" in zh_text
-    assert "twenty-three public Artifacts" in en_text
+    assert "27类公共制品" in zh_text
+    assert "twenty-seven public Artifacts" in en_text
 
 
 def test_architecture_and_target_status_include_bounded_observation_merge() -> None:
@@ -708,9 +712,13 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.runtime-descriptor",
         "geotask.runtime-request",
         "geotask.runtime-response",
+        "geotask.verification-provider-descriptor",
+        "geotask.verification-request",
+        "geotask.verification-response",
+        "geotask.assurance-profile",
         "geotask.core-benchmark-report",
-        "exactly twenty-three artifacts",
-        "all twenty-four public JSON Schemas",
+        "exactly twenty-seven artifacts",
+        "all twenty-eight public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text
@@ -932,13 +940,16 @@ def test_root_readmes_match_current_capabilities() -> None:
         assert "geotask runtime inspect" in text
         assert "geotask runtime check" in text
         assert "geotask runtime mock" in text
-        assert "Runtime Interface Profile" in text or "Runtime接口Profile" in text
+        assert "Runtime Interface Profile" in text or "运行时接口规范" in text
+        assert "geotask provider inspect" in text
+        assert "geotask provider check" in text
+        assert "geotask provider validate" in text
 
     zh_text, en_text = texts
-    assert "调用方显式声明的语义相等合并或完整优先级选择" in zh_text
-    assert "未声明策略的歧义命题冲突消解" in zh_text
-    assert "caller-declared semantic-equality consolidation or complete precedence" in en_text
-    assert "ambiguous claims without a declared policy" in en_text
+    assert "不推断未声明的来源优先级" in zh_text
+    assert "验证提供方描述符" in zh_text
+    assert "invent undeclared source precedence" in en_text
+    assert "Verification Provider Descriptor" in en_text
 
 
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
@@ -1145,7 +1156,7 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "v0.3.0：Agent集成（当前稳定）" in roadmap
     assert "v0.4：Runtime接口、模型适配与对象扩展" in roadmap
     assert "v0.5：Verifiable World-State Cycle" in roadmap
-    assert "v0.6：Local Verification Providers与Domain Pack生态" in roadmap
+    assert "v0.6：验证提供方与生态扩展（进行中）" in roadmap
     assert "Observation v0.1 Artifact" in roadmap
     assert "World State v0.1 Artifact" in roadmap
     assert "State Transition v0.1 Artifact" in roadmap

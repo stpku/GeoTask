@@ -72,14 +72,17 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布GT28自动起飞授权门禁案例：路线、高度、天气窗口和风速预检全部满足，但空域、运营人、起降场、气象放行和任务授权五项信息仍为unknown；案例将可引用的路线天气预检标记为eligible，同时保持自动起飞授权与起飞指令blocked，并验证即使授权条件全部显式为true，公共Control Evaluation仍只标记输出eligible且`action_executed=false`；
 - ✅ GT21—GT28世界状态循环场景案例已全部发布。
 
-### v0.6：Local Verification Providers与Domain Pack生态
+### v0.6：验证提供方与生态扩展（进行中）
 
-- 发布统一Verification Provider Contract，覆盖确定性算子、规则引擎、本地预测模型、权威数据提供者和人工复核；
-- 增加多维Assurance Profile，表达来源、方法、可重复性、独立性、证据新鲜度、校准与人工复核；
-- 扩展trajectory、moving object及动态时空对象；
-- 发布可复用的Domain Pack规范，并提供低空、机器人或交通方向的参考Pack；
+- ✅ 已发布验证提供方接口规范v0.1，覆盖确定性算子、规则引擎、权威数据提供方、传感器数据提供方、本地预测模型和人工复核；
+- ✅ 已发布验证提供方描述符、验证请求、验证响应和可信保证档案四类公共制品，并提供只读的`geotask provider inspect/check/validate`命令；
+- ✅ 已建立反自我增信、精确请求/描述符字节绑定、独立分组、时效、可复现性、校准和行动边界校验；
+- ✅ 已发布GT29虚构气象冲突案例：模拟气象服务给出8米/秒、现场传感器给出13米/秒，两个新鲜独立来源仍冲突时保持未知并请求第三个独立来源；
+- ✅ 已建立中英文独立项目入口及术语映射，中文页面以中文叙事为主，英文页面使用英文，机器标识保持稳定；
+- 扩展轨迹、移动对象及动态时空对象合同；
+- 发布可复用的行业扩展接口和非行业敏感的参考实现；
 - 建立验错率、漏检率、纠偏成功率、增量复核范围和执行时延基准；
-- 支持社区维护的Provider、案例、算子和行业扩展目录。
+- 支持社区维护的验证提供方、案例、算子和通用扩展目录。
 
 ## 参与方式
 
@@ -159,11 +162,14 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published GT28 as an automatic-takeoff authorization-gate case: route, altitude, weather-window, and wind preconditions pass, but five independent authorization identifiers remain unknown. The case records the reusable route-weather precheck as eligible while automatic-takeoff authorization and the takeoff command remain blocked, and proves that even a fully true authorization context only makes outputs eligible while `action_executed` stays false;
 - ✅ Completed publication of the GT21–GT28 scenario-first World-State Cycle.
 
-### v0.6: Local Verification Providers and Domain Pack Ecosystem
+### v0.6: Verification Providers and Ecosystem Extensions (in progress)
 
-- Publish a common Verification Provider Contract for deterministic operators, rule engines, local predictive models, authoritative data providers, and human review;
-- add a multidimensional Assurance Profile for source, method, reproducibility, independence, evidence freshness, calibration, and human review;
+- ✅ Published Verification Provider Profile v0.1 for deterministic operators, rule engines, authoritative data providers, sensor data providers, local predictive models, and human review;
+- ✅ Published four public Artifacts: Verification Provider Descriptor, Verification Request, Verification Response, and Assurance Profile, with read-only `geotask provider inspect/check/validate` commands;
+- ✅ Added anti-self-assurance rules, exact Request/Descriptor byte bindings, independent-group, freshness, reproducibility, calibration, and action-boundary validation;
+- ✅ Published GT29 as a fictional weather conflict: a mock weather service reports 8 m/s and an onsite sensor reports 13 m/s; two fresh independent sources still conflict, so Assurance remains unknown and a third independent source is requested;
+- ✅ Established separate Chinese and English project entry points plus terminology maps while keeping machine identifiers stable;
 - extend trajectory, moving-object, and dynamic spatiotemporal object contracts;
-- publish a reusable Domain Pack specification with reference low-altitude, robotics, or transportation Packs;
+- publish reusable extension interfaces and non-sensitive reference implementations;
 - establish benchmarks for error-detection rate, missed errors, correction success, incremental scope, and execution latency;
-- support community-maintained catalogs of Providers, cases, operators, and domain extensions.
+- support community-maintained catalogs of Verification Providers, cases, operators, and generic extensions.

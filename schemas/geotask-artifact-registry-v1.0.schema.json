@@ -84,6 +84,10 @@
             "runtime_descriptor",
             "runtime_request",
             "runtime_response",
+            "verification_provider_descriptor",
+            "verification_request",
+            "verification_response",
+            "assurance_profile",
             "core_benchmark_report",
             "artifact_validation_report"
           ]

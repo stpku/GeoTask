@@ -84,6 +84,16 @@ from geotask_core.v1.runtime_interface import (
     RUNTIME_RESPONSE_SCHEMA_ID,
     RUNTIME_RESPONSE_SCHEMA_VERSION,
 )
+from geotask_core.v1.verification_provider import (
+    ASSURANCE_PROFILE_SCHEMA_ID,
+    ASSURANCE_PROFILE_SCHEMA_VERSION,
+    VERIFICATION_PROVIDER_DESCRIPTOR_SCHEMA_ID,
+    VERIFICATION_PROVIDER_DESCRIPTOR_SCHEMA_VERSION,
+    VERIFICATION_REQUEST_SCHEMA_ID,
+    VERIFICATION_REQUEST_SCHEMA_VERSION,
+    VERIFICATION_RESPONSE_SCHEMA_ID,
+    VERIFICATION_RESPONSE_SCHEMA_VERSION,
+)
 
 
 ARTIFACT_REGISTRY_SCHEMA_ID = (
@@ -183,6 +193,10 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
     "geotask.runtime-descriptor": ("*runtime-descriptor*.json",),
     "geotask.runtime-request": ("*runtime-request*.json",),
     "geotask.runtime-response": ("*runtime-response*.json",),
+    "geotask.verification-provider-descriptor": ("*verification-provider-descriptor*.json",),
+    "geotask.verification-request": ("*verification-request*.json",),
+    "geotask.verification-response": ("*verification-response*.json",),
+    "geotask.assurance-profile": ("*assurance-profile*.json",),
     "geotask.core-benchmark-report": ("*core-benchmark*.json",),
     "geotask.artifact-validation-report": ("*artifact-validation*.json",),
 }
@@ -812,6 +826,110 @@ _ARTIFACTS = (
         ),
         execution_boundary=(
             "Validating a response does not repeat the Runtime operation or side effects."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.verification-provider-descriptor",
+        title="GeoTask Verification Provider Descriptor v0.1",
+        kind="verification_provider_descriptor",
+        schema_id=VERIFICATION_PROVIDER_DESCRIPTOR_SCHEMA_ID,
+        schema_version=VERIFICATION_PROVIDER_DESCRIPTOR_SCHEMA_VERSION,
+        schema_path="schemas/geotask-verification-provider-descriptor-v0.1.schema.json",
+        specification_path="docs/spec/geotask-verification-provider-profile-v0.1.md",
+        wrapper_key="verification_provider_descriptor",
+        generation_command="geotask provider inspect --profile --format json",
+        generation_note=(
+            "Authored by a Provider implementation. Public descriptors advertise only "
+            "read-only capabilities and cannot authorize side effects."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.verification-provider-descriptor "
+            "<provider-descriptor.json>"
+        ),
+        description=(
+            "Provider identity, capability, method, independence group, reproducibility, "
+            "calibration, validity, and audit declarations."
+        ),
+        execution_boundary=(
+            "Validating a descriptor does not invoke a Provider or verify external truth."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.verification-request",
+        title="GeoTask Verification Request v0.1",
+        kind="verification_request",
+        schema_id=VERIFICATION_REQUEST_SCHEMA_ID,
+        schema_version=VERIFICATION_REQUEST_SCHEMA_VERSION,
+        schema_path="schemas/geotask-verification-request-v0.1.schema.json",
+        specification_path="docs/spec/geotask-verification-provider-profile-v0.1.md",
+        wrapper_key="verification_request",
+        generation_command=None,
+        generation_note=(
+            "Authored by a caller with exact Artifact bindings and an Assurance Profile. "
+            "Core does not submit it to an external Provider."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.verification-request "
+            "<verification-request.json>"
+        ),
+        description=(
+            "Source-bound verification subject, required capabilities, allowed Provider "
+            "types, deadline, and Assurance Profile binding."
+        ),
+        execution_boundary=(
+            "Validating a request does not call a Provider, release output, or authorize action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.verification-response",
+        title="GeoTask Verification Response v0.1",
+        kind="verification_response",
+        schema_id=VERIFICATION_RESPONSE_SCHEMA_ID,
+        schema_version=VERIFICATION_RESPONSE_SCHEMA_VERSION,
+        schema_path="schemas/geotask-verification-response-v0.1.schema.json",
+        specification_path="docs/spec/geotask-verification-provider-profile-v0.1.md",
+        wrapper_key="verification_response",
+        generation_command=None,
+        generation_note=(
+            "Produced by a Provider and bound to exact Request and Descriptor bytes. "
+            "The Provider cannot self-assign independent assurance."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.verification-response "
+            "<verification-response.json>"
+        ),
+        description=(
+            "Provider result, source validity, evidence references, declared assurance "
+            "properties, diagnostics, and immutable safety flags."
+        ),
+        execution_boundary=(
+            "Validating a response does not prove independent verification, publish output, "
+            "authorize action, or repeat the Provider operation."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.assurance-profile",
+        title="GeoTask Assurance Profile v0.1",
+        kind="assurance_profile",
+        schema_id=ASSURANCE_PROFILE_SCHEMA_ID,
+        schema_version=ASSURANCE_PROFILE_SCHEMA_VERSION,
+        schema_path="schemas/geotask-assurance-profile-v0.1.schema.json",
+        specification_path="docs/spec/geotask-verification-provider-profile-v0.1.md",
+        wrapper_key="assurance_profile",
+        generation_command=None,
+        generation_note=(
+            "Authored by a caller or Domain Pack. Providers cannot modify or self-select "
+            "the Assurance Profile used to evaluate their responses."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.assurance-profile <assurance-profile.json>"
+        ),
+        description=(
+            "Minimum Provider count, independence, freshness, reproducibility, calibration, "
+            "conflict policy, output gates, and next action."
+        ),
+        execution_boundary=(
+            "Validating a profile does not evaluate responses, release output, or authorize action."
         ),
     ),
     ArtifactDescriptor(

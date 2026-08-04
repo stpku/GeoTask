@@ -1,0 +1,37 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-weather-authoritative-gt29",
+    "observed_at": "2026-08-04T14:00:00+08:00",
+    "received_at": "2026-08-04T14:00:00+08:00",
+    "source": {
+      "kind": "authoritative_data",
+      "reference": "weather:fictional/east/a",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "producer": {
+      "id": "fictional-authoritative-weather-service",
+      "kind": "organization",
+      "version": "0.1.0"
+    },
+    "claims": [
+      {
+        "id": "east-current-wind-speed-a",
+        "subject_ref": "weather-cell-east-gt29",
+        "predicate": "wind_speed_mps",
+        "basis": "direct_observation",
+        "value": 8,
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 0.5,
+          "unit": "meter_per_second"
+        },
+        "valid_until": "2026-08-04T14:15:00+08:00",
+        "evidence_refs": [
+          "weather:fictional/east/a"
+        ]
+      }
+    ]
+  }
+}

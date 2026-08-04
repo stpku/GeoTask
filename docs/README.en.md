@@ -21,8 +21,10 @@ GeoTask documentation is organized from world-model positioning to implemented c
 - [GeoTask Recompute Derivation Result v0.1](spec/geotask-recompute-derivation-result-v0.1.md) — exact Observation/GeoTask source-path bindings and allowlisted deterministic methods that close every requested `recompute` value without arbitrary expressions, model calls, or state mutation.
 - [GeoTask World State Materialization Result v0.1](spec/geotask-world-state-materialization-result-v0.1.md) — deterministic bounded successor generation from one immutable base state, one bound Correction Request, and explicit recompute values while preserving output/action gates.
 - [GeoTask Incremental Reevaluation Result v0.1](spec/geotask-incremental-reevaluation-result-v0.1.md) — exact base/successor World State, Impact Graph, source-file, node, target, acceptance, discrepancy, and gate outcomes without executing reevaluation or authorizing action.
-- [GeoTask Artifact Registry v1.0](spec/geotask-artifact-registry-v1.0.md) — `geotask inspect schemas` discovery for all twenty-three public Artifacts, their schemas, versions, and operating commands.
-- [GeoTask Artifact Validation v1.0](spec/geotask-artifact-validation-v1.0.md) — one `geotask artifact validate` entry point for validating all twenty-three registered public Artifacts, including Observation, World State, Observation Merge Result, State Transition, Verification Session, Discrepancy Report, Correction Request, Impact Graph, Recompute Derivation Result, World State Materialization Result, Incremental Reevaluation Result, Agent reports, Runtime messages, the Core benchmark report, and validation reports themselves, by stable Artifact ID.
+- [GeoTask Artifact Registry v1.0](spec/geotask-artifact-registry-v1.0.md) — `geotask inspect schemas` discovery for all twenty-seven public Artifacts and twenty-eight public JSON Schemas.
+- [GeoTask Verification Provider Profile v0.1](spec/geotask-verification-provider-profile-v0.1.md) — read-only Provider Descriptors, Verification Requests, Verification Responses, Assurance Profiles, exact bindings, and fail-closed assurance evaluation.
+- [English Terminology Guide](terminology.en.md) — standard English terms, Chinese mappings, and stable machine identifiers.
+- [GeoTask Artifact Validation v1.0](spec/geotask-artifact-validation-v1.0.md) — one `geotask artifact validate` entry point for validating all twenty-seven registered public Artifacts, including world-state, Agent, Runtime, Verification Provider, benchmark, and validation-report contracts.
 - [GeoTask Versioned Payload Validation v1.0](spec/geotask-versioned-payload-validation-v1.0.md) — shared strict loading, schema metadata, diagnostics, and text/JSON reports for execution and control results.
 - [GeoTask Control Extension Profile v1.0](spec/geotask-control-extension-profile-v1.0.md) — versioned validation for evidence requests, evidence conflicts, decision rules, and task gates.
 - [GeoTask Control Expression Language v1.0](spec/geotask-control-expression-language-v1.0.md) — the safe finite grammar, three-valued logic, comparison semantics, and public parser/evaluator API.
@@ -63,17 +65,14 @@ When documents differ, the current source code, tests, implemented v1.0 specific
 
 ## Design and boundary documents
 
+- [Architecture](architecture.md)
 - [Design Principles](design_principles.md)
 - [Evaluation Specification](eval_spec.md)
 - [Normalizer v0.2 Design](normalizer_v0_2_design.md)
-- [Open Source Boundary](open_source_boundary.md)
-- [Open Core / Commercial Runtime Boundary](open_core_commercial_runtime_boundary.md)
-- [Product Architecture v0.1](product_architecture_v0_1.md)
-- [ADR-001: Core, Runtime, and Domain Pack](architecture_decisions/ADR-001-core-runtime-domain-pack.md)
-- [ADR-002: Private Runtime Boundary](architecture_decisions/ADR-002-private-runtime-boundary.md)
-- [ADR-003: Domain Pack Contract](architecture_decisions/ADR-003-domain-pack-plugin-contract.md)
-- [ADR-004: Patent and Open Source Boundary](architecture_decisions/ADR-004-patent-and-open-source-boundary.md)
+- [Operator Registry](operator_registry.md)
+- [English Terminology Guide](terminology.en.md)
+- [Security](../SECURITY.md)
 
 ## Public and private boundary
 
-The public repository defines general-purpose task representation, deterministic operators, validation, result assurance, examples, and conformance tests. Industry rules, customer data, approval thresholds, model credentials, commercial routing, and patent-sensitive optimization remain outside the public Core. See [ADR-004](architecture_decisions/ADR-004-patent-and-open-source-boundary.md) and [Open Core Boundary](open_core_commercial_runtime_boundary.md).
+The public repository defines general-purpose task representation, deterministic operators, validation, result assurance, examples, and conformance tests. Industry rules, customer data, approval thresholds, model credentials, commercial routing, and patent-sensitive optimization remain outside the public Core. Public documentation describes only open contracts, developer interfaces, and safety boundaries.

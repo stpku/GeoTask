@@ -19,16 +19,17 @@ pip install geotask-core
 
 GeoTask把多模态模型、传感器、地图、权威数据和人工输入转化为显式的世界对象、时空关系、状态、证据和行动约束，构建可计算、可验证、可更新、可追溯的时空世界状态。它不是把整个世界隐式压进一个神经网络，而是让智能体依赖的现实事实能够被查看、复算、纠偏和持续维护。
 
-- **多模态模型负责感知与开放推理：** 从文本、地图、图像、视频和状态数据中形成观察、假设与方案；
-- **GeoTask Core负责世界状态契约与验证内核：** 显式表达对象、坐标、时间、关系、证据和命题，并用本地确定性路径验证；
+- **多模态模型负责感知与开放推理：** 从文本、地图、图像、视频和状态数据中形成观测、假设与方案；
+- **GeoTask核心负责世界状态契约与验证内核：** 显式表达对象、坐标、时间、关系、证据和命题，并用本地确定性路径验证；
 - **验证与控制机制负责维护世界：** 保留已证实事实，标记冲突和未知，限定纠偏范围，并管理行动资格；
-- **Runtime与Domain Pack负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
+- **运行时与行业能力包负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
 
-> **工程边界：** GeoTask Core提供可验证时空世界模型的公共状态契约、验证内核和Artifact基础；“可验证时空任务协议”是当前实现形式。Observation v0.1表达带来源和不确定性的世界命题，World State v0.1表达可版本化显式快照，Observation Merge Result v0.1按完整显式映射将新命题写入既有状态目标，并对同一目标支持调用方显式声明的语义相等合并或完整优先级选择，生成绑定的后继版本，State Transition v0.1绑定前后快照，Verification Session v0.1固化审计上下文，Discrepancy Report v0.1记录差异及修订范围，Correction Request v0.1约束后继状态变更，Impact Graph v0.1组织可校验的影响DAG，Recompute Derivation Result v0.1从精确来源路径确定性推导受限重算值，World State Materialization Result v0.1记录受限后继状态物化，Incremental Reevaluation Result v0.1则闭合图节点、复核目标、验收条件、差异消解以及输出/动作门禁；自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、影响图自动发现与传播执行以及通用推导方法仍在持续建设。
+> **工程边界：** GeoTask核心提供可验证时空世界模型的公共状态契约、验证内核和制品基础，“可验证时空任务协议”仍是当前实现形式。当前公共实现覆盖观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、受限重算推导、受限后继状态物化、增量复核结果，以及验证提供方描述符、验证请求、验证响应和可信保证档案。公共核心只校验结构、语义和精确绑定，不获取外部真实数据、不推断未声明的来源优先级、不发布生产结果，也不授权或执行现实动作。
 
 ## 从这里开始
 
-- [立即体验GT01—GT22](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT29](https://stpku.github.io/GeoTask/)
+- [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [白皮书英文摘要](docs/whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)
@@ -47,8 +48,10 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - [World State Materialization Result v0.1](docs/spec/geotask-world-state-materialization-result-v0.1.md)
 - [Incremental Reevaluation Result v0.1](docs/spec/geotask-incremental-reevaluation-result-v0.1.md)
 - [Agent集成Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
-- [Runtime接口Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
-- [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
+- [运行时接口规范 v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
+- [验证提供方接口规范 v0.1](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)
+- [中文术语规范](docs/terminology.zh-CN.md)
+- [GeoTask核心智能体技能](skills/geotask-core/SKILL.md)
 - [VS Code Schema配置示例](.vscode/settings.json)
 - [v0.3.0 Agent集成版发布说明](docs/release_v0_3_0.md)
 - [v0.2.0制品契约版发布说明](docs/release_v0_2_0.md)
@@ -77,7 +80,7 @@ flowchart LR
   N[新观察到来] --> W
 ```
 
-当前公共Core已经实现世界对象与空间合同、来源与证据绑定、Observation v0.1、World State v0.1、受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、来源绑定的受限重算值推导、受限后继状态物化、Incremental Reevaluation Result v0.1、世界命题、确定性关系验证、控制状态、Agent机械修复和限定路径重试。自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行和通用推导方法仍属于后续路线图。
+当前公共核心已经实现世界对象与空间合同、来源与证据绑定、观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、来源绑定的受限重算推导、受限后继状态物化、增量复核结果、验证提供方公共合同、世界命题、确定性关系验证、控制状态、智能体机械修复和限定路径重试。自动差异计算、对象身份发现、未声明策略的歧义冲突消解、影响关系自动发现与传播执行和通用推导方法仍属于后续路线图。
 
 ## 5分钟运行
 
@@ -120,7 +123,7 @@ geotask validate my_distance.yaml
 geotask run my_distance.yaml
 ```
 
-## 20个公开应用案例
+## 29个公开应用案例
 
 GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示模型方案如何被结构化、复算、验错、补证、纠偏和行动门控。
 
@@ -130,6 +133,8 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 | 时空组合 | GT04—GT06 | 水平、高度和时间条件是否同时成立？ |
 | 不确定性与证据 | GT07—GT09 | 缺证据或证据冲突时，系统应该怎么办？ |
 | 行动与可行性 | GT10—GT20 | 约束确认以后，下一步具体执行什么？ |
+| 世界状态循环 | GT21—GT28 | 多源观测、状态变化、影响范围、限定纠偏和行动门禁怎样闭环？ |
+| 验证提供方生态 | GT29 | 多个外部来源仍然冲突时，怎样形成独立可信保证？ |
 
 重点案例：
 
@@ -153,9 +158,10 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT25：** 无人机位置从走廊100米更新到130米后，只重算与位置相关的起重机和通信塔距离，同时保留固定设施间距与电池余量；
 - **GT26：** 飞行服务站营业时间从08:00—22:00调整为09:00—18:00后，只替换营业计划，保留位置、频率、服务类型和联系方式，并阻断20:30任务直至复核；
 - **GT27：** 东区风速由6升至12米/秒后，只复核同区域且处于更新生效时段的任务A、D；任务A变为不适飞，任务D复核后仍适飞，任务B、C继续复用；
-- **GT28：** 路线、高度、天气窗口和风速预检全部通过，但空域、运营人、起降场、气象放行和任务授权仍缺失；预检结论可引用，自动起飞授权与起飞指令保持阻断。
+- **GT28：** 路线、高度、天气窗口和风速预检全部通过，但空域、运营人、起降场、气象放行和任务授权仍缺失；预检结论可引用，自动起飞授权与起飞指令保持阻断；
+- **GT29：** 模拟气象服务给出8米/秒，现场传感器给出13米/秒；两个来源都新鲜且来自不同独立分组，但结果仍然冲突，因此天气结论保持未知并请求第三个独立来源。
 
-GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)。
+GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)。
 
 ## 当前公共Core真正支持什么
 
@@ -242,7 +248,7 @@ next_action
 - 自动设备控制；
 - 专利敏感优化方法和商业运行逻辑。
 
-详见[目标规范状态](docs/spec/target-specification-status.md)和[开源Core边界](docs/open_core_commercial_runtime_boundary.md)。
+详见[目标规范状态](docs/spec/target-specification-status.md)和[安全说明](SECURITY.md)。
 
 ## CLI
 
@@ -260,6 +266,9 @@ geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json>
 geotask runtime inspect examples/core/runtime_reference_descriptor.json --format json
 geotask runtime check examples/core/runtime_reference_descriptor.json examples/core/runtime_validate_artifact_request.json --format json
 geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json
+geotask provider inspect --profile --format json
+geotask provider check examples/core/verification_provider_descriptor_authoritative_weather_gt29.json examples/core/verification_request_weather_conflict_gt29.json --format json
+geotask provider validate examples/core/verification_response_authoritative_weather_gt29.json --request examples/core/verification_request_weather_conflict_gt29.json --descriptor examples/core/verification_provider_descriptor_authoritative_weather_gt29.json --format json
 geotask verify examples/core/verification_session_uav_recheck.json --state examples/core/world_state_uav_separation_recheck.json --observation examples/core/observation_uav_b_delay_recheck.json --bind task-gt16=examples/core/uav_route_crossing_temporal_separation.yaml --bind result-gt16-initial=examples/core/verification_session_uav_execution_result.json --bind transition-uav-recheck=examples/core/state_transition_uav_separation_recheck.json --format json
 geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json --bind base-world-state=examples/core/world_state_uav_separation_recheck.json --bind successor-world-state=examples/core/world_state_uav_separation_successor.json --bind impact-graph-uav-recheck=examples/core/impact_graph_uav_recheck.json --bind correction-uav-recheck=examples/core/correction_request_uav_recheck.json --bind discrepancy-uav-recheck=examples/core/discrepancy_report_uav_recheck.json --bind result-gt16-reevaluation=examples/core/incremental_reevaluation_uav_execution_result.json --format json
 ```
@@ -278,7 +287,8 @@ geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json -
 | GeoTask文档Schema | `1.0` | YAML/JSON任务格式版本 |
 | 语言与执行规范 | `1.0` | 当前公共实现规范 |
 | Agent Integration Profile | `0.1` | 模型无关工具契约、补证据恢复与恢复报告Artifact |
-| Runtime Interface Profile | `0.1` | Core与外部Runtime之间的Descriptor、Request、Response契约 |
+| 运行时接口规范 | `0.1` | 核心与外部运行时之间的描述符、请求、响应契约 |
+| 验证提供方接口规范 | `0.1` | 验证提供方描述符、验证请求、验证响应和可信保证档案 |
 | 白皮书 | `0.1` | 公开概念草案 |
 
 ## 文档

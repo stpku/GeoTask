@@ -1,0 +1,253 @@
+{
+  "world_state": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+    "schema_version": "0.1",
+    "world_state_id": "fictional-weather-mission-state-gt27",
+    "revision": 7,
+    "as_of": "2026-08-04T14:00:00+08:00",
+    "materialized_at": "2026-08-04T14:00:04+08:00",
+    "observation_refs": [
+      "obs-weather-east-wind-speed-gt27"
+    ],
+    "evidence_refs": [
+      "registry:fictional/mission-weather-gt27",
+      "weather:fictional/east/wind-speed-gt27",
+      "weather:fictional/east/wind-stream"
+    ],
+    "objects": [
+      {
+        "id": "weather-cell-east",
+        "type": "weather_cell",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "weather:fictional/east/wind-stream"
+        ],
+        "attributes": [
+          {
+            "name": "region_code",
+            "value": "east",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "registry:fictional/mission-weather-gt27"
+            ]
+          },
+          {
+            "name": "wind_speed_mps",
+            "value": 12,
+            "basis": "external_assertion",
+            "verification_status": "asserted",
+            "observation_refs": [],
+            "evidence_refs": [
+              "weather:fictional/east/wind-stream"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mission-a-delivery",
+        "type": "flight_mission",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "registry:fictional/mission-weather-gt27"
+        ],
+        "attributes": [
+          {
+            "name": "region_code",
+            "value": "east",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          },
+          {
+            "name": "planned_time",
+            "value": "14:30",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          },
+          {
+            "name": "max_wind_mps",
+            "value": 10,
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          }
+        ]
+      },
+      {
+        "id": "mission-b-inspection",
+        "type": "flight_mission",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": ["registry:fictional/mission-weather-gt27"],
+        "attributes": [
+          {
+            "name": "region_code",
+            "value": "west",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          },
+          {
+            "name": "planned_time",
+            "value": "14:30",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          },
+          {
+            "name": "max_wind_mps",
+            "value": 10,
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          }
+        ]
+      },
+      {
+        "id": "mission-c-survey",
+        "type": "flight_mission",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T11:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": ["registry:fictional/mission-weather-gt27"],
+        "attributes": [
+          {
+            "name": "region_code",
+            "value": "east",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          },
+          {
+            "name": "planned_time",
+            "value": "12:30",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          },
+          {
+            "name": "max_wind_mps",
+            "value": 10,
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          }
+        ]
+      },
+      {
+        "id": "mission-d-emergency",
+        "type": "flight_mission",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": ["registry:fictional/mission-weather-gt27"],
+        "attributes": [
+          {
+            "name": "region_code",
+            "value": "east",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          },
+          {
+            "name": "planned_time",
+            "value": "14:45",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          },
+          {
+            "name": "max_wind_mps",
+            "value": 15,
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/mission-weather-gt27"]
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "id": "mission-a-weather-suitable",
+        "subject_ref": "mission-a-delivery",
+        "predicate": "wind_suitable_for",
+        "object_ref": "weather-cell-east",
+        "value": true,
+        "basis": "derived",
+        "verification_status": "asserted",
+        "observation_refs": [],
+        "evidence_refs": [
+          "registry:fictional/mission-weather-gt27",
+          "weather:fictional/east/wind-stream"
+        ]
+      },
+      {
+        "id": "mission-b-weather-suitable",
+        "subject_ref": "mission-b-inspection",
+        "predicate": "wind_suitable_for",
+        "object_ref": "weather-cell-east",
+        "value": true,
+        "basis": "derived",
+        "verification_status": "asserted",
+        "observation_refs": [],
+        "evidence_refs": [
+          "registry:fictional/mission-weather-gt27",
+          "weather:fictional/east/wind-stream"
+        ]
+      },
+      {
+        "id": "mission-c-weather-suitable",
+        "subject_ref": "mission-c-survey",
+        "predicate": "wind_suitable_for",
+        "object_ref": "weather-cell-east",
+        "value": true,
+        "basis": "derived",
+        "verification_status": "asserted",
+        "observation_refs": [],
+        "evidence_refs": [
+          "registry:fictional/mission-weather-gt27",
+          "weather:fictional/east/wind-stream"
+        ]
+      },
+      {
+        "id": "mission-d-weather-suitable",
+        "subject_ref": "mission-d-emergency",
+        "predicate": "wind_suitable_for",
+        "object_ref": "weather-cell-east",
+        "value": true,
+        "basis": "derived",
+        "verification_status": "asserted",
+        "observation_refs": [],
+        "evidence_refs": [
+          "registry:fictional/mission-weather-gt27",
+          "weather:fictional/east/wind-stream"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "discrepancy_report": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-discrepancy-report-v0.1.schema.json",
+    "schema_version": "0.1",
+    "report_id": "gt27-weather-wind-speed-discrepancy",
+    "recorded_at": "2026-08-04T14:00:05+08:00",
+    "state": "confirmed",
+    "severity": "high",
+    "reason": "The east-zone wind speed changed from 6 to 12 metres per second, invalidating reuse of two mission-specific wind checks while two unrelated mission results remain reusable.",
+    "world_state": {
+      "world_state_id": "fictional-weather-mission-state-gt27",
+      "revision": 7,
+      "as_of": "2026-08-04T14:00:00+08:00",
+      "semantic_fingerprint": "f229b9b3f6d6b0bf358c15b19cb563f11c3d8930d948681b69fd02bcbbef2899"
+    },
+    "observation_refs": [
+      "obs-weather-east-wind-speed-gt27"
+    ],
+    "evidence_refs": [
+      "weather:fictional/east/wind-speed-gt27"
+    ],
+    "artifact_refs": [
+      {
+        "ref_id": "weather-observation-gt27",
+        "artifact_id": "geotask.observation",
+        "schema_version": "0.1",
+        "instance_id": "obs-weather-east-wind-speed-gt27",
+        "content_sha256": "fefda0542912e024de90f0ff636ebf855e60fea471742a60e136acf704977bb3"
+      }
+    ],
+    "discrepancies": [
+      {
+        "id": "east-wind-speed-value-mismatch",
+        "kind": "value_mismatch",
+        "state": "confirmed",
+        "severity": "high",
+        "subject_kind": "attribute",
+        "subject_path": "/objects/weather-cell-east/attributes/wind_speed_mps/value",
+        "summary": "The current east-zone wind value is stale relative to the new fictional sensor Observation.",
+        "reason": "The prior operating assumption was 6 m/s, while the 14:00 base snapshot has already absorbed the new 12 m/s Observation but still retains stale dependent mission results.",
+        "basis_refs": [
+          "weather-observation-gt27"
+        ],
+        "observation_refs": [
+          "obs-weather-east-wind-speed-gt27"
+        ],
+        "evidence_refs": [
+          "weather:fictional/east/wind-speed-gt27"
+        ],
+        "impact": {
+          "state": "confirmed",
+          "reason": "Only east-zone missions at or after the update time are declared affected; mission A and mission D require recheck.",
+          "affected_paths": [
+            "/relations/mission-a-weather-suitable/value",
+            "/relations/mission-d-weather-suitable/value"
+          ],
+          "affected_assertion_refs": [
+            "mission_a_wind_within_limit",
+            "mission_d_wind_within_limit"
+          ],
+          "affected_output_refs": [],
+          "affected_action_refs": []
+        },
+        "correction_scope": {
+          "state": "allowed",
+          "reason": "Update the east wind value and recompute only mission A and mission D suitability; preserve mission B and mission C results.",
+          "mutable_paths": [
+            "/objects/weather-cell-east/attributes/wind_speed_mps/value",
+            "/relations/mission-a-weather-suitable/value",
+            "/relations/mission-d-weather-suitable/value"
+          ],
+          "immutable_paths": [
+            "/relations/mission-b-weather-suitable/value",
+            "/relations/mission-c-weather-suitable/value"
+          ]
+        },
+        "expected": 6,
+        "observed": 12
+      }
+    ]
+  }
+}

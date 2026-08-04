@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#263b56">
+  <meta name="description" content="GeoTask第24期：临时禁飞区发布后，只复核真正受影响的航线、飞行任务和审批结论，而不是全量重算或只更新地图。">
+  <title>GeoTask GT24｜临时禁飞区发布后哪些航线任务和审批结论必须重新检查</title>
+  <style>
+    :root{color-scheme:light;--navy:#263b56;--blue:#356b9a;--teal:#167f78;--green:#18845d;--red:#bf4b46;--amber:#a66a13;--ink:#17232d;--muted:#65747f;--line:#d8e1e8;--soft:#f2f6f8;--good:#e9f7f2;--bad:#fff0ee;--warm:#fff6e5;--shadow:0 14px 38px rgba(38,59,86,.12)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);line-height:1.65;background:radial-gradient(circle at top right,rgba(191,75,70,.13),transparent 32%),linear-gradient(180deg,#edf3f7,#fff 64%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}.shell{width:min(100%,840px);margin:0 auto;padding:20px 16px 48px}.brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 16px}.brand-name{display:flex;align-items:center;gap:10px;color:var(--navy);font-weight:800}.mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:white;font-size:14px}.back{color:var(--blue);text-decoration:none;font-size:14px;font-weight:800}.hero{padding:30px 22px 26px;border-radius:24px;background:linear-gradient(145deg,#263b56,#6d4650);color:white;box-shadow:var(--shadow)}.eyebrow{margin:0 0 8px;color:#f2c7c1;font-size:14px;font-weight:800}h1{margin:0;font-size:clamp(27px,7.2vw,42px);line-height:1.2}.lead{margin:16px 0 0;color:#edf0f4}.formula{margin-top:20px;padding:14px;border:1px solid rgba(255,255,255,.22);border-radius:16px;background:rgba(255,255,255,.08);text-align:center;font-weight:850}.card{margin-top:16px;padding:22px 18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.97);box-shadow:0 9px 28px rgba(38,59,86,.06)}h2{margin:0 0 12px;color:var(--navy);font-size:21px}p{margin:8px 0}.visual{padding:10px;border:1px solid #e3e9ee;border-radius:16px;background:white}svg{display:block;width:100%;height:auto}.state-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.state{padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--soft)}.state strong{display:block;color:var(--navy);font-size:13px}.value{font:900 18px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}.true .value{color:var(--green)}.warning .value{color:var(--amber)}.danger .value{color:var(--red)}.logic{margin-top:12px;padding:14px;border-radius:14px;background:var(--warm);color:#704a0a;text-align:center;font-weight:850}.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.box{padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.box.good{background:var(--good);border-color:#add9cb}.box.bad{background:var(--bad);border-color:#e7b7b1}.box h3{margin:0 0 8px;color:var(--navy)}.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.chain-item{position:relative;padding:14px 10px;border-radius:14px;text-align:center;background:var(--bad);border:1px solid #e7b7b1;color:#8e3631;font-weight:850}.chain-item:not(:last-child)::after{content:"→";position:absolute;right:-10px;top:50%;transform:translateY(-50%);z-index:2;color:var(--red);font-size:20px}.primary,.secondary,.sample{border:0;cursor:pointer;font:inherit;font-weight:800}.primary,.secondary{width:100%;min-height:54px;border-radius:15px}.primary{background:var(--teal);color:white}.secondary{margin-top:10px;background:#e7eef3;color:var(--navy)}.status{min-height:28px;margin:10px 2px 0;color:var(--teal);font-size:14px;font-weight:750;text-align:center}.tip{color:var(--muted);font-size:13px;text-align:center}.samples{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.sample{min-height:62px;border-radius:15px;background:var(--soft);color:var(--navy)}.sample.wide{grid-column:1/-1}.sample.active{outline:3px solid rgba(53,107,154,.18);background:#e3edf4}.verification{margin-top:16px;padding:17px;border:1px solid var(--line);border-radius:17px;background:var(--soft)}.verification.verified{background:var(--good);border-color:#add9cb}.verification.contradicted{background:var(--bad);border-color:#e7b7b1}.verification-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.verification-head strong{color:var(--navy)}.badge{padding:5px 10px;border-radius:999px;background:#dfe8ee;color:var(--navy);font-size:12px;font-weight:850}.verified .badge{background:#cdebe1;color:#0f7167}.contradicted .badge{background:#f1d0cc;color:#a23b34}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{padding:10px;border-radius:12px;background:rgba(255,255,255,.78)}.metric small{display:block;color:var(--muted)}.metric code{color:var(--navy);font-size:13px;font-weight:850;overflow-wrap:anywhere}.message{margin-top:12px;color:var(--muted);font-size:14px}.contradicted .message{color:#a23b34}.notice{margin-top:12px;padding:13px 14px;border-radius:14px;background:var(--warm);color:#704a0a;font-size:14px}details{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}summary{cursor:pointer;color:var(--blue);font-weight:800}pre{margin:12px 0 0;padding:14px;overflow:auto;max-height:650px;border-radius:14px;background:#111c24;color:#deebf2;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre}.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.link-btn{display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid var(--line);border-radius:13px;background:white;color:var(--navy);text-decoration:none;font-weight:800}footer{padding:28px 8px 0;text-align:center;color:var(--muted);font-size:12px}@media(max-width:620px){.state-grid,.compare,.samples,.metrics,.chain{grid-template-columns:1fr}.sample.wide{grid-column:auto}.chain-item:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}}@media(min-width:640px){.shell{padding-top:34px}.hero{padding:38px 36px 32px}.card{padding:28px 26px}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+  <a href="../" aria-label="返回GeoTask项目首页" style="position:fixed;right:12px;bottom:12px;z-index:50;padding:9px 13px;border-radius:13px;background:rgba(255,255,255,.95);color:#263b56;text-decoration:none;font:700 13px/1.2 -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;box-shadow:0 6px 20px rgba(38,59,86,.16)">项目首页</a>
+  <main class="shell">
+    <div class="brand"><div class="brand-name"><span class="mark">GT</span><span>GeoTask 世界状态循环 · GT24</span></div><a class="back" href="../gt23/">← GT23</a></div>
+    <section class="hero"><p class="eyebrow">临时空域变化 · 受影响范围复核</p><h1>临时禁飞区发布后，哪些航线、任务和审批结论必须重新检查？</h1><p class="lead">14:00—16:00，一处虚构临时禁飞区生效。医疗航线A在14:30穿越该区域，巡检航线B在同一时段从区域南侧绕开。系统既不能把所有任务全部重算，也不能只改地图后继续沿用旧审批。</p><div class="formula">变化根因 + 明确依赖链 + 受影响与不受影响边界 → 有限复核范围</div></section>
+
+    <section class="card"><h2>为什么必须先确定影响范围？</h2><div class="compare"><div class="box bad"><h3>全部重算</h3><p>把所有航线、任务和审批都重新检查，虽然看似谨慎，却会让无关任务排队、扩大人工负担，并掩盖真正需要优先处理的链路。</p></div><div class="box bad"><h3>只更新地图</h3><p>如果地图显示了禁飞区，但医疗任务仍沿用旧放行结论，审批记录和起飞动作会与当前空域状态脱节。</p></div></div><p class="notice">正确问题不是“哪里变了”，而是“哪些下游结论依赖这项变化，哪些明确不依赖”。</p></section>
+
+    <section class="card"><h2>两条航线，只有一条进入影响链</h2><div class="visual"><svg viewBox="0 0 760 430" role="img" aria-label="医疗航线穿越临时禁飞区，巡检航线绕开"><rect x="250" y="85" width="260" height="190" rx="18" fill="#fbe4e1" stroke="#bf4b46" stroke-width="3" stroke-dasharray="10 7"/><text x="380" y="115" text-anchor="middle" font-size="18" font-weight="900" fill="#a23b34">临时禁飞区</text><text x="380" y="142" text-anchor="middle" font-size="14" fill="#a23b34">14:00—16:00</text><path d="M55 190 L705 190" stroke="#bf4b46" stroke-width="7"/><circle cx="55" cy="190" r="9" fill="#bf4b46"/><circle cx="705" cy="190" r="9" fill="#bf4b46"/><text x="130" y="170" text-anchor="middle" font-size="16" font-weight="900" fill="#a23b34">医疗航线A</text><text x="620" y="170" text-anchor="middle" font-size="14" fill="#a23b34">14:30—14:50</text><path d="M55 340 L705 340" stroke="#18845d" stroke-width="7"/><circle cx="55" cy="340" r="9" fill="#18845d"/><circle cx="705" cy="340" r="9" fill="#18845d"/><text x="130" y="320" text-anchor="middle" font-size="16" font-weight="900" fill="#126747">巡检航线B</text><text x="620" y="320" text-anchor="middle" font-size="14" fill="#126747">14:35—14:55</text><text x="380" y="402" text-anchor="middle" font-size="15" font-weight="850" fill="#263b56">航线A：相交 true　　航线B：相交 false</text></svg></div><div class="state-grid"><div class="state danger"><strong>进入复核的航线</strong><div class="value">route-medical-a</div></div><div class="state true"><strong>保持原范围的航线</strong><div class="value">route-inspection-b</div></div><div class="state warning"><strong>禁飞区有效期</strong><div class="value">120 min</div></div></div><div class="logic">本案例使用调用方已经声明的相交关系；Core没有在页面或Impact Graph中重新执行几何求交。</div></section>
+
+    <section class="card"><h2>医疗航线变化会传到哪里？</h2><div class="chain"><div class="chain-item">航线A<br>需复核</div><div class="chain-item">医疗任务17<br>放行阻断</div><div class="chain-item">审批结论17<br>不可复用</div><div class="chain-item">起飞动作<br>保持阻断</div></div><p>影响图记录2个需要重新检查的断言、2个被阻断的输出和1个被阻断的起飞动作。巡检航线B、巡检任务08和对应审批不进入该图。</p><p class="notice">“没有进入影响图”只表示本案例的调用方声明其不依赖该变化，并不等于Core自动证明了所有潜在依赖均不存在。</p></section>
+
+    <section class="card"><h2>普通AI容易犯什么错误？</h2><div class="compare"><div class="box bad"><h3>看见禁飞区就全量停飞</h3><p>把不相交的巡检航线也阻断，制造无依据的业务影响。</p></div><div class="box bad"><h3>只改航线结论，不追任务审批</h3><p>医疗航线已不满足原条件，但旧任务放行和旧审批仍被继续复用。</p></div></div><p class="notice">GT24要求把“路线—任务—审批—行动”的依赖链明确写出来，同时保留不受影响链路的边界。</p></section>
+
+    <section class="card"><h2>第一步：让模型选择处理方式</h2><button class="primary" id="copy-open" type="button">复制 GT24 并打开 DeepSeek</button><button class="secondary" id="copy-only" type="button">只复制 GT24 场景</button><div class="status" id="copy-status" role="status"></div><p class="tip">得到模型建议后返回本页，选择对应处理方式并进行本地规则核验。</p><details><summary>查看完整场景摘要</summary><pre id="task-source">scenario:
+  id: "gt24-temporary-no-fly-zone-impact"
+  temporary_zone:
+    active_window: "2026-08-04T14:00:00+08:00/2026-08-04T16:00:00+08:00"
+  routes:
+    route-medical-a:
+      scheduled_window: "14:30/14:50"
+      intersects_active_zone: true
+      mission: "mission-medical-17"
+      approval: "approval-medical-17"
+    route-inspection-b:
+      scheduled_window: "14:35/14:55"
+      intersects_active_zone: false
+      mission: "mission-inspection-08"
+      approval: "approval-inspection-08"
+  declared_impact:
+    assertions_requiring_recheck: 2
+    blocked_outputs:
+      - "mission_medical_17_dispatch_clearance"
+      - "approval_medical_17_release_decision"
+    blocked_actions:
+      - "launch_mission_medical_17"
+    unaffected_chain:
+      - "route-inspection-b"
+      - "mission-inspection-08"
+      - "approval-inspection-08"
+  bindings:
+    world_state_semantic_fingerprint: "819d68c21176a6d0f5b78946b37ed80a7c7d31074b30c823fc0ddded6af348f0"
+    discrepancy_semantic_fingerprint: "250aa032c3908dff58f1bad5e85c5eba36cc195fa76d4ff6e40ba0bd34fd1512"
+    impact_graph_semantic_fingerprint: "12e7908066d35dc9d7cbe161996b7d22aaddeec32b0cb6013eddf5c1a83a2a2e"
+  boundaries:
+    geometry_intersection_computed_by_core: false
+    impact_discovered_by_core: false
+    declared_scope_validated: true
+    propagation_executed: false
+    reevaluation_executed: false
+    outputs_released: false
+    external_truth_verified: false
+    action_authorized: false
+instructions_for_model:
+  - "Choose one action from recompute_all_operations, update_map_only_keep_clearances, or validate_declared_impact_chain."
+  - "Do not include route-inspection-b or its mission and approval in the affected chain."
+  - "Do not claim that Core computed geometry or automatically discovered impact."
+  - "Do not release outputs or authorize launch."</pre></details></section>
+
+    <section class="card"><h2>第二步：验证模型处理方式</h2><div class="samples"><button class="sample" id="btn-all" type="button">所有航线、任务和审批全部重算</button><button class="sample" id="btn-map" type="button">只更新地图，继续沿用旧放行</button><button class="sample wide" id="btn-scope" type="button">验证声明的医疗任务影响链</button></div><button class="primary" id="verify" type="button" style="margin-top:10px">本地验证</button><div class="status" id="verify-status" role="status"></div><div class="verification" id="verification-card"><div class="verification-head"><strong>验证结果</strong><span class="badge" id="verification-badge">等待选择</span></div><div class="metrics"><div class="metric"><small>模型候选处理</small><code id="model-action">—</code></div><div class="metric"><small>图结构</small><code>7 nodes / 7 edges</code></div><div class="metric"><small>复核目标</small><code>4</code></div><div class="metric"><small>阻断范围</small><code>2 outputs / 1 action</code></div></div><p class="message" id="verification-message">模型只负责提出候选处理；相交关系、声明范围、图结构、精确字节绑定和语义指纹由浏览器local_deterministic规则复核。</p></div><p class="notice">验证通过只证明给定的医疗链影响声明与固定制品一致，且巡检链没有被错误纳入。它不证明Core完成了几何求交、自动影响发现、传播执行、重新评估、输出发布或行动授权。</p><details><summary>技术实现：Impact Graph记录了什么？</summary><p>Impact Graph将一份已确认的“旧医疗放行结论已过时”差异作为根节点，连接到航线相交路径、两个需复核断言、两个阻断输出和一个阻断动作。它绑定World State和Discrepancy Report的精确字节，但公共v0.1不会自动发现依赖关系或执行传播。</p></details></section>
+
+    <section class="card"><h2>查看项目与继续体验</h2><div class="link-grid"><a class="link-btn" href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a class="link-btn" href="../gt23/">← GT23</a></div></section>
+    <footer>GeoTask Core · MIT License · 虚构数据 · 无账号、无模型密钥、无后台模型调用</footer>
+  </main>
+  <script>
+    (()=>{const allowed="validate_declared_impact_chain",routeA=true,routeB=false,nodeCount=7,edgeCount=7,targetCount=4,blockedOutputs=2,blockedActions=1,impacted=["route-medical-a","mission-medical-17","approval-medical-17","launch_mission_medical_17"],unaffected=["route-inspection-b","mission-inspection-08","approval-inspection-08"],fingerprints=["819d68c21176a6d0f5b78946b37ed80a7c7d31074b30c823fc0ddded6af348f0","250aa032c3908dff58f1bad5e85c5eba36cc195fa76d4ff6e40ba0bd34fd1512","12e7908066d35dc9d7cbe161996b7d22aaddeec32b0cb6013eddf5c1a83a2a2e"];let selected=null;const el=id=>document.getElementById(id),card=el("verification-card"),badge=el("verification-badge"),message=el("verification-message"),status=el("verify-status"),model=el("model-action");function localCheck(){return routeA===true&&routeB===false&&nodeCount===7&&edgeCount===7&&targetCount===4&&blockedOutputs===2&&blockedActions===1&&impacted.length===4&&unaffected.length===3&&new Set([...impacted,...unaffected]).size===7&&fingerprints.every(item=>item.length===64)}function choose(value,button){selected=value;document.querySelectorAll(".sample").forEach(item=>item.classList.remove("active"));button.classList.add("active");status.textContent=`已选择：${value}`}el("btn-all").onclick=()=>choose("recompute_all_operations",el("btn-all"));el("btn-map").onclick=()=>choose("update_map_only_keep_clearances",el("btn-map"));el("btn-scope").onclick=()=>choose(allowed,el("btn-scope"));el("verify").onclick=()=>{if(!selected){status.textContent="请先选择一种处理方式。";return}const valid=selected===allowed&&localCheck();card.className=`verification ${valid?"verified":"contradicted"}`;badge.textContent=valid?"verified":"contradicted";model.textContent=selected;if(valid){message.textContent="医疗航线、任务、审批和起飞动作形成有限影响链；巡检航线及其任务审批保持在声明范围之外。";status.textContent="验证通过：只复核真正受影响的医疗任务链。"}else if(selected==="recompute_all_operations"){message.textContent="全量重算会把与禁飞区不相交的巡检链也纳入影响范围，超出了声明依赖。";status.textContent="发现冲突：影响范围被无依据扩大。"}else{message.textContent="只更新地图却继续沿用旧任务放行和审批结论，会切断路线变化与下游决策之间的依赖链。";status.textContent="发现冲突：下游结论没有进入复核。"}};async function copy(open){const text=el("task-source").textContent.trim()+"\n";let ok=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok=true}}catch(_){ }if(!ok){const area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();ok=document.execCommand("copy");area.remove()}el("copy-status").textContent=ok?(open?"已复制，即将打开 DeepSeek。":"已复制，可粘贴到任意大模型。") : "复制失败，请展开场景手动复制。";if(ok&&open)setTimeout(()=>location.assign("https://chat.deepseek.com/"),600)}el("copy-open").onclick=()=>copy(true);el("copy-only").onclick=()=>copy(false)})();
+  </script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

@@ -65,7 +65,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已将GT22改为多源运行态势主线：位置与电量来自两个系统，先解释对象、时间和字段可能被错误拼接，再展示显式映射、revision 1、引用闭包、不确定性和稳定语义指纹；
 - ✅ GT21—GT28统一采用“现实场景优先、必要性先行、技术概念后置”的案例叙事规范，主标题不得由Artifact、revision、semantic fingerprint或materialization等术语主导；
 - ✅ 已发布GT23连续飞行状态案例，以10:02与10:07两个无人机运行快照展示只覆盖最新值为何会丢失历史和变化依据；案例显式记录位置、电量和对象有效期3项变化，绑定revision 1/2及语义指纹，并通过案例级路径核验确认before/after值，同时明确公共State Transition不执行通用diff、影响传播、风险重算或行动授权；
-- 继续建设GT24—GT28：临时禁飞区影响范围、位置更新后的局部重算、营业时间失效后的限定纠偏、气象更新后的增量复核，以及条件满足但仍未获得自动起飞授权。
+- ✅ 已发布GT24临时禁飞区影响范围案例：一条医疗航线穿越有效禁飞区，另一条巡检航线绕开；案例以显式声明的有限依赖链将医疗航线、任务、审批输出和起飞动作纳入复核，同时排除巡检链，并验证7节点、7条边、4个复核目标、精确文件绑定和无环结构，明确不执行几何求交、自动影响发现、传播、复核、输出释放或动作授权；
+- 继续建设GT25—GT28：位置更新后的局部重算、营业时间失效后的限定纠偏、气象更新后的增量复核，以及条件满足但仍未获得自动起飞授权。
 
 ### v0.6：Local Verification Providers与Domain Pack生态
 
@@ -147,7 +148,8 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Reframed GT22 around multi-source operational awareness: position and battery arrive from different systems. The page explains object, time, and field-mapping risks before deferring explicit mapping, revision 1, reference closure, uncertainty, and semantic fingerprinting to the technical layer;
 - ✅ Adopted a scenario-first narrative contract for GT21–GT28: real task and necessity lead, generic-AI failure modes follow, and Artifact/revision/semantic-fingerprint/materialization terminology is deferred to technical implementation;
 - ✅ Published GT23 as a continuous-flight state-change case using the 10:02 and 10:07 UAV snapshots to show why overwriting the latest fields loses history and change evidence. The case explicitly records position, battery, and object-validity changes, binds revisions 1 and 2 by semantic fingerprints, and checks every declared before/after value against the snapshots while preserving the boundary that public State Transition does not compute a generic diff, propagate impact, recompute risk, or authorize action;
-- continue GT24–GT28 through concrete scenarios covering temporary no-fly-zone impact, local safety-distance recompute, bounded schedule correction, weather-triggered incremental reevaluation, and conditions that still do not authorize automatic takeoff.
+- ✅ Published GT24 as a bounded temporary-no-fly-zone impact case: one medical route intersects the active zone while an inspection route avoids it. The case validates an explicit finite dependency chain covering the medical route, mission, approval outputs, and launch action while excluding the inspection chain, with seven nodes, seven edges, four reevaluation targets, exact-byte bindings, and acyclic structure; it does not compute geometry, discover impact automatically, execute propagation or reevaluation, release outputs, or authorize action;
+- continue GT25–GT28 through concrete scenarios covering local safety-distance recompute, bounded schedule correction, weather-triggered incremental reevaluation, and conditions that still do not authorize automatic takeoff.
 
 ### v0.6: Local Verification Providers and Domain Pack Ecosystem
 

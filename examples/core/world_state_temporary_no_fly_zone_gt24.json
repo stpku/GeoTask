@@ -1,0 +1,404 @@
+{
+  "world_state": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+    "schema_version": "0.1",
+    "world_state_id": "fictional-riverside-airspace-operations-gt24",
+    "revision": 2,
+    "as_of": "2026-08-04T14:05:00+08:00",
+    "materialized_at": "2026-08-04T14:05:02+08:00",
+    "observation_refs": [
+      "obs-riverside-temporary-no-fly-zone-gt24"
+    ],
+    "evidence_refs": [
+      "notice:fictional/riverside-temporary-no-fly-zone-gt24",
+      "planning:fictional/gt24/routes-missions-approvals"
+    ],
+    "objects": [
+      {
+        "id": "zone-riverside-temporary-gt24",
+        "type": "temporary_no_fly_zone",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T14:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "observation_refs": [
+          "obs-riverside-temporary-no-fly-zone-gt24"
+        ],
+        "evidence_refs": [
+          "notice:fictional/riverside-temporary-no-fly-zone-gt24"
+        ],
+        "attributes": [
+          {
+            "name": "active",
+            "value": true,
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "valid_from": "2026-08-04T14:00:00+08:00",
+            "valid_until": "2026-08-04T16:00:00+08:00",
+            "observation_refs": [
+              "obs-riverside-temporary-no-fly-zone-gt24"
+            ],
+            "evidence_refs": [
+              "notice:fictional/riverside-temporary-no-fly-zone-gt24"
+            ]
+          },
+          {
+            "name": "effective_window",
+            "value": {
+              "start": "2026-08-04T14:00:00+08:00",
+              "end": "2026-08-04T16:00:00+08:00"
+            },
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "valid_from": "2026-08-04T14:00:00+08:00",
+            "valid_until": "2026-08-04T16:00:00+08:00",
+            "observation_refs": [
+              "obs-riverside-temporary-no-fly-zone-gt24"
+            ],
+            "evidence_refs": [
+              "notice:fictional/riverside-temporary-no-fly-zone-gt24"
+            ]
+          },
+          {
+            "name": "polygon_local_xy",
+            "value": {
+              "coordinates": [
+                [40, 40],
+                [80, 40],
+                [80, 80],
+                [40, 80]
+              ],
+              "crs": "LOCAL_XY",
+              "unit": "meter"
+            },
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "valid_from": "2026-08-04T14:00:00+08:00",
+            "valid_until": "2026-08-04T16:00:00+08:00",
+            "observation_refs": [
+              "obs-riverside-temporary-no-fly-zone-gt24"
+            ],
+            "evidence_refs": [
+              "notice:fictional/riverside-temporary-no-fly-zone-gt24"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "route-medical-a",
+        "type": "uav_route",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ],
+        "attributes": [
+          {
+            "name": "polyline_local_xy",
+            "value": {
+              "coordinates": [
+                [0, 60],
+                [120, 60]
+              ],
+              "crs": "LOCAL_XY",
+              "unit": "meter"
+            },
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          },
+          {
+            "name": "scheduled_window",
+            "value": {
+              "start": "2026-08-04T14:30:00+08:00",
+              "end": "2026-08-04T14:50:00+08:00"
+            },
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "route-inspection-b",
+        "type": "uav_route",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ],
+        "attributes": [
+          {
+            "name": "polyline_local_xy",
+            "value": {
+              "coordinates": [
+                [0, 10],
+                [120, 10]
+              ],
+              "crs": "LOCAL_XY",
+              "unit": "meter"
+            },
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          },
+          {
+            "name": "scheduled_window",
+            "value": {
+              "start": "2026-08-04T14:35:00+08:00",
+              "end": "2026-08-04T14:55:00+08:00"
+            },
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mission-medical-17",
+        "type": "flight_mission",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ],
+        "attributes": [
+          {
+            "name": "route_id",
+            "value": "route-medical-a",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          },
+          {
+            "name": "dispatch_clearance",
+            "value": "clear_before_zone_notice",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mission-inspection-08",
+        "type": "flight_mission",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ],
+        "attributes": [
+          {
+            "name": "route_id",
+            "value": "route-inspection-b",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          },
+          {
+            "name": "dispatch_clearance",
+            "value": "clear",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "approval-medical-17",
+        "type": "approval_record",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ],
+        "attributes": [
+          {
+            "name": "mission_id",
+            "value": "mission-medical-17",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          },
+          {
+            "name": "decision",
+            "value": "approved_before_zone_notice",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "approval-inspection-08",
+        "type": "approval_record",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ],
+        "attributes": [
+          {
+            "name": "mission_id",
+            "value": "mission-inspection-08",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          },
+          {
+            "name": "decision",
+            "value": "approved",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": [
+              "planning:fictional/gt24/routes-missions-approvals"
+            ]
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "id": "route-medical-a-zone-riverside",
+        "subject_ref": "route-medical-a",
+        "predicate": "intersects_active_zone",
+        "object_ref": "zone-riverside-temporary-gt24",
+        "value": true,
+        "basis": "derived",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T14:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "observation_refs": [
+          "obs-riverside-temporary-no-fly-zone-gt24"
+        ],
+        "evidence_refs": [
+          "notice:fictional/riverside-temporary-no-fly-zone-gt24",
+          "planning:fictional/gt24/routes-missions-approvals"
+        ]
+      },
+      {
+        "id": "route-inspection-b-zone-riverside",
+        "subject_ref": "route-inspection-b",
+        "predicate": "intersects_active_zone",
+        "object_ref": "zone-riverside-temporary-gt24",
+        "value": false,
+        "basis": "derived",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T14:00:00+08:00",
+        "valid_until": "2026-08-04T16:00:00+08:00",
+        "observation_refs": [
+          "obs-riverside-temporary-no-fly-zone-gt24"
+        ],
+        "evidence_refs": [
+          "notice:fictional/riverside-temporary-no-fly-zone-gt24",
+          "planning:fictional/gt24/routes-missions-approvals"
+        ]
+      },
+      {
+        "id": "mission-medical-17-uses-route",
+        "subject_ref": "mission-medical-17",
+        "predicate": "uses_route",
+        "object_ref": "route-medical-a",
+        "value": true,
+        "basis": "external_assertion",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ]
+      },
+      {
+        "id": "mission-inspection-08-uses-route",
+        "subject_ref": "mission-inspection-08",
+        "predicate": "uses_route",
+        "object_ref": "route-inspection-b",
+        "value": true,
+        "basis": "external_assertion",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ]
+      },
+      {
+        "id": "approval-medical-17-for-mission",
+        "subject_ref": "approval-medical-17",
+        "predicate": "approves_mission",
+        "object_ref": "mission-medical-17",
+        "value": true,
+        "basis": "external_assertion",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ]
+      },
+      {
+        "id": "approval-inspection-08-for-mission",
+        "subject_ref": "approval-inspection-08",
+        "predicate": "approves_mission",
+        "object_ref": "mission-inspection-08",
+        "value": true,
+        "basis": "external_assertion",
+        "verification_status": "verified",
+        "valid_from": "2026-08-04T13:00:00+08:00",
+        "valid_until": "2026-08-04T17:00:00+08:00",
+        "observation_refs": [],
+        "evidence_refs": [
+          "planning:fictional/gt24/routes-missions-approvals"
+        ]
+      }
+    ]
+  }
+}

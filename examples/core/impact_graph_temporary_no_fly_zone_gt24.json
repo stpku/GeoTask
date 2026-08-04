@@ -1,0 +1,258 @@
+{
+  "impact_graph": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-impact-graph-v0.1.schema.json",
+    "schema_version": "0.1",
+    "graph_id": "gt24-temporary-no-fly-zone-impact-graph",
+    "recorded_at": "2026-08-04T14:05:08+08:00",
+    "state": "blocked",
+    "reason": "The caller-declared dependency chain maps the active temporary no-fly zone to one medical route, its mission and approval outputs, and the launch action; unrelated inspection operations are excluded.",
+    "world_state": {
+      "ref_id": "world-state-gt24",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-riverside-airspace-operations-gt24",
+      "revision": 2,
+      "as_of": "2026-08-04T14:05:00+08:00",
+      "semantic_fingerprint": "819d68c21176a6d0f5b78946b37ed80a7c7d31074b30c823fc0ddded6af348f0",
+      "content_sha256": "44ed575ad628219b71a62009c1e3e127cdf4444c7994a951e3116a8d7976f2fd"
+    },
+    "artifact_refs": [
+      {
+        "ref_id": "discrepancy-gt24",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "gt24-temporary-no-fly-zone-discrepancy",
+        "content_sha256": "087e4667a404cd37f0ac61ef10cc5fac64bbc5be1f6da821afe791995e0c315d"
+      }
+    ],
+    "entity_refs": [
+      {
+        "id": "entity-route-medical-clearance-stale",
+        "kind": "discrepancy",
+        "artifact_ref": "discrepancy-gt24",
+        "entity_id": "route-medical-a-clearance-stale"
+      }
+    ],
+    "root_node_refs": [
+      "node-medical-clearance-stale"
+    ],
+    "nodes": [
+      {
+        "id": "node-approval-medical-output",
+        "kind": "output",
+        "identity": "approval_medical_17_release_decision",
+        "impact_state": "blocked",
+        "reason": "The approval conclusion cannot be reused while dispatch is blocked.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "node-launch-medical-action",
+        "kind": "action",
+        "identity": "launch_mission_medical_17",
+        "impact_state": "blocked",
+        "reason": "Launch remains blocked until the dependent outputs are released.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "node-medical-clearance-stale",
+        "kind": "discrepancy",
+        "identity": "entity-route-medical-clearance-stale",
+        "impact_state": "root",
+        "reason": "The stale medical clearance is the declared root impact.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ],
+        "entity_ref": "entity-route-medical-clearance-stale"
+      },
+      {
+        "id": "node-mission-medical-assertion",
+        "kind": "assertion",
+        "identity": "mission_medical_17_dispatch_allowed",
+        "impact_state": "requires_recheck",
+        "reason": "Mission dispatch eligibility depends on the affected route.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "node-mission-medical-output",
+        "kind": "output",
+        "identity": "mission_medical_17_dispatch_clearance",
+        "impact_state": "blocked",
+        "reason": "The mission dispatch output remains blocked pending recheck.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "node-route-medical-assertion",
+        "kind": "assertion",
+        "identity": "route_medical_a_avoids_active_no_fly_zone",
+        "impact_state": "requires_recheck",
+        "reason": "The route-clearance assertion must be evaluated again.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "node-route-medical-intersection",
+        "kind": "world_state_path",
+        "identity": "/relations/route-medical-a-zone-riverside/value",
+        "impact_state": "affected",
+        "reason": "The medical route intersects the active temporary zone.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-approval-output-blocks-launch",
+        "kind": "blocks",
+        "from_node": "node-approval-medical-output",
+        "to_node": "node-launch-medical-action",
+        "state": "confirmed",
+        "reason": "A blocked approval conclusion cannot authorize launch.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "edge-discrepancy-invalidates-route",
+        "kind": "invalidates",
+        "from_node": "node-medical-clearance-stale",
+        "to_node": "node-route-medical-intersection",
+        "state": "confirmed",
+        "reason": "The notice invalidates reuse of the prior route clearance.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "edge-mission-assertion-blocks-mission-output",
+        "kind": "blocks",
+        "from_node": "node-mission-medical-assertion",
+        "to_node": "node-mission-medical-output",
+        "state": "confirmed",
+        "reason": "Unresolved mission eligibility blocks the dispatch output.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "edge-mission-output-blocks-approval-output",
+        "kind": "blocks",
+        "from_node": "node-mission-medical-output",
+        "to_node": "node-approval-medical-output",
+        "state": "confirmed",
+        "reason": "A blocked dispatch output invalidates reuse of the approval conclusion.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "edge-route-assertion-blocks-mission-output",
+        "kind": "blocks",
+        "from_node": "node-route-medical-assertion",
+        "to_node": "node-mission-medical-output",
+        "state": "confirmed",
+        "reason": "Unresolved route clearance blocks mission dispatch clearance.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "edge-route-rechecks-mission-assertion",
+        "kind": "requires_recheck",
+        "from_node": "node-route-medical-intersection",
+        "to_node": "node-mission-medical-assertion",
+        "state": "confirmed",
+        "reason": "The affected route requires mission dispatch recheck.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "edge-route-rechecks-route-assertion",
+        "kind": "requires_recheck",
+        "from_node": "node-route-medical-intersection",
+        "to_node": "node-route-medical-assertion",
+        "state": "confirmed",
+        "reason": "The changed route-zone relation requires route recheck.",
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      }
+    ],
+    "reevaluation_targets": [
+      {
+        "id": "target-approval-medical-output",
+        "node_ref": "node-approval-medical-output",
+        "state": "blocked",
+        "reason": "The approval conclusion remains blocked until dispatch is reevaluated.",
+        "input_node_refs": [
+          "node-route-medical-intersection"
+        ],
+        "prerequisite_node_refs": [
+          "node-mission-medical-output"
+        ],
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "target-mission-medical-assertion",
+        "node_ref": "node-mission-medical-assertion",
+        "state": "required",
+        "reason": "Recheck mission dispatch eligibility using the affected route.",
+        "input_node_refs": [
+          "node-route-medical-intersection"
+        ],
+        "prerequisite_node_refs": [],
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "target-mission-medical-output",
+        "node_ref": "node-mission-medical-output",
+        "state": "blocked",
+        "reason": "Dispatch clearance remains blocked until both assertions complete.",
+        "input_node_refs": [
+          "node-route-medical-intersection"
+        ],
+        "prerequisite_node_refs": [
+          "node-mission-medical-assertion",
+          "node-route-medical-assertion"
+        ],
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      },
+      {
+        "id": "target-route-medical-assertion",
+        "node_ref": "node-route-medical-assertion",
+        "state": "required",
+        "reason": "Recheck route clearance against the active zone.",
+        "input_node_refs": [
+          "node-route-medical-intersection"
+        ],
+        "prerequisite_node_refs": [],
+        "basis_refs": [
+          "discrepancy-gt24"
+        ]
+      }
+    ],
+    "blocked_outputs": [
+      "approval_medical_17_release_decision",
+      "mission_medical_17_dispatch_clearance"
+    ],
+    "blocked_actions": [
+      "launch_mission_medical_17"
+    ]
+  }
+}

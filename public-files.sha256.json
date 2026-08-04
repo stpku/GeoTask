@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 40710,
-    "sha256": "f9d8b27fa9e3c291567b2ef63bc483080a269e1926f43d95b50a5d05731c1e9c"
+    "size": 41486,
+    "sha256": "ac86bdee59d3997c35e1fcacdd9e96a0c1095503600ec9ada1c4032f8ade6215"
   },
   {
     "path": "CITATION.cff",
@@ -51,18 +51,18 @@
   },
   {
     "path": "README.en.md",
-    "size": 23750,
-    "sha256": "8595ff10cafbeda7737dbae7b6d0d17bc2930871b3e6688d01d844c97d9bb1d6"
+    "size": 24099,
+    "sha256": "33dab1da68410deacdb4a191645966bcedef3980156b71add1717e0a7764a5b9"
   },
   {
     "path": "README.md",
-    "size": 21991,
-    "sha256": "e33ccff70e6cbdb92dfcb2b6c63fd193d5ff999de2dfe22cbb5db0f7629e6ea6"
+    "size": 22242,
+    "sha256": "bd601a32c9f18d20f27c5200ed451d0ae00a11fdd341a48f7bfed40fb70a256f"
   },
   {
     "path": "ROADMAP.md",
-    "size": 26880,
-    "sha256": "da73b311ad3d7050d628e02d16c25ea3856a85bb283e0c422da03193069859b8"
+    "size": 27612,
+    "sha256": "05e6b78618043fcae8ae1b32c492e0fd1515d2ea51939da4bdd7b4f98be03de3"
   },
   {
     "path": "SECURITY.md",
@@ -505,6 +505,16 @@
     "sha256": "6e662ed74c57d2b16d1166ece322f584cdde1a80f3adb39872b2dd2ae695b7d2"
   },
   {
+    "path": "tests/test_gt32_experience_page.py",
+    "size": 2879,
+    "sha256": "4e0285cc5cff6a0feac592d71a71a13906e20ad6509dc7216e99fbc8860ae070"
+  },
+  {
+    "path": "tests/test_gt32_progressive_takeoff_authorization_case.py",
+    "size": 8415,
+    "sha256": "1b3332836f4d0dbfe4be28eccd4ccf171a095ffbb67c875968fc5ed7f494e874"
+  },
+  {
     "path": "tests/test_http_json_runtime_adapter_example.py",
     "size": 9552,
     "sha256": "c67deb4459dad459411e06cde87a1d6b427fbf2660d646cbe6092e1066ced9eb"
@@ -556,8 +566,8 @@
   },
   {
     "path": "tests/test_project_portal.py",
-    "size": 8909,
-    "sha256": "29e1f4598f64fcd4bf5ce3b8b8e5f32f3bca7478c8e25e00184f4bf719c56957"
+    "size": 8941,
+    "sha256": "924f3e04840593e4b736406bf0ca7acb0d56f6dcb85d22e82a6bccac574d9058"
   },
   {
     "path": "tests/test_provider_neutral_model_adapter_example.py",
@@ -995,6 +1005,31 @@
     "sha256": "fdf8cd8a9913a5a321f6d0ea8ed5c3479d3e9df91a4dd845f8c04015ed349f4e"
   },
   {
+    "path": "examples/core/authorization_evidence_airspace_gt32.json",
+    "size": 852,
+    "sha256": "e52bb1ed3e4fe8d0a289b10345e45ba64d7854be90a9936fde1806e3ba88a29f"
+  },
+  {
+    "path": "examples/core/authorization_evidence_departure_site_gt32.json",
+    "size": 870,
+    "sha256": "b179d3ff2e4ac8332af18ceca289216386b5807216d2c8ffc49dcf89dbe8ee7d"
+  },
+  {
+    "path": "examples/core/authorization_evidence_mission_gt32.json",
+    "size": 849,
+    "sha256": "d265591c6d62414add045fc3d779b67156a5f36a26cad27df9a05b2b5ac55d76"
+  },
+  {
+    "path": "examples/core/authorization_evidence_operator_gt32.json",
+    "size": 852,
+    "sha256": "9c0b36f13c80f8e4e1aaf310b175e1a00ada4234acfc87fe3e441ba08d6f5102"
+  },
+  {
+    "path": "examples/core/authorization_evidence_weather_release_gt32.json",
+    "size": 873,
+    "sha256": "f6c26624a7cbfa6af15acf5877cbb5b5aa8ee8e3313a35cd1d1f08b9bbda82ca"
+  },
+  {
     "path": "examples/core/city_event_report_deduplication.yaml",
     "size": 7803,
     "sha256": "270f845e16eea54ddacc33ea3f29f7da72ddbcbccd488a632428e2522ea1cc0d"
@@ -1178,6 +1213,16 @@
     "path": "examples/core/gt31_human_weather_adjudication.json",
     "size": 4386,
     "sha256": "a40ca5705229cadb809679ca198fa927fefd5dc46cf164d7caeba8c1179d27c1"
+  },
+  {
+    "path": "examples/core/gt32_build_progressive_takeoff_authorization.py",
+    "size": 18388,
+    "sha256": "99d2c650090e4185a0da262b077bf42915b44cda611e66c30d3a1f208814cf6c"
+  },
+  {
+    "path": "examples/core/gt32_progressive_takeoff_authorization.json",
+    "size": 7103,
+    "sha256": "53981f3934862bfedb89d1454f27a26b1832443ee9b9c9762a56ecfbe31a82b8"
   },
   {
     "path": "examples/core/impact_graph_temporary_no_fly_zone_gt24.json",
@@ -1368,6 +1413,11 @@
     "path": "examples/core/takeoff_authorization_control_evaluation_gt28.json",
     "size": 4437,
     "sha256": "7377d9e3f1db7b16aa4c806f90c64efd27107815f394bf3792b7a29ee8ebd0e1"
+  },
+  {
+    "path": "examples/core/takeoff_authorization_control_evaluation_gt32.json",
+    "size": 5700,
+    "sha256": "6f03bd6d768164ee12cd5020a2be5f80edfbbc3a1885adc53a7b9364fe9c94b2"
   },
   {
     "path": "examples/core/takeoff_preflight_execution_result_gt28.json",
@@ -1776,13 +1826,13 @@
   },
   {
     "path": "site/cases.json",
-    "size": 5893,
-    "sha256": "301c6cea35c85b9054b40430d2d6cce772b9cf5949f7d981d6b71362a4bf7da1"
+    "size": 6077,
+    "sha256": "f3027ee58eb711f0c2aa044ee555655d0bb67c873e73231a3cbf202ad5005b12"
   },
   {
     "path": "site/cases.txt",
-    "size": 155,
-    "sha256": "7217d9763f11b4dde23d3c9087e525f6bbe2a982f7fa2969e7ff6f206cf220d6"
+    "size": 160,
+    "sha256": "645c0b0abecabeb0fbe4a0f79c229580a989919f9fd2f5e8866ba55aab8f331f"
   },
   {
     "path": "site/deploy-nginx.sh",
@@ -1791,8 +1841,8 @@
   },
   {
     "path": "site/index.html",
-    "size": 37615,
-    "sha256": "d0b705b3eee3690e6b35605dfb65d1da05608cf9969491b42d58e33f3de7baa5"
+    "size": 38031,
+    "sha256": "c696410a864acef40a2e463f02e73b024ddeb684bb9c9330ff7608b32f67cbf6"
   },
   {
     "path": "site/robots.txt",
@@ -1801,8 +1851,13 @@
   },
   {
     "path": "site/sitemap.xml",
-    "size": 4952,
-    "sha256": "132f677527f29721e70c101ed6ffb9fc1142d98f000730f713066192160e0fd9"
+    "size": 5099,
+    "sha256": "f6d12fa6b48270afb2c9005ac9925134c6c645a59d9853ffd8e8bad1ba4dbf21"
+  },
+  {
+    "path": "site/gt32/index.html",
+    "size": 9547,
+    "sha256": "afe39d99c42358f662cb459d3fa0ea855beabe74b9e0d9ccc0bed3370ec5275e"
   },
   {
     "path": "site/gt12/index.html",
@@ -1836,8 +1891,8 @@
   },
   {
     "path": "site/en/index.html",
-    "size": 12866,
-    "sha256": "bce85afe2ee6b9b4d3fa1421720159ae5112cca442f51a002a405bb34573787a"
+    "size": 12882,
+    "sha256": "d8bf015349392fe13d641f533ae001192d3cfea7462da30ad682ec0053c95575"
   },
   {
     "path": "site/gt07/index.html",
@@ -2261,8 +2316,8 @@
   },
   {
     "path": "cases/catalog.yaml",
-    "size": 12972,
-    "sha256": "fbdc8a9d35451eebd46dd7c1ae0ae225ca0a7fe39e003446da18055d4f1b8167"
+    "size": 13484,
+    "sha256": "f5c7fe273333bf186176add8a285603cababeb3db96a54b12afa7101b452a5b7"
   },
   {
     "path": "docs/README.en.md",
@@ -2491,13 +2546,13 @@
   },
   {
     "path": "docs/spec/geotask-verification-provider-profile-v0.1.md",
-    "size": 6523,
-    "sha256": "1749fd3287a39fc53e7a5fdc7860b21ce9be8263d81b23eae6681a90e88e42f4"
+    "size": 7416,
+    "sha256": "ac174c8694b2c0e4e41bf2d678961b3e57ff325ce8f42f8af7da4a440202787c"
   },
   {
     "path": "docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md",
-    "size": 5907,
-    "sha256": "90979cf9a96d0b4eee110096c5ee40cea664469211e94ddfd8027bb310dbd849"
+    "size": 6645,
+    "sha256": "c0fa91513087a2e4f1b24c0168472161a2677dcb245ac055309afe5355ff6639"
   },
   {
     "path": "docs/spec/geotask-verification-session-v0.1.md",
@@ -2541,8 +2596,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 32782,
-    "sha256": "a185fd137e4d0b843cdda163ec8556a3341b3a6941746b368cefe863beacb581"
+    "size": 33544,
+    "sha256": "1a54d463ed9e897057c2122020df2139f9c6d9f734e8695db58b95ced9c37a7a"
   },
   {
     "path": ".release/release_public.py",

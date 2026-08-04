@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GT32｜五项授权陆续到达后，什么时候才算可起飞？</title>
+  <meta name="description" content="五份虚构授权证据逐项到达，未知项从5降至0；最后两个起飞相关输出转为可用，但生产发布、指令发送和动作执行仍为假。">
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#171717;background:#f5f5f2;line-height:1.65}
+    *{box-sizing:border-box}body{margin:0}.shell{width:min(1100px,calc(100% - 32px));margin:auto}
+    header{background:#fff;border-bottom:1px solid #ddd}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;color:#111;text-decoration:none}.nav a{color:#333;text-decoration:none;margin-left:18px}
+    .hero{padding:70px 0 48px;background:#fff}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;color:#555}.hero h1{font-size:clamp(34px,6vw,64px);line-height:1.08;max-width:980px;margin:12px 0 22px}.lead{font-size:20px;max-width:880px;color:#444}.statement{margin-top:28px;padding:22px;border-left:5px solid #111;background:#f2f2ee;font-size:22px;font-weight:700}
+    section{padding:54px 0}.section-title{font-size:34px;margin:0 0 12px}.muted{color:#555}.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:24px}.step{background:#fff;border:1px solid #ddd;border-radius:14px;padding:20px;position:relative}.step .num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#111;color:#fff;font-weight:800}.step strong{display:block;font-size:19px;margin:12px 0 6px}.step small{color:#666}.step:last-child{border:2px solid #111}
+    .dark{background:#1d1d1d;color:#fff}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;border:1px solid #ddd;border-radius:14px;padding:24px}.dark .card{background:#292929;border-color:#4a4a4a}.dark .muted{color:#ccc}.card strong{display:block;font-size:25px;margin:8px 0}.tag{display:inline-block;border:1px solid #aaa;border-radius:999px;padding:3px 9px;font-size:12px}
+    .choice{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.choice button{border:1px solid #222;background:#fff;border-radius:9px;padding:13px 18px;font-size:15px;cursor:pointer}.choice button.safe{background:#111;color:#fff}#result{min-height:94px;padding:18px;border:1px solid #bbb;border-radius:10px;background:#fff}.ok{font-weight:800}.bad{font-weight:800;color:#8a1f1f}
+    .facts{display:grid;grid-template-columns:1fr 1fr;gap:18px}.fact{background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px}pre{overflow:auto;background:#151515;color:#f3f3f3;border-radius:12px;padding:22px;font-size:14px}.footer{background:#111;color:#ddd;padding:38px 0}.footer a{color:#fff}
+    @media(max-width:900px){.timeline{grid-template-columns:1fr 1fr}.grid,.facts{grid-template-columns:1fr}.nav nav{display:none}}@media(max-width:560px){.timeline{grid-template-columns:1fr}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+<header><div class="shell nav"><a class="brand" href="../" aria-label="返回GeoTask项目首页">GeoTask · GT32</a><nav><a href="../gt31/">上一案例</a><a href="https://github.com/stpku/GeoTask">GitHub</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell">
+    <div class="eyebrow">GT32 · 渐进授权与非执行边界</div>
+    <h1>五项授权陆续到达后，什么时候才算可起飞？</h1>
+    <p class="lead">路线和天气预检已经通过，GT31的气象冲突也已完成限定裁决。但空域、运营人、起降场、气象放行和任务授权不会同时到达，系统必须在每份证据进入后重新计算门禁。</p>
+    <div class="statement">最后一个授权到达，只让输出变为可用；不代表指令已经发送，更不代表飞机已经起飞。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">未知授权从5项逐步降到0</h2>
+    <p class="muted">每一步只吸收一份明确证据，不根据其他记录推断缺失授权。</p>
+    <div class="timeline">
+      <article class="step"><span class="num">1</span><strong>空域授权</strong><small>剩余未知：4项</small><p>起飞授权与指令继续阻断。</p></article>
+      <article class="step"><span class="num">2</span><strong>运营人授权</strong><small>剩余未知：3项</small><p>不能因为已有两份记录就提前放行。</p></article>
+      <article class="step"><span class="num">3</span><strong>起降场授权</strong><small>剩余未知：2项</small><p>仍缺气象放行与任务授权。</p></article>
+      <article class="step"><span class="num">4</span><strong>气象放行</strong><small>剩余未知：1项</small><p>最后一项未到达，门禁仍为未知。</p></article>
+      <article class="step"><span class="num">5</span><strong>任务授权</strong><small>剩余未知：0项</small><p>两个输出转为可用，动作仍未执行。</p></article>
+    </div>
+  </div></section>
+
+  <section class="dark"><div class="shell">
+    <h2 class="section-title">三个状态不能混在一起</h2>
+    <div class="grid">
+      <article class="card"><span class="tag">门禁计算</span><h3>全部条件满足</h3><strong>control_state: satisfied</strong><p class="muted">五项调用方声明的授权值与路线、天气条件共同满足控制表达式。</p></article>
+      <article class="card"><span class="tag">输出资格</span><h3>起飞相关输出可用</h3><strong>eligible</strong><p class="muted">自动起飞授权和起飞指令可以交给外部运行时继续处理，但核心没有发布它们。</p></article>
+      <article class="card"><span class="tag">现实动作</span><h3>飞机仍未起飞</h3><strong>action_executed: false</strong><p class="muted">没有联系真实主管单位，没有发送指令，也没有执行飞行动作。</p></article>
+    </div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">选择系统下一步</h2>
+    <p class="muted">交互完全在浏览器本地运行，不接入真实授权或飞行系统。</p>
+    <div class="choice">
+      <button id="btn-early">已有四项授权，提前放行</button>
+      <button id="btn-send">五项齐全，直接发送起飞指令</button>
+      <button id="btn-handoff" class="safe">标记输出可用，交给外部运行时</button>
+      <button id="verify">执行本地检查</button>
+    </div>
+    <div id="result" aria-live="polite">尚未选择。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">固定结果</h2>
+    <div class="facts">
+      <div class="fact"><h3>第五份证据到达前</h3><p>控制状态：未知</p><p>自动起飞授权：阻断</p><p>起飞指令：阻断</p><p>缺失项：至少1项</p></div>
+      <div class="fact"><h3>第五份证据到达后</h3><p>控制状态：满足</p><p>自动起飞授权：可用</p><p>起飞指令：可用</p><p>动作执行：否</p></div>
+    </div>
+    <pre>unknown_authorization_count: 5 -> 4 -> 3 -> 2 -> 1 -> 0
+control_state: satisfied
+automatic_takeoff_authorization: eligible
+takeoff_command: eligible
+production_output_released: false
+command_sent: false
+action_authorized_by_core: false
+action_executed: false</pre>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">能力边界</h2>
+    <p>五份授权记录、签发主体、任务和时间均为虚构。公共核心只验证调用方提交的布尔状态、有限控制表达式和固定制品绑定。</p>
+    <p>公共核心没有判断真实授权文件是否合法，没有联系真实主管机构，没有发布生产输出，没有发送起飞指令，也没有执行现实动作。</p>
+  </div></section>
+</main>
+<footer class="footer"><div class="shell">GT32延续GT28—GT31：证据、可信保证、输出资格、生产发布和现实执行必须逐层分开。返回<a href="../">GeoTask项目首页</a>。</div></footer>
+<script>
+(()=>{
+  const unknownCounts=[4,3,2,1,0];
+  const finalEligible=['automatic_takeoff_authorization','takeoff_command'];
+  const allowed='handoff_eligible_outputs';
+  let selected='';
+  const box=document.getElementById('result');
+  const choose=(value,label)=>{selected=value;box.textContent='已选择：'+label;box.className='';};
+  document.getElementById('btn-early').onclick=()=>choose('early_release','已有四项授权，提前放行');
+  document.getElementById('btn-send').onclick=()=>choose('send_command','五项齐全，直接发送起飞指令');
+  document.getElementById('btn-handoff').onclick=()=>choose(allowed,'标记输出可用，交给外部运行时');
+  document.getElementById('verify').onclick=()=>{
+    const checks=[unknownCounts.join(',')==='4,3,2,1,0',finalEligible.length===2,selected===allowed];
+    if(checks.every(Boolean)) box.innerHTML='<span class="ok">检查通过：</span>五项授权逐步收敛，最终仅标记输出可用；生产发布、指令发送和动作执行仍由外部系统负责。';
+    else box.innerHTML='<span class="bad">检查未通过：</span>不得提前推断缺失授权，也不得把输出可用直接当成指令已发送或动作已执行。';
+  };
+})();
+</script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

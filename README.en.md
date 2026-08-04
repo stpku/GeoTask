@@ -28,7 +28,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 
 ## Start here
 
-- [Try the GT01–GT31 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT32 experience](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -129,7 +129,7 @@ The cases show how model proposals are materialized, recomputed, contradicted, e
 | Uncertainty and evidence | GT07–GT09 | What happens when evidence is missing or conflicting? |
 | Action and feasibility | GT10–GT20 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, city-event deduplication, equipment-capability, and high-risk action-gate constraints? |
 | World-state cycle | GT21–GT28 | How do multi-source observations, state change, impact scope, bounded correction, incremental reevaluation, and action gates close the loop? |
-| Verification Provider ecosystem | GT29–GT31 | How do independent sources, explicit adjudication, and action gates remain separate? |
+| Verification Provider ecosystem | GT29–GT32 | How do independent sources, explicit adjudication, progressive authorization, and action gates remain separate? |
 
 Selected examples:
 
@@ -156,9 +156,10 @@ Selected examples:
 - **GT28:** route, altitude, weather-window, and wind checks all pass, but airspace, operator, departure-site, weather-release, and mission authorizations remain absent; the precheck is reusable while automatic takeoff authorization and the takeoff command stay blocked.
 - **GT29:** a mock weather service reports 8 m/s while an onsite sensor reports 13 m/s against a 12 m/s mission limit; both responses are fresh and independently grouped, but the result remains unknown and a third independent source is requested;
 - **GT30:** a third independent source also reports 13 m/s, creating a two-to-one split; because no majority policy is declared, Assurance remains unknown, the 8 m/s minority source is preserved, and explicit weather adjudication is requested;
-- **GT31:** a fictional human review binds the three conflicting responses and scoped context evidence, preserves all raw results, and treats the two 13 m/s readings as local-test-flow observations; the 8 m/s weather conclusion becomes eligible while automatic takeoff authorization and the takeoff command remain blocked.
+- **GT31:** a fictional human review binds the three conflicting responses and scoped context evidence, preserves all raw results, and treats the two 13 m/s readings as local-test-flow observations; the 8 m/s weather conclusion becomes eligible while automatic takeoff authorization and the takeoff command remain blocked;
+- **GT32:** five fictional authorization records arrive one by one, reducing unknown authorization fields from five to zero. The final control evaluation makes automatic takeoff authorization and the takeoff command eligible, while Core still does not publish output, send a command, authorize reality, or execute flight.
 
-See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), and the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT31.
+See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), and the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32.
 
 ## Implemented public Core
 

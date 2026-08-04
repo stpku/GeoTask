@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 30,
+  "case_count": 31,
   "cases": [
     {
       "id": "GT01",
@@ -210,6 +210,13 @@
       "slug": "gt30",
       "title_zh": "第三个独立气象来源加入后，冲突就自动解决了吗？",
       "previous": "gt29",
+      "next": "gt31"
+    },
+    {
+      "id": "GT31",
+      "slug": "gt31",
+      "title_zh": "人工复核解决气象冲突后，天气合格就能自动起飞吗？",
+      "previous": "gt30",
       "next": null
     }
   ]

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GT31｜人工复核解决气象冲突后，天气合格就能自动起飞吗？</title>
+  <meta name="description" content="人工复核绑定GT30三源冲突与上下文证据，释放天气核验结论，同时继续阻断自动起飞授权和起飞指令。">
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#171717;background:#f5f5f2;line-height:1.65}
+    *{box-sizing:border-box}body{margin:0}.shell{width:min(1080px,calc(100% - 32px));margin:auto}
+    header{background:#fff;border-bottom:1px solid #ddd}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;color:#111;text-decoration:none}.nav a{color:#333;text-decoration:none;margin-left:18px}
+    .hero{padding:70px 0 48px;background:#fff}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;color:#555}.hero h1{font-size:clamp(34px,6vw,64px);line-height:1.08;max-width:950px;margin:12px 0 22px}.lead{font-size:20px;max-width:860px;color:#444}.statement{margin-top:28px;padding:22px;border-left:5px solid #111;background:#f2f2ee;font-size:22px;font-weight:700}
+    section{padding:54px 0}.section-title{font-size:34px;margin:0 0 12px}.muted{color:#555}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;border:1px solid #ddd;border-radius:14px;padding:24px}.card strong{display:block;font-size:25px;margin:8px 0}.tag{display:inline-block;border:1px solid #aaa;border-radius:999px;padding:3px 9px;font-size:12px}.gate-ok{border-top:5px solid #222}.gate-block{border-top:5px solid #999}
+    .dark{background:#1d1d1d;color:#fff}.dark .card{background:#292929;border-color:#4a4a4a}.dark .muted{color:#ccc}
+    .choice{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.choice button{border:1px solid #222;background:#fff;border-radius:9px;padding:13px 18px;font-size:15px;cursor:pointer}.choice button.safe{background:#111;color:#fff}#result{min-height:94px;padding:18px;border:1px solid #bbb;border-radius:10px;background:#fff}.ok{font-weight:800}.bad{font-weight:800;color:#8a1f1f}
+    pre{overflow:auto;background:#151515;color:#f3f3f3;border-radius:12px;padding:22px;font-size:14px}.facts{display:grid;grid-template-columns:1fr 1fr;gap:18px}.fact{background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px}.footer{background:#111;color:#ddd;padding:38px 0}.footer a{color:#fff}
+    @media(max-width:800px){.grid,.facts{grid-template-columns:1fr}.nav nav{display:none}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+<header><div class="shell nav"><a class="brand" href="../" aria-label="返回GeoTask项目首页">GeoTask · GT31</a><nav><a href="../gt30/">上一案例</a><a href="https://github.com/stpku/GeoTask">GitHub</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell">
+    <div class="eyebrow">GT31 · 人工裁决与行动门禁</div>
+    <h1>人工复核解决气象冲突后，天气合格就能自动起飞吗？</h1>
+    <p class="lead">GT30留下8、13、13米/秒三份相互冲突的结果。人工复核发现两份13米/秒读数受到共享局部测试气流影响：读数仍然有效并全部保留，但不适用于当前任务走廊环境风速命题。</p>
+    <div class="statement">天气条件已核验 ≠ 自动起飞已获授权。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">人工复核不是第四张选票</h2>
+    <p class="muted">复核过程不采用二比一，也不删除两份13米/秒响应，只调整它们对当前任务命题的适用范围。</p>
+    <div class="grid">
+      <article class="card"><span class="tag">原始证据保留</span><h3>三份响应</h3><strong>8 / 13 / 13</strong><p>三份原始响应全部保留，哈希和来源链不变。</p></article>
+      <article class="card"><span class="tag">显式理由</span><h3>上下文证据</h3><strong>共享局部测试气流</strong><p>原因代码：<code>shared_local_test_interference</code>。</p></article>
+      <article class="card"><span class="tag">限定裁决</span><h3>任务走廊环境风</h3><strong>8米/秒</strong><p>任务上限12米/秒，因此天气条件适合，但仅限当前命题和有效期。</p></article>
+    </div>
+  </div></section>
+
+  <section class="dark"><div class="shell">
+    <h2 class="section-title">三层状态必须分开</h2>
+    <div class="grid">
+      <article class="card gate-ok"><h3>一、证据裁决完成</h3><p class="muted">人工响应精确绑定三份GT30响应、上下文证据、验证请求和提供方描述符。</p></article>
+      <article class="card gate-ok"><h3>二、天气结论可用</h3><p class="muted">8米/秒结论通过可信保证评估，可供下游复核使用，但尚未发布到生产系统。</p></article>
+      <article class="card gate-block"><h3>三、起飞授权仍未成立</h3><p class="muted">空域、运营人、起降场、气象放行和任务授权不在本次请求中，起飞指令继续阻断。</p></article>
+    </div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">选择系统下一步</h2>
+    <p class="muted">交互仅在浏览器本地运行，不访问网络、不调用真实人员或生产系统。</p>
+    <div class="choice">
+      <button id="btn-majority">按二比一采用13米/秒</button>
+      <button id="btn-auto">采用人工结论并自动起飞</button>
+      <button id="btn-bounded" class="safe">释放天气结论，继续请求起飞授权</button>
+      <button id="verify">执行本地检查</button>
+    </div>
+    <div id="result" aria-live="polite">尚未选择。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">固定门禁结果</h2>
+    <div class="facts">
+      <div class="fact"><h3>可信保证</h3><p>状态：已核验</p><p>适用风速：8米/秒</p><p>天气适合：是</p><p>原始响应保留：3份</p></div>
+      <div class="fact"><h3>行动边界</h3><p>天气核验结论：可用</p><p>自动起飞授权：阻断</p><p>起飞指令：阻断</p><p>下一步：请求其余起飞授权</p></div>
+    </div>
+    <pre>weather_condition_verified: eligible
+automatic_takeoff_authorization: blocked
+takeoff_command: blocked
+human_provider_self_assured: false
+conflicting_responses_deleted: false
+external_truth_verified_by_core: false
+production_output_released: false
+action_authorized: false
+action_executed: false</pre>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">能力边界</h2>
+    <p>公共核心只校验调用方提交的描述符、请求、响应、可信保证档案和精确字节绑定。案例中的人工复核、测试气流和任务环境均为虚构。</p>
+    <p>公共核心没有联系真实复核人员，没有验证现实气象，没有发布生产结论，没有取得主管部门授权，也没有发送或执行起飞指令。</p>
+  </div></section>
+</main>
+<footer class="footer"><div class="shell">GT31延续GT30：显式裁决可以解决证据适用性，但不能跨越独立的行动授权门禁。返回<a href="../">GeoTask项目首页</a>。</div></footer>
+<script>
+(()=>{
+  const responsesRetained=3;
+  const selectedWind=8;
+  const missionLimit=12;
+  const allowed='release_weather_request_authorizations';
+  let selected='';
+  const box=document.getElementById('result');
+  const choose=(value,label)=>{selected=value;box.textContent='已选择：'+label;box.className='';};
+  document.getElementById('btn-majority').onclick=()=>choose('implicit_majority','按二比一采用13米/秒');
+  document.getElementById('btn-auto').onclick=()=>choose('auto_takeoff','采用人工结论并自动起飞');
+  document.getElementById('btn-bounded').onclick=()=>choose(allowed,'释放天气结论，继续请求起飞授权');
+  document.getElementById('verify').onclick=()=>{
+    const checks=[responsesRetained===3,selectedWind===8,selectedWind<=missionLimit,selected===allowed];
+    if(checks.every(Boolean)) box.innerHTML='<span class="ok">检查通过：</span>证据裁决完成、天气结论可用，但自动起飞授权和指令继续阻断。';
+    else box.innerHTML='<span class="bad">检查未通过：</span>不得使用隐式多数票，也不得把天气核验结果升级为现实行动权限。';
+  };
+})();
+</script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

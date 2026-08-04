@@ -2,38 +2,21 @@
 
 ## Status
 
-Public, read-only interface profile for connecting independently implemented verification capabilities to GeoTask Core.
+Public profile for read-only Verification Providers that connect GeoTask Core to external deterministic operators, rule engines, authoritative data services, sensors, local predictive models, and human review systems.
 
-The profile defines four registered Artifacts:
+This profile defines contracts and validation only. It does not fetch external truth, invoke a Provider, publish production output, authorize an action, or execute side effects.
 
-1. `geotask.verification-provider-descriptor`
-2. `geotask.verification-request`
-3. `geotask.verification-response`
-4. `geotask.assurance-profile`
+## Interface
 
-It does not define a production Provider marketplace, credential store, network transport, billing model, regulatory rule set, or action executor.
+- Interface ID: `geotask.verification-provider`
+- Interface version: `0.1`
+- Public Artifacts:
+  - `geotask.verification-provider-descriptor`
+  - `geotask.verification-request`
+  - `geotask.verification-response`
+  - `geotask.assurance-profile`
 
-## Design principle
-
-A Provider may report what it observed or checked. It cannot decide that its own response is independently verified, cannot raise its own Assurance level, cannot release a production output, and cannot authorize or execute an action.
-
-Independent Assurance is evaluated outside the Provider response against a caller-authored Assurance Profile.
-
-## Verification Provider Descriptor
-
-The Descriptor advertises:
-
-- stable Provider identity and version;
-- Provider type;
-- supported capabilities and methods;
-- declared independence group;
-- reproducibility state;
-- calibration state;
-- validity window;
-- audit and credential boundaries;
-- an immutable `external_side_effects_allowed=false` boundary.
-
-Supported Provider types are:
+## Provider types
 
 - `deterministic_operator`
 - `rule_engine`
@@ -42,58 +25,77 @@ Supported Provider types are:
 - `local_predictive_model`
 - `human_review`
 
-A mock Provider must declare `production_ready=false`.
+A Provider Descriptor declares one Provider identity, version, type, capability set, supported methods, independence group, reproducibility, calibration state, validity window, audit support, and side-effect boundary.
+
+A Provider never self-assigns Assurance. Its Descriptor and Response declare facts about its own implementation and output. A separate caller-authored Assurance Profile decides whether multiple bound results satisfy the required provider count, independence, freshness, reproducibility, calibration, and conflict policy.
+
+## Provider Descriptor
+
+A Provider Descriptor records:
+
+- stable Provider identity and version;
+- Provider type and implementation kind;
+- declared capabilities and verification methods;
+- independence group;
+- reproducibility and calibration state;
+- descriptor validity and audit support;
+- whether credentials are managed outside Core;
+- an explicit no-side-effect boundary.
+
+Mock Providers cannot declare themselves production-ready. Public Provider descriptors cannot allow external side effects.
 
 ## Verification Request
 
-A Request binds:
+A Verification Request binds:
 
-- one verification subject;
+- one explicit claim and validity window;
 - exact input Artifact references and SHA-256 digests;
 - one verification method;
 - required capabilities;
 - allowed Provider types;
-- one exact Assurance Profile reference;
+- one exact Assurance Profile digest;
 - a deadline;
-- immutable no-side-effect and no-authorization flags.
+- no-side-effect and no-action-authorization flags.
 
-Core validation does not submit the Request to a Provider.
+Core validates whether a Descriptor can accept a Request. It does not submit the Request.
 
 ## Verification Response
 
-A Response binds exact serialized Request and Descriptor bytes. It records:
+A Verification Response binds:
 
-- Provider-local response state;
-- one source-bound result and validity window;
-- method and evidence references;
-- assurance declarations copied from the bound Descriptor;
+- the exact Request bytes;
+- the exact Provider Descriptor bytes;
+- one response state and typed result;
+- evidence references;
+- the Descriptor's declared independence group, reproducibility, and calibration state;
 - diagnostics and completion time.
 
-The following fields are always `false`:
+The Response must keep all of these fields false:
 
 - `independently_verified`
 - `production_output_released`
 - `action_authorized`
 - `action_executed`
 
-Binding validation rejects any response that changes its independence group, reproducibility, or calibration state relative to the Descriptor.
+The response's Assurance declarations must exactly match the Descriptor. A Provider cannot invent a new independence group or upgrade its own calibration or reproducibility state in a response.
 
 ## Assurance Profile
 
-The caller, not the Provider, authors the Assurance Profile. It declares:
+The caller-authored Assurance Profile declares:
 
 - minimum Provider count;
-- minimum independent-group count;
-- accepted Provider types;
-- freshness and maximum-age requirements;
-- reproducibility requirements;
-- calibration requirements;
+- minimum independent groups;
+- allowed Provider types;
+- freshness requirements;
+- accepted reproducibility and calibration states;
 - conflict policy;
-- eligible and blocked outputs;
-- blocked actions;
-- the next action when Assurance is insufficient.
+- eligible output;
+- blocked outputs and actions;
+- next action when Assurance is insufficient.
 
-The public reference evaluator never invents Provider precedence and never averages conflicting values. When fresh, admissible, independently grouped Provider responses disagree, the result remains `unknown` or becomes `contradicted` according to the explicit profile policy.
+Profile v0.1 compares exact typed result values. It does not average values, infer source precedence, apply undeclared majority voting, or discard a minority result.
+
+A successful Assurance evaluation may make one declared output eligible. It never publishes that output, authorizes an action, or executes an action. Blocked actions remain blocked even after Assurance succeeds.
 
 ## CLI
 
@@ -123,6 +125,12 @@ Both responses are fresh and individually valid, and they belong to two declared
 GT30 adds a third fictional independent source: a mobile wind lidar also reports `13 meter_per_second`. All three responses are fresh, reproducible, calibration-compatible, and independently grouped, but the usable result set still contains both `8` and `13`.
 
 Assurance Profile v0.1 does not declare majority voting and does not silently discard a minority source. A two-to-one split therefore remains `unknown`, with explicit weather adjudication as the next action.
+
+## GT31 reference case
+
+GT31 adds a fictional human-review Provider after the GT30 conflict. The Request binds the three original responses, the GT30 Assurance Profile and evaluation, and one fictional context-evidence packet. The review keeps all three responses and records that the two `13 meter_per_second` readings are valid local-test-flow observations but are not applicable to the mission-corridor ambient-wind claim.
+
+The human Response is still unable to self-assign Assurance or action authority. A separate Assurance evaluation makes `weather_condition_verified` eligible for the scoped claim. The existing takeoff Control Evaluation remains independent and keeps automatic takeoff authorization and the takeoff command blocked by five missing authorizations. Weather eligibility therefore does not imply production release, authorization, command emission, or action execution.
 
 ## Security and commercial boundary
 

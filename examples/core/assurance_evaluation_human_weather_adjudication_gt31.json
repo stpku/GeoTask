@@ -1,0 +1,28 @@
+{
+  "assurance_evaluation": {
+    "profile_id": "gt31-human-weather-adjudication",
+    "request_id": "adjudicate-east-current-wind-speed-gt31",
+    "evaluated_at": "2026-08-04T14:08:30+08:00",
+    "state": "verified",
+    "reason": "assurance_requirements_satisfied",
+    "provider_count": 1,
+    "usable_provider_count": 1,
+    "independent_group_count": 1,
+    "response_ids": [
+      "weather-response-human-adjudication-gt31"
+    ],
+    "diagnostics": [],
+    "eligible_outputs": [
+      "weather_condition_verified"
+    ],
+    "blocked_outputs": [],
+    "blocked_actions": [
+      "takeoff_command"
+    ],
+    "next_action": "none",
+    "independent_verification_completed": true,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

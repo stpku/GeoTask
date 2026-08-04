@@ -1,0 +1,43 @@
+{
+  "verification_response": {
+    "response_version": "0.1",
+    "response_id": "weather-response-human-adjudication-gt31",
+    "request_ref": {
+      "request_id": "adjudicate-east-current-wind-speed-gt31",
+      "sha256": "24c8ea1f9b2792245be1fb75e712ee383228adeb91b28a6f4d7334f6247278eb"
+    },
+    "provider_ref": {
+      "provider_id": "geotask.provider.mock-human-weather-reviewer",
+      "provider_version": "0.1.0",
+      "sha256": "530154dde5eb4f06c1e63b19d6fa60ad6b813a7d7e0f13bc20e67403c64ef5a3"
+    },
+    "state": "verified",
+    "result": {
+      "claim_id": "east-current-wind-speed",
+      "claim_type": "weather.wind_speed",
+      "value": 8,
+      "unit": "meter_per_second",
+      "observed_at": "2026-08-04T14:06:00+08:00",
+      "valid_until": "2026-08-04T14:11:00+08:00"
+    },
+    "verification_method": "adjudicate_current_wind_speed",
+    "evidence_refs": [
+      "context-evidence:sha256:356ec5201d8bb87692387d7128b12615a93cce464fabbab2e66065f7ff10d7b9",
+      "gt30-response:weather-response-authoritative-gt30",
+      "gt30-response:weather-response-onsite-sensor-gt30",
+      "gt30-response:weather-response-mobile-lidar-gt30"
+    ],
+    "assurance_declarations": {
+      "independence_group": "fictional-human-weather-review-board",
+      "reproducibility": "repeatable",
+      "calibration_status": "not_applicable",
+      "confidence": null
+    },
+    "diagnostics": [],
+    "completed_at": "2026-08-04T14:08:00+08:00",
+    "independently_verified": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "verification_request": {
+    "request_version": "0.1",
+    "request_id": "adjudicate-east-current-wind-speed-gt31",
+    "created_at": "2026-08-04T14:07:10+08:00",
+    "subject": {
+      "claim_id": "east-current-wind-speed",
+      "claim_type": "weather.wind_speed",
+      "value": null,
+      "unit": "meter_per_second",
+      "observed_at": "2026-08-04T14:06:00+08:00",
+      "valid_until": "2026-08-04T14:11:00+08:00"
+    },
+    "input_artifacts": [
+      {
+        "ref_id": "gt30-authoritative-weather-response",
+        "artifact_id": "geotask.verification-response",
+        "sha256": "3a18313834052e2de2b041d20e24a60b2aa6659459b9f4cd588ae72b554b3797"
+      },
+      {
+        "ref_id": "gt30-onsite-sensor-response",
+        "artifact_id": "geotask.verification-response",
+        "sha256": "66a3bd6c1a84a37730748a0ac7a6cfc8661217660c84301d298fbf6a917d0741"
+      },
+      {
+        "ref_id": "gt30-mobile-lidar-response",
+        "artifact_id": "geotask.verification-response",
+        "sha256": "4d7e240a25b8fa8970bd4d404071bb51c4db6d9d6e038d20f4a88e30ed585d6a"
+      },
+      {
+        "ref_id": "gt30-assurance-profile",
+        "artifact_id": "geotask.assurance-profile",
+        "sha256": "fdf8cd8a9913a5a321f6d0ea8ed5c3479d3e9df91a4dd845f8c04015ed349f4e"
+      },
+      {
+        "ref_id": "gt30-assurance-evaluation",
+        "artifact_id": "example.assurance-evaluation",
+        "sha256": "03555fa7b425a746fbc227192ea9b7b483dcc743cda83e2770cae64653f612d6"
+      },
+      {
+        "ref_id": "fictional-weather-context-evidence",
+        "artifact_id": "example.fictional-context-evidence",
+        "sha256": "356ec5201d8bb87692387d7128b12615a93cce464fabbab2e66065f7ff10d7b9"
+      }
+    ],
+    "verification_method": "adjudicate_current_wind_speed",
+    "required_capabilities": [
+      "weather.conflict_adjudication"
+    ],
+    "allowed_provider_types": [
+      "human_review"
+    ],
+    "assurance_profile_ref": {
+      "profile_id": "gt31-human-weather-adjudication",
+      "sha256": "749cf589b1344c8949d75d99d421b4a70adb0cd307d977f5ce96135fba400e04"
+    },
+    "deadline": "2026-08-04T14:10:00+08:00",
+    "external_side_effects_allowed": false,
+    "action_authorized": false
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "correction_request": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-correction-request-v0.1.schema.json",
+    "schema_version": "0.1",
+    "request_id": "gt26-flight-service-station-schedule-correction-request",
+    "created_at": "2026-08-04T17:50:08+08:00",
+    "state": "required",
+    "reason": "Replace only the stale operating schedule, preserve four unrelated station attributes, and keep mission availability blocked until a successor state is materialized and the 20:30 check is rerun.",
+    "base_world_state": {
+      "ref_id": "base-world-state-gt26",
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-flight-service-station-gt26",
+      "revision": 4,
+      "as_of": "2026-08-04T17:50:00+08:00",
+      "semantic_fingerprint": "d1d73bd3ee443a0f506311a4d68f85ab713d60674e9cc98d630584f49edaa26c",
+      "content_sha256": "78d27b11e21ba5455596a9c270dd1dab832c3a488e6b9920c4e2aa698acbbe94"
+    },
+    "discrepancy_report_refs": [
+      {
+        "ref_id": "discrepancy-gt26",
+        "artifact_id": "geotask.discrepancy-report",
+        "schema_version": "0.1",
+        "instance_id": "gt26-flight-service-station-schedule-report",
+        "content_sha256": "035ae7c0118b61ba50f45f15bfad7b70824b56bb9fd269349aea01395faa6f0c"
+      }
+    ],
+    "supporting_artifact_refs": [],
+    "observation_refs": [
+      "obs-flight-service-station-schedule-gt26"
+    ],
+    "evidence_refs": [
+      "notice:fictional/flight-service-station/east/schedule-20260804"
+    ],
+    "discrepancy_refs": [
+      {
+        "id": "schedule-mismatch-finding",
+        "report_ref": "discrepancy-gt26",
+        "discrepancy_id": "station-operating-schedule-mismatch"
+      }
+    ],
+    "changes": [
+      {
+        "id": "replace-station-operating-schedule",
+        "discrepancy_ref": "schedule-mismatch-finding",
+        "subject_kind": "attribute",
+        "target_path": "/objects/flight-service-station-east/attributes/operating_schedule/value",
+        "operation": "replace",
+        "reason": "Replace the stale schedule with the exact schedule value declared by the bound notice Observation.",
+        "basis_refs": [
+          "discrepancy-gt26"
+        ],
+        "observation_refs": [
+          "obs-flight-service-station-schedule-gt26"
+        ],
+        "evidence_refs": [
+          "notice:fictional/flight-service-station/east/schedule-20260804"
+        ],
+        "input_fields": [],
+        "acceptance_criterion_refs": [
+          "schedule-path-equals-notice",
+          "successor-world-state-valid"
+        ],
+        "before": {
+          "timezone": "Asia/Shanghai",
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri",
+            "sat",
+            "sun"
+          ],
+          "effective_from": "2026-08-01T00:00:00+08:00",
+          "start": "08:00",
+          "end": "22:00"
+        },
+        "after": {
+          "timezone": "Asia/Shanghai",
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri",
+            "sat",
+            "sun"
+          ],
+          "effective_from": "2026-08-04T18:00:00+08:00",
+          "start": "09:00",
+          "end": "18:00"
+        }
+      }
+    ],
+    "review_requirements": [],
+    "acceptance_criteria": [
+      {
+        "id": "mission-availability-rechecked",
+        "kind": "recheck_completed",
+        "reason": "The 20:30 mission service-availability result must be rerun before release.",
+        "output_refs": [
+          "mission_27_service_availability"
+        ]
+      },
+      {
+        "id": "schedule-discrepancy-resolved",
+        "kind": "discrepancy_resolved",
+        "reason": "The successor state must no longer retain the 08:00-22:00 schedule as current truth.",
+        "output_refs": [],
+        "discrepancy_ref": "schedule-mismatch-finding"
+      },
+      {
+        "id": "schedule-path-equals-notice",
+        "kind": "path_equals",
+        "reason": "The successor state must contain the exact 09:00-18:00 schedule from the notice.",
+        "output_refs": [],
+        "target_path": "/objects/flight-service-station-east/attributes/operating_schedule/value",
+        "expected": {
+          "timezone": "Asia/Shanghai",
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri",
+            "sat",
+            "sun"
+          ],
+          "effective_from": "2026-08-04T18:00:00+08:00",
+          "start": "09:00",
+          "end": "18:00"
+        }
+      },
+      {
+        "id": "successor-world-state-valid",
+        "kind": "artifact_valid",
+        "reason": "The successor snapshot must pass the registered World State validator and preserve immutable paths.",
+        "output_refs": [],
+        "artifact_id": "geotask.world-state"
+      }
+    ],
+    "output_contract": {
+      "artifact_id": "geotask.world-state",
+      "schema_version": "0.1",
+      "world_state_id": "fictional-flight-service-station-gt26",
+      "minimum_revision": 5,
+      "preserve_immutable_paths": true,
+      "require_semantic_fingerprint": true
+    },
+    "blocked_outputs": [
+      "mission_27_service_availability"
+    ],
+    "blocked_actions": [
+      "dispatch_mission_27"
+    ],
+    "resume_when": "successor_world_state_valid == true and mission_27_service_availability_rechecked == true",
+    "next_action": "materialize_successor_state"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 25,
+  "case_count": 26,
   "cases": [
     {
       "id": "GT01",
@@ -175,6 +175,13 @@
       "slug": "gt25",
       "title_zh": "无人机位置更新后，哪些安全距离需要重算，哪些结果可以继续沿用？",
       "previous": "gt24",
+      "next": "gt26"
+    },
+    {
+      "id": "GT26",
+      "slug": "gt26",
+      "title_zh": "飞行服务站营业时间已经失效，系统应该改哪条数据，而不是推翻全部结果？",
+      "previous": "gt25",
       "next": null
     }
   ]

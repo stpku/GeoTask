@@ -1,0 +1,47 @@
+{
+  "verification_request": {
+    "request_version": "0.1",
+    "request_id": "verify-east-current-wind-speed-three-source-gt30",
+    "created_at": "2026-08-04T14:06:10+08:00",
+    "subject": {
+      "claim_id": "east-current-wind-speed",
+      "claim_type": "weather.wind_speed",
+      "value": null,
+      "unit": "meter_per_second",
+      "observed_at": "2026-08-04T14:06:00+08:00",
+      "valid_until": "2026-08-04T14:11:00+08:00"
+    },
+    "input_artifacts": [
+      {
+        "ref_id": "official-weather-observation",
+        "artifact_id": "geotask.observation",
+        "sha256": "cecd144540684b3bc56f34a52705daef836c715f6c6c790a87e1c1ade8f3a3c4"
+      },
+      {
+        "ref_id": "onsite-sensor-observation",
+        "artifact_id": "geotask.observation",
+        "sha256": "6913a77e7ddc320fbfbf8de7f6939115167f566efe1536a251b83c4ff2292e84"
+      },
+      {
+        "ref_id": "mobile-lidar-observation",
+        "artifact_id": "geotask.observation",
+        "sha256": "732074e468b754606167644483c334af64e637ba21cfb96f9dabd60b7b6312ef"
+      }
+    ],
+    "verification_method": "measure_current_wind_speed",
+    "required_capabilities": [
+      "weather.current_wind_speed"
+    ],
+    "allowed_provider_types": [
+      "authoritative_data_provider",
+      "sensor_data_provider"
+    ],
+    "assurance_profile_ref": {
+      "profile_id": "gt30-three-source-exact-consensus",
+      "sha256": "fdf8cd8a9913a5a321f6d0ea8ed5c3479d3e9df91a4dd845f8c04015ed349f4e"
+    },
+    "deadline": "2026-08-04T14:09:00+08:00",
+    "external_side_effects_allowed": false,
+    "action_authorized": false
+  }
+}

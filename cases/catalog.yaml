@@ -258,3 +258,11 @@ cases:
     page: site/gt29/index.html
     example: examples/core/gt29_weather_provider_conflict.json
     lastmod: "2026-08-04"
+  - id: GT30
+    slug: gt30
+    stage: verification_provider_ecosystem
+    title_zh: 第三个独立气象来源加入后，冲突就自动解决了吗？
+    summary_zh: 第三个独立来源也给出13米/秒，形成二比一；但可信保证档案没有声明多数表决规则，因此系统仍保持未知，不静默删除8米/秒来源，并请求显式气象裁决。
+    page: site/gt30/index.html
+    example: examples/core/gt30_three_source_weather_conflict.json
+    lastmod: "2026-08-04"

@@ -1,0 +1,37 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-weather-mobile-lidar-gt30",
+    "observed_at": "2026-08-04T14:06:00+08:00",
+    "received_at": "2026-08-04T14:06:00+08:00",
+    "source": {
+      "kind": "sensor",
+      "reference": "weather:fictional/east/mobile-lidar-c",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "producer": {
+      "id": "fictional-mobile-lidar-unit",
+      "kind": "sensor",
+      "version": "0.1.0"
+    },
+    "claims": [
+      {
+        "id": "east-current-wind-speed-mobile-lidar",
+        "subject_ref": "weather-cell-east-gt30",
+        "predicate": "wind_speed_mps",
+        "basis": "direct_observation",
+        "value": 13,
+        "uncertainty": {
+          "kind": "standard_deviation",
+          "value": 0.4,
+          "unit": "meter_per_second"
+        },
+        "valid_until": "2026-08-04T14:11:00+08:00",
+        "evidence_refs": [
+          "weather:fictional/east/mobile-lidar-c"
+        ]
+      }
+    ]
+  }
+}

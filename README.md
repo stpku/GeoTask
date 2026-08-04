@@ -28,7 +28,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 
 ## 从这里开始
 
-- [立即体验GT01—GT29](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT30](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -123,7 +123,7 @@ geotask validate my_distance.yaml
 geotask run my_distance.yaml
 ```
 
-## 29个公开应用案例
+## 30个公开应用案例
 
 GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示模型方案如何被结构化、复算、验错、补证、纠偏和行动门控。
 
@@ -159,9 +159,10 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT26：** 飞行服务站营业时间从08:00—22:00调整为09:00—18:00后，只替换营业计划，保留位置、频率、服务类型和联系方式，并阻断20:30任务直至复核；
 - **GT27：** 东区风速由6升至12米/秒后，只复核同区域且处于更新生效时段的任务A、D；任务A变为不适飞，任务D复核后仍适飞，任务B、C继续复用；
 - **GT28：** 路线、高度、天气窗口和风速预检全部通过，但空域、运营人、起降场、气象放行和任务授权仍缺失；预检结论可引用，自动起飞授权与起飞指令保持阻断；
-- **GT29：** 模拟气象服务给出8米/秒，现场传感器给出13米/秒；两个来源都新鲜且来自不同独立分组，但结果仍然冲突，因此天气结论保持未知并请求第三个独立来源。
+- **GT29：** 模拟气象服务给出8米/秒，现场传感器给出13米/秒；两个来源都新鲜且来自不同独立分组，但结果仍然冲突，因此天气结论保持未知并请求第三个独立来源；
+- **GT30：** 第三个独立来源也给出13米/秒，形成二比一；但可信保证档案未声明多数表决，因此系统仍保持未知、保留8米/秒少数来源，并请求显式气象裁决。
 
-GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)。
+GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT30见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)。
 
 ## 当前公共Core真正支持什么
 

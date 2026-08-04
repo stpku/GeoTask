@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 29,
+  "case_count": 30,
   "cases": [
     {
       "id": "GT01",
@@ -203,6 +203,13 @@
       "slug": "gt29",
       "title_zh": "气象服务数据和现场传感器冲突时，AI应该相信谁？",
       "previous": "gt28",
+      "next": "gt30"
+    },
+    {
+      "id": "GT30",
+      "slug": "gt30",
+      "title_zh": "第三个独立气象来源加入后，冲突就自动解决了吗？",
+      "previous": "gt29",
       "next": null
     }
   ]

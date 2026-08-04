@@ -1,0 +1,32 @@
+{
+  "weather_context_evidence": {
+    "evidence_version": "0.1",
+    "evidence_id": "fictional-east-weather-context-gt31",
+    "created_at": "2026-08-04T14:07:00+08:00",
+    "scope": "fictional-east-mission-corridor",
+    "reason_code": "shared_local_test_interference",
+    "reason_zh": "现场传感器和移动测风激光雷达受到同一局部测试气流影响；三份响应全部保留，仅调整两份13米/秒读数对任务走廊环境风速命题的适用范围。",
+    "selected_ambient_wind_speed_mps": 8,
+    "mission_wind_limit_mps": 12,
+    "weather_suitable": true,
+    "responses_retained": [
+      "weather-response-authoritative-gt30",
+      "weather-response-onsite-sensor-gt30",
+      "weather-response-mobile-lidar-gt30"
+    ],
+    "responses_not_applicable_to_mission_claim": [
+      "weather-response-onsite-sensor-gt30",
+      "weather-response-mobile-lidar-gt30"
+    ],
+    "responses_deleted": [],
+    "source_sha256": {
+      "official_response": "3a18313834052e2de2b041d20e24a60b2aa6659459b9f4cd588ae72b554b3797",
+      "sensor_response": "66a3bd6c1a84a37730748a0ac7a6cfc8661217660c84301d298fbf6a917d0741",
+      "lidar_response": "4d7e240a25b8fa8970bd4d404071bb51c4db6d9d6e038d20f4a88e30ed585d6a"
+    },
+    "fictional_context_only": true,
+    "external_truth_verified": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

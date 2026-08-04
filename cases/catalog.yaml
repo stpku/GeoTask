@@ -266,3 +266,11 @@ cases:
     page: site/gt30/index.html
     example: examples/core/gt30_three_source_weather_conflict.json
     lastmod: "2026-08-04"
+  - id: GT31
+    slug: gt31
+    stage: verification_provider_ecosystem
+    title_zh: 人工复核解决气象冲突后，天气合格就能自动起飞吗？
+    summary_zh: 人工复核精确绑定GT30冲突响应与虚构上下文证据，保留三份原始响应并将两份13米/秒读数限定为局部测试气流影响；8米/秒天气结论可用，但自动起飞授权与起飞指令继续阻断。
+    page: site/gt31/index.html
+    example: examples/core/gt31_human_weather_adjudication.json
+    lastmod: "2026-08-04"

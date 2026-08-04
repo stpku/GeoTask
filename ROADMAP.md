@@ -79,6 +79,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已建立反自我增信、精确请求/描述符字节绑定、独立分组、时效、可复现性、校准和行动边界校验；
 - ✅ 已发布GT29虚构气象冲突案例：模拟气象服务给出8米/秒、现场传感器给出13米/秒，两个新鲜独立来源仍冲突时保持未知并请求第三个独立来源；
 - ✅ 已发布GT30三源气象冲突案例：第三个独立来源也给出13米/秒，形成二比一；由于可信保证档案未声明多数表决规则，系统仍保持未知、保留少数来源并请求显式裁决；
+- ✅ 已发布GT31人工气象裁决案例：虚构人工复核精确绑定GT30三份冲突响应和上下文证据，保留全部原始结果并限定两份13米/秒读数的适用范围；天气结论升级为可用，但自动起飞授权与起飞指令继续由独立控制门禁阻断；
 - ✅ 已建立中英文独立项目入口及术语映射，中文页面以中文叙事为主，英文页面使用英文，机器标识保持稳定；
 - 扩展轨迹、移动对象及动态时空对象合同；
 - 发布可复用的行业扩展接口和非行业敏感的参考实现；
@@ -170,6 +171,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Added anti-self-assurance rules, exact Request/Descriptor byte bindings, independent-group, freshness, reproducibility, calibration, and action-boundary validation;
 - ✅ Published GT29 as a fictional weather conflict: a mock weather service reports 8 m/s and an onsite sensor reports 13 m/s; two fresh independent sources still conflict, so Assurance remains unknown and a third independent source is requested;
 - ✅ Published GT30 as a three-source weather conflict: a third independent source also reports 13 m/s, producing a two-to-one split; without a declared majority policy, Assurance remains unknown, the minority source is preserved, and explicit adjudication is requested;
+- ✅ Published GT31 as a fictional human weather adjudication: the review binds all three GT30 responses and scoped context evidence, preserves every raw result, and limits the applicability of the two 13 m/s readings; the weather conclusion becomes eligible while a separate Control Evaluation keeps automatic takeoff authorization and the takeoff command blocked;
 - ✅ Established separate Chinese and English project entry points plus terminology maps while keeping machine identifiers stable;
 - extend trajectory, moving-object, and dynamic spatiotemporal object contracts;
 - publish reusable extension interfaces and non-sensitive reference implementations;

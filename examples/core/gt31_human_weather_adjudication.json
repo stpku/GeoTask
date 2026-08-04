@@ -1,0 +1,113 @@
+{
+  "scenario": {
+    "id": "gt31-human-weather-adjudication",
+    "title_zh": "人工复核解决气象冲突后，天气合格就能自动起飞吗？",
+    "title_en": "After human review resolves the weather conflict, may the aircraft take off automatically?",
+    "facts": {
+      "gt30_values_mps": [
+        8,
+        13,
+        13
+      ],
+      "human_selected_wind_speed_mps": 8,
+      "mission_wind_limit_mps": 12,
+      "weather_suitable": true,
+      "retained_response_count": 3,
+      "not_applicable_response_count": 2,
+      "deleted_response_count": 0
+    },
+    "adjudication": {
+      "policy": "explicit_human_review",
+      "reason_code": "shared_local_test_interference",
+      "selected_claim": "east-current-wind-speed=8 meter_per_second",
+      "majority_vote_used": false,
+      "conflicting_responses_preserved": true,
+      "provider_self_assured": false
+    },
+    "layered_gate": {
+      "evidence_adjudication": "completed",
+      "weather_conclusion": "eligible",
+      "takeoff_authorization": "blocked",
+      "takeoff_command": "blocked",
+      "missing_authorizations": [
+        "airspace_authorized",
+        "departure_site_authorized",
+        "mission_authorized",
+        "operator_authorized",
+        "weather_release_authorized"
+      ]
+    },
+    "incorrect_actions": [
+      "treat_human_response_as_self_assured",
+      "delete_conflicting_sensor_responses",
+      "equate_weather_eligibility_with_takeoff_authorization",
+      "send_takeoff_command_after_weather_review"
+    ],
+    "required_action": "request_remaining_takeoff_authorizations",
+    "assurance_evaluation": {
+      "profile_id": "gt31-human-weather-adjudication",
+      "request_id": "adjudicate-east-current-wind-speed-gt31",
+      "evaluated_at": "2026-08-04T14:08:30+08:00",
+      "state": "verified",
+      "reason": "assurance_requirements_satisfied",
+      "provider_count": 1,
+      "usable_provider_count": 1,
+      "independent_group_count": 1,
+      "response_ids": [
+        "weather-response-human-adjudication-gt31"
+      ],
+      "diagnostics": [],
+      "eligible_outputs": [
+        "weather_condition_verified"
+      ],
+      "blocked_outputs": [],
+      "blocked_actions": [
+        "takeoff_command"
+      ],
+      "next_action": "none",
+      "independent_verification_completed": true,
+      "production_output_released": false,
+      "action_authorized": false,
+      "action_executed": false
+    },
+    "takeoff_control_evaluation": {
+      "state": "unknown",
+      "blocked_outputs": [
+        "automatic_takeoff_authorization",
+        "takeoff_command"
+      ],
+      "unknown_identifiers": [
+        "airspace_authorized",
+        "departure_site_authorized",
+        "mission_authorized",
+        "operator_authorized",
+        "weather_release_authorized"
+      ],
+      "action_executed": false
+    },
+    "sha256": {
+      "context_evidence": "356ec5201d8bb87692387d7128b12615a93cce464fabbab2e66065f7ff10d7b9",
+      "assurance_profile": "749cf589b1344c8949d75d99d421b4a70adb0cd307d977f5ce96135fba400e04",
+      "human_descriptor": "530154dde5eb4f06c1e63b19d6fa60ad6b813a7d7e0f13bc20e67403c64ef5a3",
+      "verification_request": "24c8ea1f9b2792245be1fb75e712ee383228adeb91b28a6f4d7334f6247278eb",
+      "human_response": "e6ca639976250e778e4e69de02e96c93dd86efcd66e79bc0415ce8685885ca61",
+      "assurance_evaluation": "ab3c39e154c3db1ed15b10044ab069bcf7670fcd5734e65923b94161e311ea4a",
+      "gt30_official_response": "3a18313834052e2de2b041d20e24a60b2aa6659459b9f4cd588ae72b554b3797",
+      "gt30_sensor_response": "66a3bd6c1a84a37730748a0ac7a6cfc8661217660c84301d298fbf6a917d0741",
+      "gt30_lidar_response": "4d7e240a25b8fa8970bd4d404071bb51c4db6d9d6e038d20f4a88e30ed585d6a",
+      "gt30_profile": "fdf8cd8a9913a5a321f6d0ea8ed5c3479d3e9df91a4dd845f8c04015ed349f4e",
+      "gt30_evaluation": "03555fa7b425a746fbc227192ea9b7b483dcc743cda83e2770cae64653f612d6",
+      "gt28_control": "7377d9e3f1db7b16aa4c806f90c64efd27107815f394bf3792b7a29ee8ebd0e1"
+    },
+    "boundaries": {
+      "human_provider_self_assured": false,
+      "conflicting_responses_deleted": false,
+      "external_truth_verified_by_core": false,
+      "weather_output_eligible": true,
+      "production_output_released": false,
+      "automatic_takeoff_authorization_eligible": false,
+      "action_authorized": false,
+      "action_executed": false
+    }
+  }
+}

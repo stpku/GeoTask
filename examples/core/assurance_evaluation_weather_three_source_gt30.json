@@ -1,0 +1,31 @@
+{
+  "assurance_evaluation": {
+    "profile_id": "gt30-three-source-exact-consensus",
+    "request_id": "verify-east-current-wind-speed-three-source-gt30",
+    "evaluated_at": "2026-08-04T14:06:30+08:00",
+    "state": "unknown",
+    "reason": "independent_provider_conflict",
+    "provider_count": 3,
+    "usable_provider_count": 3,
+    "independent_group_count": 3,
+    "response_ids": [
+      "weather-response-authoritative-gt30",
+      "weather-response-onsite-sensor-gt30",
+      "weather-response-mobile-lidar-gt30"
+    ],
+    "diagnostics": [],
+    "eligible_outputs": [],
+    "blocked_outputs": [
+      "weather_condition_verified",
+      "automatic_takeoff_authorization"
+    ],
+    "blocked_actions": [
+      "takeoff_command"
+    ],
+    "next_action": "request_explicit_weather_adjudication",
+    "independent_verification_completed": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

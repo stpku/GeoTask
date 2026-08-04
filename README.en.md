@@ -28,7 +28,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 
 ## Start here
 
-- [Try the GT01–GT29 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT30 experience](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -154,9 +154,10 @@ Selected examples:
 - **GT26:** when a flight-service station schedule changes from 08:00–22:00 to 09:00–18:00, the system replaces only the schedule, preserves location, radio frequency, service types, and contact channel, and blocks the 20:30 mission until recheck;
 - **GT27:** when east-zone wind rises from 6 to 12 m/s, the system reevaluates only Missions A and D in the matching region and active time window; Mission A becomes unsuitable, Mission D remains suitable after recheck, and Missions B and C are reused;
 - **GT28:** route, altitude, weather-window, and wind checks all pass, but airspace, operator, departure-site, weather-release, and mission authorizations remain absent; the precheck is reusable while automatic takeoff authorization and the takeoff command stay blocked.
-- **GT29:** a mock weather service reports 8 m/s while an onsite sensor reports 13 m/s against a 12 m/s mission limit; both responses are fresh and independently grouped, but the result remains unknown and a third independent source is requested.
+- **GT29:** a mock weather service reports 8 m/s while an onsite sensor reports 13 m/s against a 12 m/s mission limit; both responses are fresh and independently grouped, but the result remains unknown and a third independent source is requested;
+- **GT30:** a third independent source also reports 13 m/s, creating a two-to-one split; because no majority policy is declared, Assurance remains unknown, the 8 m/s minority source is preserved, and explicit weather adjudication is requested.
 
-See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), and the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29.
+See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), and the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT30.
 
 ## Implemented public Core
 

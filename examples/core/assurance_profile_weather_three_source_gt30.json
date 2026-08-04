@@ -1,0 +1,37 @@
+{
+  "assurance_profile": {
+    "profile_version": "0.1",
+    "profile_id": "gt30-three-source-exact-consensus",
+    "title": "GT30 three-source exact-consensus weather assurance",
+    "minimum_provider_count": 3,
+    "minimum_independent_groups": 3,
+    "allowed_provider_types": [
+      "authoritative_data_provider",
+      "sensor_data_provider"
+    ],
+    "require_fresh_results": true,
+    "max_result_age_seconds": 600,
+    "require_reproducible": true,
+    "accepted_reproducibility": [
+      "deterministic",
+      "repeatable"
+    ],
+    "require_calibration": true,
+    "accepted_calibration_states": [
+      "not_applicable",
+      "calibrated"
+    ],
+    "conflict_policy": "unknown",
+    "eligible_output": "weather_assurance_record",
+    "blocked_outputs": [
+      "weather_condition_verified",
+      "automatic_takeoff_authorization"
+    ],
+    "blocked_actions": [
+      "takeoff_command"
+    ],
+    "next_action_on_insufficient_assurance": "request_explicit_weather_adjudication",
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

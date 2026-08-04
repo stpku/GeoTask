@@ -1,0 +1,40 @@
+{
+  "verification_response": {
+    "response_version": "0.1",
+    "response_id": "weather-response-authoritative-gt30",
+    "request_ref": {
+      "request_id": "verify-east-current-wind-speed-three-source-gt30",
+      "sha256": "845d3d01f1acb248554806c064d3bbdfe47305fdfbef8421d50832e7b528a716"
+    },
+    "provider_ref": {
+      "provider_id": "geotask.provider.mock-authoritative-weather",
+      "provider_version": "0.1.0",
+      "sha256": "68d6821630cd791f24269f01c11abe87820c89f8a71569912ab0f6804ec746a4"
+    },
+    "state": "verified",
+    "result": {
+      "claim_id": "east-current-wind-speed",
+      "claim_type": "weather.wind_speed",
+      "value": 8,
+      "unit": "meter_per_second",
+      "observed_at": "2026-08-04T14:00:00+08:00",
+      "valid_until": "2026-08-04T14:15:00+08:00"
+    },
+    "verification_method": "measure_current_wind_speed",
+    "evidence_refs": [
+      "weather:fictional/east/a"
+    ],
+    "assurance_declarations": {
+      "independence_group": "fictional-weather-service-network",
+      "reproducibility": "deterministic",
+      "calibration_status": "not_applicable",
+      "confidence": null
+    },
+    "diagnostics": [],
+    "completed_at": "2026-08-04T14:06:20+08:00",
+    "independently_verified": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

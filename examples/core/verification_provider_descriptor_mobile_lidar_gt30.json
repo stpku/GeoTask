@@ -1,0 +1,24 @@
+{
+  "verification_provider_descriptor": {
+    "interface_version": "0.1",
+    "provider_id": "geotask.provider.mock-mobile-wind-lidar",
+    "provider_version": "0.1.0",
+    "title": "Mock Mobile Wind Lidar Provider",
+    "provider_type": "sensor_data_provider",
+    "implementation_kind": "mock",
+    "production_ready": false,
+    "capabilities": [
+      "weather.current_wind_speed"
+    ],
+    "supported_methods": [
+      "measure_current_wind_speed"
+    ],
+    "independence_group": "fictional-mobile-lidar-network",
+    "reproducibility": "repeatable",
+    "calibration_status": "calibrated",
+    "valid_until": "2026-08-05T00:00:00+08:00",
+    "audit_supported": true,
+    "credentials_managed_externally": true,
+    "external_side_effects_allowed": false
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "scenario": {
+    "id": "gt30-three-source-weather-conflict",
+    "title_zh": "第三个独立气象来源加入后，冲突就自动解决了吗？",
+    "title_en": "Does a third independent weather source automatically resolve the conflict?",
+    "facts": {
+      "authoritative_weather_wind_speed_mps": 8,
+      "onsite_sensor_wind_speed_mps": 13,
+      "mobile_lidar_wind_speed_mps": 13,
+      "mission_wind_limit_mps": 12,
+      "provider_count": 3,
+      "usable_provider_count": 3,
+      "independent_group_count": 3,
+      "agreeing_provider_count_for_13_mps": 2
+    },
+    "incorrect_actions": [
+      "apply_implicit_majority_vote",
+      "discard_minority_source_without_adjudication",
+      "convert_two_matching_values_to_verified",
+      "authorize_takeoff_from_two_of_three_sources"
+    ],
+    "required_action": "request_explicit_weather_adjudication",
+    "result": {
+      "profile_id": "gt30-three-source-exact-consensus",
+      "request_id": "verify-east-current-wind-speed-three-source-gt30",
+      "evaluated_at": "2026-08-04T14:06:30+08:00",
+      "state": "unknown",
+      "reason": "independent_provider_conflict",
+      "provider_count": 3,
+      "usable_provider_count": 3,
+      "independent_group_count": 3,
+      "response_ids": [
+        "weather-response-authoritative-gt30",
+        "weather-response-onsite-sensor-gt30",
+        "weather-response-mobile-lidar-gt30"
+      ],
+      "diagnostics": [],
+      "eligible_outputs": [],
+      "blocked_outputs": [
+        "weather_condition_verified",
+        "automatic_takeoff_authorization"
+      ],
+      "blocked_actions": [
+        "takeoff_command"
+      ],
+      "next_action": "request_explicit_weather_adjudication",
+      "independent_verification_completed": false,
+      "production_output_released": false,
+      "action_authorized": false,
+      "action_executed": false
+    },
+    "sha256": {
+      "official_observation": "cecd144540684b3bc56f34a52705daef836c715f6c6c790a87e1c1ade8f3a3c4",
+      "sensor_observation": "6913a77e7ddc320fbfbf8de7f6939115167f566efe1536a251b83c4ff2292e84",
+      "lidar_observation": "732074e468b754606167644483c334af64e637ba21cfb96f9dabd60b7b6312ef",
+      "assurance_profile": "fdf8cd8a9913a5a321f6d0ea8ed5c3479d3e9df91a4dd845f8c04015ed349f4e",
+      "official_descriptor": "68d6821630cd791f24269f01c11abe87820c89f8a71569912ab0f6804ec746a4",
+      "sensor_descriptor": "b533efc0662ffd957c7a0a839234005dc1391bc3fe6b2a632700601bce158053",
+      "lidar_descriptor": "f109b6dc5cf4985d752e2e759ff9221a95370aa450077dd12a5d1a143081bbe0",
+      "verification_request": "845d3d01f1acb248554806c064d3bbdfe47305fdfbef8421d50832e7b528a716",
+      "official_response": "3a18313834052e2de2b041d20e24a60b2aa6659459b9f4cd588ae72b554b3797",
+      "sensor_response": "66a3bd6c1a84a37730748a0ac7a6cfc8661217660c84301d298fbf6a917d0741",
+      "lidar_response": "4d7e240a25b8fa8970bd4d404071bb51c4db6d9d6e038d20f4a88e30ed585d6a",
+      "assurance_evaluation": "03555fa7b425a746fbc227192ea9b7b483dcc743cda83e2770cae64653f612d6"
+    },
+    "boundaries": {
+      "majority_policy_declared": false,
+      "minority_source_discarded": false,
+      "provider_precedence_inferred": false,
+      "external_truth_verified": false,
+      "production_output_released": false,
+      "action_authorized": false,
+      "action_executed": false
+    }
+  }
+}

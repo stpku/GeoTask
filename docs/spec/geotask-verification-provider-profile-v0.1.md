@@ -118,6 +118,12 @@ GT29 uses fictional data:
 
 Both responses are fresh and individually valid, and they belong to two declared independence groups. Their values conflict, so the Assurance result is `unknown`. Weather verification, automatic takeoff authorization, and the takeoff command remain blocked. The next action is to request a third independent weather verification.
 
+## GT30 reference case
+
+GT30 adds a third fictional independent source: a mobile wind lidar also reports `13 meter_per_second`. All three responses are fresh, reproducible, calibration-compatible, and independently grouped, but the usable result set still contains both `8` and `13`.
+
+Assurance Profile v0.1 does not declare majority voting and does not silently discard a minority source. A two-to-one split therefore remains `unknown`, with explicit weather adjudication as the next action.
+
 ## Security and commercial boundary
 
 This public profile contains only contracts, strict validation, offline reference logic, and fictional examples. Production connectors, credentials, Provider governance, source-quality scoring, conflict arbitration policies, industry rules, customer workflows, output publication, and action execution belong outside GeoTask Core.

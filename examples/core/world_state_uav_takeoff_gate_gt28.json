@@ -1,0 +1,202 @@
+{
+  "world_state": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+    "schema_version": "0.1",
+    "world_state_id": "fictional-uav-takeoff-gate-state-gt28",
+    "revision": 1,
+    "as_of": "2026-08-04T14:00:00+08:00",
+    "materialized_at": "2026-08-04T14:00:05+08:00",
+    "observation_refs": [
+      "obs-takeoff-authorization-inventory-gt28",
+      "obs-uav-route-preflight-gt28",
+      "obs-weather-preflight-gt28"
+    ],
+    "evidence_refs": [
+      "authorization-registry:fictional/gt28",
+      "forecast:fictional/gt28/window",
+      "route-plan:fictional/gt28/v3",
+      "simulation:fictional/gt28/route-preflight",
+      "weather:fictional/gt28/departure-site"
+    ],
+    "objects": [
+      {
+        "id": "planned-route-gt28",
+        "type": "planned_route",
+        "verification_status": "asserted",
+        "observation_refs": [
+          "obs-uav-route-preflight-gt28"
+        ],
+        "evidence_refs": [
+          "route-plan:fictional/gt28/v3"
+        ],
+        "attributes": [
+          {
+            "name": "route_version",
+            "value": "route-plan-v3",
+            "basis": "external_assertion",
+            "verification_status": "asserted",
+            "observation_refs": [
+              "obs-uav-route-preflight-gt28"
+            ],
+            "evidence_refs": [
+              "route-plan:fictional/gt28/v3"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "departure-weather-gt28",
+        "type": "weather_state",
+        "verification_status": "asserted",
+        "valid_from": "2026-08-04T14:00:00+08:00",
+        "valid_until": "2026-08-04T14:30:00+08:00",
+        "observation_refs": [
+          "obs-weather-preflight-gt28"
+        ],
+        "evidence_refs": [
+          "forecast:fictional/gt28/window",
+          "weather:fictional/gt28/departure-site"
+        ],
+        "attributes": [
+          {
+            "name": "wind_speed_mps",
+            "value": 8,
+            "basis": "direct_observation",
+            "verification_status": "asserted",
+            "valid_from": "2026-08-04T14:00:00+08:00",
+            "valid_until": "2026-08-04T14:30:00+08:00",
+            "observation_refs": [
+              "obs-weather-preflight-gt28"
+            ],
+            "evidence_refs": [
+              "weather:fictional/gt28/departure-site"
+            ]
+          },
+          {
+            "name": "max_wind_mps",
+            "value": 12,
+            "basis": "external_assertion",
+            "verification_status": "asserted",
+            "evidence_refs": [
+              "forecast:fictional/gt28/window"
+            ]
+          },
+          {
+            "name": "forecast_window_valid",
+            "value": true,
+            "basis": "external_assertion",
+            "verification_status": "asserted",
+            "valid_until": "2026-08-04T16:00:00+08:00",
+            "observation_refs": [
+              "obs-weather-preflight-gt28"
+            ],
+            "evidence_refs": [
+              "forecast:fictional/gt28/window"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mission-gt28",
+        "type": "uav_mission",
+        "verification_status": "need_data",
+        "observation_refs": [
+          "obs-takeoff-authorization-inventory-gt28"
+        ],
+        "evidence_refs": [
+          "authorization-registry:fictional/gt28"
+        ],
+        "attributes": [
+          {
+            "name": "planned_departure_at",
+            "value": "2026-08-04T14:20:00+08:00",
+            "basis": "external_assertion",
+            "verification_status": "asserted",
+            "evidence_refs": [
+              "route-plan:fictional/gt28/v3"
+            ]
+          },
+          {
+            "name": "authorization_bundle_complete",
+            "value": false,
+            "basis": "external_assertion",
+            "verification_status": "need_data",
+            "observation_refs": [
+              "obs-takeoff-authorization-inventory-gt28"
+            ],
+            "evidence_refs": [
+              "authorization-registry:fictional/gt28"
+            ]
+          },
+          {
+            "name": "missing_authorizations",
+            "value": [
+              "airspace",
+              "operator",
+              "departure_site",
+              "weather_release",
+              "mission"
+            ],
+            "basis": "external_assertion",
+            "verification_status": "need_data",
+            "observation_refs": [
+              "obs-takeoff-authorization-inventory-gt28"
+            ],
+            "evidence_refs": [
+              "authorization-registry:fictional/gt28"
+            ]
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "id": "route-clear-of-restricted-zone-gt28",
+        "subject_ref": "mission-gt28",
+        "predicate": "route_clear_of_restricted_zone",
+        "object_ref": "planned-route-gt28",
+        "value": true,
+        "basis": "derived",
+        "verification_status": "verified",
+        "observation_refs": [
+          "obs-uav-route-preflight-gt28"
+        ],
+        "evidence_refs": [
+          "simulation:fictional/gt28/route-preflight"
+        ]
+      },
+      {
+        "id": "weather-suitable-for-departure-gt28",
+        "subject_ref": "mission-gt28",
+        "predicate": "weather_suitable_for_departure",
+        "object_ref": "departure-weather-gt28",
+        "value": true,
+        "basis": "derived",
+        "verification_status": "verified",
+        "valid_until": "2026-08-04T14:30:00+08:00",
+        "observation_refs": [
+          "obs-weather-preflight-gt28"
+        ],
+        "evidence_refs": [
+          "forecast:fictional/gt28/window",
+          "weather:fictional/gt28/departure-site"
+        ]
+      },
+      {
+        "id": "automatic-takeoff-authorized-gt28",
+        "subject_ref": "mission-gt28",
+        "predicate": "automatic_takeoff_authorized",
+        "object_ref": "mission-gt28",
+        "value": false,
+        "basis": "external_assertion",
+        "verification_status": "need_data",
+        "observation_refs": [
+          "obs-takeoff-authorization-inventory-gt28"
+        ],
+        "evidence_refs": [
+          "authorization-registry:fictional/gt28"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,115 @@
+geotask:
+  id: "gt28-uav-takeoff-authorization-gate"
+  name: "GT28 UAV Takeoff Authorization Gate"
+  schema_version: "1.0"
+  goal: "Verify route, operating altitude, weather window, and wind conditions without treating those checks as automatic takeoff authorization."
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "fictional_takeoff_area_xy_m"
+  horizontal_unit: "meter"
+  vertical_unit: "meter"
+
+objects:
+  planned_route:
+    type: "polyline"
+    coordinates:
+      - [0, 0]
+      - [120, 0]
+  restricted_zone:
+    type: "rect"
+    bbox: [200, 200, 280, 280]
+  planned_operating_altitude:
+    type: "altitude_interval"
+    min: 60
+    max: 80
+    unit: "meter"
+  allowed_operating_altitude:
+    type: "altitude_interval"
+    min: 50
+    max: 100
+    unit: "meter"
+  forecast_valid_window:
+    type: "time_interval"
+    start: "13:30"
+    end: "16:00"
+  planned_departure_window:
+    type: "time_interval"
+    start: "14:20"
+    end: "14:30"
+
+operator_set:
+  - line_intersects_rect
+  - altitude_overlap
+  - time_overlap
+
+tasks:
+  - id: "verify_takeoff_preconditions"
+    family: "uav_takeoff_preconditions"
+    goal: "Verify route and weather preconditions while preserving a separate authorization gate."
+    assertions:
+      - id: "route_intersects_restricted_zone"
+        operator: "line_intersects_rect"
+        object_refs: ["planned_route", "restricted_zone"]
+        expected_type: "bool"
+      - id: "altitude_within_operating_corridor"
+        operator: "altitude_overlap"
+        object_refs: ["planned_operating_altitude", "allowed_operating_altitude"]
+        expected_type: "bool"
+      - id: "weather_window_valid"
+        operator: "time_overlap"
+        object_refs: ["forecast_valid_window", "planned_departure_window"]
+        expected_type: "bool"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "run_takeoff_precondition_checks"
+      executor: "local"
+      assertion_refs:
+        - "route_intersects_restricted_zone"
+        - "altitude_within_operating_corridor"
+        - "weather_window_valid"
+
+output_contract:
+  format: "structured"
+  required_fields: []
+
+extensions:
+  extension_profile:
+    id: "geotask.control"
+    version: "1.0"
+  application_context:
+    scenario: "fictional_uav_takeoff_with_incomplete_authorization_bundle"
+    decision_question: "Do safe route and acceptable weather conditions authorize automatic takeoff?"
+  preflight_state:
+    route_clear: true
+    altitude_suitable: true
+    weather_window_valid: true
+    wind_speed_mps: 8
+    max_wind_mps: 12
+  authorization_state:
+    airspace_authorized: null
+    operator_authorized: null
+    departure_site_authorized: null
+    weather_release_authorized: null
+    mission_authorized: null
+  task_gate:
+    status: "blocked_pending_authorization_bundle"
+    selected_action: "hold_at_departure_site_and_request_authorization_bundle"
+    rejected_actions:
+      - "take_off_because_route_and_weather_are_safe"
+      - "infer_missing_authorizations_from_safe_conditions"
+    blocked_outputs:
+      - "automatic_takeoff_authorization"
+      - "takeoff_command"
+    required_controls:
+      - "verify_airspace_authorization"
+      - "verify_operator_authorization"
+      - "verify_departure_site_authorization"
+      - "verify_weather_release_authorization"
+      - "verify_mission_authorization"
+    resume_when: "route_intersects_restricted_zone == false AND altitude_within_operating_corridor == true AND weather_window_valid == true AND wind_speed_mps <= max_wind_mps AND airspace_authorized == true AND operator_authorized == true AND departure_site_authorized == true AND weather_release_authorized == true AND mission_authorized == true"
+    next_action: "request_authorization_bundle_and_reverify"
+    expected_status: "verified_hold_pending_authorization"

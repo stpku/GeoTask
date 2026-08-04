@@ -1,0 +1,80 @@
+{
+  "geotask_result": {
+    "schema_version": "1.0",
+    "task_id": "gt28-uav-takeoff-authorization-gate",
+    "execution": {
+      "mode": "local_only",
+      "status": "completed",
+      "started_at": "2026-08-04T14:00:06+08:00",
+      "finished_at": "2026-08-04T14:00:07+08:00"
+    },
+    "checks": [
+      {
+        "assertion_id": "route_intersects_restricted_zone",
+        "operator": "line_intersects_rect",
+        "object_refs": [
+          "planned_route",
+          "restricted_zone"
+        ],
+        "executor": "local",
+        "value": false,
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      },
+      {
+        "assertion_id": "altitude_within_operating_corridor",
+        "operator": "altitude_overlap",
+        "object_refs": [
+          "planned_operating_altitude",
+          "allowed_operating_altitude"
+        ],
+        "executor": "local",
+        "value": true,
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      },
+      {
+        "assertion_id": "weather_window_valid",
+        "operator": "time_overlap",
+        "object_refs": [
+          "forecast_valid_window",
+          "planned_departure_window"
+        ],
+        "executor": "local",
+        "value": true,
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      }
+    ],
+    "outputs": {
+      "route_intersects_restricted_zone": false,
+      "altitude_within_operating_corridor": true,
+      "weather_window_valid": true
+    },
+    "summary": {
+      "total_checks": 3,
+      "verified": 3,
+      "contradicted": 0,
+      "need_review": 0,
+      "invalid": 0
+    },
+    "overall": {
+      "status": "verified",
+      "assurance_level": "local_deterministic"
+    },
+    "warnings": [],
+    "errors": []
+  }
+}

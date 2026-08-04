@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 27,
+  "case_count": 28,
   "cases": [
     {
       "id": "GT01",
@@ -189,6 +189,13 @@
       "slug": "gt27",
       "title_zh": "一条气象数据更新后，如何只复核受影响的飞行任务？",
       "previous": "gt26",
+      "next": "gt28"
+    },
+    {
+      "id": "GT28",
+      "slug": "gt28",
+      "title_zh": "路线安全、天气合格，就可以自动起飞吗？",
+      "previous": "gt27",
       "next": null
     }
   ]

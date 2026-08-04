@@ -65,7 +65,7 @@ instructions_for_model:
 
     <section class="card"><h2>第二步：验证候选处理方式</h2><div class="choices"><button class="choice" id="btn-all">四项任务全部重算</button><button class="choice" id="btn-changed">只复核最终会变成false的任务A</button><button class="choice wide" id="btn-bounded">按区域和生效时段复核A、D，复用B、C</button></div><button class="primary" id="verify" style="margin-top:10px">本地验证</button><div class="status" id="verify-status"></div><div class="verification" id="verification"><div class="head"><strong>验证结果</strong><span class="badge" id="badge">等待选择</span></div><p id="message">模型提出候选范围；浏览器用固定场景规则检查两项复核、两项复用和结果变化。</p></div><details><summary>技术实现：Incremental Reevaluation记录了什么？</summary><p>固定制品绑定revision 7和revision 8、差异报告、纠偏请求、影响图及两项本地确定性检查。它记录任务A由true变false、任务D由true保持true，并证明任务B、C未被本次修订修改。</p></details></section>
 
-    <section class="card"><h2>查看项目与继续体验</h2><div class="links"><a href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a href="../gt26/">← GT26</a><a href="../">全部案例</a></div></section>
+    <section class="card"><h2>查看项目与继续体验</h2><div class="links"><a href="https://github.com/stpku/GeoTask" target="_blank" rel="noopener">GitHub 项目</a><a href="../gt26/">← GT26</a><a href="../gt28/">GT28 →</a></div></section>
     <footer>GeoTask Core · MIT License · 虚构数据 · 无账号、无模型密钥、无后台模型调用</footer>
   </main>
   <script>

@@ -1,0 +1,113 @@
+{
+  "verification_session": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-verification-session-v0.1.schema.json",
+    "schema_version": "0.1",
+    "session_id": "gt28-fictional-takeoff-authorization-gate",
+    "recorded_at": "2026-08-04T14:00:09+08:00",
+    "state": "blocked",
+    "reason": "Route, altitude, weather window, and wind preconditions pass, but five independent authorization fields remain unknown, so automatic takeoff stays blocked.",
+    "world_state": {
+      "world_state_id": "fictional-uav-takeoff-gate-state-gt28",
+      "revision": 1,
+      "as_of": "2026-08-04T14:00:00+08:00",
+      "semantic_fingerprint": "e7f181dae9be455fba6ffcbeba84271214778efb6052f13094782ffb95ad3c2b"
+    },
+    "observation_refs": [
+      "obs-takeoff-authorization-inventory-gt28",
+      "obs-uav-route-preflight-gt28",
+      "obs-weather-preflight-gt28"
+    ],
+    "task_refs": [
+      {
+        "ref_id": "task-takeoff-gate-gt28",
+        "artifact_id": "geotask.document",
+        "schema_version": "1.0",
+        "instance_id": "gt28-uav-takeoff-authorization-gate",
+        "content_sha256": "6f0c8d3aef7579ee20196fb8c5b34a4a44436c0156b693f7b645b4c000c92a1b"
+      }
+    ],
+    "execution_result_refs": [
+      {
+        "ref_id": "execution-takeoff-gate-gt28",
+        "artifact_id": "geotask.execution-result",
+        "schema_version": "1.0",
+        "instance_id": "gt28-uav-takeoff-authorization-gate",
+        "content_sha256": "837a17b9843f4f2a4343eba3956800729225b14d2b21085ddf640a2a8ccedab6"
+      }
+    ],
+    "control_evaluation_refs": [
+      {
+        "ref_id": "control-takeoff-gate-gt28",
+        "artifact_id": "geotask.control-evaluation",
+        "schema_version": "1.0",
+        "instance_id": "gt28-uav-takeoff-authorization-gate",
+        "content_sha256": "7377d9e3f1db7b16aa4c806f90c64efd27107815f394bf3792b7a29ee8ebd0e1"
+      }
+    ],
+    "state_transition_refs": [],
+    "discrepancy_refs": [],
+    "action_eligibility": [
+      {
+        "output_ref": "automatic_takeoff_authorization",
+        "state": "blocked",
+        "reason": "Safe route and acceptable weather do not substitute for airspace, operator, departure-site, weather-release, and mission authorization.",
+        "basis_refs": [
+          "control-takeoff-gate-gt28",
+          "execution-takeoff-gate-gt28",
+          "task-takeoff-gate-gt28"
+        ],
+        "observation_refs": [
+          "obs-takeoff-authorization-inventory-gt28",
+          "obs-uav-route-preflight-gt28",
+          "obs-weather-preflight-gt28"
+        ]
+      },
+      {
+        "output_ref": "route_weather_precheck",
+        "state": "eligible",
+        "reason": "The fixed execution result verifies that the route avoids the restricted zone, the altitude overlaps the operating corridor, the weather window is valid, and 8 m/s is within the 12 m/s limit.",
+        "basis_refs": [
+          "execution-takeoff-gate-gt28",
+          "task-takeoff-gate-gt28"
+        ],
+        "observation_refs": [
+          "obs-uav-route-preflight-gt28",
+          "obs-weather-preflight-gt28"
+        ]
+      },
+      {
+        "output_ref": "takeoff_command",
+        "state": "blocked",
+        "reason": "No command may be emitted while automatic takeoff authorization is unresolved.",
+        "basis_refs": [
+          "control-takeoff-gate-gt28",
+          "execution-takeoff-gate-gt28",
+          "task-takeoff-gate-gt28"
+        ],
+        "observation_refs": [
+          "obs-takeoff-authorization-inventory-gt28",
+          "obs-uav-route-preflight-gt28",
+          "obs-weather-preflight-gt28"
+        ]
+      }
+    ],
+    "recheck_triggers": [
+      {
+        "id": "authorization-bundle-complete-gt28",
+        "condition": "airspace_authorized == true AND operator_authorized == true AND departure_site_authorized == true AND weather_release_authorized == true AND mission_authorized == true",
+        "state": "unknown",
+        "reason": "All five authorization identifiers are absent from the current control context and must be supplied before another eligibility check.",
+        "affected_output_refs": [
+          "automatic_takeoff_authorization",
+          "takeoff_command"
+        ],
+        "basis_refs": [
+          "control-takeoff-gate-gt28"
+        ],
+        "observation_refs": [
+          "obs-takeoff-authorization-inventory-gt28"
+        ]
+      }
+    ]
+  }
+}

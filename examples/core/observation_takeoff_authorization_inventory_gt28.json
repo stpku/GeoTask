@@ -1,0 +1,48 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-takeoff-authorization-inventory-gt28",
+    "observed_at": "2026-08-04T14:00:00+08:00",
+    "received_at": "2026-08-04T14:00:04+08:00",
+    "source": {
+      "kind": "external_system",
+      "reference": "authorization-registry:fictional/gt28"
+    },
+    "producer": {
+      "id": "gt28-fictional-authorization-registry",
+      "kind": "software",
+      "version": "1.0"
+    },
+    "claims": [
+      {
+        "id": "claim-authorization-bundle-complete-gt28",
+        "subject_ref": "mission-gt28",
+        "predicate": "authorization_bundle_complete",
+        "basis": "external_assertion",
+        "value": false,
+        "observed_at": "2026-08-04T14:00:00+08:00",
+        "evidence_refs": [
+          "authorization-registry:fictional/gt28"
+        ]
+      },
+      {
+        "id": "claim-missing-authorizations-gt28",
+        "subject_ref": "mission-gt28",
+        "predicate": "missing_authorizations",
+        "basis": "external_assertion",
+        "value": [
+          "airspace",
+          "operator",
+          "departure_site",
+          "weather_release",
+          "mission"
+        ],
+        "observed_at": "2026-08-04T14:00:00+08:00",
+        "evidence_refs": [
+          "authorization-registry:fictional/gt28"
+        ]
+      }
+    ]
+  }
+}

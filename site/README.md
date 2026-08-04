@@ -1,6 +1,6 @@
 # GeoTask项目门户与案例体验站
 
-`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT27互动案例、`robots.txt`和`sitemap.xml`。
+`site/`是GeoTask的纯静态公共站点，包含项目总门户、GT01—GT28互动案例、`robots.txt`和`sitemap.xml`。
 
 站点没有后台、统计脚本、Cookie、账号系统、模型密钥或外部JavaScript依赖。案例页只在浏览器中复制任务、执行局部确定性复算，并跳转到用户选择的大模型平台。
 
@@ -26,8 +26,9 @@ site/gt24/index.html     GT24临时禁飞区影响范围体验
 site/gt25/index.html     GT25局部安全距离重算体验
 site/gt26/index.html     GT26飞行服务站营业时间限定纠偏体验
 site/gt27/index.html     GT27气象更新增量复核体验
+site/gt28/index.html     GT28自动起飞授权门禁体验
 site/robots.txt          搜索引擎规则
-site/sitemap.xml         门户与GT01—GT27索引
+site/sitemap.xml         门户与GT01—GT28索引
 ```
 
 根地址始终代表GeoTask项目本身，不再代表某一个案例。每个案例使用独立稳定地址，并提供返回项目首页的入口。
@@ -61,6 +62,7 @@ site/sitemap.xml         门户与GT01—GT27索引
 - `GT25`：无人机从走廊100米移动到130米；页面展示如何只重算20米和130米两项相关距离，并保留110米固定设施间距与48%电池余量
 - `GT26`：飞行服务站营业时间从08:00—22:00调整为09:00—18:00；页面展示如何只替换营业计划、保留四项站点信息，并阻断20:30任务直至复核
 - `GT27`：东区风速由6升至12米/秒；页面展示如何只复核同区域、更新生效后的任务A和D，并保留西区任务B和更新前任务C
+- `GT28`：路线、高度、天气窗口和风速预检全部通过，但五项独立授权仍缺失；页面展示预检可引用不等于自动起飞获授权，更不等于起飞指令已执行
 
 ## 公共访问地址
 
@@ -94,6 +96,7 @@ GitHub Pages是公共Canonical入口：
 - <https://stpku.github.io/GeoTask/gt25/>
 - <https://stpku.github.io/GeoTask/gt26/>
 - <https://stpku.github.io/GeoTask/gt27/>
+- <https://stpku.github.io/GeoTask/gt28/>
 
 当前开发镜像：
 
@@ -125,6 +128,7 @@ GitHub Pages是公共Canonical入口：
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt25/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt26/>
 - <https://skyswind.tailf4fad8.ts.net/geotask/gt27/>
+- <https://skyswind.tailf4fad8.ts.net/geotask/gt28/>
 
 公共仓库：<https://github.com/stpku/GeoTask>
 

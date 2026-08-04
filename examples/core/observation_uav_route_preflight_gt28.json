@@ -1,0 +1,31 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-uav-route-preflight-gt28",
+    "observed_at": "2026-08-04T14:00:00+08:00",
+    "received_at": "2026-08-04T14:00:02+08:00",
+    "source": {
+      "kind": "simulation",
+      "reference": "simulation:fictional/gt28/route-preflight"
+    },
+    "producer": {
+      "id": "gt28-route-preflight-simulator",
+      "kind": "software",
+      "version": "1.0"
+    },
+    "claims": [
+      {
+        "id": "claim-planned-route-version-gt28",
+        "subject_ref": "planned-route-gt28",
+        "predicate": "route_version",
+        "basis": "external_assertion",
+        "value": "route-plan-v3",
+        "observed_at": "2026-08-04T14:00:00+08:00",
+        "evidence_refs": [
+          "route-plan:fictional/gt28/v3"
+        ]
+      }
+    ]
+  }
+}

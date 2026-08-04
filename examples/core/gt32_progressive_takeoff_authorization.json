@@ -1,0 +1,196 @@
+{
+  "scenario": {
+    "id": "gt32-progressive-takeoff-authorization",
+    "title_zh": "五项授权陆续到达后，什么时候才算可起飞？",
+    "title_en": "When five authorization records arrive one by one, when does takeoff become eligible?",
+    "upstream": {
+      "route_weather_precheck": "eligible",
+      "weather_condition_verified": "eligible",
+      "wind_speed_mps": 8,
+      "mission_wind_limit_mps": 12,
+      "initial_unknown_authorization_count": 5
+    },
+    "authorization_order": [
+      "airspace_authorized",
+      "operator_authorized",
+      "departure_site_authorized",
+      "weather_release_authorized",
+      "mission_authorized"
+    ],
+    "steps": [
+      {
+        "sequence": 1,
+        "evidence_id": "fictional-airspace-authorization-gt32",
+        "authorization_field": "airspace_authorized",
+        "authorization_value": true,
+        "received_authorizations": [
+          "airspace_authorized"
+        ],
+        "remaining_authorizations": [
+          "operator_authorized",
+          "departure_site_authorized",
+          "weather_release_authorized",
+          "mission_authorized"
+        ],
+        "control_state": "unknown",
+        "gate_satisfied": null,
+        "unknown_identifiers": [
+          "departure_site_authorized",
+          "mission_authorized",
+          "operator_authorized",
+          "weather_release_authorized"
+        ],
+        "blocked_outputs": [
+          "automatic_takeoff_authorization",
+          "takeoff_command"
+        ],
+        "eligible_outputs": [],
+        "action_executed": false
+      },
+      {
+        "sequence": 2,
+        "evidence_id": "fictional-operator-authorization-gt32",
+        "authorization_field": "operator_authorized",
+        "authorization_value": true,
+        "received_authorizations": [
+          "airspace_authorized",
+          "operator_authorized"
+        ],
+        "remaining_authorizations": [
+          "departure_site_authorized",
+          "weather_release_authorized",
+          "mission_authorized"
+        ],
+        "control_state": "unknown",
+        "gate_satisfied": null,
+        "unknown_identifiers": [
+          "departure_site_authorized",
+          "mission_authorized",
+          "weather_release_authorized"
+        ],
+        "blocked_outputs": [
+          "automatic_takeoff_authorization",
+          "takeoff_command"
+        ],
+        "eligible_outputs": [],
+        "action_executed": false
+      },
+      {
+        "sequence": 3,
+        "evidence_id": "fictional-departure-site-authorization-gt32",
+        "authorization_field": "departure_site_authorized",
+        "authorization_value": true,
+        "received_authorizations": [
+          "airspace_authorized",
+          "operator_authorized",
+          "departure_site_authorized"
+        ],
+        "remaining_authorizations": [
+          "weather_release_authorized",
+          "mission_authorized"
+        ],
+        "control_state": "unknown",
+        "gate_satisfied": null,
+        "unknown_identifiers": [
+          "mission_authorized",
+          "weather_release_authorized"
+        ],
+        "blocked_outputs": [
+          "automatic_takeoff_authorization",
+          "takeoff_command"
+        ],
+        "eligible_outputs": [],
+        "action_executed": false
+      },
+      {
+        "sequence": 4,
+        "evidence_id": "fictional-weather-release-authorization-gt32",
+        "authorization_field": "weather_release_authorized",
+        "authorization_value": true,
+        "received_authorizations": [
+          "airspace_authorized",
+          "operator_authorized",
+          "departure_site_authorized",
+          "weather_release_authorized"
+        ],
+        "remaining_authorizations": [
+          "mission_authorized"
+        ],
+        "control_state": "unknown",
+        "gate_satisfied": null,
+        "unknown_identifiers": [
+          "mission_authorized"
+        ],
+        "blocked_outputs": [
+          "automatic_takeoff_authorization",
+          "takeoff_command"
+        ],
+        "eligible_outputs": [],
+        "action_executed": false
+      },
+      {
+        "sequence": 5,
+        "evidence_id": "fictional-mission-authorization-gt32",
+        "authorization_field": "mission_authorized",
+        "authorization_value": true,
+        "received_authorizations": [
+          "airspace_authorized",
+          "operator_authorized",
+          "departure_site_authorized",
+          "weather_release_authorized",
+          "mission_authorized"
+        ],
+        "remaining_authorizations": [],
+        "control_state": "satisfied",
+        "gate_satisfied": true,
+        "unknown_identifiers": [],
+        "blocked_outputs": [],
+        "eligible_outputs": [
+          "automatic_takeoff_authorization",
+          "takeoff_command"
+        ],
+        "action_executed": false
+      }
+    ],
+    "final_gate": {
+      "control_state": "satisfied",
+      "gate_satisfied": true,
+      "automatic_takeoff_authorization": "eligible",
+      "takeoff_command": "eligible",
+      "production_output_released": false,
+      "command_sent": false,
+      "action_authorized_by_core": false,
+      "action_executed": false
+    },
+    "incorrect_actions": [
+      "infer_missing_authorization_from_other_records",
+      "release_takeoff_output_before_all_five_records_arrive",
+      "treat_output_eligibility_as_command_delivery",
+      "treat_command_eligibility_as_action_execution"
+    ],
+    "required_action": "handoff_eligible_outputs_to_external_authorization_and_execution_runtime",
+    "sha256": {
+      "task": "6f0c8d3aef7579ee20196fb8c5b34a4a44436c0156b693f7b645b4c000c92a1b",
+      "execution_result": "837a17b9843f4f2a4343eba3956800729225b14d2b21085ddf640a2a8ccedab6",
+      "initial_control_evaluation": "7377d9e3f1db7b16aa4c806f90c64efd27107815f394bf3792b7a29ee8ebd0e1",
+      "gt31_assurance_evaluation": "ab3c39e154c3db1ed15b10044ab069bcf7670fcd5734e65923b94161e311ea4a",
+      "gt31_scenario": "a40ca5705229cadb809679ca198fa927fefd5dc46cf164d7caeba8c1179d27c1",
+      "authorization_evidence_airspace_authorized": "e52bb1ed3e4fe8d0a289b10345e45ba64d7854be90a9936fde1806e3ba88a29f",
+      "authorization_evidence_operator_authorized": "9c0b36f13c80f8e4e1aaf310b175e1a00ada4234acfc87fe3e441ba08d6f5102",
+      "authorization_evidence_departure_site_authorized": "b179d3ff2e4ac8332af18ceca289216386b5807216d2c8ffc49dcf89dbe8ee7d",
+      "authorization_evidence_weather_release_authorized": "f6c26624a7cbfa6af15acf5877cbb5b5aa8ee8e3313a35cd1d1f08b9bbda82ca",
+      "authorization_evidence_mission_authorized": "d265591c6d62414add045fc3d779b67156a5f36a26cad27df9a05b2b5ac55d76",
+      "final_control_evaluation": "6f03bd6d768164ee12cd5020a2be5f80edfbbc3a1885adc53a7b9364fe9c94b2"
+    },
+    "boundaries": {
+      "all_authorization_values_caller_asserted": true,
+      "external_truth_verified_by_core": false,
+      "real_authority_contacted": false,
+      "authorization_inferred": false,
+      "production_output_released": false,
+      "command_sent": false,
+      "action_authorized_by_core": false,
+      "action_executed": false
+    }
+  }
+}

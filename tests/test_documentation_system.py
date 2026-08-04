@@ -1241,7 +1241,7 @@ def test_cookbooks_cover_all_public_weekly_cases() -> None:
             assert example in text
 
 
-def test_world_state_cycle_cookbooks_publish_gt21_to_gt25_and_bound_gt26_to_gt28() -> None:
+def test_world_state_cycle_cookbooks_publish_gt21_to_gt26_and_bound_gt27_to_gt28() -> None:
     for path in (WORLD_STATE_COOKBOOK_EN, WORLD_STATE_COOKBOOK_ZH):
         text = path.read_text(encoding="utf-8")
         for number in range(21, 29):
@@ -1276,6 +1276,11 @@ def test_world_state_cycle_cookbooks_publish_gt21_to_gt25_and_bound_gt26_to_gt28
             "8cb25a65a4a22aaf887181c62ce89595171816ffb026f40452c02adb0b3f851b",
             "60c5bd7849bf2c2b5d37f4cbe46564dbff86e6ba197f6e4f5ec1bf471d196784",
             "tests/test_gt25_corridor_safety_recompute_case.py",
+            "GT26",
+            "d1d73bd3ee443a0f506311a4d68f85ab713d60674e9cc98d630584f49edaa26c",
+            "bcbc6d5644c9bcbde03163dc9024f9c5a9d0e9dc0c3cdcd8df8ba2bff0f91b83",
+            "aa165ba2e6ee673008c8bcbaeab719c4d99ce19ab5a103f1f7ef5303b700b259",
+            "tests/test_gt26_flight_service_station_schedule_correction_case.py",
         ):
             assert fragment in text
 
@@ -1286,6 +1291,7 @@ def test_world_state_cycle_cookbooks_publish_gt21_to_gt25_and_bound_gt26_to_gt28
     assert "无人机飞行五分钟后位置和电量都变了" in zh
     assert "临时禁飞区发布后" in zh
     assert "无人机位置更新后，哪些安全距离需要重算" in zh
+    assert "飞行服务站营业时间已经失效" in zh
     assert "路线安全、天气合格，就可以自动起飞吗" in zh
 
     en = WORLD_STATE_COOKBOOK_EN.read_text(encoding="utf-8")
@@ -1295,4 +1301,5 @@ def test_world_state_cycle_cookbooks_publish_gt21_to_gt25_and_bound_gt26_to_gt28
     assert "Five minutes later, both position and battery have changed" in en
     assert "temporary no-fly zone" in en
     assert "Which safety distances must be recomputed" in en
+    assert "flight-service station schedule is stale" in en
     assert "authorize automatic takeoff" in en

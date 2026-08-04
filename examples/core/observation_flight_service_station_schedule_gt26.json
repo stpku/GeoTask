@@ -1,0 +1,38 @@
+{
+  "observation": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-observation-v0.1.schema.json",
+    "schema_version": "0.1",
+    "observation_id": "obs-flight-service-station-schedule-gt26",
+    "observed_at": "2026-08-04T17:45:00+08:00",
+    "received_at": "2026-08-04T17:45:04+08:00",
+    "source": {
+      "kind": "authoritative_data",
+      "reference": "notice:fictional/flight-service-station/east/schedule-20260804",
+      "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    },
+    "producer": {
+      "id": "fictional-station-notice-registry",
+      "kind": "organization",
+      "version": "1.0.0"
+    },
+    "claims": [
+      {
+        "id": "flight-service-station-operating-schedule",
+        "subject_ref": "flight-service-station-east",
+        "predicate": "operating_schedule",
+        "basis": "external_assertion",
+        "value": {
+          "timezone": "Asia/Shanghai",
+          "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+          "effective_from": "2026-08-04T18:00:00+08:00",
+          "start": "09:00",
+          "end": "18:00"
+        },
+        "valid_until": "2026-08-31T23:59:59+08:00",
+        "evidence_refs": [
+          "notice:fictional/flight-service-station/east/schedule-20260804"
+        ]
+      }
+    ]
+  }
+}

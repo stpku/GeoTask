@@ -223,3 +223,11 @@ cases:
     page: site/gt25/index.html
     example: examples/core/gt25_corridor_safety_recompute.json
     lastmod: "2026-08-04"
+  - id: GT26
+    slug: gt26
+    stage: world_state_cycle
+    title_zh: 飞行服务站营业时间已经失效，系统应该改哪条数据，而不是推翻全部结果？
+    summary_zh: 服务站营业计划从08:00—22:00调整为09:00—18:00，系统只允许替换营业计划，保留位置、频率、服务类型和联系方式，并阻断20:30任务直至复核。
+    page: site/gt26/index.html
+    example: examples/core/gt26_flight_service_station_schedule_correction.json
+    lastmod: "2026-08-04"

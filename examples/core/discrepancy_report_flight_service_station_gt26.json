@@ -1,0 +1,113 @@
+{
+  "discrepancy_report": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-discrepancy-report-v0.1.schema.json",
+    "schema_version": "0.1",
+    "report_id": "gt26-flight-service-station-schedule-report",
+    "recorded_at": "2026-08-04T17:50:06+08:00",
+    "state": "confirmed",
+    "severity": "high",
+    "reason": "A new fictional notice narrows the station schedule from 08:00-22:00 to 09:00-18:00, so the 20:30 mission availability result is stale while unrelated station attributes remain reusable.",
+    "world_state": {
+      "world_state_id": "fictional-flight-service-station-gt26",
+      "revision": 4,
+      "as_of": "2026-08-04T17:50:00+08:00",
+      "semantic_fingerprint": "d1d73bd3ee443a0f506311a4d68f85ab713d60674e9cc98d630584f49edaa26c"
+    },
+    "observation_refs": [
+      "obs-flight-service-station-schedule-gt26"
+    ],
+    "evidence_refs": [
+      "notice:fictional/flight-service-station/east/schedule-20260804"
+    ],
+    "artifact_refs": [
+      {
+        "ref_id": "schedule-notice-gt26",
+        "artifact_id": "geotask.observation",
+        "schema_version": "0.1",
+        "instance_id": "obs-flight-service-station-schedule-gt26",
+        "content_sha256": "86161db06b1916e146cf0af57fb4461d8e5d1cbe39390735ab1a8a45b44e64d7"
+      }
+    ],
+    "discrepancies": [
+      {
+        "id": "station-operating-schedule-mismatch",
+        "kind": "value_mismatch",
+        "state": "confirmed",
+        "severity": "high",
+        "subject_kind": "attribute",
+        "subject_path": "/objects/flight-service-station-east/attributes/operating_schedule/value",
+        "summary": "The station operating schedule stored in the current state no longer matches the new fictional notice.",
+        "reason": "The current state ends service at 22:00, while the new notice ends service at 18:00 from 2026-08-04 18:00 onward.",
+        "basis_refs": [
+          "schedule-notice-gt26"
+        ],
+        "observation_refs": [
+          "obs-flight-service-station-schedule-gt26"
+        ],
+        "evidence_refs": [
+          "notice:fictional/flight-service-station/east/schedule-20260804"
+        ],
+        "impact": {
+          "state": "confirmed",
+          "reason": "Only the schedule path and the derived 20:30 mission availability conclusion require correction or recheck.",
+          "affected_paths": [
+            "/objects/flight-service-station-east/attributes/operating_schedule/value",
+            "/relations/mission-27-station-service-availability/value"
+          ],
+          "affected_assertion_refs": [
+            "mission_27_service_time_within_schedule"
+          ],
+          "affected_output_refs": [
+            "mission_27_service_availability"
+          ],
+          "affected_action_refs": [
+            "dispatch_mission_27"
+          ]
+        },
+        "correction_scope": {
+          "state": "allowed",
+          "reason": "Replace only the operating schedule and preserve station identity, location, radio frequency, service types, and contact channel.",
+          "mutable_paths": [
+            "/objects/flight-service-station-east/attributes/operating_schedule/value"
+          ],
+          "immutable_paths": [
+            "/objects/flight-service-station-east/attributes/contact_channel/value",
+            "/objects/flight-service-station-east/attributes/location_code/value",
+            "/objects/flight-service-station-east/attributes/radio_frequency_mhz/value",
+            "/objects/flight-service-station-east/attributes/service_types/value"
+          ]
+        },
+        "expected": {
+          "timezone": "Asia/Shanghai",
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri",
+            "sat",
+            "sun"
+          ],
+          "effective_from": "2026-08-04T18:00:00+08:00",
+          "start": "09:00",
+          "end": "18:00"
+        },
+        "observed": {
+          "timezone": "Asia/Shanghai",
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri",
+            "sat",
+            "sun"
+          ],
+          "effective_from": "2026-08-01T00:00:00+08:00",
+          "start": "08:00",
+          "end": "22:00"
+        }
+      }
+    ]
+  }
+}

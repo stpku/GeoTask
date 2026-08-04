@@ -145,7 +145,8 @@ Selected examples:
 - **GT22:** when position and battery data come from different systems, the AI must not assemble a “current state” from the latest fields alone; it must first bind object identity, time, and field ownership into one traceable operational snapshot;
 - **GT23:** when position and battery change over five minutes, the system must not overwrite the earlier values; it must retain both snapshots, bind the 300-second interval, and explicitly record position, battery, and object-validity changes;
 - **GT24:** when a temporary no-fly zone is published, the system must neither recompute every operation nor update only the map; it must follow an explicit dependency chain and recheck only the intersecting route, its mission, approval conclusion, and launch action;
-- **GT25:** when the UAV position moves from corridor chainage 100 to 130 metres, the system recomputes only the crane and tower distances that depend on position while preserving fixed-facility spacing and battery state.
+- **GT25:** when the UAV position moves from corridor chainage 100 to 130 metres, the system recomputes only the crane and tower distances that depend on position while preserving fixed-facility spacing and battery state;
+- **GT26:** when a flight-service station schedule changes from 08:00–22:00 to 09:00–18:00, the system replaces only the schedule, preserves location, radio frequency, service types, and contact channel, and blocks the 20:30 mission until recheck.
 
 See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md) and the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md).
 

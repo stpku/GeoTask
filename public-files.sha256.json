@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 35869,
-    "sha256": "22f86bef2209a8fc4f902f91aa07e61aedb1083209086608e4f1a00a4413d8ab"
+    "size": 36776,
+    "sha256": "3445f2c11a31d32e94993ef48351e119232473c3a898ff12d2f61d312b016b72"
   },
   {
     "path": "CITATION.cff",
@@ -51,18 +51,18 @@
   },
   {
     "path": "README.en.md",
-    "size": 21531,
-    "sha256": "1245ea3365642f3256b2d3f95e80fd9028afc0196f5b0ad9b3abe740a2a9cc4f"
+    "size": 21783,
+    "sha256": "0d0c9a338e1aa0667147512fcf8586ed012b53703a7c1d6862cf87ebad70e9f8"
   },
   {
     "path": "README.md",
-    "size": 20132,
-    "sha256": "50c73954b81e80bfb28e2d3b9bb40dc637fa6302d047715c6f07aff35b5d4b77"
+    "size": 20331,
+    "sha256": "83d8534fe8b3f156e55876e64784812432a606de2cb60101d27fb147e15c8293"
   },
   {
     "path": "ROADMAP.md",
-    "size": 21829,
-    "sha256": "930b83e3b799b4dff6ef6069dfb42368d49e98240d7c024baed74f9858ba733b"
+    "size": 22716,
+    "sha256": "dc023ed05c37799c72379383c8d01f1ea0097a04ace68ff9d6664a097902ba9f"
   },
   {
     "path": "SECURITY.md",
@@ -216,8 +216,8 @@
   },
   {
     "path": "tests/test_documentation_system.py",
-    "size": 51617,
-    "sha256": "c37443af1d5295fd91732ac4d8ea2e5a8d96848c74e2b10733272d16964388a5"
+    "size": 52078,
+    "sha256": "df0931a1d8795c26262c81b1cbabd798d0e5a394a66b28892668d2402ca62af4"
   },
   {
     "path": "tests/test_evaluator.py",
@@ -445,6 +445,16 @@
     "sha256": "edc6d53a97da39cbcd7290f115ef8cd75bc71037982715c4f4f71b894f8a35df"
   },
   {
+    "path": "tests/test_gt26_experience_page.py",
+    "size": 4382,
+    "sha256": "009bc0dcdee3a53cfd4bf03a04946d7eb4f35e46c614ff6327e52bddcebd372a"
+  },
+  {
+    "path": "tests/test_gt26_flight_service_station_schedule_correction_case.py",
+    "size": 7936,
+    "sha256": "bd80c3b2043b3c02f398f0b1229a08e413af126a6e6e9a9eebd0ca58c9d9166f"
+  },
+  {
     "path": "tests/test_http_json_runtime_adapter_example.py",
     "size": 9552,
     "sha256": "c67deb4459dad459411e06cde87a1d6b427fbf2660d646cbe6092e1066ced9eb"
@@ -496,8 +506,8 @@
   },
   {
     "path": "tests/test_project_portal.py",
-    "size": 8791,
-    "sha256": "ddde6fd6f59a767fd87876897c26f11eea6022953df6e6e454c0088ec16a843f"
+    "size": 8823,
+    "sha256": "6b761be0b1f64b2598ed49e63e9613045b425a369dd186a5f2b89c164e898024"
   },
   {
     "path": "tests/test_provider_neutral_model_adapter_example.py",
@@ -890,6 +900,11 @@
     "sha256": "205aeb5c301d8e8ea72d35ead948123363af7301320e7648325ab5ebb755adc5"
   },
   {
+    "path": "examples/core/correction_request_flight_service_station_gt26.json",
+    "size": 5479,
+    "sha256": "fb20f949dc63d0e7890419668106adfa85c51fd22ea482b7d37b1b3cfc8fad0d"
+  },
+  {
     "path": "examples/core/correction_request_uav_recheck.json",
     "size": 6296,
     "sha256": "41a3f73cf9a11b862e0c8a5a6f4b3c243ef74fbd22f0fc9c3cf117a45ca3342b"
@@ -898,6 +913,11 @@
     "path": "examples/core/discrepancy_report_corridor_safety_gt25.json",
     "size": 3662,
     "sha256": "2e78478e6a9e4fec21211b2185ae63bc901a6d27d3c7d7592430e0715da6ff78"
+  },
+  {
+    "path": "examples/core/discrepancy_report_flight_service_station_gt26.json",
+    "size": 4267,
+    "sha256": "035ae7c0118b61ba50f45f15bfad7b70824b56bb9fd269349aea01395faa6f0c"
   },
   {
     "path": "examples/core/discrepancy_report_temporary_no_fly_zone_gt24.json",
@@ -980,6 +1000,16 @@
     "sha256": "111217af71cad0ead56eec9bf0038b32568ee553b9bbe0b90746297506f7f3c1"
   },
   {
+    "path": "examples/core/gt26_build_schedule_correction.py",
+    "size": 18830,
+    "sha256": "2b205a9c94094e92de987a317e647d6d69ba0df61faa0b3738e37680d93f5c14"
+  },
+  {
+    "path": "examples/core/gt26_flight_service_station_schedule_correction.json",
+    "size": 2942,
+    "sha256": "23b2ca51fa36aa24bb7eb670a56dbf69124af596a19cc196a4fdebd37d704e53"
+  },
+  {
     "path": "examples/core/impact_graph_temporary_no_fly_zone_gt24.json",
     "size": 8735,
     "sha256": "83b3631595768d0d77a5c931ba3a6ab6918ae5b03997396880373e08736a513b"
@@ -1008,6 +1038,11 @@
     "path": "examples/core/multi_constraint_conflict.yaml",
     "size": 1999,
     "sha256": "390218c40c2e04983dbab35ff4e3c7c7e54d508a639be9fb62185c548c04b9da"
+  },
+  {
+    "path": "examples/core/observation_flight_service_station_schedule_gt26.json",
+    "size": 1316,
+    "sha256": "86161db06b1916e146cf0af57fb4461d8e5d1cbe39390735ab1a8a45b44e64d7"
   },
   {
     "path": "examples/core/observation_merge_result_uav_recheck.json",
@@ -1198,6 +1233,11 @@
     "path": "examples/core/world_state_corridor_safety_gt25.json",
     "size": 5495,
     "sha256": "63362deb2c285b19b0646513705d43e4085ff49111e2d73b19e67f04eb8c4403"
+  },
+  {
+    "path": "examples/core/world_state_flight_service_station_gt26.json",
+    "size": 4645,
+    "sha256": "78d27b11e21ba5455596a9c270dd1dab832c3a488e6b9920c4e2aa698acbbe94"
   },
   {
     "path": "examples/core/world_state_materialization_result_uav_recheck.json",
@@ -1411,18 +1451,18 @@
   },
   {
     "path": "site/README.md",
-    "size": 10947,
-    "sha256": "24543920eeb945eb8dcf4fc708c4a3e1932c7bf952228bdfb7a2b88944b9c8f3"
+    "size": 11298,
+    "sha256": "609aad5fcac9572e442af7d06bbba7504e0caff8b20a682f46cd890a51805091"
   },
   {
     "path": "site/cases.json",
-    "size": 4709,
-    "sha256": "4674d7862954646c159c6fcd4fd0e77063f8ad2c75833ffe09d6273232544b5a"
+    "size": 4935,
+    "sha256": "ee5ebf0e021f973769a3ea0d25fce2689bb100591db161cc23f168de8eecd402"
   },
   {
     "path": "site/cases.txt",
-    "size": 125,
-    "sha256": "bfba2b6dbdb374754728e0610840ed0a22574b776b40edef4bdbdb6e8c8455db"
+    "size": 130,
+    "sha256": "f27bd260770279ae0cf590bb7d00cc1b39148b85310c98034afa47c70e0c3087"
   },
   {
     "path": "site/deploy-nginx.sh",
@@ -1431,8 +1471,8 @@
   },
   {
     "path": "site/index.html",
-    "size": 34298,
-    "sha256": "0261d99222ba7d01ddc82a7b9bb5d006108beba74c6ab6e53e68b230ac2c3d57"
+    "size": 34722,
+    "sha256": "4095378284a756db5c52f7c86bdca0eebb228c867ed111c743de54bae9557d09"
   },
   {
     "path": "site/robots.txt",
@@ -1441,8 +1481,8 @@
   },
   {
     "path": "site/sitemap.xml",
-    "size": 3926,
-    "sha256": "020da9bb45ef773a8a66a03d20926053b17cf1d74d83679f548a7995f257022a"
+    "size": 4073,
+    "sha256": "f957cd2ecb84b7b8f233c6e18270af93fbc3c5f6f25dbf532edb17ea8c3d8889"
   },
   {
     "path": "site/gt12/index.html",
@@ -1476,8 +1516,8 @@
   },
   {
     "path": "site/gt25/index.html",
-    "size": 19073,
-    "sha256": "fab6caf31b4b09fadc9cf76e3b9fbc89d478dfbca72c40e82f308fd437ad2d87"
+    "size": 19074,
+    "sha256": "0bcad4c4cc3edb9dc742d7bdec9bdc40c5315f839ab9e8fb989f78ee98281023"
   },
   {
     "path": "site/gt14/index.html",
@@ -1573,6 +1613,11 @@
     "path": "site/gt23/index.html",
     "size": 18078,
     "sha256": "7cb8e086d02a7cdb9bf3d68712a7c346d4a88d590377f71b0d2478f0463a848e"
+  },
+  {
+    "path": "site/gt26/index.html",
+    "size": 18175,
+    "sha256": "cf225243fde096eb6a741425eaff878d0127ff9e0cd7da7e074f2ad4a341bf2b"
   },
   {
     "path": "site/gt05/index.html",
@@ -1861,8 +1906,8 @@
   },
   {
     "path": "cases/catalog.yaml",
-    "size": 9870,
-    "sha256": "d63c98dcddd641a7b22a5c85ebb6f9cb9b140a34927151f5fc54b374195440ef"
+    "size": 10385,
+    "sha256": "b2b5244465efa6365f779dd6459dc1261fea6b0e5a218534622f3144e5aa1b2f"
   },
   {
     "path": "docs/README.en.md",
@@ -1872,7 +1917,7 @@
   {
     "path": "docs/README.md",
     "size": 10473,
-    "sha256": "40702177ea6f57ab052f4ce149ed1762b1e3136938ae2fa20b308551cf20599a"
+    "sha256": "af07a5756d0939463371eb3c6b822cf0d0cedafdcf2dfda081dbb393e85a597d"
   },
   {
     "path": "docs/architecture.md",
@@ -1986,13 +2031,13 @@
   },
   {
     "path": "docs/cookbook/gt21-gt28.md",
-    "size": 11354,
-    "sha256": "81f60c5932fbbf5dd8c1e3540a5d1716af06b7f01d3c44ef3fe2c227bc5ecc7c"
+    "size": 13325,
+    "sha256": "6059b2df1a8c539f629d6d7c6083d358c2cd79a02dc1b15a6379d9c44c0fe0c3"
   },
   {
     "path": "docs/cookbook/gt21-gt28.zh-CN.md",
-    "size": 12872,
-    "sha256": "ec4da2e05503ca7854ee32331e1c8f2bdba0aaf65561c3a6650ac02d6e2a702b"
+    "size": 15445,
+    "sha256": "026aedd507068d555f0aa121a775f046a03212ee5e58f19fa79c19f21b5f0a8e"
   },
   {
     "path": "docs/architecture_decisions/ADR-001-core-runtime-domain-pack.md",
@@ -2156,8 +2201,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 25525,
-    "sha256": "7b04db43984208c3279425980b837f243e2a3ee7846c3dec6debff2063344ab4"
+    "size": 26190,
+    "sha256": "49e1b9c1bdfb2ed324b6201d977e086ec7dabfff566c8849fd64e17221c7fa51"
   },
   {
     "path": ".release/release_public.py",

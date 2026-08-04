@@ -39,6 +39,10 @@ SCHEMA_FILENAMES = (
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",
     "geotask-runtime-response-v0.1.schema.json",
+    "geotask-verification-provider-descriptor-v0.1.schema.json",
+    "geotask-verification-request-v0.1.schema.json",
+    "geotask-verification-response-v0.1.schema.json",
+    "geotask-assurance-profile-v0.1.schema.json",
     "geotask-v1.0.schema.json",
 )
 
@@ -159,6 +163,9 @@ def _create_distribution(
         "src/geotask_core/v1/runtime_interface.py": (
             ROOT / "src" / "geotask_core" / "v1" / "runtime_interface.py"
         ).read_bytes(),
+        "src/geotask_core/v1/verification_provider.py": (
+            ROOT / "src" / "geotask_core" / "v1" / "verification_provider.py"
+        ).read_bytes(),
     }
     if omit_sdist_build_support:
         required_sources.pop("src/geotask_build_support.py")
@@ -181,7 +188,7 @@ def test_distribution_verifier_accepts_matching_wheel_and_sdist(tmp_path: Path) 
 
     assert report["valid"] is True
     assert report["bundle_version"] == "1.0"
-    assert report["schema_count"] == 24
+    assert report["schema_count"] == 28
     assert all(item["valid"] for item in report["schemas"])
     assert report["errors"] == []
 
@@ -240,7 +247,7 @@ def test_distribution_verifier_cli_emits_machine_readable_report(tmp_path: Path)
     assert result.stderr == ""
     report = json.loads(result.stdout)["schema_distribution_verification"]
     assert report["valid"] is True
-    assert report["schema_count"] == 24
+    assert report["schema_count"] == 28
 
 
 def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
@@ -279,12 +286,16 @@ def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
             "geotask.runtime-descriptor",
             "geotask.runtime-request",
             "geotask.runtime-response",
+            "geotask.verification-provider-descriptor",
+            "geotask.verification-request",
+            "geotask.verification-response",
+            "geotask.assurance-profile",
             "geotask.core-benchmark-report",
             "geotask.artifact-validation-report",
         ):
             assert f"artifact validate {artifact_id}" in workflow
         assert "artifact_validation" in workflow
-        assert "checked_count\"] == 24" in workflow
+        assert "checked_count\"] == 28" in workflow
         assert "checked_count\"] == 1" in workflow
 
     assert "pip wheel --no-deps --wheel-dir dist-from-sdist" in ci

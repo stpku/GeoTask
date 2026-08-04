@@ -117,7 +117,7 @@ def test_sitemap_and_deployment_slug_list_match_catalog() -> None:
     namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     root = ElementTree.parse(SITEMAP).getroot()
     urls = [item.text for item in root.findall("sm:url/sm:loc", namespace)]
-    expected_urls = [data["base_url"]] + [
+    expected_urls = [data["base_url"], f'{data["base_url"]}en/'] + [
         f'{data["base_url"]}{case["slug"]}/' for case in cases
     ]
 

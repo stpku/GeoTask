@@ -30,6 +30,10 @@ from geotask_core.v1.artifact_registry import (
     RUNTIME_DESCRIPTOR_SCHEMA_ID,
     RUNTIME_REQUEST_SCHEMA_ID,
     RUNTIME_RESPONSE_SCHEMA_ID,
+    VERIFICATION_PROVIDER_DESCRIPTOR_SCHEMA_ID,
+    VERIFICATION_REQUEST_SCHEMA_ID,
+    VERIFICATION_RESPONSE_SCHEMA_ID,
+    ASSURANCE_PROFILE_SCHEMA_ID,
     get_artifact_descriptor,
 )
 from geotask_core.v1.control_evaluation import CONTROL_EVALUATION_SCHEMA_ID
@@ -74,6 +78,12 @@ _SCHEMA_FILENAME_BY_ID = {
     RUNTIME_DESCRIPTOR_SCHEMA_ID: "geotask-runtime-descriptor-v0.1.schema.json",
     RUNTIME_REQUEST_SCHEMA_ID: "geotask-runtime-request-v0.1.schema.json",
     RUNTIME_RESPONSE_SCHEMA_ID: "geotask-runtime-response-v0.1.schema.json",
+    VERIFICATION_PROVIDER_DESCRIPTOR_SCHEMA_ID: (
+        "geotask-verification-provider-descriptor-v0.1.schema.json"
+    ),
+    VERIFICATION_REQUEST_SCHEMA_ID: "geotask-verification-request-v0.1.schema.json",
+    VERIFICATION_RESPONSE_SCHEMA_ID: "geotask-verification-response-v0.1.schema.json",
+    ASSURANCE_PROFILE_SCHEMA_ID: "geotask-assurance-profile-v0.1.schema.json",
     CORE_BENCHMARK_SCHEMA_ID: "geotask-core-benchmark-v0.1.schema.json",
     ARTIFACT_VALIDATION_SCHEMA_ID: "geotask-artifact-validation-v1.0.schema.json",
 }

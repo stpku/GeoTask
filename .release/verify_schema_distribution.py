@@ -49,6 +49,10 @@ EXPECTED_SCHEMA_FILENAMES = {
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",
     "geotask-runtime-response-v0.1.schema.json",
+    "geotask-verification-provider-descriptor-v0.1.schema.json",
+    "geotask-verification-request-v0.1.schema.json",
+    "geotask-verification-response-v0.1.schema.json",
+    "geotask-assurance-profile-v0.1.schema.json",
     "geotask-v1.0.schema.json",
 }
 REQUIRED_SDIST_PATHS = {
@@ -64,6 +68,7 @@ REQUIRED_SDIST_PATHS = {
     "src/geotask_core/v1/recompute_derivation.py",
     "src/geotask_core/v1/observation_merge.py",
     "src/geotask_core/v1/runtime_interface.py",
+    "src/geotask_core/v1/verification_provider.py",
     *(f"schemas/{name}" for name in EXPECTED_SCHEMA_FILENAMES),
 }
 

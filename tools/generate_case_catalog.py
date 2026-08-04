@@ -196,6 +196,7 @@ def render_sitemap(data: dict[str, Any]) -> str:
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
         f'  <url><loc>{base_url}</loc><lastmod>{data["portal_lastmod"]}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>',
+        f'  <url><loc>{base_url}en/</loc><lastmod>{data["portal_lastmod"]}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>',
     ]
     for case in data["cases"]:
         lines.append(

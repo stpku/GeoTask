@@ -25,8 +25,10 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [Recompute Derivation Result v0.1](spec/geotask-recompute-derivation-result-v0.1.md)：将Correction Request中的每个`recompute`变更绑定到精确Observation/任务文档路径，通过受限确定性方法生成完整重算值映射，不执行任意表达式、模型调用或状态物化。
 - [World State Materialization Result v0.1](spec/geotask-world-state-materialization-result-v0.1.md)：由不可变基准World State、已绑定Correction Request和显式重算值确定性生成后继快照，记录精确字节与逐项变更，同时保留输出/动作门禁。
 - [Incremental Reevaluation Result v0.1](spec/geotask-incremental-reevaluation-result-v0.1.md)：绑定基准/后继World State、Impact Graph与精确来源文件，记录节点、目标、验收条件、差异消解及输出/动作门禁结果，但不执行复核或授权动作。
-- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现23类公共Artifact的Schema、版本及操作命令。
-- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定Artifact ID校验23类公共制品，包括Observation、World State、Observation Merge Result、State Transition、Verification Session、Discrepancy Report、Correction Request、Impact Graph、Recompute Derivation Result、World State Materialization Result、Incremental Reevaluation Result、Agent报告、Runtime消息、Core基准报告与验证报告自身，并输出统一文本/JSON报告。
+- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现27类公共制品、28份结构规范、版本及操作命令。
+- [验证提供方接口规范v0.1](spec/geotask-verification-provider-profile-v0.1.zh-CN.md)：定义验证提供方描述符、验证请求、验证响应、可信保证档案及只读命令行接口。
+- [中文术语规范](terminology.zh-CN.md)：建立中英文术语映射，并约束中文页面和中文文档避免不必要的中英文混编。
+- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定制品标识校验27类公共制品，包括观测记录、世界状态、观测合并结果、状态转换、验证会话、差异报告、纠偏请求、影响图、重算推导结果、世界状态物化结果、增量复核结果、智能体报告、运行时消息、验证提供方制品、核心基准报告与验证报告自身，并输出统一文本或JSON报告。
 - [版本化载荷校验v1.0](spec/geotask-versioned-payload-validation-v1.0.md)：统一执行结果与控制结果的严格加载、Schema元数据、诊断和文本/JSON报告。
 - [控制扩展Profile v1.0](spec/geotask-control-extension-profile-v1.0.md)：对证据请求、证据冲突、决策规则和任务门控进行版本化校验。
 - [控制表达式语言v1.0](spec/geotask-control-expression-language-v1.0.md)：定义安全有限语法、三值逻辑、比较语义和公共解析求值API。
@@ -64,19 +66,16 @@ GeoTask明确区分三层文档：
 
 ## 设计与边界
 
+- [架构说明](architecture.md)
 - [设计原则](design_principles.md)
 - [评估规范](eval_spec.md)
 - [Normalizer v0.2设计](normalizer_v0_2_design.md)
-- [开源边界](open_source_boundary.md)
-- [开源Core与商业Runtime边界](open_core_commercial_runtime_boundary.md)
-- [产品架构v0.1](product_architecture_v0_1.md)
-- [ADR-001：Core、Runtime与Domain Pack分层](architecture_decisions/ADR-001-core-runtime-domain-pack.md)
-- [ADR-002：私有Runtime边界](architecture_decisions/ADR-002-private-runtime-boundary.md)
-- [ADR-003：Domain Pack契约](architecture_decisions/ADR-003-domain-pack-plugin-contract.md)
-- [ADR-004：专利与开源边界](architecture_decisions/ADR-004-patent-and-open-source-boundary.md)
+- [算子注册表](operator_registry.md)
+- [中文术语规范](terminology.zh-CN.md)
+- [安全说明](../SECURITY.md)
 
 ## 公共和私有边界
 
 公共仓库提供通用任务表示、确定性算子、结构验证、结果可信等级、示例和一致性测试。行业规则、客户数据、审批阈值、模型凭据、商业路由和专利敏感优化不属于公共Core。
 
-项目不会通过白皮书和规范公开客户规则、私有Runtime实现或尚未披露的专利敏感细节。更多说明见[ADR-004](architecture_decisions/ADR-004-patent-and-open-source-boundary.md)和[开源Core边界](open_core_commercial_runtime_boundary.md)。
+项目不会通过白皮书和规范公开客户规则、私有运行时实现或尚未披露的专利敏感细节。公共文档只描述开放协议、开发者接口和安全边界。

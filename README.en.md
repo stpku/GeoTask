@@ -24,11 +24,12 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - **Verification and control maintain the world:** preserve supported facts, expose conflict and unknown states, constrain correction, and manage action eligibility.
 - **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local predictive models, human review, and production actions.
 
-> **Engineering boundary:** GeoTask Core provides the public state contracts, verification kernel, and Artifact foundation of a verifiable spatiotemporal world model. The verifiable task protocol is the current implementation form. Observation v0.1 carries source-bound claims, World State v0.1 records versioned snapshots, Observation Merge Result v0.1 applies complete explicit claim mappings to existing state targets, supports caller-declared semantic-equality consolidation or complete precedence for claims targeting the same path, and emits a bound successor revision, State Transition v0.1 binds before/after states, Verification Session v0.1 freezes audit context, Discrepancy Report v0.1 records bounded differences, Correction Request v0.1 constrains successor-state changes, Impact Graph v0.1 represents the affected topology, Recompute Derivation Result v0.1 deterministically derives bounded values from exact source paths, World State Materialization Result v0.1 records bounded successor materialization, and Incremental Reevaluation Result v0.1 closes graph-node, target, acceptance, discrepancy, and output/action-gate outcomes. Automatic diff computation, identity discovery, resolution of ambiguous claims without a declared policy, automatic graph discovery/propagation execution, and general-purpose derivation methods remain under development.
+> **Engineering boundary:** GeoTask Core provides public world-state contracts, deterministic validation, exact Artifact binding, and fail-closed control semantics; the verifiable task protocol remains the current implementation form. The implemented public profile covers Observation, World State, bounded Observation Merge, State Transition, Verification Session, Discrepancy Report, Correction Request, Impact Graph, bounded recompute derivation, bounded successor materialization, Incremental Reevaluation Result, Verification Provider Descriptor, Verification Request, Verification Response, and Assurance Profile. Core does not fetch external truth, invent undeclared source precedence, publish production output, authorize actions, or execute side effects.
 
 ## Start here
 
-- [Try the GT01–GT22 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT29 experience](https://stpku.github.io/GeoTask/)
+- [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
 - [White paper English abstract](docs/whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)
@@ -46,6 +47,8 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [GeoTask Incremental Reevaluation Result v0.1](docs/spec/geotask-incremental-reevaluation-result-v0.1.md)
 - [GeoTask Agent Integration Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
 - [GeoTask Runtime Interface Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
+- [GeoTask Verification Provider Profile v0.1](docs/spec/geotask-verification-provider-profile-v0.1.md)
+- [English Terminology Guide](docs/terminology.en.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
 - [VS Code Schema association example](.vscode/settings.json)
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
@@ -77,7 +80,7 @@ flowchart LR
   N[New observation arrives] --> W
 ```
 
-The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation v0.1, World State v0.1, bounded Observation Merge v0.1, State Transition v0.1, Verification Session v0.1, Discrepancy Report v0.1, Correction Request v0.1, Impact Graph v0.1, source-bound bounded recompute derivation, bounded successor-state materialization, Incremental Reevaluation Result v0.1, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. Automatic diff computation, identity discovery, resolution of ambiguous claims without a declared policy, automatic impact-graph discovery and propagation execution, and general-purpose derivation methods remain roadmap capabilities.
+The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation, World State, bounded Observation Merge, State Transition, Verification Session, Discrepancy Report, Correction Request, Impact Graph, source-bound bounded recompute derivation, bounded successor-state materialization, Incremental Reevaluation Result, Verification Provider contracts, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. Automatic diff computation, identity discovery, resolution of ambiguous claims without a declared policy, automatic impact discovery and propagation execution, and general-purpose derivation methods remain roadmap capabilities.
 
 ## Five-minute quickstart
 
@@ -125,6 +128,8 @@ The cases show how model proposals are materialized, recomputed, contradicted, e
 | Space-time composition | GT04–GT06 | Do horizontal, vertical, and temporal conditions all hold? |
 | Uncertainty and evidence | GT07–GT09 | What happens when evidence is missing or conflicting? |
 | Action and feasibility | GT10–GT20 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, city-event deduplication, equipment-capability, and high-risk action-gate constraints? |
+| World-state cycle | GT21–GT28 | How do multi-source observations, state change, impact scope, bounded correction, incremental reevaluation, and action gates close the loop? |
+| Verification Provider ecosystem | GT29 | What should happen when fresh independent sources still disagree? |
 
 Selected examples:
 
@@ -149,8 +154,9 @@ Selected examples:
 - **GT26:** when a flight-service station schedule changes from 08:00–22:00 to 09:00–18:00, the system replaces only the schedule, preserves location, radio frequency, service types, and contact channel, and blocks the 20:30 mission until recheck;
 - **GT27:** when east-zone wind rises from 6 to 12 m/s, the system reevaluates only Missions A and D in the matching region and active time window; Mission A becomes unsuitable, Mission D remains suitable after recheck, and Missions B and C are reused;
 - **GT28:** route, altitude, weather-window, and wind checks all pass, but airspace, operator, departure-site, weather-release, and mission authorizations remain absent; the precheck is reusable while automatic takeoff authorization and the takeoff command stay blocked.
+- **GT29:** a mock weather service reports 8 m/s while an onsite sensor reports 13 m/s against a 12 m/s mission limit; both responses are fresh and independently grouped, but the result remains unknown and a third independent source is requested.
 
-See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md) and the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md).
+See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), and the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29.
 
 ## Implemented public Core
 
@@ -213,7 +219,7 @@ The cases also demonstrate `unverifiable`, `conflicted`, `blocked`, `evidence_re
 - Automatic device control
 - Patent-sensitive optimization and commercial governance
 
-See [Target Specification Status](docs/spec/target-specification-status.md) and [Open Core Boundary](docs/open_core_commercial_runtime_boundary.md).
+See [Target Specification Status](docs/spec/target-specification-status.md) and [Security](SECURITY.md).
 
 ## CLI
 
@@ -231,6 +237,9 @@ geotask artifact validate geotask.agent-evidence-recovery <recovery-report.json>
 geotask runtime inspect examples/core/runtime_reference_descriptor.json --format json
 geotask runtime check examples/core/runtime_reference_descriptor.json examples/core/runtime_validate_artifact_request.json --format json
 geotask runtime mock examples/core/runtime_validate_artifact_request.json --output runtime-response.json
+geotask provider inspect --profile --format json
+geotask provider check examples/core/verification_provider_descriptor_authoritative_weather_gt29.json examples/core/verification_request_weather_conflict_gt29.json --format json
+geotask provider validate examples/core/verification_response_authoritative_weather_gt29.json --request examples/core/verification_request_weather_conflict_gt29.json --descriptor examples/core/verification_provider_descriptor_authoritative_weather_gt29.json --format json
 geotask verify examples/core/verification_session_uav_recheck.json --state examples/core/world_state_uav_separation_recheck.json --observation examples/core/observation_uav_b_delay_recheck.json --bind task-gt16=examples/core/uav_route_crossing_temporal_separation.yaml --bind result-gt16-initial=examples/core/verification_session_uav_execution_result.json --bind transition-uav-recheck=examples/core/state_transition_uav_separation_recheck.json --format json
 geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json --bind base-world-state=examples/core/world_state_uav_separation_recheck.json --bind successor-world-state=examples/core/world_state_uav_separation_successor.json --bind impact-graph-uav-recheck=examples/core/impact_graph_uav_recheck.json --bind correction-uav-recheck=examples/core/correction_request_uav_recheck.json --bind discrepancy-uav-recheck=examples/core/discrepancy_report_uav_recheck.json --bind result-gt16-reevaluation=examples/core/incremental_reevaluation_uav_execution_result.json --format json
 ```
@@ -250,6 +259,7 @@ The public repository also includes [`examples/adapters/http_json_runtime_adapte
 | Language specification | `1.0` | Implemented public normative profile |
 | Agent Integration Profile | `0.1` | Model-neutral tool contract, evidence recovery, and recovery-report Artifact |
 | Runtime Interface Profile | `0.1` | Descriptor, Request, and Response contracts between Core and an external Runtime |
+| Verification Provider Profile | `0.1` | Provider Descriptor, Verification Request, Verification Response, and Assurance Profile contracts |
 | White paper | `0.1` | Public conceptual draft |
 
 ## Documentation

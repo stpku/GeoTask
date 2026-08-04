@@ -27,13 +27,13 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert "30秒看懂一次世界状态更新" in html
     assert "四个平面构成可验证时空世界模型" in html
     assert "六类能力共同维护智能体的世界" in html
-    assert "Observation v0.1、World State v0.1、支持调用方显式同目标冲突策略的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、来源绑定的受限重算值推导、受限后继状态物化、Incremental Reevaluation Result v0.1" in html
-    assert "自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行以及受限推导方法扩展" in html
-    assert "支持调用方显式同目标冲突策略的受限Observation Merge v0.1" in html
-    assert "自动差异计算、Observation合并" not in html
+    assert "观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、受限重算推导、受限后继状态物化、增量复核结果、验证提供方公共合同" in html
+    assert "自动差异计算、对象身份发现、未声明策略的歧义冲突消解、影响关系自动发现与传播执行" in html
+    assert "新Observation" not in html
+    assert "公共Artifact" not in html
     assert "保护商业运行层" not in html
     assert "商业边界" not in html
-    assert "GT01—GT28渐进式案例" in html
+    assert "GT01—GT29渐进式案例" in html
     assert 'id="demo"' in html
     assert 'id="cases"' in html
     assert 'id="architecture"' in html
@@ -49,7 +49,7 @@ def test_portal_exposes_gt16_world_state_update_demo() -> None:
 
     for fragment in (
         "初始世界状态",
-        "新Observation",
+        "新的观测记录",
         "世界关系更新",
         "行动资格更新",
         "计划间隔120秒",
@@ -65,7 +65,7 @@ def test_portal_exposes_gt16_world_state_update_demo() -> None:
 def test_portal_links_all_public_cases() -> None:
     html = PORTAL.read_text(encoding="utf-8")
 
-    for number in range(1, 29):
+    for number in range(1, 30):
         case = f"gt{number:02d}/"
         assert f'href="{case}"' in html
         assert f"GT{number:02d}" in html
@@ -86,7 +86,8 @@ def test_portal_links_primary_public_resources() -> None:
         "docs/spec/geotask-impact-graph-v0.1.md",
         "docs/spec/geotask-incremental-reevaluation-result-v0.1.md",
         "docs/tutorials/quickstart.zh-CN.md",
-        "docs/cookbook/gt21-gt28.zh-CN.md",
+        "docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md",
+        "docs/terminology.zh-CN.md",
         "schemas/geotask-v1.0.schema.json",
     )
     for fragment in required:
@@ -137,7 +138,7 @@ def test_gt01_moved_to_stable_nested_route() -> None:
 
 
 def test_all_case_pages_link_back_to_project_portal() -> None:
-    for number in range(1, 29):
+    for number in range(1, 30):
         path = SITE / f"gt{number:02d}" / "index.html"
         assert path.is_file(), path
         html = path.read_text(encoding="utf-8")
@@ -173,10 +174,13 @@ def test_robots_and_sitemap_cover_portal_and_all_cases() -> None:
     root = ElementTree.parse(SITEMAP).getroot()
     namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     urls = {node.text for node in root.findall("sm:url/sm:loc", namespace)}
-    expected = {"https://stpku.github.io/GeoTask/"}
+    expected = {
+        "https://stpku.github.io/GeoTask/",
+        "https://stpku.github.io/GeoTask/en/",
+    }
     expected.update(
         f"https://stpku.github.io/GeoTask/gt{number:02d}/"
-        for number in range(1, 29)
+        for number in range(1, 30)
     )
     assert urls == expected
 
@@ -196,7 +200,7 @@ def test_deployment_checks_portal_gt01_and_search_files() -> None:
     assert 'require_file "$TARGET/sitemap.xml"' in script
     assert "Portal: $TARGET/index.html" in script
     assert 'echo "  ${slug^^}: $TARGET/$slug/index.html"' in script
-    assert case_slugs == [f"gt{number:02d}" for number in range(1, 29)]
+    assert case_slugs == [f"gt{number:02d}" for number in range(1, 30)]
 
     assert "GitHub Pages是公共Canonical入口" in readme
     assert "site/gt01/index.html" in readme
@@ -209,6 +213,7 @@ def test_public_manifest_requires_portal_routes_and_search_files() -> None:
     required = set(manifest["required"])
     expected = {
         "site/index.html",
+        "site/en/index.html",
         "site/gt01/index.html",
         "site/gt14/index.html",
         "site/gt15/index.html",
@@ -225,6 +230,7 @@ def test_public_manifest_requires_portal_routes_and_search_files() -> None:
         "site/gt26/index.html",
         "site/gt27/index.html",
         "site/gt28/index.html",
+        "site/gt29/index.html",
         "site/robots.txt",
         "site/sitemap.xml",
         ".github/workflows/pages.yml",

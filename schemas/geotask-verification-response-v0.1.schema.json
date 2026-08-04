@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-verification-response-v0.1.schema.json",
+  "title": "GeoTask Verification Response v0.1",
+  "description": "Source-bound Provider response that cannot self-assign independent assurance, release production output, authorize action, or execute action.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verification_response"],
+  "properties": {
+    "verification_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "response_version",
+        "response_id",
+        "request_ref",
+        "provider_ref",
+        "state",
+        "result",
+        "verification_method",
+        "evidence_refs",
+        "assurance_declarations",
+        "diagnostics",
+        "completed_at",
+        "independently_verified",
+        "production_output_released",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "response_version": {"const": "0.1"},
+        "response_id": {"$ref": "#/$defs/identifier"},
+        "request_ref": {"$ref": "#/$defs/requestRef"},
+        "provider_ref": {"$ref": "#/$defs/providerRef"},
+        "state": {"enum": ["verified", "contradicted", "unknown", "failed"]},
+        "result": {"$ref": "#/$defs/result"},
+        "verification_method": {"$ref": "#/$defs/identifier"},
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "assurance_declarations": {"$ref": "#/$defs/assuranceDeclarations"},
+        "diagnostics": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/diagnostic"}
+        },
+        "completed_at": {"type": "string", "format": "date-time"},
+        "independently_verified": {"const": false},
+        "production_output_released": {"const": false},
+        "action_authorized": {"const": false},
+        "action_executed": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "requestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request_id", "sha256"],
+      "properties": {
+        "request_id": {"$ref": "#/$defs/identifier"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "providerRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_id", "provider_version", "sha256"],
+      "properties": {
+        "provider_id": {"$ref": "#/$defs/identifier"},
+        "provider_version": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "claim_type", "value", "unit", "observed_at", "valid_until"],
+      "properties": {
+        "claim_id": {"$ref": "#/$defs/identifier"},
+        "claim_type": {"$ref": "#/$defs/identifier"},
+        "value": {},
+        "unit": {"type": ["string", "null"], "minLength": 1},
+        "observed_at": {"type": ["string", "null"], "format": "date-time"},
+        "valid_until": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "assuranceDeclarations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["independence_group", "reproducibility", "calibration_status", "confidence"],
+      "properties": {
+        "independence_group": {"$ref": "#/$defs/identifier"},
+        "reproducibility": {"enum": ["deterministic", "repeatable", "non_deterministic"]},
+        "calibration_status": {"enum": ["not_applicable", "uncalibrated", "calibrated", "expired"]},
+        "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "severity"],
+      "properties": {
+        "code": {"$ref": "#/$defs/identifier"},
+        "message": {"type": "string", "minLength": 1},
+        "severity": {"enum": ["error", "warning"]}
+      }
+    }
+  }
+}

@@ -2,8 +2,8 @@ catalog_version: "1.0"
 base_url: https://stpku.github.io/GeoTask/
 portal_lastmod: "2026-08-04"
 handbook:
-  path: docs/cookbook/gt21-gt28.zh-CN.md
-  label_zh: 查看世界状态案例手册 →
+  path: docs/README.md
+  label_zh: 查看中文文档导航 →
 
 stages:
   - id: spatial_relations
@@ -20,7 +20,10 @@ stages:
     title_zh: 行动与可行性：从判断走向执行
   - id: world_state_cycle
     number: 5
-    title_zh: 世界状态循环：Observation、快照与增量复核
+    title_zh: 世界状态循环：观测记录、快照与增量复核
+  - id: verification_provider_ecosystem
+    number: 6
+    title_zh: 验证提供方生态：外部核验与可信保证
 
 cases:
   - id: GT01
@@ -246,4 +249,12 @@ cases:
     summary_zh: 路线、高度、天气窗口和风速预检全部通过，但空域、运营人、起降场、气象放行和任务授权仍缺失；预检结论可引用，自动起飞授权与起飞指令保持阻断。
     page: site/gt28/index.html
     example: examples/core/gt28_takeoff_authorization_gate.json
+    lastmod: "2026-08-04"
+  - id: GT29
+    slug: gt29
+    stage: verification_provider_ecosystem
+    title_zh: 气象服务数据和现场传感器冲突时，AI应该相信谁？
+    summary_zh: 模拟气象服务给出8米/秒，现场传感器给出13米/秒。两个来源都新鲜且相互独立，但数值仍然冲突，因此天气结论保持未知，并请求第三个独立来源。
+    page: site/gt29/index.html
+    example: examples/core/gt29_weather_provider_conflict.json
     lastmod: "2026-08-04"

@@ -1,0 +1,24 @@
+{
+  "verification_provider_descriptor": {
+    "interface_version": "0.1",
+    "provider_id": "geotask.provider.mock-authoritative-weather",
+    "provider_version": "0.1.0",
+    "title": "Mock Authoritative Weather Provider",
+    "provider_type": "authoritative_data_provider",
+    "implementation_kind": "mock",
+    "production_ready": false,
+    "capabilities": [
+      "weather.current_wind_speed"
+    ],
+    "supported_methods": [
+      "measure_current_wind_speed"
+    ],
+    "independence_group": "fictional-weather-service-network",
+    "reproducibility": "deterministic",
+    "calibration_status": "not_applicable",
+    "valid_until": "2026-08-05T00:00:00+08:00",
+    "audit_supported": true,
+    "credentials_managed_externally": true,
+    "external_side_effects_allowed": false
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "assurance_evaluation": {
+    "profile_id": "gt29-independent-weather-assurance",
+    "request_id": "verify-east-current-wind-speed-gt29",
+    "evaluated_at": "2026-08-04T14:05:30+08:00",
+    "state": "unknown",
+    "reason": "independent_provider_conflict",
+    "provider_count": 2,
+    "usable_provider_count": 2,
+    "independent_group_count": 2,
+    "response_ids": [
+      "weather-response-authoritative-gt29",
+      "weather-response-onsite-sensor-gt29"
+    ],
+    "diagnostics": [],
+    "eligible_outputs": [],
+    "blocked_outputs": [
+      "weather_condition_verified",
+      "automatic_takeoff_authorization"
+    ],
+    "blocked_actions": [
+      "takeoff_command"
+    ],
+    "next_action": "request_third_independent_weather_verification",
+    "independent_verification_completed": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

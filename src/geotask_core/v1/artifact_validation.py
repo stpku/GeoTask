@@ -75,6 +75,13 @@ from geotask_core.v1.runtime_interface import (
     load_runtime_request,
     load_runtime_response,
 )
+from geotask_core.v1.verification_provider import (
+    VerificationProviderFormatError,
+    load_assurance_profile,
+    load_verification_provider_descriptor,
+    load_verification_request,
+    load_verification_response,
+)
 from geotask_core.v1.schema_bundle import verify_schema_bundle
 from geotask_core.v1.serialized_validation import (
     CONTROL_EVALUATION_VALIDATION_CONTRACT,
@@ -653,6 +660,90 @@ def _validate_runtime_artifact_payload(
             "diagnostic_count": len(loaded.diagnostics),
             "side_effects_executed": loaded.side_effects_executed,
             "retryable": loaded.retryable,
+        }
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary=summary,
+    )
+
+
+def _validate_verification_provider_artifact_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    loaders = {
+        "geotask.verification-provider-descriptor": load_verification_provider_descriptor,
+        "geotask.verification-request": load_verification_request,
+        "geotask.verification-response": load_verification_response,
+        "geotask.assurance-profile": load_assurance_profile,
+    }
+    loader = loaders[descriptor.artifact_id]
+    try:
+        loaded = loader(payload)
+    except VerificationProviderFormatError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_verification_provider_artifact",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the artifact according to the GeoTask Verification "
+                        "Provider Profile v0.1."
+                    ),
+                ),
+            ),
+        )
+
+    if descriptor.artifact_id == "geotask.verification-provider-descriptor":
+        summary = {
+            "provider_id": loaded.provider_id,
+            "provider_version": loaded.provider_version,
+            "provider_type": loaded.provider_type,
+            "capability_count": len(loaded.capabilities),
+            "method_count": len(loaded.supported_methods),
+            "production_ready": loaded.production_ready,
+            "external_side_effects_allowed": loaded.external_side_effects_allowed,
+        }
+    elif descriptor.artifact_id == "geotask.verification-request":
+        summary = {
+            "request_id": loaded.request_id,
+            "claim_id": loaded.subject.claim_id,
+            "claim_type": loaded.subject.claim_type,
+            "input_artifact_count": len(loaded.input_artifacts),
+            "required_capability_count": len(loaded.required_capabilities),
+            "action_authorized": loaded.action_authorized,
+        }
+    elif descriptor.artifact_id == "geotask.verification-response":
+        summary = {
+            "response_id": loaded.response_id,
+            "request_id": loaded.request_id,
+            "provider_id": loaded.provider_id,
+            "state": loaded.state,
+            "claim_id": loaded.claim_id,
+            "evidence_ref_count": len(loaded.evidence_refs),
+            "independently_verified": False,
+            "action_authorized": False,
+            "action_executed": False,
+        }
+    else:
+        summary = {
+            "profile_id": loaded.profile_id,
+            "minimum_provider_count": loaded.minimum_provider_count,
+            "minimum_independent_groups": loaded.minimum_independent_groups,
+            "blocked_output_count": len(loaded.blocked_outputs),
+            "blocked_action_count": len(loaded.blocked_actions),
+            "action_authorized": False,
+            "action_executed": False,
         }
     return ArtifactValidationReport(
         descriptor=descriptor,
@@ -1512,6 +1603,17 @@ def _validate_verified_payload(
         "geotask.runtime-response",
     }:
         return _validate_runtime_artifact_payload(descriptor, payload, file=file)
+    if descriptor.artifact_id in {
+        "geotask.verification-provider-descriptor",
+        "geotask.verification-request",
+        "geotask.verification-response",
+        "geotask.assurance-profile",
+    }:
+        return _validate_verification_provider_artifact_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
     if descriptor.artifact_id == "geotask.core-benchmark-report":
         return _validate_core_benchmark_payload(descriptor, payload, file=file)
     if descriptor.artifact_id == "geotask.artifact-validation-report":

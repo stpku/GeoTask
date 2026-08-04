@@ -160,6 +160,7 @@
         <a href="#cases">案例</a>
         <a href="#architecture">世界模型架构</a>
         <a href="#docs">文档</a>
+        <a href="en/" lang="en">English</a>
         <a href="https://github.com/stpku/GeoTask">GitHub</a>
       </nav>
     </div>
@@ -168,7 +169,7 @@
   <main id="main">
     <section class="hero">
       <div class="shell">
-        <p class="eyebrow">EXPLICIT &amp; VERIFIABLE SPATIOTEMPORAL WORLD MODEL</p>
+        <p class="eyebrow">显式、可验证的时空世界模型</p>
         <h1>智能体的可验证<br>时空世界模型</h1>
         <p class="hero-lead">GeoTask将多模态模型、传感器、地图、权威数据和人工输入转化为显式的世界对象、关系、状态、证据与行动约束，让智能体依赖的现实世界可以被计算、验证、更新和追溯。</p>
         <div class="hero-quote">让大模型理解世界，让GeoTask验证并维护世界。</div>
@@ -178,10 +179,10 @@
           <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读中文白皮书</a>
         </div>
         <div class="trust-strip" aria-label="项目概览">
-          <div class="trust-item"><strong>28</strong><span>公开应用案例</span></div>
+          <div class="trust-item"><strong>29</strong><span>公开应用案例</span></div>
           <div class="trust-item"><strong>8</strong><span>本地确定性算子</span></div>
-          <div class="trust-item"><strong>13</strong><span>公共Artifact</span></div>
-          <div class="trust-item"><strong>MIT</strong><span>GeoTask Core许可</span></div>
+          <div class="trust-item"><strong>27</strong><span>公共制品</span></div>
+          <div class="trust-item"><strong>MIT</strong><span>GeoTask核心许可</span></div>
         </div>
       </div>
     </section>
@@ -190,13 +191,13 @@
       <div class="shell">
         <div class="section-head"><div><h2>智能体不只需要理解世界，更需要一个可以验证的世界模型</h2><p>模型内部的世界理解通常隐含在上下文或参数中；现实行动需要一个外显、共享、可审计的状态层，说明“世界现在是什么样、我们为什么相信它、变化后还能做什么”。</p></div></div>
         <div class="flow" aria-label="GeoTask世界模型工作方式">
-          <article class="flow-card"><small>01 · OBSERVE</small><h3>观察世界</h3><p>多模态模型、传感器、地图和权威数据产生带来源与时间的观察。</p></article>
+          <article class="flow-card"><small>01 · 观察</small><h3>观察世界</h3><p>多模态模型、传感器、地图和权威数据产生带来源与时间的观测记录。</p></article>
           <div class="flow-arrow" aria-hidden="true">→</div>
-          <article class="flow-card"><small>02 · MODEL</small><h3>显式建模</h3><p>对象、位置、时间、状态、关系、约束和证据形成可读取的世界状态。</p></article>
+          <article class="flow-card"><small>02 · 建模</small><h3>显式建模</h3><p>对象、位置、时间、状态、关系、约束和证据形成可读取的世界状态。</p></article>
           <div class="flow-arrow" aria-hidden="true">→</div>
-          <article class="flow-card"><small>03 · VERIFY</small><h3>验证与更新</h3><p>本地算法、规则和Provider复算命题，保留事实并标记未知、冲突和变化。</p></article>
+          <article class="flow-card"><small>03 · 验证</small><h3>验证与更新</h3><p>本地算法、规则和验证提供方复算命题，保留事实并标记未知、冲突和变化。</p></article>
           <div class="flow-arrow" aria-hidden="true">→</div>
-          <article class="flow-card"><small>04 · ACT</small><h3>约束行动</h3><p>行动门控根据当前世界状态决定继续、阻断、补证、纠偏或人工复核。</p></article>
+          <article class="flow-card"><small>04 · 行动</small><h3>约束行动</h3><p>行动门控根据当前世界状态决定继续、阻断、补证、纠偏或人工复核。</p></article>
         </div>
       </div>
     </section>
@@ -204,10 +205,10 @@
     <section class="block" id="demo">
       <div class="shell architecture">
         <h2>30秒看懂一次世界状态更新</h2>
-        <p>GT16展示的不是一次“改答案”，而是现实世界发生变化后，世界模型如何接收新Observation、更新关系、保留仍然有效的事实，并重新计算行动资格。</p>
+        <p>GT16展示的不是一次“改答案”，而是现实世界发生变化后，世界模型如何接收新的观测记录、更新关系、保留仍然有效的事实，并重新计算行动资格。</p>
         <div class="arch-grid">
           <article class="arch-card"><strong>初始世界状态</strong><span>两架无人机的路线、高度和计划时间窗已建模；计划间隔120秒，高于60秒门槛。</span></article>
-          <article class="arch-card"><strong>新Observation</strong><span>A机最新遥测显示延误40秒；对象未变，时间状态和证据时间戳发生变化。</span></article>
+          <article class="arch-card"><strong>新的观测记录</strong><span>A机最新遥测显示延误40秒；对象未变，时间状态和证据时间戳发生变化。</span></article>
           <article class="arch-card"><strong>世界关系更新</strong><span>预测间隔缩至80秒，剩余余量20秒；原有空间事实保留，永久安全假设失效。</span></article>
           <article class="arch-card"><strong>行动资格更新</strong><span>当前仍可继续，但必须保持监测；间隔降至60秒或证据过期时重新门控。</span></article>
         </div>
@@ -220,8 +221,8 @@
     <section class="block" id="cases">
       <div class="shell">
         <div class="section-head">
-          <div><h2>GT01—GT28渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>
-          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/cookbook/gt21-gt28.zh-CN.md">查看世界状态案例手册 →</a>
+          <div><h2>GT01—GT29渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>
+          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/README.md">查看中文文档导航 →</a>
         </div>
         <div class="stage">
           <h3 class="stage-heading"><span class="stage-num">1</span>空间关系：对象、算子与边界语义</h3>
@@ -264,7 +265,7 @@
           </div>
         </div>
         <div class="stage">
-          <h3 class="stage-heading"><span class="stage-num">5</span>世界状态循环：Observation、快照与增量复核</h3>
+          <h3 class="stage-heading"><span class="stage-num">5</span>世界状态循环：观测记录、快照与增量复核</h3>
           <div class="case-grid">
             <a class="case" href="gt21/"><span class="case-id">GT21</span><h3>遥测显示延误60秒，运行审核记录显示55秒，AI应该相信哪一个？</h3><p>同一架无人机的延误数据来自两个系统。直接覆盖、取平均或按到达顺序选择都会掩盖冲突，必须使用业务方明确声明的处理规则。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt22/"><span class="case-id">GT22</span><h3>无人机的位置和电量来自两个系统，AI怎样形成同一时刻的可靠运行快照？</h3><p>位置与电量分别到达时，不能简单拼接成“当前状态”。系统必须确认对象、时间和字段归属，才能形成可追溯的统一运行快照。</p><span class="go">进入体验 →</span></a>
@@ -274,6 +275,12 @@
             <a class="case" href="gt26/"><span class="case-id">GT26</span><h3>飞行服务站营业时间已经失效，系统应该改哪条数据，而不是推翻全部结果？</h3><p>服务站营业计划从08:00—22:00调整为09:00—18:00，系统只允许替换营业计划，保留位置、频率、服务类型和联系方式，并阻断20:30任务直至复核。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt27/"><span class="case-id">GT27</span><h3>一条气象数据更新后，如何只复核受影响的飞行任务？</h3><p>东区风速由6升至12米/秒后，只复核同区域且处于更新生效时段的配送和应急任务；一个结果变为不适飞，另一个复核后仍适飞，西区和更新前任务继续复用。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt28/"><span class="case-id">GT28</span><h3>路线安全、天气合格，就可以自动起飞吗？</h3><p>路线、高度、天气窗口和风速预检全部通过，但空域、运营人、起降场、气象放行和任务授权仍缺失；预检结论可引用，自动起飞授权与起飞指令保持阻断。</p><span class="go">进入体验 →</span></a>
+          </div>
+        </div>
+        <div class="stage">
+          <h3 class="stage-heading"><span class="stage-num">6</span>验证提供方生态：外部核验与可信保证</h3>
+          <div class="case-grid">
+            <a class="case" href="gt29/"><span class="case-id">GT29</span><h3>气象服务数据和现场传感器冲突时，AI应该相信谁？</h3><p>模拟气象服务给出8米/秒，现场传感器给出13米/秒。两个来源都新鲜且相互独立，但数值仍然冲突，因此天气结论保持未知，并请求第三个独立来源。</p><span class="go">进入体验 →</span></a>
           </div>
         </div>
       </div>
@@ -287,10 +294,10 @@
         <div class="arch-grid">
           <article class="arch-card"><strong>1 · 感知与开放推理</strong><span>多模态模型、传感器和外部系统产生观察、假设、预测与候选方案。</span></article>
           <article class="arch-card"><strong>2 · 显式时空世界状态</strong><span>对象、坐标、时间、属性、关系、证据和约束形成可读取、可交换的状态快照。</span></article>
-          <article class="arch-card"><strong>3 · 验证与状态演化</strong><span>确定性算子、规则和本地Provider验证世界命题，识别差异并更新受影响状态。</span></article>
-          <article class="arch-card"><strong>4 · 控制与现实行动</strong><span>控制评估管理行动资格；Runtime连接授权、人工复核和生产系统。</span></article>
+          <article class="arch-card"><strong>3 · 验证与状态演化</strong><span>确定性算子、规则和本地验证提供方核验世界命题，识别差异并更新受影响状态。</span></article>
+          <article class="arch-card"><strong>4 · 控制与现实行动</strong><span>控制评估管理行动资格；运行时连接授权、人工复核和生产系统。</span></article>
         </div>
-        <div class="arch-note">当前公共Core已经提供世界对象、空间合同、来源证据、Observation v0.1、World State v0.1、支持调用方显式同目标冲突策略的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、来源绑定的受限重算值推导、受限后继状态物化、Incremental Reevaluation Result v0.1、命题验证和控制语义；自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行以及受限推导方法扩展仍是后续工程方向。</div>
+        <div class="arch-note">当前公共核心已经提供世界对象、空间合同、来源证据、观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、受限重算推导、受限后继状态物化、增量复核结果、验证提供方公共合同、命题验证和控制语义。自动差异计算、对象身份发现、未声明策略的歧义冲突消解、影响关系自动发现与传播执行，以及更多受限推导方法仍是后续工程方向。</div>
       </div>
     </section>
 
@@ -298,18 +305,20 @@
       <div class="shell">
         <div class="section-head"><div><h2>从世界模型定位到工程合同的文档体系</h2><p>白皮书解释GeoTask与隐式神经世界模型的差异；架构与语言规范区分当前世界模型基础、公共边界和后续状态演化能力。</p></div></div>
         <div class="resource-grid">
-          <article class="resource"><span class="label">WORLD MODEL</span><h3>中文白皮书</h3><p>可验证时空世界模型定位、四平面架构、可信边界和典型应用模式。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读白皮书 →</a></article>
-          <article class="resource"><span class="label">WHAT</span><h3>语言与执行规范</h3><p>当前公共Core真正支持的字段、对象、算子、状态和执行语义。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-language-spec-v1.0.md">查看规范 →</a></article>
-          <article class="resource"><span class="label">STATE</span><h3>World State v0.1</h3><p>版本化表达某一时刻的对象、属性、关系、有效时间、不确定性和证据引用闭包。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-world-state-v0.1.md">查看状态合同 →</a></article>
-          <article class="resource"><span class="label">TRANSITION</span><h3>State Transition v0.1</h3><p>绑定前后快照语义指纹，记录Observation支持的逐路径、关系与行动资格变化。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-state-transition-v0.1.md">查看转换合同 →</a></article>
-          <article class="resource"><span class="label">SESSION</span><h3>Verification Session v0.1</h3><p>绑定World State与任务、结果、转换等精确制品，记录行动资格和复核触发条件。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-verification-session-v0.1.md">查看会话合同 →</a></article>
-          <article class="resource"><span class="label">DISCREPANCY</span><h3>Discrepancy Report v0.1</h3><p>记录期望与观测差异、影响范围，以及可变与不可变修订路径。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-discrepancy-report-v0.1.md">查看差异合同 →</a></article>
-          <article class="resource"><span class="label">CORRECTION</span><h3>Correction Request v0.1</h3><p>限定后继World State允许变更、验收标准、不可变路径和输出/行动门禁。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-correction-request-v0.1.md">查看修订合同 →</a></article>
-          <article class="resource"><span class="label">IMPACT</span><h3>Impact Graph v0.1</h3><p>将差异、修订、状态路径、断言、输出、动作和复核目标组织为可校验的有向无环图。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-impact-graph-v0.1.md">查看影响图合同 →</a></article>
-          <article class="resource"><span class="label">MATERIALIZE</span><h3>World State Materialization Result v0.1</h3><p>按Correction Request受限生成后继状态，绑定精确基准、请求与输出字节，并保留复核前门禁。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-world-state-materialization-result-v0.1.md">查看物化合同 →</a></article>
-          <article class="resource"><span class="label">REEVALUATION</span><h3>Incremental Reevaluation Result v0.1</h3><p>绑定基准/后继状态和精确来源，记录节点、目标、验收、差异消解以及输出/动作门禁结果。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-incremental-reevaluation-result-v0.1.md">查看增量复核合同 →</a></article>
-          <article class="resource"><span class="label">HOW</span><h3>中文快速入门</h3><p>安装Core、运行第一个任务、查看算子并验证模型输出。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/tutorials/quickstart.zh-CN.md">5分钟开始 →</a></article>
-          <article class="resource"><span class="label">TOOLING</span><h3>JSON Schema</h3><p>用于IDE提示、YAML/JSON结构校验和CI一致性检查。</p><a href="https://github.com/stpku/GeoTask/blob/main/schemas/geotask-v1.0.schema.json">查看Schema →</a></article>
+          <article class="resource"><span class="label">世界模型</span><h3>中文白皮书</h3><p>可验证时空世界模型定位、四平面架构、可信边界和典型应用模式。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读白皮书 →</a></article>
+          <article class="resource"><span class="label">语言规范</span><h3>语言与执行规范</h3><p>当前公共核心真正支持的字段、对象、算子、状态和执行语义。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-language-spec-v1.0.md">查看规范 →</a></article>
+          <article class="resource"><span class="label">状态</span><h3>世界状态 v0.1</h3><p>版本化表达某一时刻的对象、属性、关系、有效时间、不确定性和证据引用闭包。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-world-state-v0.1.md">查看状态合同 →</a></article>
+          <article class="resource"><span class="label">转换</span><h3>状态转换 v0.1</h3><p>绑定前后快照语义指纹，记录观测记录支持的逐路径、关系与行动资格变化。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-state-transition-v0.1.md">查看转换合同 →</a></article>
+          <article class="resource"><span class="label">会话</span><h3>验证会话 v0.1</h3><p>绑定世界状态与任务、结果、转换等精确制品，记录行动资格和复核触发条件。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-verification-session-v0.1.md">查看会话合同 →</a></article>
+          <article class="resource"><span class="label">差异</span><h3>差异报告 v0.1</h3><p>记录期望与观测差异、影响范围，以及可变与不可变修订路径。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-discrepancy-report-v0.1.md">查看差异合同 →</a></article>
+          <article class="resource"><span class="label">纠偏</span><h3>纠偏请求 v0.1</h3><p>限定后继世界状态允许变更、验收标准、不可变路径和输出/行动门禁。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-correction-request-v0.1.md">查看修订合同 →</a></article>
+          <article class="resource"><span class="label">影响</span><h3>影响图 v0.1</h3><p>将差异、修订、状态路径、断言、输出、动作和复核目标组织为可校验的有向无环图。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-impact-graph-v0.1.md">查看影响图合同 →</a></article>
+          <article class="resource"><span class="label">物化</span><h3>世界状态物化结果 v0.1</h3><p>按纠偏请求受限生成后继状态，绑定精确基准、请求与输出字节，并保留复核前门禁。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-world-state-materialization-result-v0.1.md">查看物化合同 →</a></article>
+          <article class="resource"><span class="label">增量复核</span><h3>增量复核结果 v0.1</h3><p>绑定基准/后继状态和精确来源，记录节点、目标、验收、差异消解以及输出/动作门禁结果。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-incremental-reevaluation-result-v0.1.md">查看增量复核合同 →</a></article>
+          <article class="resource"><span class="label">验证生态</span><h3>验证提供方接口 v0.1</h3><p>定义提供方身份、请求、响应、独立性、时效、校准和可信保证边界。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md">查看接口规范 →</a></article>
+          <article class="resource"><span class="label">术语</span><h3>中文术语规范</h3><p>明确中文与英文术语映射，避免中文页面和文档出现不必要的中英文混编。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/terminology.zh-CN.md">查看术语表 →</a></article>
+          <article class="resource"><span class="label">快速入门</span><h3>中文快速入门</h3><p>安装核心、运行第一个任务、查看算子并验证模型输出。</p><a href="https://github.com/stpku/GeoTask/blob/main/docs/tutorials/quickstart.zh-CN.md">5分钟开始 →</a></article>
+          <article class="resource"><span class="label">开发工具</span><h3>结构规范</h3><p>用于开发工具提示、任务结构校验和持续集成一致性检查。</p><a href="https://github.com/stpku/GeoTask/blob/main/schemas/geotask-v1.0.schema.json">查看结构规范 →</a></article>
         </div>
       </div>
     </section>
@@ -318,12 +327,12 @@
       <div class="shell">
         <div class="section-head"><div><h2>六类能力共同维护智能体的世界</h2><p>GeoTask不是替模型生成另一个答案，而是把智能体依赖的世界事实、来源、变化和行动资格组织成显式合同。</p></div></div>
         <div class="capability-grid">
-          <article class="capability-card open"><h3>1 · 世界对象建模</h3><ul><li>点、路线、多折线、区域、时间与高度对象</li><li>CRS、坐标顺序、单位和边界语义</li><li>稳定对象引用和跨任务共享合同</li></ul></article>
-          <article class="capability-card open"><h3>2 · 多模态观察接入</h3><ul><li>Observation v0.1记录来源、时间、生产者和世界命题</li><li>模型、传感器、地图、权威数据和人工均可作为来源</li><li>结构校验不宣称命题真实，也不直接更新World State</li></ul></article>
+          <article class="capability-card open"><h3>1 · 世界对象建模</h3><ul><li>点、路线、多折线、区域、时间与高度对象</li><li>坐标参考系、坐标顺序、单位和边界语义</li><li>稳定对象引用和跨任务共享合同</li></ul></article>
+          <article class="capability-card open"><h3>2 · 多模态观测接入</h3><ul><li>观测记录描述来源、时间、生产者和世界命题</li><li>模型、传感器、地图、权威数据和人工均可作为来源</li><li>结构校验不宣称命题真实，也不直接更新世界状态</li></ul></article>
           <article class="capability-card open"><h3>3 · 关系与约束计算</h3><ul><li>8个公共确定性算子</li><li>空间、时间、高度和拓扑命题</li><li>本地、可重复、无网络验证路径</li></ul></article>
-          <article class="capability-card open"><h3>4 · 事实验证与证据治理</h3><ul><li>verified、contradicted与unverifiable</li><li>来源、证据绑定、冲突与审计信息</li><li>Agent限定修订和证据恢复</li></ul></article>
-          <article class="capability-card open"><h3>5 · 状态变化与影响传播</h3><ul><li>World State、Transition、Verification Session形成状态演化证据链</li><li>Discrepancy、Correction与Impact Graph表达差异、限定修订和影响DAG</li><li>受限物化生成后继快照，Incremental Reevaluation Result闭合复核目标、验收条件和门禁结果</li></ul></article>
-          <article class="capability-card open"><h3>6 · 纠偏与行动门控</h3><ul><li>阻断输出、补证和恢复条件</li><li>行动资格与外部授权边界</li><li>Runtime连接人工复核和生产动作</li></ul></article>
+          <article class="capability-card open"><h3>4 · 事实验证与证据治理</h3><ul><li>已验证、已矛盾与不可核验状态</li><li>来源、证据绑定、冲突与审计信息</li><li>智能体限定修订和证据恢复</li></ul></article>
+          <article class="capability-card open"><h3>5 · 状态变化与影响传播</h3><ul><li>世界状态、状态转换和验证会话形成状态演化证据链</li><li>差异报告、纠偏请求与影响图表达限定修订和影响关系</li><li>受限物化生成后继快照，增量复核结果闭合复核目标、验收条件和门禁结果</li></ul></article>
+          <article class="capability-card open"><h3>6 · 验证生态与行动门控</h3><ul><li>验证提供方描述身份、能力、时效、独立性和校准状态</li><li>可信保证档案管理输出门禁和下一步动作</li><li>运行时连接人工复核、外部授权和生产系统</li></ul></article>
         </div>
       </div>
     </section>
@@ -343,8 +352,8 @@
 
   <footer>
     <div class="shell footer-grid">
-      <div>GeoTask Core · MIT License · 开放的可验证时空世界模型基础</div>
-      <div class="footer-links"><a href="https://github.com/stpku/GeoTask">GitHub</a><a href="https://github.com/stpku/GeoTask/blob/main/README.en.md">English</a><a href="https://github.com/stpku/GeoTask/blob/main/SECURITY.md">Security</a></div>
+      <div>GeoTask核心 · MIT许可 · 开放的可验证时空世界模型基础</div>
+      <div class="footer-links"><a href="https://github.com/stpku/GeoTask">GitHub</a><a href="en/" lang="en">English</a><a href="https://github.com/stpku/GeoTask/blob/main/SECURITY.md">安全说明</a></div>
     </div>
   </footer>
 </body>

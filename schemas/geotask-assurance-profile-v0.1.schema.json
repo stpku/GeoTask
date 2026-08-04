@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-assurance-profile-v0.1.schema.json",
+  "title": "GeoTask Assurance Profile v0.1",
+  "description": "Caller-authored requirements for deciding whether multiple Provider responses constitute sufficient assurance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["assurance_profile"],
+  "properties": {
+    "assurance_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_version",
+        "profile_id",
+        "title",
+        "minimum_provider_count",
+        "minimum_independent_groups",
+        "allowed_provider_types",
+        "require_fresh_results",
+        "max_result_age_seconds",
+        "require_reproducible",
+        "accepted_reproducibility",
+        "require_calibration",
+        "accepted_calibration_states",
+        "conflict_policy",
+        "eligible_output",
+        "blocked_outputs",
+        "blocked_actions",
+        "next_action_on_insufficient_assurance",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "profile_version": {"const": "0.1"},
+        "profile_id": {"$ref": "#/$defs/identifier"},
+        "title": {"type": "string", "minLength": 1},
+        "minimum_provider_count": {"type": "integer", "minimum": 1},
+        "minimum_independent_groups": {"type": "integer", "minimum": 1},
+        "allowed_provider_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "deterministic_operator",
+              "rule_engine",
+              "authoritative_data_provider",
+              "sensor_data_provider",
+              "local_predictive_model",
+              "human_review"
+            ]
+          }
+        },
+        "require_fresh_results": {"type": "boolean"},
+        "max_result_age_seconds": {"type": "integer", "minimum": 0},
+        "require_reproducible": {"type": "boolean"},
+        "accepted_reproducibility": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["deterministic", "repeatable", "non_deterministic"]}
+        },
+        "require_calibration": {"type": "boolean"},
+        "accepted_calibration_states": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["not_applicable", "uncalibrated", "calibrated", "expired"]}
+        },
+        "conflict_policy": {"enum": ["unknown", "contradicted"]},
+        "eligible_output": {"$ref": "#/$defs/identifier"},
+        "blocked_outputs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "blocked_actions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "next_action_on_insufficient_assurance": {"$ref": "#/$defs/identifier"},
+        "action_authorized": {"const": false},
+        "action_executed": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    }
+  }
+}

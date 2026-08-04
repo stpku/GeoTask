@@ -18,6 +18,9 @@ Usage:
     geotask runtime inspect [runtime-descriptor.json] [--profile] [--format text|json]
     geotask runtime check <runtime-descriptor.json> <runtime-request.json> [--format text|json]
     geotask runtime mock <runtime-request.json> [--format text|json]
+    geotask provider inspect [provider-descriptor.json] [--profile] [--format text|json]
+    geotask provider check <provider-descriptor.json> <verification-request.json> [--format text|json]
+    geotask provider validate <verification-response.json> --request <verification-request.json> --descriptor <provider-descriptor.json>
     geotask verify <verification-session.json> --state <world-state.json> --observation <observation.json> --bind <ref-id>=<file>
     geotask recheck <incremental-reevaluation-result.json> --bind <ref-id>=<file>
     geotask benchmark core [--iterations N] [--enforce-performance]
@@ -90,6 +93,15 @@ from geotask_core.v1.runtime_interface import (
     runtime_interface_profile_payload,
     submit_runtime_request,
     validate_runtime_request_contract,
+)
+from geotask_core.v1.verification_provider import (
+    VerificationProviderFormatError,
+    load_verification_provider_descriptor,
+    load_verification_request,
+    load_verification_response,
+    validate_verification_request_contract,
+    validate_verification_response_bindings,
+    verification_provider_profile_payload,
 )
 from geotask_core.v1.world_state_cycle_cli import (
     WorldStateCycleCommandError,
@@ -2143,6 +2155,240 @@ def cmd_runtime(args: list[str]):
         sys.exit(1)
 
 
+def _print_provider_usage(stream=None) -> None:
+    out = stream or sys.stdout
+    print(
+        "Usage: geotask provider inspect [provider-descriptor.json] "
+        "[--profile] [--format text|json]",
+        file=out,
+    )
+    print(
+        "       geotask provider check <provider-descriptor.json> "
+        "<verification-request.json> [--format text|json]",
+        file=out,
+    )
+    print(
+        "       geotask provider validate <verification-response.json> "
+        "--request <verification-request.json> --descriptor <provider-descriptor.json> "
+        "[--format text|json]",
+        file=out,
+    )
+    print(
+        "Provider commands are read-only. They do not submit requests, fetch evidence, "
+        "release production outputs, authorize actions, or execute side effects.",
+        file=out,
+    )
+
+
+def _parse_provider_format(args: list[str], *, start: int = 0) -> tuple[str, int]:
+    output_format = "text"
+    index = start
+    while index < len(args):
+        if args[index] == "--format":
+            if index + 1 >= len(args):
+                raise ValueError("--format requires text or json")
+            output_format = args[index + 1]
+            if output_format not in {"text", "json"}:
+                raise ValueError("--format must be text or json")
+            return output_format, index + 2
+        index += 1
+    return output_format, len(args)
+
+
+def _cmd_provider_inspect(args: list[str]):
+    if any(item in {"--help", "-h"} for item in args):
+        _print_provider_usage()
+        return None
+    profile = False
+    descriptor_path = None
+    output_format = "text"
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg == "--profile":
+            profile = True
+            index += 1
+        elif arg == "--format":
+            if index + 1 >= len(args):
+                raise ValueError("provider inspect --format requires a value")
+            output_format = args[index + 1]
+            index += 2
+        elif arg.startswith("-"):
+            raise ValueError(f"unknown provider inspect option: {arg}")
+        elif descriptor_path is None:
+            descriptor_path = arg
+            index += 1
+        else:
+            raise ValueError("provider inspect accepts at most one descriptor file")
+    if output_format not in {"text", "json"}:
+        raise ValueError("provider inspect --format must be text or json")
+    if profile and descriptor_path is not None:
+        raise ValueError("provider inspect --profile cannot be combined with a descriptor file")
+    if profile or descriptor_path is None:
+        payload = verification_provider_profile_payload()
+        body = payload["verification_provider_profile"]
+        if output_format == "json":
+            sys.stdout.write(_render_json(payload, compact=False))
+        else:
+            print(
+                f"GeoTask Verification Provider Profile "
+                f"{body['profile_id']}/{body['profile_version']}"
+            )
+            print("  Provider types:")
+            for provider_type in body["provider_types"]:
+                print(f"    {provider_type}")
+            print("  Provider self-assurance allowed: false")
+            print("  Action execution supported: false")
+        return payload
+    payload = _load_json_mapping(str(descriptor_path), "Verification Provider Descriptor")
+    descriptor = load_verification_provider_descriptor(payload)
+    normalized = descriptor.to_dict()
+    if output_format == "json":
+        sys.stdout.write(_render_json(normalized, compact=False))
+    else:
+        print(f"Verification Provider: {descriptor.provider_id} v{descriptor.provider_version}")
+        print(f"  Type: {descriptor.provider_type}")
+        print(f"  Independence group: {descriptor.independence_group}")
+        print(f"  Reproducibility: {descriptor.reproducibility}")
+        print(f"  Calibration: {descriptor.calibration_status}")
+        print("  External side effects allowed: false")
+    return normalized
+
+
+def _cmd_provider_check(args: list[str]):
+    if len(args) < 2 or args[0].startswith("-") or args[1].startswith("-"):
+        raise ValueError(
+            "provider check requires a Provider Descriptor and Verification Request"
+        )
+    descriptor_path, request_path = args[0], args[1]
+    output_format = "text"
+    if len(args) > 2:
+        if len(args) != 4 or args[2] != "--format":
+            raise ValueError("provider check accepts only --format text|json")
+        output_format = args[3]
+    if output_format not in {"text", "json"}:
+        raise ValueError("provider check --format must be text or json")
+    descriptor = load_verification_provider_descriptor(
+        _load_json_mapping(descriptor_path, "Verification Provider Descriptor")
+    )
+    request = load_verification_request(
+        _load_json_mapping(request_path, "Verification Request")
+    )
+    report = validate_verification_request_contract(descriptor, request)
+    body = report["verification_provider_contract"]
+    if output_format == "json":
+        sys.stdout.write(_render_json(report, compact=False))
+    else:
+        print(f"Provider contract valid: {str(body['valid']).lower()}")
+        print(f"  Provider: {body['provider_id']}")
+        print(f"  Request: {body['request_id']}")
+        print("  Request submitted: false")
+        print("  Action executed: false")
+        for diagnostic in body["diagnostics"]:
+            print(f"  {diagnostic['code']}: {diagnostic['message']}")
+    if not body["valid"]:
+        sys.exit(2)
+    return report
+
+
+def _cmd_provider_validate(args: list[str]):
+    if not args or args[0].startswith("-"):
+        raise ValueError("provider validate requires a Verification Response file")
+    response_path = args[0]
+    request_path = None
+    descriptor_path = None
+    output_format = "text"
+    index = 1
+    while index < len(args):
+        arg = args[index]
+        if arg in {"--request", "--descriptor", "--format"}:
+            if index + 1 >= len(args):
+                raise ValueError(f"{arg} requires a value")
+            value = args[index + 1]
+            if arg == "--request":
+                request_path = value
+            elif arg == "--descriptor":
+                descriptor_path = value
+            else:
+                output_format = value
+            index += 2
+        else:
+            raise ValueError(f"unknown provider validate option: {arg}")
+    if request_path is None or descriptor_path is None:
+        raise ValueError("provider validate requires --request and --descriptor")
+    if output_format not in {"text", "json"}:
+        raise ValueError("provider validate --format must be text or json")
+    request_bytes = Path(request_path).read_bytes()
+    descriptor_bytes = Path(descriptor_path).read_bytes()
+    request = load_verification_request(
+        _load_json_mapping(request_path, "Verification Request")
+    )
+    descriptor = load_verification_provider_descriptor(
+        _load_json_mapping(descriptor_path, "Verification Provider Descriptor")
+    )
+    response = load_verification_response(
+        _load_json_mapping(response_path, "Verification Response")
+    )
+    validate_verification_response_bindings(
+        response,
+        request=request,
+        request_bytes=request_bytes,
+        descriptor=descriptor,
+        descriptor_bytes=descriptor_bytes,
+    )
+    report = {
+        "verification_response_validation": {
+            "valid": True,
+            "response_id": response.response_id,
+            "request_id": request.request_id,
+            "provider_id": descriptor.provider_id,
+            "state": response.state,
+            "exact_request_binding_verified": True,
+            "exact_descriptor_binding_verified": True,
+            "provider_self_assurance_used": False,
+            "production_output_released": False,
+            "action_authorized": False,
+            "action_executed": False,
+        }
+    }
+    if output_format == "json":
+        sys.stdout.write(_render_json(report, compact=False))
+    else:
+        body = report["verification_response_validation"]
+        print(f"Verification Response valid: true")
+        print(f"  Response: {body['response_id']}")
+        print(f"  Provider: {body['provider_id']}")
+        print(f"  State: {body['state']}")
+        print("  Exact Request binding verified: true")
+        print("  Exact Descriptor binding verified: true")
+        print("  Action executed: false")
+    return report
+
+
+def cmd_provider(args: list[str]):
+    """Inspect and validate the public Verification Provider interface."""
+
+    try:
+        if not args or args[0] in {"--help", "-h"}:
+            _print_provider_usage()
+            return None
+        if args[0] == "inspect":
+            return _cmd_provider_inspect(args[1:])
+        if args[0] == "check":
+            return _cmd_provider_check(args[1:])
+        if args[0] == "validate":
+            return _cmd_provider_validate(args[1:])
+        raise ValueError(
+            f"unknown provider command {args[0]!r}; "
+            "available commands: inspect, check, validate"
+        )
+    except SystemExit:
+        raise
+    except (VerificationProviderFormatError, ValueError, TypeError, OSError) as exc:
+        print(f"provider_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+
+
 def _print_verify_usage(stream=None) -> None:
     out = stream or sys.stdout
     print(
@@ -2458,12 +2704,12 @@ def main():
 
     if len(sys.argv) >= 2 and sys.argv[1] in ("--help", "-h"):
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, verify, recheck, benchmark, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, provider, verify, recheck, benchmark, normalize, eval, version")
         sys.exit(0)
 
     if len(sys.argv) < 3:
         print(f"Usage: {cmd_name} <command> <file> [<file2>] [--geotask <file.yaml>]")
-        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, verify, recheck, benchmark, normalize, eval, version")
+        print("Commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, provider, verify, recheck, benchmark, normalize, eval, version")
         print()
         print("Examples:")
         print(f"  {cmd_name} validate examples/geotask_core_lite.yaml")
@@ -2506,6 +2752,7 @@ def main():
             f"  {cmd_name} runtime mock "
             "examples/core/runtime_validate_artifact_request.json"
         )
+        print(f"  {cmd_name} provider inspect --profile --format json")
         print()
         print(f"  python -m geotask_core.cli validate examples/geotask_core_lite.yaml")
         print(f"  python -m geotask_core.cli run examples/geotask_core_lite.yaml")
@@ -2531,6 +2778,10 @@ def main():
 
     if command == "runtime":
         cmd_runtime(sys.argv[2:])
+        return
+
+    if command == "provider":
+        cmd_provider(sys.argv[2:])
         return
 
     if command == "verify":
@@ -2596,7 +2847,7 @@ def main():
 
     if command not in commands:
         print(f"Unknown command: {command}")
-        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, verify, recheck, benchmark, normalize, eval, version")
+        print(f"Available commands: validate, run, result, artifact, schema, explain, inspect, report, control, agent, runtime, provider, verify, recheck, benchmark, normalize, eval, version")
         sys.exit(1)
 
     commands[command](path)

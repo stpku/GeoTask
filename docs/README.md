@@ -2,7 +2,7 @@
 
 **简体中文** | [English](README.en.md)
 
-GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和GT01—GT34案例掌握当前公共Core已经实现的世界模型基础与能力边界。
+GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和GT01—GT35案例掌握当前公共Core已经实现的世界模型基础与能力边界。
 
 ## 从这里开始
 
@@ -27,7 +27,7 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [Incremental Reevaluation Result v0.1](spec/geotask-incremental-reevaluation-result-v0.1.md)：绑定基准/后继World State、Impact Graph与精确来源文件，记录节点、目标、验收条件、差异消解及输出/动作门禁结果，但不执行复核或授权动作。
 - [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现27类公共制品、28份结构规范、版本及操作命令。
 - [验证提供方接口规范v0.1](spec/geotask-verification-provider-profile-v0.1.zh-CN.md)：定义验证提供方描述符、验证请求、验证响应、可信保证档案及只读命令行接口。
-- [轨迹与移动对象Profile v0.1](spec/geotask-trajectory-profile-v0.1.zh-CN.md)：定义身份与位置观测分离、严格递增带时区样本、相邻分段距离与平均速度，以及GT33—GT34非预测/非执行边界。
+- [轨迹与移动对象Profile v0.1](spec/geotask-trajectory-profile-v0.1.zh-CN.md)：定义身份与位置观测分离、严格递增带时区样本、相邻分段距离与平均速度、调用方显式停留/移动/缺口分类，以及GT33—GT35非预测/非执行边界。
 - [中文术语规范](terminology.zh-CN.md)：建立中英文术语映射，并约束中文页面和中文文档避免不必要的中英文混编。
 - [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定制品标识校验27类公共制品，包括观测记录、世界状态、观测合并结果、状态转换、验证会话、差异报告、纠偏请求、影响图、重算推导结果、世界状态物化结果、增量复核结果、智能体报告、运行时消息、验证提供方制品、核心基准报告与验证报告自身，并输出统一文本或JSON报告。
 - [版本化载荷校验v1.0](spec/geotask-versioned-payload-validation-v1.0.md)：统一执行结果与控制结果的严格加载、Schema元数据、诊断和文本/JSON报告。

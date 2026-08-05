@@ -19,6 +19,7 @@ EXPECTED_PUBLIC_SAFE_OPERATORS = {
     "altitude_overlap",
     "trajectory_duration_seconds",
     "trajectory_segment_metrics",
+    "trajectory_segment_classifications",
 }
 
 

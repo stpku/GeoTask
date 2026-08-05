@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GT35｜位置几乎没变就是停留，十分钟没观测就是失联吗？</title>
+  <meta name="description" content="GeoTask使用调用方显式声明的停留半径、最短停留时长和最大观测间隔，将相邻轨迹分段分类为停留候选、已观测移动、观测缺口或不可核验。">
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#171717;background:#f5f5f2;line-height:1.65}*{box-sizing:border-box}body{margin:0}.shell{width:min(1100px,calc(100% - 32px));margin:auto}
+    header{background:#fff;border-bottom:1px solid #ddd}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;color:#111;text-decoration:none}.nav a{color:#333;text-decoration:none;margin-left:18px}
+    .hero{padding:70px 0 48px;background:#fff}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;color:#555}.hero h1{font-size:clamp(34px,6vw,64px);line-height:1.08;max-width:980px;margin:12px 0 22px}.lead{font-size:20px;max-width:900px;color:#444}.statement{margin-top:28px;padding:22px;border-left:5px solid #111;background:#f2f2ee;font-size:22px;font-weight:700}
+    section{padding:54px 0}.section-title{font-size:34px;margin:0 0 12px}.muted{color:#555}.grid,.thresholds,.segments,.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}.thresholds{grid-template-columns:repeat(4,1fr)}.facts{grid-template-columns:1fr 1fr}.card,.threshold,.segment,.fact{background:#fff;border:1px solid #ddd;border-radius:14px;padding:22px}.card strong,.threshold strong,.segment strong{display:block;font-size:22px}.tag{display:inline-block;border:1px solid #aaa;border-radius:999px;padding:3px 9px;font-size:12px}
+    .dark{background:#1d1d1d;color:#fff}.dark .segment{background:#292929;border-color:#4a4a4a}.dark .muted{color:#ccc}.choice{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.choice button{border:1px solid #222;background:#fff;border-radius:9px;padding:13px 18px;font-size:15px;cursor:pointer}.choice button.safe{background:#111;color:#fff}#result{min-height:94px;padding:18px;border:1px solid #bbb;border-radius:10px;background:#fff}.ok{font-weight:800}.bad{font-weight:800;color:#8a1f1f}pre{overflow:auto;background:#151515;color:#f3f3f3;border-radius:12px;padding:22px;font-size:14px}.footer{background:#111;color:#ddd;padding:38px 0}.footer a{color:#fff}@media(max-width:900px){.grid,.thresholds,.segments,.facts{grid-template-columns:1fr}.nav nav{display:none}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+<header><div class="shell nav"><a class="brand" href="../" aria-label="返回GeoTask项目首页">GeoTask · GT35</a><nav><a href="../gt34/">上一案例</a><a href="https://github.com/stpku/GeoTask">GitHub</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell">
+    <div class="eyebrow">GT35 · 停留、移动与观测缺口合同</div>
+    <h1>位置几乎没变就是停留，十分钟没观测就是失联吗？</h1>
+    <p class="lead">不能。GT35只使用调用方明确声明的半径、持续时间和最大观测间隔，对相邻离散样本进行有限分类。</p>
+    <div class="statement">`stationary_candidate`只是满足阈值的停留候选；`observation_gap`只是观测时间间隔超限，不等于失联、异常或连续运动事实。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">四个参数必须显式给出</h2>
+    <p class="muted">Core不提供默认停留半径，也不自行决定多长时间算缺口。</p>
+    <div class="thresholds">
+      <article class="threshold"><span class="tag">停留半径</span><strong>5 米</strong><p>分段距离必须小于或等于该值。</p></article>
+      <article class="threshold"><span class="tag">最短停留时长</span><strong>120 秒</strong><p>分段持续时间必须达到该值。</p></article>
+      <article class="threshold"><span class="tag">最大观测间隔</span><strong>300 秒</strong><p>超过该值优先进入缺口判断。</p></article>
+      <article class="threshold"><span class="tag">缺口标记</span><strong>允许</strong><p>若改为不允许，超限分段只能返回不可核验。</p></article>
+    </div>
+  </div></section>
+
+  <section class="dark"><div class="shell">
+    <h2 class="section-title">三个相邻分段，三种有限结论</h2>
+    <div class="segments">
+      <article class="segment"><span class="tag">08:00 → 08:02</span><h3>距离5米，持续120秒</h3><strong>stationary_candidate</strong><p class="muted">恰好满足停留半径和最短持续时间边界。</p></article>
+      <article class="segment"><span class="tag">08:02 → 08:04</span><h3>距离10米，持续120秒</h3><strong>moving_observed</strong><p class="muted">未满足声明的停留候选条件。</p></article>
+      <article class="segment"><span class="tag">08:04 → 08:14</span><h3>距离0米，间隔600秒</h3><strong>observation_gap</strong><p class="muted">缺口规则优先；不能把零距离包装成连续停留。</p></article>
+    </div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">选择对第三段的处理</h2>
+    <div class="choice">
+      <button id="btn-stop">直接判定连续停留10分钟</button>
+      <button id="btn-lost">直接判定设备失联</button>
+      <button id="btn-interpolate">自动补齐中间位置</button>
+      <button id="btn-gap" class="safe">按显式规则标记观测缺口</button>
+      <button id="btn-no-gap">不允许缺口标记，返回不可核验</button>
+      <button id="verify">执行本地检查</button>
+    </div>
+    <div id="result" aria-live="polite">尚未选择。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">能力边界</h2>
+    <div class="facts">
+      <div class="fact"><h3>能够确定</h3><p>相邻样本绑定关系</p><p>持续时间与二维距离</p><p>显式阈值下的有限分类</p><p>缺口不允许时返回unverifiable</p></div>
+      <div class="fact"><h3>不能确定</h3><p>连续停留状态</p><p>设备是否失联</p><p>是否发生异常</p><p>缺口中的中间位置</p><p>现实动作是否可执行</p></div>
+    </div>
+    <pre>operator: trajectory_segment_classifications
+classification_vocabulary:
+  - stationary_candidate
+  - moving_observed
+  - observation_gap
+  - unverifiable
+thresholds_caller_declared: true
+trajectory_interpolated: false
+loss_of_link_inferred: false
+anomaly_inferred: false
+future_position_predicted: false
+production_output_released: false
+command_sent: false
+action_authorized_by_core: false
+action_executed: false</pre>
+  </div></section>
+</main>
+<footer class="footer"><div class="shell">GT35把轨迹分段推进到显式阈值分类，但“候选停留”和“观测缺口”都不是现实状态授权。返回<a href="../">GeoTask项目首页</a>。</div></footer>
+<script>
+(()=>{
+  const allowedGap='observation_gap';const disallowedGap='unverifiable';let selected='';const box=document.getElementById('result');
+  const choose=(value,label)=>{selected=value;box.textContent='已选择：'+label;box.className='';};
+  document.getElementById('btn-stop').onclick=()=>choose('continuous_stop','连续停留10分钟');
+  document.getElementById('btn-lost').onclick=()=>choose('lost_link','设备失联');
+  document.getElementById('btn-interpolate').onclick=()=>choose('interpolate','自动补齐中间位置');
+  document.getElementById('btn-gap').onclick=()=>choose(allowedGap,'允许缺口标记');
+  document.getElementById('btn-no-gap').onclick=()=>choose(disallowedGap,'不允许缺口标记');
+  document.getElementById('verify').onclick=()=>{
+    if(selected===allowedGap){box.innerHTML='<span class="ok">检查通过：</span>600秒超过300秒最大观测间隔，因此标记observation_gap；这不代表失联或异常。';}
+    else if(selected===disallowedGap){box.innerHTML='<span class="ok">检查通过：</span>调用方不允许缺口标记，因此同一分段返回unverifiable；系统不补点、不猜测。';}
+    else{box.innerHTML='<span class="bad">检查未通过：</span>离散端点不能证明连续停留、失联或异常，也不能静默插值缺口中的位置。';}
+  };
+})();
+</script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

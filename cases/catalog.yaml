@@ -301,3 +301,11 @@ cases:
     page: site/gt34/index.html
     example: examples/core/gt34_trajectory_segment_metrics.json
     lastmod: "2026-08-05"
+  - id: GT35
+    slug: gt35
+    stage: dynamic_world_objects
+    title_zh: 位置几乎没变就是停留，十分钟没观测就是失联吗？
+    summary_zh: 使用调用方显式声明的5米停留半径、120秒最短时长、300秒最大观测间隔和缺口许可，将三个相邻分段分类为停留候选、已观测移动和观测缺口；不允许缺口标记时返回不可核验，不推断失联、异常或连续运动。
+    page: site/gt35/index.html
+    example: examples/core/gt35_trajectory_stop_move_gap.json
+    lastmod: "2026-08-05"

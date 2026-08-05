@@ -1,8 +1,8 @@
 # GeoTask轨迹与移动对象Profile v0.1
 
 状态：公共实现已落地  
-参考案例：GT33—GT34
-范围：仅表达离散观测与相邻样本指标
+参考案例：GT33—GT35
+范围：仅表达离散观测、相邻样本指标与调用方显式分段分类
 
 ## 目的
 
@@ -62,7 +62,16 @@ uav_alpha_track:
 - `distance_in_horizontal_unit`，继承文档Space合同中的水平单位；
 - `average_speed_in_horizontal_units_per_second`。
 
-分段算子不会把平均速度当作瞬时速度，也不执行插值、平滑、重采样、预测、地图匹配、外部真实性验证、生产发布、指令发送、动作授权或动作执行。加速度以及停留/移动分类仍不属于本Profile版本。
+分段算子不会把平均速度当作瞬时速度，也不执行插值、平滑、重采样、预测、地图匹配、外部真实性验证、生产发布、指令发送、动作授权或动作执行。
+
+`trajectory_segment_classifications(trajectory, parameters...)`为每个相邻分段增加一个封闭分类状态：`stationary_candidate`、`moving_observed`、`observation_gap`或`unverifiable`。调用方必须显式提供：
+
+- `stationary_radius_in_horizontal_unit`：文档水平单位下的有限非负距离；
+- `minimum_stationary_duration_seconds`：有限正数持续时间；
+- `maximum_observation_gap_seconds`：有限正数持续时间；
+- `allow_observation_gap`：决定超限间隔是否允许标记为`observation_gap`的布尔值。
+
+只有当分段距离不超过声明半径且持续时间达到声明下限时，才输出`stationary_candidate`。持续时间超过最大观测间隔时，仅在允许缺口标记的情况下输出`observation_gap`；否则输出`unverifiable`。其他有效分段输出`moving_observed`。Core不选择默认阈值，不推断失联或异常，不证明连续停留，也不在缺口中插值。加速度仍不属于本Profile版本。
 
 ## 失败关闭
 
@@ -73,7 +82,9 @@ uav_alpha_track:
 - 时间戳重复或倒序；
 - 样本包含`predicted`等未声明字段；
 - 插值方式不是`none`；
-- 将静态`polyline`传给轨迹算子。
+- 将静态`polyline`传给轨迹算子；
+- 任一GT35阈值缺失、非有限、应为非负时却为负数、应为正数时却不大于零，或类型错误；
+- 包含未声明的分类参数。
 
 ## 能力边界
 
@@ -87,5 +98,9 @@ uav_alpha_track:
 - `examples/core/gt34_trajectory_segment_metrics.yaml`
 - `examples/core/gt34_trajectory_segment_metrics_result.json`
 - `examples/core/gt34_trajectory_segment_metrics.json`
+- `examples/core/gt35_trajectory_stop_move_gap.yaml`
+- `examples/core/gt35_trajectory_stop_move_gap_result.json`
+- `examples/core/gt35_trajectory_stop_move_gap.json`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
+- `site/gt35/index.html`

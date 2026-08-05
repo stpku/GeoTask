@@ -1,0 +1,67 @@
+geotask:
+  id: gt33-moving-object-trajectory
+  name: GT33 Moving Object Trajectory
+  description: Validate one fictional discrete moving-object trajectory without interpolation or execution.
+  schema_version: "1.0"
+  language: en
+  domain: general_spatial
+
+space:
+  crs:
+    type: local_cartesian
+    identifier: fictional_local_xy_m
+  axes:
+    x: east
+    y: north
+  horizontal_unit: meter
+  coordinate_order: [x, y]
+
+objects:
+  uav_alpha:
+    type: moving_object
+    object_class: uav
+    identity: fictional-uav-alpha
+  uav_alpha_track:
+    type: trajectory
+    subject_ref: uav_alpha
+    interpolation: none
+    samples:
+      - observed_at: "2026-08-05T08:00:00+08:00"
+        coordinates: [0, 0]
+      - observed_at: "2026-08-05T08:02:00+08:00"
+        coordinates: [12, 5]
+      - observed_at: "2026-08-05T08:05:00+08:00"
+        coordinates: [30, 40]
+
+operator_set:
+  - trajectory_duration_seconds
+
+tasks:
+  - id: measure_track_duration
+    family: trajectory_measurement
+    goal: Measure elapsed time between the first and last explicit observations.
+    assertions:
+      - id: track_duration_seconds
+        operator: trajectory_duration_seconds
+        object_refs: [uav_alpha_track]
+        expected_type: number
+        unit: second
+    outputs: [track_duration_seconds]
+
+execution:
+  mode: local_only
+  steps:
+    - id: measure_duration
+      executor: local
+      assertion_refs: [track_duration_seconds]
+      depends_on: []
+
+verification:
+  mode: local_deterministic
+  required_assurance: local_deterministic
+
+output_contract:
+  format: structured
+  required_fields: [track_duration_seconds]
+  allow_additional_fields: false
+  allow_model_inference: false

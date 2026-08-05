@@ -1,0 +1,45 @@
+{
+  "geotask_result": {
+    "schema_version": "1.0",
+    "task_id": "gt33-moving-object-trajectory",
+    "execution": {
+      "mode": "local_only",
+      "status": "completed",
+      "started_at": "2026-08-05T00:00:00+00:00",
+      "finished_at": "2026-08-05T00:00:00+00:00"
+    },
+    "checks": [
+      {
+        "assertion_id": "track_duration_seconds",
+        "operator": "trajectory_duration_seconds",
+        "object_refs": [
+          "uav_alpha_track"
+        ],
+        "executor": "local",
+        "value": 300.0,
+        "unit": "second",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      }
+    ],
+    "outputs": {
+      "track_duration_seconds": 300.0
+    },
+    "summary": {
+      "total_checks": 1,
+      "verified": 1,
+      "contradicted": 0,
+      "need_review": 0,
+      "invalid": 0
+    },
+    "overall": {
+      "status": "verified",
+      "assurance_level": "local_deterministic"
+    },
+    "warnings": [],
+    "errors": []
+  }
+}

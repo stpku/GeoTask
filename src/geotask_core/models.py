@@ -56,6 +56,33 @@ class MultiPolylineObject:
 
 
 @dataclass
+class MovingObject:
+    """A caller-declared moving-entity identity without implied position."""
+
+    name: str
+    object_class: str
+    identity: str
+
+
+@dataclass
+class TrajectorySample:
+    """One explicitly timestamped 2D observation."""
+
+    observed_at: str
+    coordinates: list[float]
+
+
+@dataclass
+class TrajectoryObject:
+    """A discrete, ordered trajectory bound to one moving object."""
+
+    name: str
+    subject_ref: str
+    samples: list[TrajectorySample]
+    interpolation: str = "none"
+
+
+@dataclass
 class StirDocument:
     """Top-level GeoTask (formerly STIR) document after parsing."""
 

@@ -81,9 +81,12 @@ class GeoObject:
       - altitude_interval: data = {"min": 100, "max": 200, "unit": "meter", "datum": "relative"}
                            or {"range": [...]}
       - feature_collection: data = {"feature_type": "point", "features": [...]}
+      - moving_object:      data = {"object_class": "uav", "identity": "fictional-uav-alpha"}
+      - trajectory:         data = {"subject_ref": "uav_alpha", "interpolation": "none",
+                                  "samples": [{"observed_at": "...", "coordinates": [x, y]}, ...]}
     """
     id: str
-    type: str                # point, polyline, multi_polyline, polygon, rect, intervals, feature_collection
+    type: str                # point, polyline, polygon, intervals, moving_object, trajectory, etc.
     data: dict = field(default_factory=dict)
 
 

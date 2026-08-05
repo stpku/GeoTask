@@ -81,8 +81,9 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布GT30三源气象冲突案例：第三个独立来源也给出13米/秒，形成二比一；由于可信保证档案未声明多数表决规则，系统仍保持未知、保留少数来源并请求显式裁决；
 - ✅ 已发布GT31人工气象裁决案例：虚构人工复核精确绑定GT30三份冲突响应和上下文证据，保留全部原始结果并限定两份13米/秒读数的适用范围；天气结论升级为可用，但自动起飞授权与起飞指令继续由独立控制门禁阻断；
 - ✅ 已发布GT32渐进授权门禁案例：五份虚构授权记录逐项到达，公共核心在每次累计输入后重新评估同一有限控制表达式，未知授权从5项降至0项；最终两个起飞相关输出转为可用，但生产发布、指令发送、现实授权与动作执行继续保持为假；
+- ✅ 已发布GT33首个移动对象与离散轨迹案例：移动对象身份与三次带时区二维观测分离表达，轨迹引用必须闭合、时间必须严格递增且插值固定为none；新增第10个确定性算子计算首末样本持续300秒，同时拒绝静态折线替代、隐式插值、未来位置预测、地图匹配和现实动作推断；
 - ✅ 已建立中英文独立项目入口及术语映射，中文页面以中文叙事为主，英文页面使用英文，机器标识保持稳定；
-- 扩展轨迹、移动对象及动态时空对象合同；
+- 继续扩展速度、加速度、分段轨迹和动态时空对象合同；
 - 发布可复用的行业扩展接口和非行业敏感的参考实现；
 - 建立验错率、漏检率、纠偏成功率、增量复核范围和执行时延基准；
 - 支持社区维护的验证提供方、案例、算子和通用扩展目录。
@@ -174,8 +175,9 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published GT30 as a three-source weather conflict: a third independent source also reports 13 m/s, producing a two-to-one split; without a declared majority policy, Assurance remains unknown, the minority source is preserved, and explicit adjudication is requested;
 - ✅ Published GT31 as a fictional human weather adjudication: the review binds all three GT30 responses and scoped context evidence, preserves every raw result, and limits the applicability of the two 13 m/s readings; the weather conclusion becomes eligible while a separate Control Evaluation keeps automatic takeoff authorization and the takeoff command blocked;
 - ✅ Published GT32 as a progressive authorization-gate case: five fictional authorization records arrive one by one, the same finite control profile is reevaluated after each cumulative input, and unknown identifiers fall from five to zero; both takeoff-related outputs become eligible only at the final step, while publication, command delivery, real-world authorization, and action execution remain false;
+- ✅ Published GT33 as the first moving-object and discrete-trajectory case: identity is separated from three timezone-aware 2D observations, trajectory references must close, timestamps must be strictly increasing, and interpolation is fixed to `none`; the tenth deterministic operator returns a 300-second endpoint duration while rejecting static-polyline substitution, implicit interpolation, future-position prediction, map matching, and action inference;
 - ✅ Established separate Chinese and English project entry points plus terminology maps while keeping machine identifiers stable;
-- extend trajectory, moving-object, and dynamic spatiotemporal object contracts;
+- continue with speed, acceleration, segmented trajectories, and richer dynamic spatiotemporal object contracts;
 - publish reusable extension interfaces and non-sensitive reference implementations;
 - establish benchmarks for error-detection rate, missed errors, correction success, incremental scope, and execution latency;
 - support community-maintained catalogs of Verification Providers, cases, operators, and generic extensions.

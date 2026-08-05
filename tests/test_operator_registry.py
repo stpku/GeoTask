@@ -17,6 +17,7 @@ EXPECTED_PUBLIC_SAFE_OPERATORS = {
     "rect_contains_point",
     "time_overlap",
     "altitude_overlap",
+    "trajectory_duration_seconds",
 }
 
 

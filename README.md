@@ -28,7 +28,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 
 ## 从这里开始
 
-- [立即体验GT01—GT32](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT33](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -123,7 +123,7 @@ geotask validate my_distance.yaml
 geotask run my_distance.yaml
 ```
 
-## 32个公开应用案例
+## 33个公开应用案例
 
 GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示模型方案如何被结构化、复算、验错、补证、纠偏和行动门控。
 
@@ -135,6 +135,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 | 行动与可行性 | GT10—GT20 | 约束确认以后，下一步具体执行什么？ |
 | 世界状态循环 | GT21—GT28 | 多源观测、状态变化、影响范围、限定纠偏和行动门禁怎样闭环？ |
 | 验证提供方生态 | GT29—GT32 | 多个外部来源冲突、显式裁决、渐进授权和行动门禁怎样形成独立可信保证？ |
+| 动态世界对象 | GT33 | 移动对象身份、时间观测与轨迹几何怎样显式绑定，而不静默插值或预测？ |
 
 重点案例：
 
@@ -162,19 +163,20 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT29：** 模拟气象服务给出8米/秒，现场传感器给出13米/秒；两个来源都新鲜且来自不同独立分组，但结果仍然冲突，因此天气结论保持未知并请求第三个独立来源；
 - **GT30：** 第三个独立来源也给出13米/秒，形成二比一；但可信保证档案未声明多数表决，因此系统仍保持未知、保留8米/秒少数来源，并请求显式气象裁决；
 - **GT31：** 人工复核精确绑定三份冲突响应和虚构上下文证据，保留原始读数并将两份13米/秒限定为局部测试气流影响；8米/秒天气结论可用，但自动起飞授权和起飞指令继续阻断；
-- **GT32：** 空域、运营人、起降场、气象放行和任务授权逐项到达，未知项从5降至0；最后两个起飞相关输出转为可用，但公共核心不发布结果、不发送指令，也不执行飞行动作。
+- **GT32：** 空域、运营人、起降场、气象放行和任务授权逐项到达，未知项从5降至0；最后两个起飞相关输出转为可用，但公共核心不发布结果、不发送指令，也不执行飞行动作；
+- **GT33：** 三次带时区位置观测绑定同一移动对象，形成严格递增的离散轨迹并确定性计算持续300秒；公共核心不插值、不预测、不地图匹配，也不执行现实动作。
 
-GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)。
+GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)。
 
 ## 当前公共Core真正支持什么
 
 ### Canonical对象类型
 
-`point`、`polyline`、`multi_polyline`、`polygon`、`rect`、`time_interval`、`altitude_interval`和`feature_collection`。
+`point`、`polyline`、`multi_polyline`、`polygon`、`rect`、`time_interval`、`altitude_interval`、`feature_collection`、`moving_object`和`trajectory`。
 
-其中`feature_collection`已经进入Canonical IR，但具体算子只接受算子注册表中声明的对象组合。
+`moving_object`只声明稳定身份，不内嵌位置；`trajectory`必须引用一个`moving_object`，包含至少两个严格递增、带时区的二维观测样本，并显式声明`interpolation: none`。`feature_collection`已经进入Canonical IR，但具体算子只接受算子注册表中声明的对象组合。
 
-### 九个本地确定性算子
+### 十个本地确定性算子
 
 | 算子 | 输入 | 输出 |
 |---|---|---|
@@ -187,6 +189,7 @@ GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT
 | `rect_contains_point` | 矩形、点 | 布尔值 |
 | `time_overlap` | 时间区间、时间区间 | 布尔值 |
 | `altitude_overlap` | 高度区间、高度区间 | 布尔值 |
+| `trajectory_duration_seconds` | 离散轨迹 | 秒数 |
 
 ### 跨任务空间合同
 
@@ -204,7 +207,7 @@ GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT
 geotask benchmark core --enforce-performance --output core-benchmark.json
 ```
 
-该离线基准使用5个固定虚构案例覆盖全部8个公共确定性算子，并检查结果往返、重复执行语义指纹和Provenance证据绑定；同时测量`JSON解码→Canonical化→验证→执行→序列化`全链路。默认100毫秒p95阈值仅用于发现本机严重性能回归，不是跨硬件排名、生产SLA或模型能力评测。报告可作为`geotask.core-benchmark-report`再次严格验证。
+该离线基准使用6个固定虚构案例覆盖全部10个公共确定性算子，并检查结果往返、重复执行语义指纹和Provenance证据绑定；同时测量`JSON解码→Canonical化→验证→执行→序列化`全链路。默认100毫秒p95阈值仅用于发现本机严重性能回归，不是跨硬件排名、生产SLA或模型能力评测。报告可作为`geotask.core-benchmark-report`再次严格验证。
 
 ### 执行主链
 

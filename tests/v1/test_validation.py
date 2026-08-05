@@ -360,6 +360,7 @@ def test_operator_registry_has_builtin_operators() -> None:
         "rect_contains_point",
         "time_overlap",
         "altitude_overlap",
+        "trajectory_duration_seconds",
     ]
 
 

@@ -293,3 +293,11 @@ cases:
     page: site/gt33/index.html
     example: examples/core/gt33_moving_object_trajectory.json
     lastmod: "2026-08-05"
+  - id: GT34
+    slug: gt34
+    stage: dynamic_world_objects
+    title_zh: 三个轨迹样本之间，每一段到底移动了多远、多快？
+    summary_zh: 将三次明确观测按相邻顺序绑定为两个分段，分别计算持续120/180秒、距离60/90个文档水平单位和0.5水平单位/秒平均速度；不插值、不推断瞬时速度、不预测未来或执行动作。
+    page: site/gt34/index.html
+    example: examples/core/gt34_trajectory_segment_metrics.json
+    lastmod: "2026-08-05"

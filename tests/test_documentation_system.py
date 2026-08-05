@@ -281,7 +281,7 @@ def test_whitepaper_separates_positioning_implementation_and_roadmap() -> None:
         "面向智能体的可验证时空任务协议、Canonical IR、Artifact体系和本地验证内核",
         "与隐式神经世界模型的区别",
         "十类Canonical对象",
-        "十个本地确定性算子",
+        "十一个本地确定性算子",
         "World State",
         "受限Observation Merge v0.1",
         "State Transition",

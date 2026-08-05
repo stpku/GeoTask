@@ -261,6 +261,50 @@ def trajectory_duration_seconds(samples: list[dict]) -> float:
     return (end - start).total_seconds()
 
 
+def trajectory_segment_metrics(samples: list[dict]) -> list[dict]:
+    """Return deterministic metrics for each adjacent explicit sample pair.
+
+    Validation guarantees finite 2D coordinates and strictly increasing,
+    timezone-aware timestamps. Distances are expressed in the document's
+    horizontal unit; average speeds are therefore horizontal units per second.
+    The operator performs no interpolation, smoothing, resampling, prediction,
+    map matching, external lookup, or real-world action.
+    """
+    segments: list[dict] = []
+    for index in range(len(samples) - 1):
+        start_sample = samples[index]
+        end_sample = samples[index + 1]
+        start_time = datetime.fromisoformat(
+            str(start_sample["observed_at"]).replace("Z", "+00:00")
+        )
+        end_time = datetime.fromisoformat(
+            str(end_sample["observed_at"]).replace("Z", "+00:00")
+        )
+        duration_seconds = (end_time - start_time).total_seconds()
+        if duration_seconds <= 0:
+            raise ValueError(
+                "trajectory_segment_metrics requires strictly increasing sample times"
+            )
+        start_coordinates = list(start_sample["coordinates"])
+        end_coordinates = list(end_sample["coordinates"])
+        distance = distance_2d(start_coordinates, end_coordinates)
+        segments.append(
+            {
+                "segment_index": index,
+                "start_sample_index": index,
+                "end_sample_index": index + 1,
+                "start_observed_at": str(start_sample["observed_at"]),
+                "end_observed_at": str(end_sample["observed_at"]),
+                "start_coordinates": start_coordinates,
+                "end_coordinates": end_coordinates,
+                "duration_seconds": duration_seconds,
+                "distance_in_horizontal_unit": distance,
+                "average_speed_in_horizontal_units_per_second": distance / duration_seconds,
+            }
+        )
+    return segments
+
+
 def _time_to_minutes(t: str) -> int:
     """Convert HH:MM string to minutes since midnight."""
     parts = t.split(":")

@@ -83,6 +83,22 @@ class TrajectoryObject:
 
 
 @dataclass
+class TrajectorySegment:
+    """One adjacent-sample segment with explicit deterministic metrics."""
+
+    segment_index: int
+    start_sample_index: int
+    end_sample_index: int
+    start_observed_at: str
+    end_observed_at: str
+    start_coordinates: list[float]
+    end_coordinates: list[float]
+    duration_seconds: float
+    distance_in_horizontal_unit: float
+    average_speed_in_horizontal_units_per_second: float
+
+
+@dataclass
 class StirDocument:
     """Top-level GeoTask (formerly STIR) document after parsing."""
 

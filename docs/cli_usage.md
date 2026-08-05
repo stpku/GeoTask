@@ -422,9 +422,9 @@ geotask benchmark core \
   --output core-benchmark.json
 ```
 
-The six fixed fictional cases cover all ten public deterministic operators,
-including discrete trajectory duration, strict Result round trips, replay semantic hashes,
-and Provenance evidence refs.
+The seven fixed fictional cases cover all eleven public deterministic operators,
+including discrete trajectory duration and adjacent-segment metrics, strict Result round trips,
+replay semantic hashes, and Provenance evidence refs.
 Timing covers JSON decoding, Canonical construction, validation, production
 execution, and Result serialization. `--enforce-performance` makes a failed p95
 guardrail return exit code `2`; without it, the timing result remains observational.

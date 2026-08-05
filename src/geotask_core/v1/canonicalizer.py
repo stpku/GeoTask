@@ -41,6 +41,8 @@ _OPERATOR_INPUT_TYPES: dict[str, list[str]] = {
     "rect_contains_point":        ["rect", "point"],
     "time_overlap":               ["time_interval", "time_interval"],
     "altitude_overlap":           ["altitude_interval", "altitude_interval"],
+    "trajectory_duration_seconds": ["trajectory"],
+    "trajectory_segment_metrics":  ["trajectory"],
 }
 
 # Legacy field-name → canonical data-key for GeoObject.data

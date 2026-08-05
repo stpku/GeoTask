@@ -19,6 +19,7 @@ from geotask_core.models import (
     MovingObject,
     TrajectorySample,
     TrajectoryObject,
+    TrajectorySegment,
     StirDocument,
 )
 from geotask_core.parser import (
@@ -31,6 +32,7 @@ from geotask_core.ops import (
     point_in_polygon,
     polygon_contains_point,
     trajectory_duration_seconds,
+    trajectory_segment_metrics,
 )
 from geotask_core.runner import run_geotask, run_stir
 from geotask_core.normalizer import normalize_model_output
@@ -475,6 +477,7 @@ __all__ = [
     "MovingObject",
     "TrajectorySample",
     "TrajectoryObject",
+    "TrajectorySegment",
     "StirDocument",
     "load_geotask",
     "validate_geotask",
@@ -486,6 +489,7 @@ __all__ = [
     "point_in_polygon",
     "polygon_contains_point",
     "trajectory_duration_seconds",
+    "trajectory_segment_metrics",
     "run_geotask",
     "run_stir",
     "normalize_model_output",

@@ -1,0 +1,119 @@
+{
+  "geotask_result": {
+    "schema_version": "1.0",
+    "task_id": "gt34-trajectory-segment-metrics",
+    "execution": {
+      "mode": "local_only",
+      "status": "completed",
+      "started_at": "2026-08-05T02:30:00+00:00",
+      "finished_at": "2026-08-05T02:30:00+00:00"
+    },
+    "checks": [
+      {
+        "assertion_id": "trajectory_segments",
+        "operator": "trajectory_segment_metrics",
+        "object_refs": [
+          "uav_alpha_track"
+        ],
+        "executor": "local",
+        "value": [
+          {
+            "segment_index": 0,
+            "start_sample_index": 0,
+            "end_sample_index": 1,
+            "start_observed_at": "2026-08-05T08:00:00+08:00",
+            "end_observed_at": "2026-08-05T08:02:00+08:00",
+            "start_coordinates": [
+              0,
+              0
+            ],
+            "end_coordinates": [
+              36,
+              48
+            ],
+            "duration_seconds": 120.0,
+            "distance_in_horizontal_unit": 60.0,
+            "average_speed_in_horizontal_units_per_second": 0.5
+          },
+          {
+            "segment_index": 1,
+            "start_sample_index": 1,
+            "end_sample_index": 2,
+            "start_observed_at": "2026-08-05T08:02:00+08:00",
+            "end_observed_at": "2026-08-05T08:05:00+08:00",
+            "start_coordinates": [
+              36,
+              48
+            ],
+            "end_coordinates": [
+              36,
+              138
+            ],
+            "duration_seconds": 180.0,
+            "distance_in_horizontal_unit": 90.0,
+            "average_speed_in_horizontal_units_per_second": 0.5
+          }
+        ],
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      }
+    ],
+    "outputs": {
+      "trajectory_segments": [
+        {
+          "segment_index": 0,
+          "start_sample_index": 0,
+          "end_sample_index": 1,
+          "start_observed_at": "2026-08-05T08:00:00+08:00",
+          "end_observed_at": "2026-08-05T08:02:00+08:00",
+          "start_coordinates": [
+            0,
+            0
+          ],
+          "end_coordinates": [
+            36,
+            48
+          ],
+          "duration_seconds": 120.0,
+          "distance_in_horizontal_unit": 60.0,
+          "average_speed_in_horizontal_units_per_second": 0.5
+        },
+        {
+          "segment_index": 1,
+          "start_sample_index": 1,
+          "end_sample_index": 2,
+          "start_observed_at": "2026-08-05T08:02:00+08:00",
+          "end_observed_at": "2026-08-05T08:05:00+08:00",
+          "start_coordinates": [
+            36,
+            48
+          ],
+          "end_coordinates": [
+            36,
+            138
+          ],
+          "duration_seconds": 180.0,
+          "distance_in_horizontal_unit": 90.0,
+          "average_speed_in_horizontal_units_per_second": 0.5
+        }
+      ]
+    },
+    "summary": {
+      "total_checks": 1,
+      "verified": 1,
+      "contradicted": 0,
+      "need_review": 0,
+      "invalid": 0
+    },
+    "overall": {
+      "status": "verified",
+      "assurance_level": "local_deterministic"
+    },
+    "warnings": [],
+    "errors": []
+  }
+}

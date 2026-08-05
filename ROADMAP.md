@@ -84,8 +84,9 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布GT33首个移动对象与离散轨迹案例：移动对象身份与三次带时区二维观测分离表达，轨迹引用必须闭合、时间必须严格递增且插值固定为none；新增第10个确定性算子计算首末样本持续300秒，同时拒绝静态折线替代、隐式插值、未来位置预测、地图匹配和现实动作推断；
 - ✅ 已发布GT34离散轨迹分段与平均速度案例：三次明确观测按相邻顺序形成两个分段，分别绑定起止样本索引、时间和坐标，计算120/180秒持续时间、60/90个文档水平单位距离与0.5水平单位/秒平均速度；新增第11个确定性算子，同时拒绝非相邻分段、零时长、单位冒充、瞬时速度推断、插值、平滑、预测和现实动作；
 - ✅ 已发布GT35停留、移动与观测缺口案例：调用方显式声明停留半径、最短停留时长、最大观测间隔和缺口许可，三个相邻分段分别输出停留候选、已观测移动和观测缺口；新增第12个确定性算子，缺口不允许时返回不可核验，同时拒绝默认阈值、连续停留、失联、异常、插值和现实动作推断；
+- ✅ 已发布GT36加速度与运动连续性案例：调用方显式声明分段中点代表时刻和最大观测间隔，前两个相邻速度转换输出0和1/300水平单位/秒²，第三个转换因下一分段持续600秒而返回不可核验并保持速度差与加速度为null；新增第13个确定性算子，同时拒绝瞬时/向量加速度、方向变化、跨缺口计算、预测和现实动作推断；
 - ✅ 已建立中英文独立项目入口及术语映射，中文页面以中文叙事为主，英文页面使用英文，机器标识保持稳定；
-- 继续扩展加速度、运动连续性和更丰富的动态时空对象合同；
+- 继续扩展对象身份候选、运动连续性证据和更丰富的动态时空对象合同；
 - 发布可复用的行业扩展接口和非行业敏感的参考实现；
 - 建立验错率、漏检率、纠偏成功率、增量复核范围和执行时延基准；
 - 支持社区维护的验证提供方、案例、算子和通用扩展目录。
@@ -180,8 +181,9 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published GT33 as the first moving-object and discrete-trajectory case: identity is separated from three timezone-aware 2D observations, trajectory references must close, timestamps must be strictly increasing, and interpolation is fixed to `none`; the tenth deterministic operator returns a 300-second endpoint duration while rejecting static-polyline substitution, implicit interpolation, future-position prediction, map matching, and action inference;
 - ✅ Published GT34 for discrete trajectory segments and average speed: three explicit observations form two adjacent segments that bind sample indexes, timestamps, and coordinates, returning 120/180-second durations, 60/90 document-horizontal-unit distances, and 0.5 horizontal-unit-per-second averages; the eleventh deterministic operator rejects non-adjacent collapse, zero duration, unit overclaiming, instantaneous-speed inference, interpolation, smoothing, prediction, and real-world action;
 - ✅ Published GT35 for stop/move and observation-gap classification: caller-declared stationary radius, minimum stationary duration, maximum observation interval, and gap permission classify three adjacent segments as `stationary_candidate`, `moving_observed`, and `observation_gap`; the twelfth deterministic operator returns `unverifiable` when gap marking is disallowed and rejects default thresholds, continuous-stop, lost-link, anomaly, interpolation, and action inference;
+- ✅ Published GT36 for acceleration and motion continuity: caller-declared segment-midpoint representative time and maximum observation interval produce scalar estimates of 0 and 1/300 horizontal units per second squared for the first two adjacent speed transitions; the third transition becomes `unverifiable` with null speed change and acceleration because the next segment lasts 600 seconds. The thirteenth deterministic operator rejects instantaneous/vector acceleration, direction change, cross-gap computation, prediction, and action inference;
 - ✅ Established separate Chinese and English project entry points plus terminology maps while keeping machine identifiers stable;
-- continue with acceleration, motion continuity, and richer dynamic spatiotemporal object contracts;
+- continue with object-identity candidates, motion-continuity evidence, and richer dynamic spatiotemporal object contracts;
 - publish reusable extension interfaces and non-sensitive reference implementations;
 - establish benchmarks for error-detection rate, missed errors, correction success, incremental scope, and execution latency;
 - support community-maintained catalogs of Verification Providers, cases, operators, and generic extensions.

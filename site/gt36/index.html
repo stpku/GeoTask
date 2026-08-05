@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GT36｜两段平均速度变了，就能证明瞬时加速度和连续运动吗？</title>
+  <meta name="description" content="GeoTask以分段中点为代表时刻，在显式最大观测间隔内计算相邻分段平均速度变化率；遇到观测缺口则返回不可核验。">
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#171717;background:#f5f5f2;line-height:1.65}*{box-sizing:border-box}body{margin:0}.shell{width:min(1100px,calc(100% - 32px));margin:auto}header{background:#fff;border-bottom:1px solid #ddd}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;color:#111;text-decoration:none}.nav a{color:#333;text-decoration:none;margin-left:18px}.hero{padding:70px 0 48px;background:#fff}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;color:#555}.hero h1{font-size:clamp(34px,6vw,64px);line-height:1.08;max-width:980px;margin:12px 0 22px}.lead{font-size:20px;max-width:900px;color:#444}.statement{margin-top:28px;padding:22px;border-left:5px solid #111;background:#f2f2ee;font-size:22px;font-weight:700}section{padding:54px 0}.section-title{font-size:34px;margin:0 0 12px}.muted{color:#555}.grid,.transitions,.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}.facts{grid-template-columns:1fr 1fr}.card,.transition,.fact{background:#fff;border:1px solid #ddd;border-radius:14px;padding:22px}.card strong,.transition strong{display:block;font-size:22px}.tag{display:inline-block;border:1px solid #aaa;border-radius:999px;padding:3px 9px;font-size:12px}.dark{background:#1d1d1d;color:#fff}.dark .transition{background:#292929;border-color:#4a4a4a}.dark .muted{color:#ccc}.choice{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.choice button{border:1px solid #222;background:#fff;border-radius:9px;padding:13px 18px;font-size:15px;cursor:pointer}.choice button.safe{background:#111;color:#fff}#result{min-height:94px;padding:18px;border:1px solid #bbb;border-radius:10px;background:#fff}.ok{font-weight:800}.bad{font-weight:800;color:#8a1f1f}pre{overflow:auto;background:#151515;color:#f3f3f3;border-radius:12px;padding:22px;font-size:14px}.footer{background:#111;color:#ddd;padding:38px 0}.footer a{color:#fff}@media(max-width:900px){.grid,.transitions,.facts{grid-template-columns:1fr}.nav nav{display:none}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+<header><div class="shell nav"><a class="brand" href="../" aria-label="返回GeoTask项目首页">GeoTask · GT36</a><nav><a href="../gt35/">上一案例</a><a href="https://github.com/stpku/GeoTask">GitHub</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell">
+    <div class="eyebrow">GT36 · 加速度与运动连续性合同</div>
+    <h1>两段平均速度变了，就能证明瞬时加速度和连续运动吗？</h1>
+    <p class="lead">不能。GT36只在两个相邻分段都未超过调用方声明的最大观测间隔时，用分段中点作为代表时刻，计算平均速度变化率。</p>
+    <div class="statement">计算结果是标量加速度估计，不是瞬时加速度向量；任一参与分段存在观测缺口时，速度差和加速度都必须为null。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">两个参数必须显式声明</h2>
+    <div class="grid">
+      <article class="card"><span class="tag">代表时刻</span><strong>segment_midpoint</strong><p>每段速度绑定到该段起止时间的中点。</p></article>
+      <article class="card"><span class="tag">最大观测间隔</span><strong>300秒</strong><p>任一分段超过该值，相关速度转换不可核验。</p></article>
+      <article class="card"><span class="tag">计算公式</span><strong>Δ平均速度 ÷ Δ中点时间</strong><p>只计算速度大小变化率，不推断方向变化。</p></article>
+    </div>
+  </div></section>
+
+  <section class="dark"><div class="shell">
+    <h2 class="section-title">三个速度转换</h2>
+    <div class="transitions">
+      <article class="transition"><span class="tag">分段0 → 分段1</span><h3>0.5 → 0.5</h3><strong>0.0</strong><p class="muted">两个中点相隔150秒，标量加速度估计为0。</p></article>
+      <article class="transition"><span class="tag">分段1 → 分段2</span><h3>0.5 → 1.0</h3><strong>1/300</strong><p class="muted">两个中点相隔150秒，速度增加0.5水平单位/秒。</p></article>
+      <article class="transition"><span class="tag">分段2 → 分段3</span><h3>下一段持续600秒</h3><strong>unverifiable</strong><p class="muted">超过300秒最大间隔，加速度和速度差均为null。</p></article>
+    </div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">选择对第三个转换的处理</h2>
+    <div class="choice">
+      <button id="btn-compute">把600秒分段当连续运动并计算减速度</button>
+      <button id="btn-vector">输出加速度向量和转弯方向</button>
+      <button id="btn-predict">据此预测下一时刻位置</button>
+      <button id="btn-unverifiable" class="safe">按显式间隔规则返回不可核验</button>
+      <button id="verify">执行本地检查</button>
+    </div>
+    <div id="result" aria-live="polite">尚未选择。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">能力边界</h2>
+    <div class="facts">
+      <div class="fact"><h3>能够确定</h3><p>相邻分段与共享样本绑定</p><p>分段中点代表时刻</p><p>平均速度变化率</p><p>缺口转换不可核验</p></div>
+      <div class="fact"><h3>不能确定</h3><p>瞬时或向量加速度</p><p>转弯方向和角速度</p><p>缺口中的连续运动</p><p>未来位置与现实动作</p></div>
+    </div>
+    <pre>operator: trajectory_segment_acceleration_estimates
+representative_time_method: segment_midpoint
+maximum_observation_gap_seconds: 300
+continuity_vocabulary:
+  - continuous_observation
+  - unverifiable
+instantaneous_acceleration_verified: false
+vector_acceleration_verified: false
+direction_change_inferred: false
+trajectory_interpolated: false
+future_position_predicted: false
+production_output_released: false
+command_sent: false
+action_authorized_by_core: false
+action_executed: false</pre>
+  </div></section>
+</main>
+<footer class="footer"><div class="shell">GT36把轨迹推进到显式中点时间上的标量加速度估计，但观测缺口、瞬时状态和现实动作仍严格分离。返回<a href="../">GeoTask项目首页</a>。</div></footer>
+<script>
+(()=>{let selected='';const box=document.getElementById('result');const choose=(value,label)=>{selected=value;box.textContent='已选择：'+label;box.className='';};document.getElementById('btn-compute').onclick=()=>choose('compute_gap','跨缺口计算减速度');document.getElementById('btn-vector').onclick=()=>choose('vector','输出向量和方向');document.getElementById('btn-predict').onclick=()=>choose('predict','预测下一位置');document.getElementById('btn-unverifiable').onclick=()=>choose('unverifiable','返回不可核验');document.getElementById('verify').onclick=()=>{if(selected==='unverifiable'){box.innerHTML='<span class="ok">检查通过：</span>下一分段持续600秒，超过300秒最大观测间隔，因此速度差和加速度均为null。';}else{box.innerHTML='<span class="bad">检查未通过：</span>平均速度大小不能证明瞬时或向量加速度；观测缺口不能被静默插值，也不能直接用于预测。';}};})();
+</script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

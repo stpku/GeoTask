@@ -1,0 +1,228 @@
+{
+  "scenario": {
+    "id": "gt36-trajectory-acceleration",
+    "title_zh": "两段平均速度变了，就能证明瞬时加速度和连续运动吗？",
+    "title_en": "Does a change between segment-average speeds prove instantaneous acceleration and continuous motion?",
+    "problem": {
+      "moving_object": "uav_alpha",
+      "trajectory": "uav_alpha_track",
+      "sample_count": 5,
+      "segment_count": 4,
+      "transition_count": 3,
+      "horizontal_unit": "meter",
+      "representative_time_method": "segment_midpoint",
+      "maximum_observation_gap_seconds": 300,
+      "interpolation": "none"
+    },
+    "explicit_samples": [
+      {
+        "observed_at": "2026-08-05T08:00:00+08:00",
+        "coordinates": [
+          0,
+          0
+        ]
+      },
+      {
+        "observed_at": "2026-08-05T08:02:00+08:00",
+        "coordinates": [
+          36,
+          48
+        ]
+      },
+      {
+        "observed_at": "2026-08-05T08:05:00+08:00",
+        "coordinates": [
+          36,
+          138
+        ]
+      },
+      {
+        "observed_at": "2026-08-05T08:07:00+08:00",
+        "coordinates": [
+          156,
+          138
+        ]
+      },
+      {
+        "observed_at": "2026-08-05T08:17:00+08:00",
+        "coordinates": [
+          156,
+          138
+        ]
+      }
+    ],
+    "deterministic_estimates": [
+      {
+        "transition_index": 0,
+        "prior_segment_index": 0,
+        "next_segment_index": 1,
+        "shared_sample_index": 1,
+        "prior_start_sample_index": 0,
+        "prior_end_sample_index": 1,
+        "next_start_sample_index": 1,
+        "next_end_sample_index": 2,
+        "prior_start_observed_at": "2026-08-05T08:00:00+08:00",
+        "shared_observed_at": "2026-08-05T08:02:00+08:00",
+        "next_end_observed_at": "2026-08-05T08:05:00+08:00",
+        "prior_start_coordinates": [
+          0,
+          0
+        ],
+        "shared_coordinates": [
+          36,
+          48
+        ],
+        "next_end_coordinates": [
+          36,
+          138
+        ],
+        "prior_duration_seconds": 120.0,
+        "next_duration_seconds": 180.0,
+        "prior_average_speed_in_horizontal_units_per_second": 0.5,
+        "next_average_speed_in_horizontal_units_per_second": 0.5,
+        "prior_representative_at": "2026-08-05T08:01:00+08:00",
+        "next_representative_at": "2026-08-05T08:03:30+08:00",
+        "representative_interval_seconds": 150.0,
+        "speed_change_in_horizontal_units_per_second": 0.0,
+        "acceleration_in_horizontal_units_per_second_squared": 0.0,
+        "continuity_state": "continuous_observation",
+        "continuity_reason": "both_segments_within_declared_maximum_gap",
+        "representative_time_method": "segment_midpoint",
+        "maximum_observation_gap_seconds": 300.0
+      },
+      {
+        "transition_index": 1,
+        "prior_segment_index": 1,
+        "next_segment_index": 2,
+        "shared_sample_index": 2,
+        "prior_start_sample_index": 1,
+        "prior_end_sample_index": 2,
+        "next_start_sample_index": 2,
+        "next_end_sample_index": 3,
+        "prior_start_observed_at": "2026-08-05T08:02:00+08:00",
+        "shared_observed_at": "2026-08-05T08:05:00+08:00",
+        "next_end_observed_at": "2026-08-05T08:07:00+08:00",
+        "prior_start_coordinates": [
+          36,
+          48
+        ],
+        "shared_coordinates": [
+          36,
+          138
+        ],
+        "next_end_coordinates": [
+          156,
+          138
+        ],
+        "prior_duration_seconds": 180.0,
+        "next_duration_seconds": 120.0,
+        "prior_average_speed_in_horizontal_units_per_second": 0.5,
+        "next_average_speed_in_horizontal_units_per_second": 1.0,
+        "prior_representative_at": "2026-08-05T08:03:30+08:00",
+        "next_representative_at": "2026-08-05T08:06:00+08:00",
+        "representative_interval_seconds": 150.0,
+        "speed_change_in_horizontal_units_per_second": 0.5,
+        "acceleration_in_horizontal_units_per_second_squared": 0.0033333333333333335,
+        "continuity_state": "continuous_observation",
+        "continuity_reason": "both_segments_within_declared_maximum_gap",
+        "representative_time_method": "segment_midpoint",
+        "maximum_observation_gap_seconds": 300.0
+      },
+      {
+        "transition_index": 2,
+        "prior_segment_index": 2,
+        "next_segment_index": 3,
+        "shared_sample_index": 3,
+        "prior_start_sample_index": 2,
+        "prior_end_sample_index": 3,
+        "next_start_sample_index": 3,
+        "next_end_sample_index": 4,
+        "prior_start_observed_at": "2026-08-05T08:05:00+08:00",
+        "shared_observed_at": "2026-08-05T08:07:00+08:00",
+        "next_end_observed_at": "2026-08-05T08:17:00+08:00",
+        "prior_start_coordinates": [
+          36,
+          138
+        ],
+        "shared_coordinates": [
+          156,
+          138
+        ],
+        "next_end_coordinates": [
+          156,
+          138
+        ],
+        "prior_duration_seconds": 120.0,
+        "next_duration_seconds": 600.0,
+        "prior_average_speed_in_horizontal_units_per_second": 1.0,
+        "next_average_speed_in_horizontal_units_per_second": 0.0,
+        "prior_representative_at": "2026-08-05T08:06:00+08:00",
+        "next_representative_at": "2026-08-05T08:12:00+08:00",
+        "representative_interval_seconds": 360.0,
+        "speed_change_in_horizontal_units_per_second": null,
+        "acceleration_in_horizontal_units_per_second_squared": null,
+        "continuity_state": "unverifiable",
+        "continuity_reason": "next_segment_exceeds_declared_maximum_gap",
+        "representative_time_method": "segment_midpoint",
+        "maximum_observation_gap_seconds": 300.0
+      }
+    ],
+    "deterministic_result": {
+      "status": "verified",
+      "assurance_level": "local_deterministic",
+      "output_eligible": true
+    },
+    "not_inferred": [
+      "instantaneous_acceleration",
+      "vector_acceleration",
+      "heading_change",
+      "continuous_motion_inside_gap",
+      "loss_of_link",
+      "anomaly",
+      "intermediate_positions",
+      "future_positions",
+      "map_matched_path",
+      "real_world_identity_authenticity",
+      "action_command"
+    ],
+    "incorrect_actions": [
+      "use_sample_boundary_without_declaring_representative_time",
+      "compute_acceleration_across_an_observation_gap",
+      "treat_scalar_average_speed_change_as_vector_acceleration",
+      "infer_heading_or_turn_rate_from_speed_magnitudes",
+      "interpolate_positions_inside_the_gap",
+      "predict_future_motion_from_acceleration_estimates",
+      "treat_local_estimation_as_action_authorization"
+    ],
+    "sha256": {
+      "task": "a554eaa44d143767a30ab33afe8b03f15e294a591043e095aa65f7147d54b6a9",
+      "execution_result": "a6f1e2b771b08d653884d685c557c063914f94579c1d06af03b0fc80f67c8835"
+    },
+    "boundaries": {
+      "fictional_data": true,
+      "sample_order_verified": true,
+      "subject_binding_verified": true,
+      "representative_time_method_explicit": true,
+      "maximum_gap_caller_declared": true,
+      "adjacent_segment_binding_verified": true,
+      "scalar_acceleration_estimated": true,
+      "gap_transition_failed_closed": true,
+      "instantaneous_acceleration_verified": false,
+      "vector_acceleration_verified": false,
+      "direction_change_inferred": false,
+      "trajectory_interpolated": false,
+      "trajectory_smoothed": false,
+      "trajectory_resampled": false,
+      "continuous_motion_verified": false,
+      "loss_of_link_inferred": false,
+      "anomaly_inferred": false,
+      "future_position_predicted": false,
+      "map_matched": false,
+      "external_truth_verified_by_core": false,
+      "production_output_released": false,
+      "command_sent": false,
+      "action_authorized_by_core": false,
+      "action_executed": false
+    }
+  }
+}

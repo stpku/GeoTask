@@ -76,6 +76,7 @@ _PLANAR_OPERATOR_NAMES: frozenset[str] = frozenset(
         "rect_contains_point",
         "trajectory_segment_metrics",
         "trajectory_segment_classifications",
+        "trajectory_segment_acceleration_estimates",
     }
 )
 _BOUNDARY_SENSITIVE_OPERATOR_NAMES: frozenset[str] = frozenset(
@@ -1441,6 +1442,12 @@ def _check_operator_binding(
                         f"{apath}.parameters", assertion.parameters
                     )
                 )
+            if assertion.operator == "trajectory_segment_acceleration_estimates":
+                diags.extend(
+                    _check_trajectory_acceleration_parameters(
+                        f"{apath}.parameters", assertion.parameters
+                    )
+                )
 
     return diags
 
@@ -1514,6 +1521,58 @@ def _check_trajectory_classification_parameters(path: str, parameters: dict) -> 
                 "Use true to permit observation_gap, or false to return unverifiable.",
             )
         )
+    return diags
+
+
+def _check_trajectory_acceleration_parameters(path: str, parameters: dict) -> list[dict]:
+    """Validate the exact GT36 midpoint and continuity parameters."""
+    diags: list[dict] = []
+    required = {
+        "representative_time_method",
+        "maximum_observation_gap_seconds",
+    }
+    actual = set(parameters)
+    for name in sorted(required - actual):
+        diags.append(
+            _diagnostic(
+                f"{path}.{name}",
+                MISSING_FIELD,
+                f"trajectory_segment_acceleration_estimates requires parameter '{name}'.",
+                "Declare the GT36 midpoint method and maximum observation interval explicitly.",
+            )
+        )
+    for name in sorted(actual - required):
+        diags.append(
+            _diagnostic(
+                f"{path}.{name}",
+                UNKNOWN_FIELD,
+                f"Unknown trajectory acceleration parameter '{name}'.",
+                f"Use only {sorted(required)}.",
+            )
+        )
+
+    method = parameters.get("representative_time_method")
+    if method is not None and method != "segment_midpoint":
+        diags.append(
+            _diagnostic(
+                f"{path}.representative_time_method",
+                INVALID_TYPE,
+                "Parameter 'representative_time_method' must be 'segment_midpoint'.",
+                "Use the explicit GT36 midpoint representative-time contract.",
+            )
+        )
+
+    if "maximum_observation_gap_seconds" in parameters:
+        value = parameters["maximum_observation_gap_seconds"]
+        if not _is_finite_number(value) or value <= 0:
+            diags.append(
+                _diagnostic(
+                    f"{path}.maximum_observation_gap_seconds",
+                    INVALID_TYPE,
+                    "Parameter 'maximum_observation_gap_seconds' must be a finite positive number.",
+                    "Provide the caller-declared maximum interval in seconds.",
+                )
+            )
     return diags
 
 

@@ -121,6 +121,39 @@ class TrajectorySegmentClassification:
 
 
 @dataclass
+class TrajectorySegmentAccelerationEstimate:
+    """One adjacent-segment speed transition with explicit continuity state."""
+
+    transition_index: int
+    prior_segment_index: int
+    next_segment_index: int
+    shared_sample_index: int
+    prior_start_sample_index: int
+    prior_end_sample_index: int
+    next_start_sample_index: int
+    next_end_sample_index: int
+    prior_start_observed_at: str
+    shared_observed_at: str
+    next_end_observed_at: str
+    prior_start_coordinates: list[float]
+    shared_coordinates: list[float]
+    next_end_coordinates: list[float]
+    prior_duration_seconds: float
+    next_duration_seconds: float
+    prior_average_speed_in_horizontal_units_per_second: float
+    next_average_speed_in_horizontal_units_per_second: float
+    prior_representative_at: str
+    next_representative_at: str
+    representative_interval_seconds: float
+    speed_change_in_horizontal_units_per_second: float | None
+    acceleration_in_horizontal_units_per_second_squared: float | None
+    continuity_state: str
+    continuity_reason: str
+    representative_time_method: str
+    maximum_observation_gap_seconds: float
+
+
+@dataclass
 class StirDocument:
     """Top-level GeoTask (formerly STIR) document after parsing."""
 

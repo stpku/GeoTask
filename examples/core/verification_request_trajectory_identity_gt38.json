@@ -1,0 +1,37 @@
+{
+  "verification_request": {
+    "request_version": "0.1",
+    "request_id": "verify-trajectory-identity-gt38",
+    "created_at": "2026-08-05T08:10:00+08:00",
+    "subject": {
+      "claim_id": "identity:provisional_alpha:provisional_beta",
+      "claim_type": "trajectory_identity",
+      "value": "same_object",
+      "unit": null,
+      "observed_at": "2026-08-05T08:03:00+08:00",
+      "valid_until": "2026-08-05T09:00:00+08:00"
+    },
+    "input_artifacts": [
+      {
+        "ref_id": "gt37-identity-candidate-result",
+        "artifact_id": "geotask.execution-result",
+        "sha256": "2c59d17746cb695711625cf3c2bc96b89d3c6a1f8a2955226bc9c20a18c91334"
+      }
+    ],
+    "verification_method": "identity_evidence_review",
+    "required_capabilities": [
+      "trajectory_identity_review"
+    ],
+    "allowed_provider_types": [
+      "authoritative_data_provider",
+      "human_review"
+    ],
+    "assurance_profile_ref": {
+      "profile_id": "gt38-trajectory-identity-adjudication",
+      "sha256": "9f815cbeb397680cdba05479d92e8cf82aab3c8485fc74345fcce1a5d753115e"
+    },
+    "deadline": "2026-08-05T08:30:00+08:00",
+    "external_side_effects_allowed": false,
+    "action_authorized": false
+  }
+}

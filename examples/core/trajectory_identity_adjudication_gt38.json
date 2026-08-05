@@ -1,0 +1,103 @@
+{
+  "trajectory_identity_adjudication": {
+    "adjudication_version": "0.1",
+    "adjudication_id": "gt38-trajectory-identity-adjudication",
+    "created_at": "2026-08-05T08:20:00+08:00",
+    "candidate_result_ref": {
+      "artifact_id": "geotask.execution-result",
+      "task_id": "gt37-trajectory-identity-candidate",
+      "assertion_id": "identity_candidate",
+      "content_sha256": "2c59d17746cb695711625cf3c2bc96b89d3c6a1f8a2955226bc9c20a18c91334"
+    },
+    "verification_request_ref": {
+      "artifact_id": "geotask.verification-request",
+      "request_id": "verify-trajectory-identity-gt38",
+      "content_sha256": "244ca0c9ebdba192e2a2555c2cdd8c69cf72b1baaebfc47f60b7c40c604ab743"
+    },
+    "assurance_profile_ref": {
+      "artifact_id": "geotask.assurance-profile",
+      "profile_id": "gt38-trajectory-identity-adjudication",
+      "content_sha256": "9f815cbeb397680cdba05479d92e8cf82aab3c8485fc74345fcce1a5d753115e"
+    },
+    "provider_refs": [
+      {
+        "ref_id": "provider-1",
+        "artifact_id": "geotask.verification-provider-descriptor",
+        "provider_id": "geotask.provider.mock-asset-registry",
+        "provider_version": "0.1.0",
+        "provider_type": "authoritative_data_provider",
+        "independence_group": "fictional-asset-registry",
+        "content_sha256": "e2143b3b3480fabd0d6ef7916c30459979fba8031d5c28d70b45fb51bc906f8a"
+      },
+      {
+        "ref_id": "provider-2",
+        "artifact_id": "geotask.verification-provider-descriptor",
+        "provider_id": "geotask.provider.mock-human-identity-reviewer",
+        "provider_version": "0.1.0",
+        "provider_type": "human_review",
+        "independence_group": "fictional-human-identity-board",
+        "content_sha256": "625c035e8407aa83d82ed0be9a59ba999a2920a0bbdf3dd9d050d9f1403a6108"
+      }
+    ],
+    "response_refs": [
+      {
+        "ref_id": "response-1",
+        "artifact_id": "geotask.verification-response",
+        "response_id": "trajectory-identity-response-asset-registry-gt38",
+        "request_id": "verify-trajectory-identity-gt38",
+        "provider_id": "geotask.provider.mock-asset-registry",
+        "independence_group": "fictional-asset-registry",
+        "verdict": "same_object",
+        "content_sha256": "01462bcab624ffefd88023de40b2ae4a19059b17d610a5a9cd32a41815102f18"
+      },
+      {
+        "ref_id": "response-2",
+        "artifact_id": "geotask.verification-response",
+        "response_id": "trajectory-identity-response-human-review-gt38",
+        "request_id": "verify-trajectory-identity-gt38",
+        "provider_id": "geotask.provider.mock-human-identity-reviewer",
+        "independence_group": "fictional-human-identity-board",
+        "verdict": "same_object",
+        "content_sha256": "858a6732855d7946877c3d93a472e447bb79501d6837605c62619105db93e543"
+      }
+    ],
+    "identity_pair": {
+      "first_trajectory_ref": "track_alpha",
+      "second_trajectory_ref": "track_beta",
+      "first_subject_ref": "provisional_alpha",
+      "second_subject_ref": "provisional_beta",
+      "first_object_class": "uav",
+      "second_object_class": "uav"
+    },
+    "candidate_state": "same_object_candidate",
+    "requested_verdict": "same_object",
+    "policy_result": {
+      "state": "verified",
+      "reason": "assurance_requirements_satisfied",
+      "provider_count": 2,
+      "usable_provider_count": 2,
+      "independent_group_count": 2,
+      "same_object_response_refs": [
+        "response-1",
+        "response-2"
+      ],
+      "different_objects_response_refs": [],
+      "unknown_response_refs": [],
+      "diagnostics": []
+    },
+    "adjudication_state": "same_object_confirmed",
+    "adjudication_reason": "independent_bound_evidence_supports_same_object",
+    "candidate_alignment": "aligned",
+    "identity_merge_recommendation": "recommend_identity_merge_review",
+    "next_action": "review_identity_merge",
+    "candidate_binding_verified": true,
+    "verification_bindings_verified": true,
+    "independent_evidence_satisfied": true,
+    "external_identity_verified_by_core": false,
+    "identity_merge_performed": false,
+    "subject_refs_mutated": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

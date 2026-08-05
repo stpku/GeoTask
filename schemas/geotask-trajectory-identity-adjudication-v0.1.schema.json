@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-trajectory-identity-adjudication-v0.1.schema.json",
+  "title": "GeoTask Trajectory Identity Adjudication v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["trajectory_identity_adjudication"],
+  "properties": {
+    "trajectory_identity_adjudication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adjudication_version",
+        "adjudication_id",
+        "created_at",
+        "candidate_result_ref",
+        "verification_request_ref",
+        "assurance_profile_ref",
+        "provider_refs",
+        "response_refs",
+        "identity_pair",
+        "candidate_state",
+        "requested_verdict",
+        "policy_result",
+        "adjudication_state",
+        "adjudication_reason",
+        "candidate_alignment",
+        "identity_merge_recommendation",
+        "next_action",
+        "candidate_binding_verified",
+        "verification_bindings_verified",
+        "independent_evidence_satisfied",
+        "external_identity_verified_by_core",
+        "identity_merge_performed",
+        "subject_refs_mutated",
+        "production_output_released",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "adjudication_version": {"const": "0.1"},
+        "adjudication_id": {"type": "string", "minLength": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "candidate_result_ref": {"$ref": "#/$defs/candidateResultRef"},
+        "verification_request_ref": {"$ref": "#/$defs/verificationRequestRef"},
+        "assurance_profile_ref": {"$ref": "#/$defs/assuranceProfileRef"},
+        "provider_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/providerRef"}
+        },
+        "response_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/responseRef"}
+        },
+        "identity_pair": {"$ref": "#/$defs/identityPair"},
+        "candidate_state": {
+          "enum": [
+            "same_object_candidate",
+            "different_object_candidate",
+            "unverifiable"
+          ]
+        },
+        "requested_verdict": {
+          "enum": ["same_object", "different_objects"]
+        },
+        "policy_result": {"$ref": "#/$defs/policyResult"},
+        "adjudication_state": {
+          "enum": [
+            "same_object_confirmed",
+            "different_objects_confirmed",
+            "unresolved"
+          ]
+        },
+        "adjudication_reason": {"type": "string", "minLength": 1},
+        "candidate_alignment": {
+          "enum": ["aligned", "contradicted", "not_comparable", "unresolved"]
+        },
+        "identity_merge_recommendation": {
+          "enum": [
+            "recommend_identity_merge_review",
+            "recommend_keep_separate",
+            "request_more_evidence"
+          ]
+        },
+        "next_action": {
+          "enum": [
+            "review_identity_merge",
+            "retain_separate_identities",
+            "request_identity_evidence"
+          ]
+        },
+        "candidate_binding_verified": {"const": true},
+        "verification_bindings_verified": {"const": true},
+        "independent_evidence_satisfied": {"type": "boolean"},
+        "external_identity_verified_by_core": {"const": false},
+        "identity_merge_performed": {"const": false},
+        "subject_refs_mutated": {"const": false},
+        "production_output_released": {"const": false},
+        "action_authorized": {"const": false},
+        "action_executed": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "candidateResultRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "task_id", "assertion_id", "content_sha256"],
+      "properties": {
+        "artifact_id": {"const": "geotask.execution-result"},
+        "task_id": {"$ref": "#/$defs/nonEmptyString"},
+        "assertion_id": {"const": "identity_candidate"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "verificationRequestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "request_id", "content_sha256"],
+      "properties": {
+        "artifact_id": {"const": "geotask.verification-request"},
+        "request_id": {"$ref": "#/$defs/nonEmptyString"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "assuranceProfileRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "profile_id", "content_sha256"],
+      "properties": {
+        "artifact_id": {"const": "geotask.assurance-profile"},
+        "profile_id": {"$ref": "#/$defs/nonEmptyString"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "providerRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "provider_id",
+        "provider_version",
+        "provider_type",
+        "independence_group",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"const": "geotask.verification-provider-descriptor"},
+        "provider_id": {"$ref": "#/$defs/nonEmptyString"},
+        "provider_version": {"$ref": "#/$defs/nonEmptyString"},
+        "provider_type": {"$ref": "#/$defs/nonEmptyString"},
+        "independence_group": {"$ref": "#/$defs/nonEmptyString"},
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "responseRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "artifact_id",
+        "response_id",
+        "request_id",
+        "provider_id",
+        "independence_group",
+        "verdict",
+        "content_sha256"
+      ],
+      "properties": {
+        "ref_id": {"$ref": "#/$defs/nonEmptyString"},
+        "artifact_id": {"const": "geotask.verification-response"},
+        "response_id": {"$ref": "#/$defs/nonEmptyString"},
+        "request_id": {"$ref": "#/$defs/nonEmptyString"},
+        "provider_id": {"$ref": "#/$defs/nonEmptyString"},
+        "independence_group": {"$ref": "#/$defs/nonEmptyString"},
+        "verdict": {
+          "enum": ["same_object", "different_objects", "unknown"]
+        },
+        "content_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "identityPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "first_trajectory_ref",
+        "second_trajectory_ref",
+        "first_subject_ref",
+        "second_subject_ref",
+        "first_object_class",
+        "second_object_class"
+      ],
+      "properties": {
+        "first_trajectory_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "second_trajectory_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "first_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "second_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "first_object_class": {"$ref": "#/$defs/nonEmptyString"},
+        "second_object_class": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {"$ref": "#/$defs/nonEmptyString"},
+        "message": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "uniqueStringArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonEmptyString"}
+    },
+    "policyResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reason",
+        "provider_count",
+        "usable_provider_count",
+        "independent_group_count",
+        "same_object_response_refs",
+        "different_objects_response_refs",
+        "unknown_response_refs",
+        "diagnostics"
+      ],
+      "properties": {
+        "state": {"enum": ["verified", "unknown", "contradicted"]},
+        "reason": {"$ref": "#/$defs/nonEmptyString"},
+        "provider_count": {"type": "integer", "minimum": 1},
+        "usable_provider_count": {"type": "integer", "minimum": 0},
+        "independent_group_count": {"type": "integer", "minimum": 1},
+        "same_object_response_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "different_objects_response_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "unknown_response_refs": {"$ref": "#/$defs/uniqueStringArray"},
+        "diagnostics": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/diagnostic"}
+        }
+      }
+    }
+  }
+}

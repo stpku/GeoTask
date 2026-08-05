@@ -179,7 +179,7 @@
           <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读中文白皮书</a>
         </div>
         <div class="trust-strip" aria-label="项目概览">
-          <div class="trust-item"><strong>37</strong><span>公开应用案例</span></div>
+          <div class="trust-item"><strong>38</strong><span>公开应用案例</span></div>
           <div class="trust-item"><strong>8</strong><span>本地确定性算子</span></div>
           <div class="trust-item"><strong>27</strong><span>公共制品</span></div>
           <div class="trust-item"><strong>MIT</strong><span>GeoTask核心许可</span></div>
@@ -221,7 +221,7 @@
     <section class="block" id="cases">
       <div class="shell">
         <div class="section-head">
-          <div><h2>GT01—GT37渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>
+          <div><h2>GT01—GT38渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>
           <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/README.md">查看中文文档导航 →</a>
         </div>
         <div class="stage">
@@ -294,6 +294,7 @@
             <a class="case" href="gt35/"><span class="case-id">GT35</span><h3>位置几乎没变就是停留，十分钟没观测就是失联吗？</h3><p>使用调用方显式声明的5米停留半径、120秒最短时长、300秒最大观测间隔和缺口许可，将三个相邻分段分类为停留候选、已观测移动和观测缺口；不允许缺口标记时返回不可核验，不推断失联、异常或连续运动。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt36/"><span class="case-id">GT36</span><h3>两段平均速度变了，就能证明瞬时加速度和连续运动吗？</h3><p>以相邻分段中点为代表时刻，在调用方声明的300秒最大观测间隔内计算平均速度变化率；输出零加速度、正加速度和缺口驱动的不可核验，不推断瞬时或向量加速度、方向变化、未来位置或现实动作。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt37/"><span class="case-id">GT37</span><h3>两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？</h3><p>比较前一轨迹末样本与后一轨迹首样本，在调用方声明的时间、距离和对象类别策略下输出同对象候选、不同对象候选或不可核验；不自动合并身份、不改写subject_ref，也不证明现实身份。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt38/"><span class="case-id">GT38</span><h3>两个独立证据都支持同一对象，Core就可以直接合并身份吗？</h3><p>将GT37身份候选与精确绑定的Verification Request、Assurance Profile、两个独立Provider及响应组合为可审计身份裁决；可建议进入身份合并复核，但不合并对象、不改写subject_ref、不发布或执行身份更新。</p><span class="go">进入体验 →</span></a>
           </div>
         </div>
       </div>

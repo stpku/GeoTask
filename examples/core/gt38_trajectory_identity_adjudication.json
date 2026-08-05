@@ -1,0 +1,77 @@
+{
+  "scenario": {
+    "id": "gt38-trajectory-identity-adjudication",
+    "title_zh": "两个独立证据都支持同一对象，Core就可以直接合并身份吗？",
+    "title_en": "When two independent evidence sources support one identity, may Core merge the objects directly?",
+    "candidate": {
+      "source_case": "GT37",
+      "state": "same_object_candidate",
+      "first_subject_ref": "provisional_alpha",
+      "second_subject_ref": "provisional_beta"
+    },
+    "assurance_policy": {
+      "minimum_provider_count": 2,
+      "minimum_independent_groups": 2,
+      "conflict_policy": "unknown",
+      "blocked_outputs": [
+        "automatic_identity_merge",
+        "subject_ref_update"
+      ],
+      "blocked_actions": [
+        "merge_identity",
+        "rewrite_subject_ref"
+      ]
+    },
+    "independent_evidence": [
+      {
+        "provider_id": "geotask.provider.mock-asset-registry",
+        "provider_type": "authoritative_data_provider",
+        "independence_group": "fictional-asset-registry",
+        "verdict": "same_object"
+      },
+      {
+        "provider_id": "geotask.provider.mock-human-identity-reviewer",
+        "provider_type": "human_review",
+        "independence_group": "fictional-human-identity-board",
+        "verdict": "same_object"
+      }
+    ],
+    "adjudication": {
+      "state": "same_object_confirmed",
+      "candidate_alignment": "aligned",
+      "identity_merge_recommendation": "recommend_identity_merge_review",
+      "next_action": "review_identity_merge"
+    },
+    "incorrect_actions": [
+      "merge_identifiers_inside_core",
+      "rewrite_track_beta_subject_ref",
+      "treat_a_review_recommendation_as_a_completed_merge",
+      "discard_original_candidate_or_provider_responses",
+      "publish_a_production_identity_update",
+      "authorize_or_execute_identity_merge"
+    ],
+    "sha256": {
+      "candidate_result": "2c59d17746cb695711625cf3c2bc96b89d3c6a1f8a2955226bc9c20a18c91334",
+      "assurance_profile": "9f815cbeb397680cdba05479d92e8cf82aab3c8485fc74345fcce1a5d753115e",
+      "verification_request": "244ca0c9ebdba192e2a2555c2cdd8c69cf72b1baaebfc47f60b7c40c604ab743",
+      "asset_registry_descriptor": "e2143b3b3480fabd0d6ef7916c30459979fba8031d5c28d70b45fb51bc906f8a",
+      "human_reviewer_descriptor": "625c035e8407aa83d82ed0be9a59ba999a2920a0bbdf3dd9d050d9f1403a6108",
+      "asset_registry_response": "01462bcab624ffefd88023de40b2ae4a19059b17d610a5a9cd32a41815102f18",
+      "human_reviewer_response": "858a6732855d7946877c3d93a472e447bb79501d6837605c62619105db93e543",
+      "identity_adjudication": "51800311f68beaa5217cb2942c25433d2a424f482dffac55c966e9c5c59e77ad"
+    },
+    "boundaries": {
+      "fictional_data": true,
+      "candidate_binding_verified": true,
+      "verification_bindings_verified": true,
+      "independent_evidence_satisfied": true,
+      "identity_merge_review_recommended": true,
+      "external_identity_verified_by_core": false,
+      "identity_merge_performed": false,
+      "subject_refs_mutated": false,
+      "production_output_released": false,
+      "action_authorized": false,
+      "action_executed": false
+    }
+  }
+}

@@ -338,8 +338,8 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
     assert "Implemented public profile" in en_text
     assert "System-level target direction" in en_text
     assert "Legacy compatibility" in en_text
-    assert "27类公共制品" in zh_text
-    assert "twenty-seven public Artifacts" in en_text
+    assert "28类公共制品" in zh_text
+    assert "twenty-eight public Artifacts" in en_text
 
 
 def test_architecture_and_target_status_include_bounded_observation_merge() -> None:
@@ -701,6 +701,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.impact-graph",
         "geotask.recompute-derivation-result",
         "geotask.observation-merge-result",
+        "geotask.trajectory-identity-adjudication",
         "geotask.world-state-materialization-result",
         "geotask.incremental-reevaluation-result",
         "geotask.execution-result",
@@ -717,8 +718,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.verification-response",
         "geotask.assurance-profile",
         "geotask.core-benchmark-report",
-        "exactly twenty-seven artifacts",
-        "all twenty-eight public JSON Schemas",
+        "exactly twenty-eight artifacts",
+        "all twenty-nine public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

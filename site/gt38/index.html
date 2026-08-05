@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GT38｜两个独立证据都支持同一对象，Core就可以直接合并身份吗？</title>
+  <meta name="description" content="GeoTask把GT37身份候选、独立Provider证据和Assurance Profile绑定为身份裁决，但只建议进入合并复核，不直接修改对象图。">
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#171717;background:#f4f4f1;line-height:1.65}*{box-sizing:border-box}body{margin:0}.shell{width:min(1120px,calc(100% - 32px));margin:auto}header{background:#fff;border-bottom:1px solid #ddd}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;color:#111;text-decoration:none}.nav a{color:#333;text-decoration:none;margin-left:18px}.hero{padding:72px 0 50px;background:#fff}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;color:#555}.hero h1{font-size:clamp(34px,6vw,64px);line-height:1.08;max-width:1040px;margin:12px 0 22px}.lead{font-size:20px;max-width:900px;color:#444}.statement{margin-top:28px;padding:22px;border-left:5px solid #111;background:#efefeb;font-size:22px;font-weight:700}section{padding:54px 0}.section-title{font-size:34px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}.card{background:#fff;border:1px solid #ddd;border-radius:14px;padding:22px}.card strong{display:block;font-size:24px}.tag{display:inline-block;border:1px solid #aaa;border-radius:999px;padding:3px 9px;font-size:12px}.dark{background:#1c1c1c;color:#fff}.dark .card{background:#292929;border-color:#4b4b4b}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}.step{background:#fff;border:1px solid #ccc;border-radius:12px;padding:18px}.choice{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.choice button{border:1px solid #222;background:#fff;border-radius:9px;padding:13px 18px;font-size:15px;cursor:pointer}.choice button.safe{background:#111;color:#fff}#result{min-height:94px;padding:18px;border:1px solid #bbb;border-radius:10px;background:#fff}.ok{font-weight:800}.bad{font-weight:800;color:#8a1f1f}.facts{display:grid;grid-template-columns:1fr 1fr;gap:16px}.fact{background:#fff;border:1px solid #ddd;border-radius:14px;padding:22px}pre{overflow:auto;background:#151515;color:#f3f3f3;border-radius:12px;padding:22px;font-size:14px}.footer{background:#111;color:#ddd;padding:38px 0}.footer a{color:#fff}@media(max-width:900px){.grid,.flow,.facts{grid-template-columns:1fr}.nav nav{display:none}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+<header><div class="shell nav"><a class="brand" href="../" aria-label="返回GeoTask项目首页">GeoTask · GT38</a><nav><a href="../gt37/">上一案例</a><a href="https://github.com/stpku/GeoTask">GitHub</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell"><div class="eyebrow">GT38 · 身份候选证据与显式裁决</div><h1>两个独立证据都支持同一对象，Core就可以直接合并身份吗？</h1><p class="lead">仍然不可以。GT38把GT37候选、两份独立Provider响应和调用方声明的Assurance Profile精确绑定，形成可审计身份裁决；裁决最多建议进入身份合并复核。</p><div class="statement">same_object_confirmed ≠ identity_merge_performed。两个临时主体和两条轨迹引用仍保持原样。</div></div></section>
+  <section><div class="shell"><h2 class="section-title">四层证据链</h2><div class="flow"><article class="step"><span class="tag">1 · 候选</span><h3>GT37</h3><p>60秒、5米、同类对象，得到same_object_candidate。</p></article><article class="step"><span class="tag">2 · 请求</span><h3>精确SHA-256</h3><p>Verification Request绑定GT37执行结果原始字节。</p></article><article class="step"><span class="tag">3 · 独立证据</span><h3>2个Provider / 2个组</h3><p>虚构资产登记源与虚构人工复核均返回same_object。</p></article><article class="step"><span class="tag">4 · 策略</span><h3>Assurance Profile</h3><p>要求至少2个Provider、2个独立组；冲突时保持unknown。</p></article></div></div></section>
+  <section class="dark"><div class="shell"><h2 class="section-title">裁决结果</h2><div class="grid"><article class="card"><span class="tag">状态</span><strong>same_object_confirmed</strong><p>独立证据满足调用方声明的保证策略。</p></article><article class="card"><span class="tag">候选关系</span><strong>aligned</strong><p>外部证据裁决与GT37候选方向一致。</p></article><article class="card"><span class="tag">下一步</span><strong>review_identity_merge</strong><p>仅建议进入合并复核，不执行身份合并。</p></article></div></div></section>
+  <section><div class="shell"><h2 class="section-title">选择系统动作</h2><div class="choice"><button id="merge">Core直接合并两个身份</button><button id="rewrite">自动改写track_beta的subject_ref</button><button id="publish">立即发布生产身份更新</button><button id="review" class="safe">保留全部证据并进入合并复核</button><button id="verify">执行边界检查</button></div><div id="result" aria-live="polite">尚未选择。</div></div></section>
+  <section><div class="shell"><h2 class="section-title">能力边界</h2><div class="facts"><div class="fact"><h3>能够确定</h3><p>候选结果、请求、策略、Provider与响应的精确绑定</p><p>Provider数量与独立组满足策略</p><p>两个可用响应均支持same_object</p><p>身份合并复核建议可用</p></div><div class="fact"><h3>仍不执行</h3><p>现实身份由Core自行证明</p><p>选择正式主身份</p><p>合并对象或改写subject_ref</p><p>生产发布、授权或动作执行</p></div></div><pre>artifact_id: geotask.trajectory-identity-adjudication
+adjudication_state: same_object_confirmed
+candidate_alignment: aligned
+identity_merge_recommendation: recommend_identity_merge_review
+next_action: review_identity_merge
+external_identity_verified_by_core: false
+identity_merge_performed: false
+subject_refs_mutated: false
+production_output_released: false
+action_authorized: false
+action_executed: false</pre></div></section>
+</main>
+<footer class="footer"><div class="shell">GT38把身份候选升级为可审计裁决，但对象图修改仍属于外部治理和授权流程。返回<a href="../">GeoTask项目首页</a>。</div></footer>
+<script>(()=>{let selected='';const box=document.getElementById('result');const choose=(v,l)=>{selected=v;box.textContent='已选择：'+l;box.className='';};document.getElementById('merge').onclick=()=>choose('merge','Core直接合并身份');document.getElementById('rewrite').onclick=()=>choose('rewrite','自动改写subject_ref');document.getElementById('publish').onclick=()=>choose('publish','发布生产身份更新');document.getElementById('review').onclick=()=>choose('review','保留证据并进入合并复核');document.getElementById('verify').onclick=()=>{if(selected==='review'){box.innerHTML='<span class="ok">检查通过：</span>保留GT37候选、Assurance Profile、两份Provider描述符和响应，输出review_identity_merge；对象图和subject_ref保持不变。';}else{box.innerHTML='<span class="bad">检查未通过：</span>same_object_confirmed只支持复核建议，公共Core不能直接合并身份、改写引用或发布生产更新。';}};})();</script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

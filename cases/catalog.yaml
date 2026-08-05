@@ -325,3 +325,11 @@ cases:
     page: site/gt37/index.html
     example: examples/core/gt37_trajectory_identity_candidate.json
     lastmod: "2026-08-05"
+  - id: GT38
+    slug: gt38
+    stage: dynamic_world_objects
+    title_zh: 两个独立证据都支持同一对象，Core就可以直接合并身份吗？
+    summary_zh: 将GT37身份候选与精确绑定的Verification Request、Assurance Profile、两个独立Provider及响应组合为可审计身份裁决；可建议进入身份合并复核，但不合并对象、不改写subject_ref、不发布或执行身份更新。
+    page: site/gt38/index.html
+    example: examples/core/gt38_trajectory_identity_adjudication.json
+    lastmod: "2026-08-05"

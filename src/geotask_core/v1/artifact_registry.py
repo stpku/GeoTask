@@ -72,6 +72,10 @@ from geotask_core.v1.observation_merge import (
     OBSERVATION_MERGE_RESULT_SCHEMA_ID,
     OBSERVATION_MERGE_RESULT_SCHEMA_VERSION,
 )
+from geotask_core.v1.trajectory_identity_adjudication import (
+    TRAJECTORY_IDENTITY_ADJUDICATION_SCHEMA_ID,
+    TRAJECTORY_IDENTITY_ADJUDICATION_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -183,6 +187,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "observation-merge-result*.json",
         "observation_merge_result*.json",
         "examples/core/observation_merge_result*.json",
+    ),
+    "geotask.trajectory-identity-adjudication": (
+        "*.geotask-trajectory-identity-adjudication.json",
+        "trajectory-identity-adjudication*.json",
+        "trajectory_identity_adjudication*.json",
+        "examples/core/trajectory_identity_adjudication*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -571,6 +581,39 @@ _ARTIFACTS = (
             "objects or relations, infer identities, invent precedence, rank sources, resolve an "
             "undeclared ambiguous conflict, compute a State Transition, propagate impact, run "
             "reevaluation, release outputs, verify truth, or authorize actions."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.trajectory-identity-adjudication",
+        title="GeoTask Trajectory Identity Adjudication v0.1",
+        kind="trajectory_identity_adjudication",
+        schema_id=TRAJECTORY_IDENTITY_ADJUDICATION_SCHEMA_ID,
+        schema_version=TRAJECTORY_IDENTITY_ADJUDICATION_SCHEMA_VERSION,
+        schema_path=(
+            "schemas/geotask-trajectory-identity-adjudication-v0.1.schema.json"
+        ),
+        specification_path=(
+            "docs/spec/geotask-trajectory-identity-adjudication-v0.1.md"
+        ),
+        wrapper_key="trajectory_identity_adjudication",
+        generation_command=None,
+        generation_note=(
+            "Produced by exact-bound Core adjudication from one GT37 identity candidate, "
+            "one Verification Request, one Assurance Profile, and matching Provider "
+            "Descriptor/Verification Response pairs."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.trajectory-identity-adjudication "
+            "<trajectory-identity-adjudication.json>"
+        ),
+        description=(
+            "Auditable identity decision that records independent evidence and may recommend "
+            "identity-merge review while preserving both original subjects and references."
+        ),
+        execution_boundary=(
+            "Generic validation does not recheck exact source bytes. Binding validation and "
+            "adjudication do not fetch external truth, merge identities, mutate subject_ref, "
+            "release production output, authorize action, or execute action."
         ),
     ),
     ArtifactDescriptor(

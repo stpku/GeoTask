@@ -1,8 +1,8 @@
 # GeoTask轨迹与移动对象Profile v0.1
 
 状态：公共实现已落地  
-参考案例：GT33—GT37
-范围：仅表达离散观测、相邻样本指标、调用方显式分段分类、受限标量加速度估计与边界样本身份候选
+参考案例：GT33—GT38
+范围：仅表达离散观测、相邻样本指标、调用方显式分段分类、受限标量加速度估计、边界样本身份候选与精确绑定的外部身份裁决
 
 ## 目的
 
@@ -77,6 +77,8 @@ uav_alpha_track:
 
 `trajectory_identity_candidate(first_trajectory, second_trajectory, parameters...)`只比较前一轨迹最后一个明确样本与后一轨迹第一个明确样本。调用方必须声明有限正数`maximum_identity_gap_seconds`、有限非负`maximum_identity_distance_in_horizontal_unit`和布尔值`require_same_object_class`。正时间差超过上限时先返回`unverifiable`；否则，要求同类但类别不同或边界距离超限时返回`different_object_candidate`，类别相容且时间、距离均在阈值内时返回`same_object_candidate`。结果保留两条轨迹引用、主体引用、对象类别、边界样本、时间差、距离和策略，不合并身份、不改写`subject_ref`、不证明现实身份、不插值路径、不预测、不发布、不授权也不执行动作。
 
+GT38新增注册制品`geotask.trajectory-identity-adjudication`，将GT37执行结果精确绑定到Verification Request、调用方声明的Assurance Profile，以及成对的Provider Descriptor和Verification Response。策略可以输出`same_object_confirmed`、`different_objects_confirmed`或`unresolved`，并建议进入身份合并复核、保持身份分离或继续补证。即使输出同对象确认，两个临时主体仍保持独立，外部身份真实性、身份合并、`subject_ref`改写、生产发布、授权和执行仍为假。详见[Trajectory Identity Adjudication v0.1](geotask-trajectory-identity-adjudication-v0.1.md)。
+
 ## 失败关闭
 
 以下情况验证失败：
@@ -90,7 +92,8 @@ uav_alpha_track:
 - 任一GT35阈值缺失、非有限、应为非负时却为负数、应为正数时却不大于零，或类型错误；
 - 包含未声明的分类参数；
 - GT36缺失中点方法或最大间隔参数、使用`segment_midpoint`之外的方法，或最大间隔非有限/不大于零；
-- GT37缺失任一身份候选参数、时间/距离/类别策略非法、重复引用同一轨迹，或后一轨迹边界时间不晚于前一轨迹边界。
+- GT37缺失任一身份候选参数、时间/距离/类别策略非法、重复引用同一轨迹，或后一轨迹边界时间不晚于前一轨迹边界；
+- GT38无法闭合候选/请求/策略/Provider/响应的精确引用、Assurance Profile未阻断自动合并和引用改写、证据冲突或不足、响应分组与裁决不一致，或任一字段声称Core已合并身份、改写`subject_ref`、发布、授权或执行更新。
 
 ## 能力边界
 
@@ -113,8 +116,12 @@ uav_alpha_track:
 - `examples/core/gt37_trajectory_identity_candidate.yaml`
 - `examples/core/gt37_trajectory_identity_candidate_result.json`
 - `examples/core/gt37_trajectory_identity_candidate.json`
+- `examples/core/trajectory_identity_adjudication_gt38.json`
+- `examples/core/gt38_trajectory_identity_adjudication.json`
+- `docs/spec/geotask-trajectory-identity-adjudication-v0.1.md`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
 - `site/gt35/index.html`
 - `site/gt36/index.html`
 - `site/gt37/index.html`
+- `site/gt38/index.html`

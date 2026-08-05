@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 37,
+  "case_count": 38,
   "cases": [
     {
       "id": "GT01",
@@ -259,6 +259,13 @@
       "slug": "gt37",
       "title_zh": "两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？",
       "previous": "gt36",
+      "next": "gt38"
+    },
+    {
+      "id": "GT38",
+      "slug": "gt38",
+      "title_zh": "两个独立证据都支持同一对象，Core就可以直接合并身份吗？",
+      "previous": "gt37",
       "next": null
     }
   ]

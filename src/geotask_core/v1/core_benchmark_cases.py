@@ -332,6 +332,50 @@ CORE_BENCHMARK_CASES: tuple[dict[str, Any], ...] = (
         expected_outputs={"evidenced_distance": 10.0},
         expected_evidence_refs={"evidenced_distance": ["fictional_dataset"]},
     ),
+    _case(
+        "trajectory_duration",
+        _base_document(
+            document_id="benchmark.trajectory-duration",
+            name="Discrete trajectory duration benchmark",
+            objects={
+                "moving_asset": {
+                    "type": "moving_object",
+                    "data": {
+                        "object_class": "uav",
+                        "identity": "fictional-benchmark-uav",
+                    },
+                },
+                "asset_track": {
+                    "type": "trajectory",
+                    "data": {
+                        "subject_ref": "moving_asset",
+                        "interpolation": "none",
+                        "samples": [
+                            {
+                                "observed_at": "2026-08-05T08:00:00+08:00",
+                                "coordinates": [0, 0],
+                            },
+                            {
+                                "observed_at": "2026-08-05T08:05:00+08:00",
+                                "coordinates": [30, 40],
+                            },
+                        ],
+                    },
+                },
+            },
+            operators=["trajectory_duration_seconds"],
+            assertions=[
+                {
+                    "id": "trajectory_duration",
+                    "operator": "trajectory_duration_seconds",
+                    "object_refs": ["asset_track"],
+                    "expected_type": "number",
+                    "unit": "second",
+                }
+            ],
+        ),
+        expected_outputs={"trajectory_duration": 300.0},
+    ),
 )
 
 

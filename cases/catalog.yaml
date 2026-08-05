@@ -1,6 +1,6 @@
 catalog_version: "1.0"
 base_url: https://stpku.github.io/GeoTask/
-portal_lastmod: "2026-08-04"
+portal_lastmod: "2026-08-05"
 handbook:
   path: docs/README.md
   label_zh: 查看中文文档导航 →
@@ -24,6 +24,9 @@ stages:
   - id: verification_provider_ecosystem
     number: 6
     title_zh: 验证提供方生态：外部核验与可信保证
+  - id: dynamic_world_objects
+    number: 7
+    title_zh: 动态世界对象：移动对象、轨迹与时间观测
 
 cases:
   - id: GT01
@@ -282,3 +285,11 @@ cases:
     page: site/gt32/index.html
     example: examples/core/gt32_progressive_takeoff_authorization.json
     lastmod: "2026-08-04"
+  - id: GT33
+    slug: gt33
+    stage: dynamic_world_objects
+    title_zh: 三个带时间位置点连起来，就是一条可验证轨迹吗？
+    summary_zh: 用移动对象引用、严格递增的带时区时间戳和三次二维观测建立离散轨迹，确定性计算持续300秒；不插值、不预测、不地图匹配，也不执行现实动作。
+    page: site/gt33/index.html
+    example: examples/core/gt33_moving_object_trajectory.json
+    lastmod: "2026-08-05"

@@ -34,6 +34,9 @@ _TYPE_SHAPES = {
     "rect": "rect.bbox [min_x, min_y, max_x, max_y]",
     "time_interval": "time_interval [start, end] in HH:MM",
     "altitude_interval": "altitude_interval [min, max]",
+    "trajectory": (
+        "trajectory.samples [{observed_at: RFC3339, coordinates: [x, y]}, ...]"
+    ),
 }
 
 _OUTPUT_TYPES = {

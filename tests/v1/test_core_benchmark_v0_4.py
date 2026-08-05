@@ -36,6 +36,7 @@ EXPECTED_OPERATORS = (
     "polygon_contains_point",
     "rect_contains_point",
     "time_overlap",
+    "trajectory_duration_seconds",
 )
 
 
@@ -66,8 +67,8 @@ def test_benchmark_covers_all_public_operators_and_contracts() -> None:
 
     assert CORE_BENCHMARK_OPERATOR_COVERAGE == EXPECTED_OPERATORS
     assert tuple(body["conformance"]["operator_coverage"]) == EXPECTED_OPERATORS
-    assert body["conformance"]["case_count"] == 5
-    assert body["conformance"]["passed"] == 5
+    assert body["conformance"]["case_count"] == 6
+    assert body["conformance"]["passed"] == 6
     assert body["conformance"]["failed"] == 0
     assert body["conformance"]["valid"] is True
     assert body["overall"] == {
@@ -197,8 +198,8 @@ def test_unified_artifact_validation_summarizes_benchmark() -> None:
     assert payload["valid"] is True
     assert payload["schema_verified"] is True
     assert payload["summary"]["benchmark_state"] == "passed"
-    assert payload["summary"]["case_count"] == 5
-    assert payload["summary"]["operator_count"] == 9
+    assert payload["summary"]["case_count"] == 6
+    assert payload["summary"]["operator_count"] == 10
     assert payload["diagnostics"] == []
 
     tampered = _report()
@@ -237,7 +238,7 @@ def test_cli_benchmark_json_yaml_and_output_file(tmp_path: Path) -> None:
         "yaml",
     )
     assert yaml_result.returncode == 0
-    assert yaml.safe_load(yaml_result.stdout)["core_benchmark"]["conformance"]["passed"] == 5
+    assert yaml.safe_load(yaml_result.stdout)["core_benchmark"]["conformance"]["passed"] == 6
 
     output = tmp_path / "core-benchmark.json"
     file_result = _run_cli(
@@ -305,7 +306,7 @@ def test_cli_generated_report_can_be_validated_as_artifact(tmp_path: Path) -> No
     assert validated.returncode == 0
     body = json.loads(validated.stdout)["artifact_validation"]
     assert body["valid"] is True
-    assert body["summary"]["operator_count"] == 9
+    assert body["summary"]["operator_count"] == 10
 
 
 def test_public_namespaces_export_benchmark_contract() -> None:

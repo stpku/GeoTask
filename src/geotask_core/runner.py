@@ -3,8 +3,8 @@
 Executes spatial operations defined in a GeoTask document against
 the declared objects. Enhanced with:
   - Generic operator auto-detection from ops section
-  - Support for 9 operators, including both polygon-containment argument orders
-    and grouped-polyline rectangle intersection
+  - Support for 10 operators, including polygon containment, grouped-polyline
+    intersection, and discrete trajectory duration
   - Object-type-based auto-pairing (not name-based)
   - v1.0 assertion-driven execution for documents with explicit
     assertions or execution sections.

@@ -1,0 +1,76 @@
+{
+  "scenario": {
+    "id": "gt33-moving-object-trajectory",
+    "title_zh": "三个带时间位置点连起来，就是一条可验证轨迹吗？",
+    "title_en": "Do three timestamped positions form a verifiable trajectory?",
+    "problem": {
+      "moving_object": "uav_alpha",
+      "object_class": "uav",
+      "trajectory": "uav_alpha_track",
+      "subject_ref": "uav_alpha",
+      "sample_count": 3,
+      "interpolation": "none"
+    },
+    "explicit_samples": [
+      {
+        "observed_at": "2026-08-05T08:00:00+08:00",
+        "coordinates": [
+          0,
+          0
+        ]
+      },
+      {
+        "observed_at": "2026-08-05T08:02:00+08:00",
+        "coordinates": [
+          12,
+          5
+        ]
+      },
+      {
+        "observed_at": "2026-08-05T08:05:00+08:00",
+        "coordinates": [
+          30,
+          40
+        ]
+      }
+    ],
+    "deterministic_result": {
+      "track_duration_seconds": 300.0,
+      "status": "verified",
+      "assurance_level": "local_deterministic",
+      "output_eligible": true
+    },
+    "not_computed": [
+      "intermediate_positions",
+      "future_positions",
+      "velocity_or_acceleration",
+      "map_matched_path",
+      "real_world_identity_authenticity",
+      "action_command"
+    ],
+    "incorrect_actions": [
+      "replace_timestamped_samples_with_a_static_polyline",
+      "interpolate_between_samples_without_declared_method",
+      "predict_future_position_from_three_samples",
+      "treat_local_validation_as_real_world_tracking",
+      "treat_duration_output_as_action_authorization"
+    ],
+    "sha256": {
+      "task": "4162c4edf510df2316c8a62f6cedf49dfa4a32cd3297a3c1b2e805ea6d28a5ec",
+      "execution_result": "03e5abd68cbf276ae29b0e70207437e2bdbd73841b766423bd739fe5408130ca"
+    },
+    "boundaries": {
+      "fictional_data": true,
+      "sample_order_verified": true,
+      "subject_binding_verified": true,
+      "trajectory_interpolated": false,
+      "future_position_predicted": false,
+      "map_matched": false,
+      "external_truth_verified_by_core": false,
+      "production_output_released": false,
+      "command_sent": false,
+      "action_authorized_by_core": false,
+      "action_executed": false
+    }
+  }
+}

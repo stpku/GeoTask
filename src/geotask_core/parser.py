@@ -50,7 +50,7 @@ VALID_OBJECT_TYPES = (
     "point", "line", "rect", "time", "altitude",
     # v1.0 object types
     "polyline", "multi_polyline", "polygon", "time_interval",
-    "altitude_interval", "feature_collection",
+    "altitude_interval", "feature_collection", "moving_object", "trajectory",
 )
 ALLOWED_TOP_LEVEL_KEYS = (
     "geotask", "stir", "space", "objects", "ops", "task",
@@ -72,6 +72,8 @@ ALLOWED_OBJECT_FIELDS = {
     "time_interval": {"type", "interval", "start", "end"},
     "altitude_interval": {"type", "range", "min", "max", "unit", "datum"},
     "feature_collection": {"type", "feature_type", "features"},
+    "moving_object": {"type", "object_class", "identity"},
+    "trajectory": {"type", "subject_ref", "interpolation", "samples"},
 }
 ALLOWED_ASSERTION_FIELDS = {
     "id", "operator", "object_refs",
@@ -429,6 +431,42 @@ def _validate_objects_diagnostics(objects: dict) -> list[dict]:
                     "invalid_interval",
                     f"{path}: invalid_interval: must be [min, max] with min <= max.",
                     "Use a numeric two-item range with min <= max.",
+                ))
+
+        elif obj_type == "moving_object":
+            for required_field in ("object_class", "identity"):
+                value = obj.get(required_field)
+                if not isinstance(value, str) or not value.strip():
+                    diagnostics.append(_diagnostic(
+                        f"objects.{name}.{required_field}",
+                        "missing_field",
+                        f"object '{name}' (moving_object): '{required_field}' must be a non-empty string.",
+                        f"Add {required_field}: '<non-empty value>'.",
+                    ))
+
+        elif obj_type == "trajectory":
+            subject_ref = obj.get("subject_ref")
+            if not isinstance(subject_ref, str) or not subject_ref.strip():
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.subject_ref",
+                    "missing_field",
+                    f"object '{name}' (trajectory): 'subject_ref' must name one moving object.",
+                    "Add subject_ref: '<moving_object id>'.",
+                ))
+            if obj.get("interpolation") != "none":
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.interpolation",
+                    "invalid_type",
+                    f"object '{name}' (trajectory): interpolation must be exactly 'none'.",
+                    "Set interpolation: none; Core does not infer intermediate positions.",
+                ))
+            samples = obj.get("samples")
+            if not isinstance(samples, list) or len(samples) < 2:
+                diagnostics.append(_diagnostic(
+                    f"objects.{name}.samples",
+                    "missing_data",
+                    f"object '{name}' (trajectory): samples must contain at least two observations.",
+                    "Provide two or more timestamped coordinate samples.",
                 ))
 
         elif obj_type == "feature_collection":

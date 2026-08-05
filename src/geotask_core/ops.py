@@ -5,6 +5,7 @@ All values computed here are verifiable without an LLM.
 """
 
 import math
+from datetime import datetime
 
 
 def distance_2d(a: list[float], b: list[float]) -> float:
@@ -242,6 +243,22 @@ def time_overlap(a: list[str], b: list[str]) -> bool:
 def altitude_overlap(a: list[float], b: list[float]) -> bool:
     """Check if two altitude ranges [min, max] overlap (boundary contact counts)."""
     return a[0] <= b[1] and b[0] <= a[1]
+
+
+def trajectory_duration_seconds(samples: list[dict]) -> float:
+    """Return elapsed seconds between the first and last trajectory samples.
+
+    Validation guarantees at least two samples, timezone-aware timestamps, and
+    strict chronological ordering. The operator performs no interpolation,
+    prediction, map matching, resampling, or action execution.
+    """
+    start = datetime.fromisoformat(
+        str(samples[0]["observed_at"]).replace("Z", "+00:00")
+    )
+    end = datetime.fromisoformat(
+        str(samples[-1]["observed_at"]).replace("Z", "+00:00")
+    )
+    return (end - start).total_seconds()
 
 
 def _time_to_minutes(t: str) -> int:

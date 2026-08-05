@@ -12,7 +12,7 @@ multimodal models and external systems observe the world
 → controls derive current action eligibility
 ```
 
-The public Core does not replace a multimodal model, sensor stack, map platform, simulator, or production-control system. It provides the public state contracts, deterministic verification kernel, provenance, control semantics, and Artifact foundation used by Agents, external Runtimes, and Domain Packs.
+The public Core does not replace a multimodal model, sensor stack, map platform, simulator, or production-control system. It provides public state specifications and interface contracts, a deterministic verification kernel, provenance, control semantics, identity-governance proposals, and the Artifact foundation used by Agents, external Runtimes, and Domain Packs.
 
 "A verifiable spatiotemporal task protocol" remains correct as the current implementation form. Error detection, correction, and action gating are maintenance capabilities of the broader world model, not the complete product definition.
 
@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements the foundational contracts of plane 2, including Observation v0.1, World State v0.1, bounded Observation Merge v0.1 with caller-declared semantic-equality consolidation and complete explicit precedence for claims targeting the same path, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, Correction Request v0.1 successor-state correction contracts, Impact Graph v0.1 source-bound impact DAGs, Recompute Derivation Result v0.1 source-bound deterministic value derivation, World State Materialization Result v0.1 bounded successor generation, and Incremental Reevaluation Result v0.1 bounded outcome records, the deterministic baseline of plane 3, and read-only control semantics of plane 4. Automatic diff computation, identity discovery, resolution of ambiguous claims without a declared policy, expansion of the bounded derivation method registry, and automatic impact discovery and propagation execution remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, and production actions.
+GeoTask Core currently implements foundational plane-2 specifications and interface contracts, including moving objects and discrete trajectories, Observation v0.1, World State v0.1, bounded Observation Merge v0.1 with caller-declared semantic-equality consolidation and complete explicit precedence for claims targeting the same path, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, Correction Request v0.1 successor-state correction contracts, Impact Graph v0.1 source-bound impact DAGs, Recompute Derivation Result v0.1 source-bound deterministic value derivation, World State Materialization Result v0.1 bounded successor generation, and Incremental Reevaluation Result v0.1 bounded outcome records. Plane 3 now also contains trajectory identity candidates, exact-bound Trajectory Identity Adjudication, and review-only Identity Merge Proposal Artifacts. The deterministic baseline and Provider assurance remain separate from plane-4 read-only control semantics. Automatic diff computation, approval and application of identity-merge proposals, general object-graph mutation, resolution of ambiguous claims without a declared policy, expansion of the bounded derivation method registry, and automatic impact discovery and propagation execution remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, approvals, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -89,7 +89,7 @@ Modules:
 
 #### Execute
 
-Assertions are dispatched through registered operator contracts. The public deterministic baseline currently covers eight operators:
+Assertions are dispatched through registered operator contracts. The public deterministic baseline currently covers fourteen operators:
 
 ```text
 distance_2d
@@ -97,9 +97,15 @@ point_to_line_distance_2d
 line_intersects_rect
 rect_contains_point
 point_in_polygon
+polygon_contains_point
 multi_polyline_intersects_rect
 time_overlap
 altitude_overlap
+trajectory_duration_seconds
+trajectory_segment_metrics
+trajectory_segment_classifications
+trajectory_segment_acceleration_estimates
+trajectory_identity_candidate
 ```
 
 Modules:
@@ -179,13 +185,15 @@ GeoTask publishes versioned machine-readable Artifacts instead of relying on und
 
 Implemented Artifacts include:
 
-- task documents;
-- execution results;
-- control evaluations;
+- task documents, execution results, and control evaluations;
+- Observation, World State, Observation Merge Result, and State Transition;
+- Verification Session, Discrepancy Report, Correction Request, and Impact Graph;
+- Recompute Derivation Result, World State Materialization Result, and Incremental Reevaluation Result;
+- Verification Provider Descriptor, Verification Request, Verification Response, and Assurance Profile;
+- Trajectory Identity Adjudication and Identity Merge Proposal;
 - Agent preparation, revision, retry, and evidence-recovery reports;
 - Runtime descriptors, requests, and responses;
-- Core benchmark reports;
-- Artifact validation reports.
+- Core benchmark and Artifact validation reports.
 
 The Artifact Registry provides stable IDs, Schema IDs, versions, producer guidance, validation commands, and IDE file patterns. The installed Schema Bundle allows offline validation and integrity verification.
 
@@ -275,7 +283,19 @@ Blocked Result
 → final control evaluation
 ```
 
-These flows are implemented independently. Users currently assemble them through related Artifacts and CLI commands.
+### 4.5 Identity governance proposal
+
+```text
+Trajectory identity candidate
+→ exact-bound Provider evidence adjudication
+→ caller selects one existing canonical subject
+→ bounded Identity Merge Proposal
+→ retained alias + approval roles + blocking/withdrawal conditions
+→ reversal plan
+→ external approval and mutation remain separate
+```
+
+These flows are implemented independently. Users currently assemble them through related Artifacts and CLI commands. The identity-governance flow stops before approval, object-graph mutation, World State update, publication, authorization, or execution.
 
 ## 5. Target Evolution: Verifiable World-State Cycle
 

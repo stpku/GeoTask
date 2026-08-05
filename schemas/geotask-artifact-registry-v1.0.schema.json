@@ -76,6 +76,7 @@
             "recompute_derivation_result",
             "observation_merge_result",
             "trajectory_identity_adjudication",
+            "identity_merge_proposal",
             "execution_result",
             "control_evaluation_result",
             "agent_generation_preparation_report",

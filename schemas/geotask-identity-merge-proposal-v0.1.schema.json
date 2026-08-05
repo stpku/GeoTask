@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-identity-merge-proposal-v0.1.schema.json",
+  "title": "GeoTask Identity Merge Proposal v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["identity_merge_proposal"],
+  "properties": {
+    "identity_merge_proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proposal_version",
+        "proposal_id",
+        "created_at",
+        "source_adjudication_ref",
+        "proposal_state",
+        "proposal_reason",
+        "proposal_rationale",
+        "canonical_subject_ref",
+        "merge_subject_ref",
+        "object_class",
+        "affected_trajectory_refs",
+        "proposed_subject_ref_rewrites",
+        "retained_aliases",
+        "proposed_retired_subject_refs",
+        "required_approvals",
+        "blocking_conditions",
+        "withdrawal_conditions",
+        "reversal_plan",
+        "review_action",
+        "next_action",
+        "source_binding_verified",
+        "scope_closed",
+        "aliases_preserved",
+        "new_identity_created",
+        "alias_deleted",
+        "proposal_approved",
+        "object_graph_mutated",
+        "identity_merge_performed",
+        "subject_refs_mutated",
+        "world_state_updated",
+        "production_output_released",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "proposal_version": {"const": "0.1"},
+        "proposal_id": {"$ref": "#/$defs/nonEmptyString"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "source_adjudication_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact_id", "adjudication_id", "content_sha256"],
+          "properties": {
+            "artifact_id": {"const": "geotask.trajectory-identity-adjudication"},
+            "adjudication_id": {"$ref": "#/$defs/nonEmptyString"},
+            "content_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "proposal_state": {"const": "ready_for_review"},
+        "proposal_reason": {"const": "bound_same_object_adjudication_supports_bounded_merge_review"},
+        "proposal_rationale": {"$ref": "#/$defs/nonEmptyString"},
+        "canonical_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "merge_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "object_class": {"$ref": "#/$defs/nonEmptyString"},
+        "affected_trajectory_refs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "proposed_subject_ref_rewrites": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["trajectory_ref", "current_subject_ref", "proposed_subject_ref", "state"],
+            "properties": {
+              "trajectory_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "current_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "proposed_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "state": {"const": "proposed"}
+            }
+          }
+        },
+        "retained_aliases": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["alias_subject_ref", "canonical_subject_ref", "source_trajectory_refs", "state"],
+            "properties": {
+              "alias_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "canonical_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "source_trajectory_refs": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 1,
+                "uniqueItems": true,
+                "items": {"$ref": "#/$defs/nonEmptyString"}
+              },
+              "state": {"const": "retain_as_alias"}
+            }
+          }
+        },
+        "proposed_retired_subject_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "required_approvals": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "blocking_conditions": {
+          "const": [
+            "source_adjudication_changed",
+            "contradictory_identity_evidence",
+            "approval_missing",
+            "affected_scope_changed",
+            "reversal_plan_unavailable"
+          ]
+        },
+        "withdrawal_conditions": {
+          "const": [
+            "source_adjudication_withdrawn",
+            "different_objects_confirmed",
+            "canonical_subject_unavailable",
+            "merge_subject_reassigned",
+            "identity_policy_boundary_changed"
+          ]
+        },
+        "reversal_plan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "restore_subject_refs",
+            "preserve_alias_history",
+            "require_post_reversal_validation",
+            "reversal_executed"
+          ],
+          "properties": {
+            "restore_subject_refs": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["trajectory_ref", "restore_subject_ref"],
+                "properties": {
+                  "trajectory_ref": {"$ref": "#/$defs/nonEmptyString"},
+                  "restore_subject_ref": {"$ref": "#/$defs/nonEmptyString"}
+                }
+              }
+            },
+            "preserve_alias_history": {"const": true},
+            "require_post_reversal_validation": {"const": true},
+            "reversal_executed": {"const": false}
+          }
+        },
+        "review_action": {"const": "review_identity_merge_proposal"},
+        "next_action": {"const": "request_identity_merge_approval"},
+        "source_binding_verified": {"const": true},
+        "scope_closed": {"const": true},
+        "aliases_preserved": {"const": true},
+        "new_identity_created": {"const": false},
+        "alias_deleted": {"const": false},
+        "proposal_approved": {"const": false},
+        "object_graph_mutated": {"const": false},
+        "identity_merge_performed": {"const": false},
+        "subject_refs_mutated": {"const": false},
+        "world_state_updated": {"const": false},
+        "production_output_released": {"const": false},
+        "action_authorized": {"const": false},
+        "action_executed": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

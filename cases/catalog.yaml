@@ -265,7 +265,7 @@ cases:
     slug: gt30
     stage: verification_provider_ecosystem
     title_zh: 第三个独立气象来源加入后，冲突就自动解决了吗？
-    summary_zh: 第三个独立来源也给出13米/秒，形成二比一；但可信保证档案没有声明多数表决规则，因此系统仍保持未知，不静默删除8米/秒来源，并请求显式气象裁决。
+    summary_zh: 第三个独立来源也给出13米/秒，形成二比一；但可信保证策略没有声明多数表决规则，因此系统仍保持未知，不静默删除8米/秒来源，并请求显式气象审定。
     page: site/gt30/index.html
     example: examples/core/gt30_three_source_weather_conflict.json
     lastmod: "2026-08-04"
@@ -321,15 +321,23 @@ cases:
     slug: gt37
     stage: dynamic_world_objects
     title_zh: 两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？
-    summary_zh: 比较前一轨迹末样本与后一轨迹首样本，在调用方声明的时间、距离和对象类别策略下输出同对象候选、不同对象候选或不可核验；不自动合并身份、不改写subject_ref，也不证明现实身份。
+    summary_zh: 比较前一轨迹末样本与后一轨迹首样本，在调用方声明的时间、距离和对象类别策略下输出对象同一性候选、不同对象候选或不可核验；不自动归并身份、不改写subject_ref，也不证明现实身份。
     page: site/gt37/index.html
     example: examples/core/gt37_trajectory_identity_candidate.json
     lastmod: "2026-08-05"
   - id: GT38
     slug: gt38
     stage: dynamic_world_objects
-    title_zh: 两个独立证据都支持同一对象，Core就可以直接合并身份吗？
-    summary_zh: 将GT37身份候选与精确绑定的Verification Request、Assurance Profile、两个独立Provider及响应组合为可审计身份裁决；可建议进入身份合并复核，但不合并对象、不改写subject_ref、不发布或执行身份更新。
+    title_zh: 两个独立证据都支持同一对象，Core就可以直接归并身份吗？
+    summary_zh: 将GT37对象同一性候选与原始字节级绑定的验证请求、可信保证策略、两个独立验证提供方及响应组合为可审计的对象同一性审定；可建议进入归并复核，但不归并对象、不改写subject_ref、不发布或执行身份更新。
     page: site/gt38/index.html
     example: examples/core/gt38_trajectory_identity_adjudication.json
+    lastmod: "2026-08-05"
+  - id: GT39
+    slug: gt39
+    stage: dynamic_world_objects
+    title_zh: 证据支持同一对象后，系统可以直接归并身份吗？
+    summary_zh: 精确绑定GT38对象同一性审定结果，从两个现有主体中显式选择主对象引用，形成包含拟改写引用、保留别名、审批要求、阻断条件、撤销条件和归并回退方案的对象身份归并提案；不创建新身份、不删除别名、不修改对象关系图或世界状态。
+    page: site/gt39/index.html
+    example: examples/core/gt39_identity_merge_proposal.json
     lastmod: "2026-08-05"

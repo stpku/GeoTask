@@ -73,6 +73,10 @@ from geotask_core.v1.trajectory_identity_adjudication import (
     TrajectoryIdentityAdjudicationError,
     load_trajectory_identity_adjudication,
 )
+from geotask_core.v1.identity_merge_proposal import (
+    IdentityMergeProposalError,
+    load_identity_merge_proposal,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1506,6 +1510,66 @@ def _validate_trajectory_identity_adjudication_payload(
     )
 
 
+def _validate_identity_merge_proposal_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_identity_merge_proposal(payload)
+    except IdentityMergeProposalError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_identity_merge_proposal",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Identity Merge Proposal "
+                        "v0.1. Generic validation does not recheck exact adjudication bytes "
+                        "and does not approve or apply the proposal, create a new identity, "
+                        "delete aliases, mutate the object graph or World State, release "
+                        "production output, authorize action, or execute action."
+                    ),
+                ),
+            ),
+        )
+
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "proposal_id": result.proposal_id,
+            "proposal_state": result.proposal_state,
+            "canonical_subject_ref": result.canonical_subject_ref,
+            "merge_subject_ref": result.merge_subject_ref,
+            "affected_trajectory_count": len(result.affected_trajectory_refs),
+            "required_approval_count": len(result.required_approvals),
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "source_binding_verified": False,
+            "scope_closed": result.scope_closed,
+            "aliases_preserved": result.aliases_preserved,
+            "new_identity_created": False,
+            "alias_deleted": False,
+            "proposal_approved": False,
+            "object_graph_mutated": False,
+            "identity_merge_performed": False,
+            "subject_refs_mutated": False,
+            "world_state_updated": False,
+            "production_output_released": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_incremental_reevaluation_result_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1639,6 +1703,12 @@ def _validate_verified_payload(
         )
     if descriptor.artifact_id == "geotask.trajectory-identity-adjudication":
         return _validate_trajectory_identity_adjudication_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
+    if descriptor.artifact_id == "geotask.identity-merge-proposal":
+        return _validate_identity_merge_proposal_payload(
             descriptor,
             payload,
             file=file,

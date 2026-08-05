@@ -22,6 +22,7 @@ from geotask_core.models import (
     TrajectorySegment,
     TrajectorySegmentClassification,
     TrajectorySegmentAccelerationEstimate,
+    TrajectoryIdentityCandidate,
     StirDocument,
 )
 from geotask_core.parser import (
@@ -37,6 +38,7 @@ from geotask_core.ops import (
     trajectory_segment_metrics,
     trajectory_segment_classifications,
     trajectory_segment_acceleration_estimates,
+    trajectory_identity_candidate,
 )
 from geotask_core.runner import run_geotask, run_stir
 from geotask_core.normalizer import normalize_model_output
@@ -484,6 +486,7 @@ __all__ = [
     "TrajectorySegment",
     "TrajectorySegmentClassification",
     "TrajectorySegmentAccelerationEstimate",
+    "TrajectoryIdentityCandidate",
     "StirDocument",
     "load_geotask",
     "validate_geotask",
@@ -498,6 +501,7 @@ __all__ = [
     "trajectory_segment_metrics",
     "trajectory_segment_classifications",
     "trajectory_segment_acceleration_estimates",
+    "trajectory_identity_candidate",
     "run_geotask",
     "run_stir",
     "normalize_model_output",

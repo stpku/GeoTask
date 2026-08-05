@@ -1,8 +1,8 @@
 # GeoTask轨迹与移动对象Profile v0.1
 
 状态：公共实现已落地  
-参考案例：GT33—GT36
-范围：仅表达离散观测、相邻样本指标、调用方显式分段分类与受限标量加速度估计
+参考案例：GT33—GT37
+范围：仅表达离散观测、相邻样本指标、调用方显式分段分类、受限标量加速度估计与边界样本身份候选
 
 ## 目的
 
@@ -75,6 +75,8 @@ uav_alpha_track:
 
 `trajectory_segment_acceleration_estimates(trajectory, parameters...)`为每一对相邻轨迹分段生成一条速度转换记录。调用方必须显式声明`representative_time_method: segment_midpoint`和有限正数`maximum_observation_gap_seconds`。每个分段平均速度绑定到该段时间中点，标量加速度按“后一段平均速度减前一段平均速度，再除以两个中点之间的秒数”计算。任一参与分段超过最大观测间隔时，转换状态为`unverifiable`，速度差和加速度均为`null`。该算子不宣称瞬时或向量加速度，不推断方向变化，不插值、平滑或预测，也不授权现实动作。
 
+`trajectory_identity_candidate(first_trajectory, second_trajectory, parameters...)`只比较前一轨迹最后一个明确样本与后一轨迹第一个明确样本。调用方必须声明有限正数`maximum_identity_gap_seconds`、有限非负`maximum_identity_distance_in_horizontal_unit`和布尔值`require_same_object_class`。正时间差超过上限时先返回`unverifiable`；否则，要求同类但类别不同或边界距离超限时返回`different_object_candidate`，类别相容且时间、距离均在阈值内时返回`same_object_candidate`。结果保留两条轨迹引用、主体引用、对象类别、边界样本、时间差、距离和策略，不合并身份、不改写`subject_ref`、不证明现实身份、不插值路径、不预测、不发布、不授权也不执行动作。
+
 ## 失败关闭
 
 以下情况验证失败：
@@ -87,7 +89,8 @@ uav_alpha_track:
 - 将静态`polyline`传给轨迹算子；
 - 任一GT35阈值缺失、非有限、应为非负时却为负数、应为正数时却不大于零，或类型错误；
 - 包含未声明的分类参数；
-- GT36缺失中点方法或最大间隔参数、使用`segment_midpoint`之外的方法，或最大间隔非有限/不大于零。
+- GT36缺失中点方法或最大间隔参数、使用`segment_midpoint`之外的方法，或最大间隔非有限/不大于零；
+- GT37缺失任一身份候选参数、时间/距离/类别策略非法、重复引用同一轨迹，或后一轨迹边界时间不晚于前一轨迹边界。
 
 ## 能力边界
 
@@ -107,7 +110,11 @@ uav_alpha_track:
 - `examples/core/gt36_trajectory_acceleration.yaml`
 - `examples/core/gt36_trajectory_acceleration_result.json`
 - `examples/core/gt36_trajectory_acceleration.json`
+- `examples/core/gt37_trajectory_identity_candidate.yaml`
+- `examples/core/gt37_trajectory_identity_candidate_result.json`
+- `examples/core/gt37_trajectory_identity_candidate.json`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
 - `site/gt35/index.html`
 - `site/gt36/index.html`
+- `site/gt37/index.html`

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GT37｜两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？</title>
+  <meta name="description" content="GeoTask用显式时间、距离和对象类别策略生成轨迹身份候选，但不自动合并现实对象或改写subject_ref。">
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#171717;background:#f5f5f2;line-height:1.65}*{box-sizing:border-box}body{margin:0}.shell{width:min(1100px,calc(100% - 32px));margin:auto}header{background:#fff;border-bottom:1px solid #ddd}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;color:#111;text-decoration:none}.nav a{color:#333;text-decoration:none;margin-left:18px}.hero{padding:70px 0 48px;background:#fff}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;color:#555}.hero h1{font-size:clamp(34px,6vw,64px);line-height:1.08;max-width:980px;margin:12px 0 22px}.lead{font-size:20px;max-width:900px;color:#444}.statement{margin-top:28px;padding:22px;border-left:5px solid #111;background:#f2f2ee;font-size:22px;font-weight:700}section{padding:54px 0}.section-title{font-size:34px;margin:0 0 12px}.grid,.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}.facts{grid-template-columns:1fr 1fr}.card,.fact{background:#fff;border:1px solid #ddd;border-radius:14px;padding:22px}.card strong{display:block;font-size:25px}.tag{display:inline-block;border:1px solid #aaa;border-radius:999px;padding:3px 9px;font-size:12px}.dark{background:#1d1d1d;color:#fff}.dark .card{background:#292929;border-color:#4a4a4a}.choice{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.choice button{border:1px solid #222;background:#fff;border-radius:9px;padding:13px 18px;font-size:15px;cursor:pointer}.choice button.safe{background:#111;color:#fff}#result{min-height:94px;padding:18px;border:1px solid #bbb;border-radius:10px;background:#fff}.ok{font-weight:800}.bad{font-weight:800;color:#8a1f1f}pre{overflow:auto;background:#151515;color:#f3f3f3;border-radius:12px;padding:22px;font-size:14px}.footer{background:#111;color:#ddd;padding:38px 0}.footer a{color:#fff}@media(max-width:900px){.grid,.facts{grid-template-columns:1fr}.nav nav{display:none}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+<header><div class="shell nav"><a class="brand" href="../" aria-label="返回GeoTask项目首页">GeoTask · GT37</a><nav><a href="../gt36/">上一案例</a><a href="https://github.com/stpku/GeoTask">GitHub</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell"><div class="eyebrow">GT37 · 对象身份候选合同</div><h1>两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？</h1><p class="lead">不能。GT37只把两个轨迹边界样本分类为同对象候选、不同对象候选或不可核验；候选结论不等于现实身份已经核验。</p><div class="statement">即使输出same_object_candidate，provisional_alpha与provisional_beta仍保持两个独立身份，两个轨迹的subject_ref均不改写。</div></div></section>
+  <section><div class="shell"><h2 class="section-title">调用方显式策略</h2><div class="grid"><article class="card"><span class="tag">时间</span><strong>最大120秒</strong><p>只比较前段末样本与后段首样本。</p></article><article class="card"><span class="tag">距离</span><strong>最大10米</strong><p>本案例边界样本相距5米。</p></article><article class="card"><span class="tag">类别</span><strong>必须同为UAV</strong><p>类别不符时输出不同对象候选。</p></article></div></div></section>
+  <section class="dark"><div class="shell"><h2 class="section-title">本地确定性结果</h2><div class="grid"><article class="card"><span class="tag">候选状态</span><strong>same_object_candidate</strong><p>60秒与5米均在调用方阈值内。</p></article><article class="card"><span class="tag">原始身份</span><strong>仍是两个</strong><p>provisional_alpha与provisional_beta不合并。</p></article><article class="card"><span class="tag">对象图</span><strong>零修改</strong><p>identity_merge_performed=false；subject_refs_mutated=false。</p></article></div></div></section>
+  <section><div class="shell"><h2 class="section-title">选择下一步</h2><div class="choice"><button id="merge">直接合并两个临时身份</button><button id="rewrite">把track_beta改绑到provisional_alpha</button><button id="verify-external">宣称现实身份已经核验</button><button id="candidate" class="safe">保留候选并请求进一步证据</button><button id="verify">执行本地检查</button></div><div id="result" aria-live="polite">尚未选择。</div></div></section>
+  <section><div class="shell"><h2 class="section-title">能力边界</h2><div class="facts"><div class="fact"><h3>能够确定</h3><p>轨迹、主体和类别引用闭合</p><p>边界时间差60秒</p><p>边界距离5米</p><p>同对象候选状态</p></div><div class="fact"><h3>不能确定</h3><p>现实对象身份相同</p><p>传感器轨迹关联真实</p><p>缺口中的连续路径</p><p>身份合并和现实动作</p></div></div><pre>operator: trajectory_identity_candidate
+candidate_state: same_object_candidate
+first_subject_ref: provisional_alpha
+second_subject_ref: provisional_beta
+identity_merge_performed: false
+subject_refs_mutated: false
+real_world_identity_verified: false
+trajectory_interpolated: false
+future_position_predicted: false
+production_output_released: false
+action_authorized_by_core: false
+action_executed: false</pre></div></section>
+</main>
+<footer class="footer"><div class="shell">GT37把“可能是同一个对象”结构化为可审计候选，但身份合并仍属于外部证据、规则或人工复核。返回<a href="../">GeoTask项目首页</a>。</div></footer>
+<script>(()=>{let selected='';const box=document.getElementById('result');const choose=(v,l)=>{selected=v;box.textContent='已选择：'+l;box.className='';};document.getElementById('merge').onclick=()=>choose('merge','直接合并身份');document.getElementById('rewrite').onclick=()=>choose('rewrite','改写subject_ref');document.getElementById('verify-external').onclick=()=>choose('external','宣称现实身份已核验');document.getElementById('candidate').onclick=()=>choose('candidate','保留候选并补证');document.getElementById('verify').onclick=()=>{if(selected==='candidate'){box.innerHTML='<span class="ok">检查通过：</span>保留same_object_candidate，维持两个原始身份和subject_ref不变，并把后续身份核验交给外部证据或人工复核。';}else{box.innerHTML='<span class="bad">检查未通过：</span>边界时间、距离和类别只能生成候选，不能自动合并对象、改写引用或证明现实身份。';}};})();</script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

@@ -21,6 +21,7 @@ EXPECTED_PUBLIC_SAFE_OPERATORS = {
     "trajectory_segment_metrics",
     "trajectory_segment_classifications",
     "trajectory_segment_acceleration_estimates",
+    "trajectory_identity_candidate",
 }
 
 
@@ -44,7 +45,7 @@ def test_operator_metadata_has_required_fields():
         assert not missing, f"{metadata.get('name')} missing {missing}"
         assert metadata["name"] in EXPECTED_PUBLIC_SAFE_OPERATORS
         assert metadata["input_shape"]
-        assert metadata["output_type"] in {"float", "bool", "list"}
+        assert metadata["output_type"] in {"float", "bool", "list", "dict"}
         assert metadata["deterministic"] is True
         assert metadata["supported_geometry"]
         assert metadata["error_codes"]

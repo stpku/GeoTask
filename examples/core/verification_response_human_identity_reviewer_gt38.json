@@ -1,0 +1,41 @@
+{
+  "verification_response": {
+    "response_version": "0.1",
+    "response_id": "trajectory-identity-response-human-review-gt38",
+    "request_ref": {
+      "request_id": "verify-trajectory-identity-gt38",
+      "sha256": "244ca0c9ebdba192e2a2555c2cdd8c69cf72b1baaebfc47f60b7c40c604ab743"
+    },
+    "provider_ref": {
+      "provider_id": "geotask.provider.mock-human-identity-reviewer",
+      "provider_version": "0.1.0",
+      "sha256": "625c035e8407aa83d82ed0be9a59ba999a2920a0bbdf3dd9d050d9f1403a6108"
+    },
+    "state": "verified",
+    "result": {
+      "claim_id": "identity:provisional_alpha:provisional_beta",
+      "claim_type": "trajectory_identity",
+      "value": "same_object",
+      "unit": null,
+      "observed_at": "2026-08-05T08:03:00+08:00",
+      "valid_until": "2026-08-05T09:00:00+08:00"
+    },
+    "verification_method": "identity_evidence_review",
+    "evidence_refs": [
+      "fictional-review:visual-marking-continuity",
+      "fictional-review:telemetry-sequence-consistency"
+    ],
+    "assurance_declarations": {
+      "independence_group": "fictional-human-identity-board",
+      "reproducibility": "repeatable",
+      "calibration_status": "not_applicable",
+      "confidence": 0.95
+    },
+    "diagnostics": [],
+    "completed_at": "2026-08-05T08:17:00+08:00",
+    "independently_verified": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

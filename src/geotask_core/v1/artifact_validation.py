@@ -69,6 +69,10 @@ from geotask_core.v1.observation_merge import (
     ObservationMergeError,
     load_observation_merge_result,
 )
+from geotask_core.v1.trajectory_identity_adjudication import (
+    TrajectoryIdentityAdjudicationError,
+    load_trajectory_identity_adjudication,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1445,6 +1449,63 @@ def _validate_observation_merge_result_payload(
     )
 
 
+def _validate_trajectory_identity_adjudication_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_trajectory_identity_adjudication(payload)
+    except TrajectoryIdentityAdjudicationError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_trajectory_identity_adjudication",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Trajectory Identity "
+                        "Adjudication v0.1. Generic validation does not recheck exact "
+                        "candidate, request, profile, descriptor, or response bytes and "
+                        "does not merge identities, mutate subject_ref, release output, "
+                        "authorize action, or execute action."
+                    ),
+                ),
+            ),
+        )
+
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "adjudication_id": result.adjudication_id,
+            "candidate_state": result.candidate_state,
+            "adjudication_state": result.adjudication_state,
+            "candidate_alignment": result.candidate_alignment,
+            "provider_count": len(result.provider_refs),
+            "independent_group_count": result.policy_result.independent_group_count,
+            "identity_merge_recommendation": result.identity_merge_recommendation,
+            "next_action": result.next_action,
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "candidate_binding_verified": False,
+            "verification_bindings_verified": False,
+            "external_identity_verified_by_core": False,
+            "identity_merge_performed": False,
+            "subject_refs_mutated": False,
+            "production_output_released": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_incremental_reevaluation_result_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1572,6 +1633,12 @@ def _validate_verified_payload(
         )
     if descriptor.artifact_id == "geotask.observation-merge-result":
         return _validate_observation_merge_result_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
+    if descriptor.artifact_id == "geotask.trajectory-identity-adjudication":
+        return _validate_trajectory_identity_adjudication_payload(
             descriptor,
             payload,
             file=file,

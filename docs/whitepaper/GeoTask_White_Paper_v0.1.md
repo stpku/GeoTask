@@ -310,6 +310,8 @@ expected_results: # 可选测试夹具
 
 算子语义必须稳定。Domain Pack 可以组合 Core 算子，但不应修改同名算子的边界规则。
 
+GT38进一步把`trajectory_identity_candidate`输出接入第28类公共Artifact `geotask.trajectory-identity-adjudication`：精确绑定候选结果、Verification Request、Assurance Profile、Provider Descriptor与Verification Response，在满足独立证据策略后输出身份合并复核建议。该制品不会自行证明现实身份、合并对象、改写`subject_ref`、发布生产结果、授权或执行身份更新。公共Schema总数同步扩展为29。
+
 ### 4.3 断言
 
 断言是可验证命题的最小单位：

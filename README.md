@@ -28,7 +28,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 
 ## 从这里开始
 
-- [立即体验GT01—GT37](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT38](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -123,7 +123,7 @@ geotask validate my_distance.yaml
 geotask run my_distance.yaml
 ```
 
-## 37个公开应用案例
+## 38个公开应用案例
 
 GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示模型方案如何被结构化、复算、验错、补证、纠偏和行动门控。
 
@@ -135,7 +135,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 | 行动与可行性 | GT10—GT20 | 约束确认以后，下一步具体执行什么？ |
 | 世界状态循环 | GT21—GT28 | 多源观测、状态变化、影响范围、限定纠偏和行动门禁怎样闭环？ |
 | 验证提供方生态 | GT29—GT32 | 多个外部来源冲突、显式裁决、渐进授权和行动门禁怎样形成独立可信保证？ |
-| 动态世界对象 | GT33—GT37 | 移动对象、时间观测、轨迹分段、距离、平均速度、显式阈值分类、加速度估计及对象身份候选怎样绑定，而不静默插值、跨缺口计算、自动合并身份、预测或执行动作？ |
+| 动态世界对象 | GT33—GT38 | 移动对象、时间观测、轨迹分段、距离、平均速度、显式阈值分类、加速度估计、身份候选与独立证据裁决怎样绑定，而不静默插值、自动合并身份、改写引用、发布或执行动作？ |
 
 重点案例：
 
@@ -169,8 +169,9 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT35：** 调用方显式声明5米停留半径、120秒最短停留时长、300秒最大观测间隔和缺口许可后，三个相邻分段分别输出`stationary_candidate`、`moving_observed`和`observation_gap`；缺口不允许时同一超限分段返回`unverifiable`，公共核心不推断失联、异常或连续停留；
 - **GT36：** 以分段中点为代表时刻，在300秒最大观测间隔内计算相邻分段平均速度变化率；前两个转换输出0和1/300水平单位/秒²，第三个转换因下一分段持续600秒而返回`unverifiable`并保持速度差和加速度为`null`，公共核心不推断瞬时或向量加速度、方向变化、未来位置或现实动作；
 - **GT37：** 两个不同临时身份绑定的轨迹边界相隔60秒、5米且对象类别相同，在调用方声明的120秒、10米和同类要求下输出`same_object_candidate`；公共核心保留两个原始身份和`subject_ref`，不自动合并对象、不证明现实身份，也不发布或执行身份更新。
+- **GT38：** GT37身份候选与一份精确绑定的Verification Request、一份调用方声明的Assurance Profile、两个独立Provider及其响应形成`same_object_confirmed`裁决；公共核心只输出`recommend_identity_merge_review`和`review_identity_merge`，保留两个原始主体，不合并对象、不改写`subject_ref`、不发布、不授权也不执行身份更新。
 
-GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33—GT37见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)。
+GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33—GT38见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)，GT38裁决制品见[Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md)。
 
 ## 当前公共Core真正支持什么
 

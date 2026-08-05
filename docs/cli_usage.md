@@ -422,8 +422,8 @@ geotask benchmark core \
   --output core-benchmark.json
 ```
 
-The seven fixed fictional cases cover all eleven public deterministic operators,
-including discrete trajectory duration and adjacent-segment metrics, strict Result round trips,
+The eight fixed fictional cases cover all twelve public deterministic operators,
+including discrete trajectory duration, adjacent-segment metrics, and caller-declared segment classifications, strict Result round trips,
 replay semantic hashes, and Provenance evidence refs.
 Timing covers JSON decoding, Canonical construction, validation, production
 execution, and Result serialization. `--enforce-performance` makes a failed p95

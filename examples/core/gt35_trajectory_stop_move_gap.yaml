@@ -1,0 +1,76 @@
+geotask:
+  id: gt35-trajectory-stop-move-gap
+  name: GT35 Trajectory Stop Move and Observation Gap
+  description: Classify explicit adjacent trajectory segments with caller-declared stationary and observation-gap thresholds.
+  schema_version: "1.0"
+  language: en
+  domain: general_spatial
+
+space:
+  crs:
+    type: local_cartesian
+    identifier: fictional_local_xy_m
+  axes:
+    x: east
+    y: north
+  horizontal_unit: meter
+  coordinate_order: [x, y]
+  boundary_semantics: closed
+
+objects:
+  uav_alpha:
+    type: moving_object
+    object_class: uav
+    identity: fictional-uav-alpha
+  uav_alpha_track:
+    type: trajectory
+    subject_ref: uav_alpha
+    interpolation: none
+    samples:
+      - observed_at: "2026-08-05T08:00:00+08:00"
+        coordinates: [0, 0]
+      - observed_at: "2026-08-05T08:02:00+08:00"
+        coordinates: [3, 4]
+      - observed_at: "2026-08-05T08:04:00+08:00"
+        coordinates: [13, 4]
+      - observed_at: "2026-08-05T08:14:00+08:00"
+        coordinates: [13, 4]
+
+operator_set:
+  - trajectory_segment_classifications
+
+tasks:
+  - id: classify_trajectory_segments
+    family: trajectory_classification
+    goal: Classify every adjacent explicit sample pair using only declared thresholds.
+    assertions:
+      - id: trajectory_segment_states
+        operator: trajectory_segment_classifications
+        object_refs: [uav_alpha_track]
+        parameters:
+          stationary_radius_in_horizontal_unit: 5
+          minimum_stationary_duration_seconds: 120
+          maximum_observation_gap_seconds: 300
+          allow_observation_gap: true
+        expected_type: array
+        on_error: stop
+    outputs: [trajectory_segment_states]
+
+execution:
+  mode: local_only
+  steps:
+    - id: classify_segments
+      executor: local
+      assertion_refs: [trajectory_segment_states]
+      depends_on: []
+      on_error: stop
+
+verification:
+  mode: local_deterministic
+  required_assurance: local_deterministic
+
+output_contract:
+  format: structured
+  required_fields: [trajectory_segment_states]
+  allow_additional_fields: false
+  allow_model_inference: false

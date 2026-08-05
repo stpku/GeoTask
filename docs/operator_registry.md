@@ -33,6 +33,7 @@ invariants.
 | `altitude_overlap` | `bool` | altitude range + altitude range | Boundary contact counts as overlap. |
 | `trajectory_duration_seconds` | `float` | trajectory | Elapsed seconds between the first and last explicit samples; no interpolation or prediction. |
 | `trajectory_segment_metrics` | `list` | trajectory | Ordered adjacent-sample bindings with duration, planar distance, and average speed in document horizontal units per second. |
+| `trajectory_segment_classifications` | `list` | trajectory + explicit thresholds | Classifies each adjacent segment as `stationary_candidate`, `moving_observed`, `observation_gap`, or `unverifiable` without selecting defaults or interpolating gaps. |
 
 ## Metadata Fields
 

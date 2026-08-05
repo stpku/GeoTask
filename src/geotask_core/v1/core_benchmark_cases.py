@@ -450,6 +450,120 @@ CORE_BENCHMARK_CASES: tuple[dict[str, Any], ...] = (
             ]
         },
     ),
+    _case(
+        "trajectory_classifications",
+        _base_document(
+            document_id="benchmark.trajectory-classifications",
+            name="Trajectory stop move and observation gap benchmark",
+            objects={
+                "moving_asset": {
+                    "type": "moving_object",
+                    "data": {
+                        "object_class": "uav",
+                        "identity": "fictional-benchmark-classification-uav",
+                    },
+                },
+                "asset_track": {
+                    "type": "trajectory",
+                    "data": {
+                        "subject_ref": "moving_asset",
+                        "interpolation": "none",
+                        "samples": [
+                            {
+                                "observed_at": "2026-08-05T08:00:00+08:00",
+                                "coordinates": [0, 0],
+                            },
+                            {
+                                "observed_at": "2026-08-05T08:02:00+08:00",
+                                "coordinates": [3, 4],
+                            },
+                            {
+                                "observed_at": "2026-08-05T08:04:00+08:00",
+                                "coordinates": [13, 4],
+                            },
+                            {
+                                "observed_at": "2026-08-05T08:14:00+08:00",
+                                "coordinates": [13, 4],
+                            },
+                        ],
+                    },
+                },
+            },
+            operators=["trajectory_segment_classifications"],
+            assertions=[
+                {
+                    "id": "trajectory_segment_states",
+                    "operator": "trajectory_segment_classifications",
+                    "object_refs": ["asset_track"],
+                    "parameters": {
+                        "stationary_radius_in_horizontal_unit": 5,
+                        "minimum_stationary_duration_seconds": 120,
+                        "maximum_observation_gap_seconds": 300,
+                        "allow_observation_gap": True,
+                    },
+                    "expected_type": "array",
+                }
+            ],
+        ),
+        expected_outputs={
+            "trajectory_segment_states": [
+                {
+                    "segment_index": 0,
+                    "start_sample_index": 0,
+                    "end_sample_index": 1,
+                    "start_observed_at": "2026-08-05T08:00:00+08:00",
+                    "end_observed_at": "2026-08-05T08:02:00+08:00",
+                    "start_coordinates": [0, 0],
+                    "end_coordinates": [3, 4],
+                    "duration_seconds": 120.0,
+                    "distance_in_horizontal_unit": 5.0,
+                    "average_speed_in_horizontal_units_per_second": 5.0 / 120.0,
+                    "classification": "stationary_candidate",
+                    "classification_reason": "within_declared_radius_and_meets_declared_minimum_duration",
+                    "stationary_radius_in_horizontal_unit": 5.0,
+                    "minimum_stationary_duration_seconds": 120.0,
+                    "maximum_observation_gap_seconds": 300.0,
+                    "allow_observation_gap": True,
+                },
+                {
+                    "segment_index": 1,
+                    "start_sample_index": 1,
+                    "end_sample_index": 2,
+                    "start_observed_at": "2026-08-05T08:02:00+08:00",
+                    "end_observed_at": "2026-08-05T08:04:00+08:00",
+                    "start_coordinates": [3, 4],
+                    "end_coordinates": [13, 4],
+                    "duration_seconds": 120.0,
+                    "distance_in_horizontal_unit": 10.0,
+                    "average_speed_in_horizontal_units_per_second": 10.0 / 120.0,
+                    "classification": "moving_observed",
+                    "classification_reason": "does_not_meet_declared_stationary_candidate_conditions",
+                    "stationary_radius_in_horizontal_unit": 5.0,
+                    "minimum_stationary_duration_seconds": 120.0,
+                    "maximum_observation_gap_seconds": 300.0,
+                    "allow_observation_gap": True,
+                },
+                {
+                    "segment_index": 2,
+                    "start_sample_index": 2,
+                    "end_sample_index": 3,
+                    "start_observed_at": "2026-08-05T08:04:00+08:00",
+                    "end_observed_at": "2026-08-05T08:14:00+08:00",
+                    "start_coordinates": [13, 4],
+                    "end_coordinates": [13, 4],
+                    "duration_seconds": 600.0,
+                    "distance_in_horizontal_unit": 0.0,
+                    "average_speed_in_horizontal_units_per_second": 0.0,
+                    "classification": "observation_gap",
+                    "classification_reason": "duration_exceeds_declared_maximum_gap",
+                    "stationary_radius_in_horizontal_unit": 5.0,
+                    "minimum_stationary_duration_seconds": 120.0,
+                    "maximum_observation_gap_seconds": 300.0,
+                    "allow_observation_gap": True,
+                },
+            ]
+        },
+    ),
 )
 
 

@@ -28,6 +28,7 @@ from geotask_core.v1.artifact_registry import (
     RECOMPUTE_DERIVATION_RESULT_SCHEMA_ID,
     OBSERVATION_MERGE_RESULT_SCHEMA_ID,
     TRAJECTORY_IDENTITY_ADJUDICATION_SCHEMA_ID,
+    IDENTITY_MERGE_PROPOSAL_SCHEMA_ID,
     RUNTIME_DESCRIPTOR_SCHEMA_ID,
     RUNTIME_REQUEST_SCHEMA_ID,
     RUNTIME_RESPONSE_SCHEMA_ID,
@@ -68,6 +69,9 @@ _SCHEMA_FILENAME_BY_ID = {
     ),
     TRAJECTORY_IDENTITY_ADJUDICATION_SCHEMA_ID: (
         "geotask-trajectory-identity-adjudication-v0.1.schema.json"
+    ),
+    IDENTITY_MERGE_PROPOSAL_SCHEMA_ID: (
+        "geotask-identity-merge-proposal-v0.1.schema.json"
     ),
     GEOTASK_RESULT_SCHEMA_ID: "geotask-result-v1.0.schema.json",
     CONTROL_EVALUATION_SCHEMA_ID: "geotask-control-evaluation-v1.0.schema.json",

@@ -1,0 +1,87 @@
+{
+  "identity_merge_proposal": {
+    "proposal_version": "0.1",
+    "proposal_id": "gt39-provisional-subject-merge-proposal",
+    "created_at": "2026-08-05T09:45:00+08:00",
+    "source_adjudication_ref": {
+      "artifact_id": "geotask.trajectory-identity-adjudication",
+      "adjudication_id": "gt38-trajectory-identity-adjudication",
+      "content_sha256": "51800311f68beaa5217cb2942c25433d2a424f482dffac55c966e9c5c59e77ad"
+    },
+    "proposal_state": "ready_for_review",
+    "proposal_reason": "bound_same_object_adjudication_supports_bounded_merge_review",
+    "proposal_rationale": "GT38 provides aligned same-object evidence; retain provisional_beta as an auditable alias and require explicit review before any graph change.",
+    "canonical_subject_ref": "provisional_alpha",
+    "merge_subject_ref": "provisional_beta",
+    "object_class": "uav",
+    "affected_trajectory_refs": [
+      "track_alpha",
+      "track_beta"
+    ],
+    "proposed_subject_ref_rewrites": [
+      {
+        "trajectory_ref": "track_beta",
+        "current_subject_ref": "provisional_beta",
+        "proposed_subject_ref": "provisional_alpha",
+        "state": "proposed"
+      }
+    ],
+    "retained_aliases": [
+      {
+        "alias_subject_ref": "provisional_beta",
+        "canonical_subject_ref": "provisional_alpha",
+        "source_trajectory_refs": [
+          "track_beta"
+        ],
+        "state": "retain_as_alias"
+      }
+    ],
+    "proposed_retired_subject_refs": [
+      "provisional_beta"
+    ],
+    "required_approvals": [
+      "identity_governance_reviewer",
+      "world_state_maintainer"
+    ],
+    "blocking_conditions": [
+      "source_adjudication_changed",
+      "contradictory_identity_evidence",
+      "approval_missing",
+      "affected_scope_changed",
+      "reversal_plan_unavailable"
+    ],
+    "withdrawal_conditions": [
+      "source_adjudication_withdrawn",
+      "different_objects_confirmed",
+      "canonical_subject_unavailable",
+      "merge_subject_reassigned",
+      "identity_policy_boundary_changed"
+    ],
+    "reversal_plan": {
+      "restore_subject_refs": [
+        {
+          "trajectory_ref": "track_beta",
+          "restore_subject_ref": "provisional_beta"
+        }
+      ],
+      "preserve_alias_history": true,
+      "require_post_reversal_validation": true,
+      "reversal_executed": false
+    },
+    "review_action": "review_identity_merge_proposal",
+    "next_action": "request_identity_merge_approval",
+    "source_binding_verified": true,
+    "scope_closed": true,
+    "aliases_preserved": true,
+    "new_identity_created": false,
+    "alias_deleted": false,
+    "proposal_approved": false,
+    "object_graph_mutated": false,
+    "identity_merge_performed": false,
+    "subject_refs_mutated": false,
+    "world_state_updated": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

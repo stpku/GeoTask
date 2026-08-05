@@ -46,6 +46,7 @@ EXPECTED_SCHEMA_FILENAMES = {
     "geotask-recompute-derivation-result-v0.1.schema.json",
     "geotask-observation-merge-result-v0.1.schema.json",
     "geotask-trajectory-identity-adjudication-v0.1.schema.json",
+    "geotask-identity-merge-proposal-v0.1.schema.json",
     "geotask-result-v1.0.schema.json",
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",

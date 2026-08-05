@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 38,
+  "case_count": 39,
   "cases": [
     {
       "id": "GT01",
@@ -264,8 +264,15 @@
     {
       "id": "GT38",
       "slug": "gt38",
-      "title_zh": "两个独立证据都支持同一对象，Core就可以直接合并身份吗？",
+      "title_zh": "两个独立证据都支持同一对象，Core就可以直接归并身份吗？",
       "previous": "gt37",
+      "next": "gt39"
+    },
+    {
+      "id": "GT39",
+      "slug": "gt39",
+      "title_zh": "证据支持同一对象后，系统可以直接归并身份吗？",
+      "previous": "gt38",
       "next": null
     }
   ]

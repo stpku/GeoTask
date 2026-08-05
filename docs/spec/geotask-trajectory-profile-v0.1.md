@@ -1,8 +1,8 @@
 # GeoTask Trajectory and Moving Object Profile v0.1
 
 Status: implemented public profile  
-Reference cases: GT33–GT38
-Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, bounded scalar acceleration estimates, boundary-sample identity candidates, and exact-bound external identity adjudication only
+Reference cases: GT33–GT39
+Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, bounded scalar acceleration estimates, boundary-sample identity candidates, exact-bound external identity adjudication, and review-only identity-merge proposals
 
 ## Purpose
 
@@ -79,6 +79,8 @@ A segment becomes `stationary_candidate` only when its distance is within the de
 
 GT38 adds the registered `geotask.trajectory-identity-adjudication` Artifact. It binds the exact GT37 execution result to one Verification Request, one caller-authored Assurance Profile, and matching Provider Descriptor/Verification Response pairs. The policy may produce `same_object_confirmed`, `different_objects_confirmed`, or `unresolved`, and may recommend merge review, keeping identities separate, or requesting more evidence. Even a confirmed same-object adjudication preserves both provisional subjects and leaves external truth verification, identity merge, `subject_ref` mutation, publication, authorization, and execution false. See [Trajectory Identity Adjudication v0.1](geotask-trajectory-identity-adjudication-v0.1.md).
 
+GT39 adds the registered `geotask.identity-merge-proposal` Artifact. It accepts one exact GT38 adjudication only when the source confirms the same object, aligns with the GT37 candidate, recommends merge review, and preserves every non-execution boundary. The caller must select one of the two existing subject refs as `canonical_subject_ref`; Core proposes exactly one bounded rewrite for the other trajectory, retains the non-canonical subject as an alias, records approval roles plus closed blocking and withdrawal conditions, and provides the inverse rewrite as a reversal plan. The proposal never creates a new identity, deletes an alias, approves itself, mutates an object graph or World State, publishes, authorizes, or executes an update. See [Identity Merge Proposal v0.1](geotask-identity-merge-proposal-v0.1.md).
+
 ## Fail-closed behavior
 
 Validation fails when:
@@ -93,7 +95,8 @@ Validation fails when:
 - undeclared classification parameters are present;
 - GT36 omits either the midpoint method or maximum-gap parameter, uses a method other than `segment_midpoint`, or declares a non-finite/non-positive maximum gap;
 - GT37 omits any identity-candidate parameter, declares an invalid time/distance/class policy, reuses the same trajectory ref twice, or places the second trajectory boundary at or before the first trajectory boundary;
-- GT38 cannot close exact candidate/request/profile/provider/response references, the Assurance Profile does not block automatic merge and reference mutation, evidence conflicts or is insufficient, response partitions disagree with verdicts, or any field claims Core merged identities, rewrote `subject_ref`, published, authorized, or executed an update.
+- GT38 cannot close exact candidate/request/profile/provider/response references, the Assurance Profile does not block automatic merge and reference mutation, evidence conflicts or is insufficient, response partitions disagree with verdicts, or any field claims Core merged identities, rewrote `subject_ref`, published, authorized, or executed an update;
+- GT39 selects a canonical subject outside the exact GT38 pair, expands the affected trajectory scope, omits alias preservation, changes the closed blocking or withdrawal conditions, lacks a reversible inverse rewrite, or claims that the proposal was approved, applied, published, authorized, or executed.
 
 ## Boundary
 
@@ -119,9 +122,13 @@ A valid trajectory proves only that the submitted discrete sequence is structura
 - `examples/core/trajectory_identity_adjudication_gt38.json`
 - `examples/core/gt38_trajectory_identity_adjudication.json`
 - `docs/spec/geotask-trajectory-identity-adjudication-v0.1.md`
+- `examples/core/identity_merge_proposal_gt39.json`
+- `examples/core/gt39_identity_merge_proposal.json`
+- `docs/spec/geotask-identity-merge-proposal-v0.1.md`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
 - `site/gt35/index.html`
 - `site/gt36/index.html`
 - `site/gt37/index.html`
 - `site/gt38/index.html`
+- `site/gt39/index.html`

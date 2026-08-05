@@ -75,20 +75,21 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 ### v0.6：验证提供方与生态扩展（进行中）
 
 - ✅ 已发布验证提供方接口规范v0.1，覆盖确定性算子、规则引擎、权威数据提供方、传感器数据提供方、本地预测模型和人工复核；
-- ✅ 已发布验证提供方描述符、验证请求、验证响应和可信保证档案四类公共制品，并提供只读的`geotask provider inspect/check/validate`命令；
+- ✅ 已发布验证提供方描述符、验证请求、验证响应和可信保证策略四类公共制品，并提供只读的`geotask provider inspect/check/validate`命令；
 - ✅ 已建立反自我增信、精确请求/描述符字节绑定、独立分组、时效、可复现性、校准和行动边界校验；
 - ✅ 已发布GT29虚构气象冲突案例：模拟气象服务给出8米/秒、现场传感器给出13米/秒，两个新鲜独立来源仍冲突时保持未知并请求第三个独立来源；
-- ✅ 已发布GT30三源气象冲突案例：第三个独立来源也给出13米/秒，形成二比一；由于可信保证档案未声明多数表决规则，系统仍保持未知、保留少数来源并请求显式裁决；
+- ✅ 已发布GT30三源气象冲突案例：第三个独立来源也给出13米/秒，形成二比一；由于可信保证策略未声明多数表决规则，系统仍保持未知、保留少数来源并请求显式气象审定；
 - ✅ 已发布GT31人工气象裁决案例：虚构人工复核精确绑定GT30三份冲突响应和上下文证据，保留全部原始结果并限定两份13米/秒读数的适用范围；天气结论升级为可用，但自动起飞授权与起飞指令继续由独立控制门禁阻断；
 - ✅ 已发布GT32渐进授权门禁案例：五份虚构授权记录逐项到达，公共核心在每次累计输入后重新评估同一有限控制表达式，未知授权从5项降至0项；最终两个起飞相关输出转为可用，但生产发布、指令发送、现实授权与动作执行继续保持为假；
 - ✅ 已发布GT33首个移动对象与离散轨迹案例：移动对象身份与三次带时区二维观测分离表达，轨迹引用必须闭合、时间必须严格递增且插值固定为none；新增第10个确定性算子计算首末样本持续300秒，同时拒绝静态折线替代、隐式插值、未来位置预测、地图匹配和现实动作推断；
 - ✅ 已发布GT34离散轨迹分段与平均速度案例：三次明确观测按相邻顺序形成两个分段，分别绑定起止样本索引、时间和坐标，计算120/180秒持续时间、60/90个文档水平单位距离与0.5水平单位/秒平均速度；新增第11个确定性算子，同时拒绝非相邻分段、零时长、单位冒充、瞬时速度推断、插值、平滑、预测和现实动作；
 - ✅ 已发布GT35停留、移动与观测缺口案例：调用方显式声明停留半径、最短停留时长、最大观测间隔和缺口许可，三个相邻分段分别输出停留候选、已观测移动和观测缺口；新增第12个确定性算子，缺口不允许时返回不可核验，同时拒绝默认阈值、连续停留、失联、异常、插值和现实动作推断；
 - ✅ 已发布GT36加速度与运动连续性案例：调用方显式声明分段中点代表时刻和最大观测间隔，前两个相邻速度转换输出0和1/300水平单位/秒²，第三个转换因下一分段持续600秒而返回不可核验并保持速度差与加速度为null；新增第13个确定性算子，同时拒绝瞬时/向量加速度、方向变化、跨缺口计算、预测和现实动作推断；
-- ✅ 已发布GT37对象身份候选案例：比较前一轨迹末样本与后一轨迹首样本，在调用方显式声明的最大时间差、最大空间距离和对象类别要求下输出同对象候选、不同对象候选或不可核验；新增第14个确定性算子，保留原始轨迹、主体和类别引用，同时拒绝自动身份合并、subject_ref改写、现实身份自证、插值、预测和现实动作；
-- ✅ 已发布GT38身份候选证据与显式裁决案例：新增第28类公共Artifact和第29份公共Schema，将GT37候选与精确绑定的Verification Request、Assurance Profile、两个独立Provider及其响应组合为同对象确认、不同对象确认或未决裁决；即使同对象证据满足策略，也只输出身份合并复核建议，不合并对象、不改写subject_ref、不发布、不授权也不执行身份更新；
-- ✅ 已建立中英文独立项目入口及术语映射，中文页面以中文叙事为主，英文页面使用英文，机器标识保持稳定；
-- 继续扩展身份合并提案、规范化主身份选择、对象图变更请求和可撤销身份治理合同；
+- ✅ 已发布GT37对象同一性候选案例：比较前一轨迹末样本与后一轨迹首样本，在调用方显式声明的最大时间差、最大空间距离和对象类别要求下输出同一对象候选、不同对象候选或不可核验；新增第14个确定性算子，保留原始轨迹、主体和类别引用，同时拒绝自动身份归并、subject_ref改写、现实身份自证、插值、预测和现实动作；
+- ✅ 已发布GT38对象同一性证据与显式审定案例：新增第28类公共制品和第29份公共Schema，将GT37候选与原始字节级绑定的验证请求、可信保证策略、两个独立验证提供方及其响应组合为同一对象确认、不同对象确认或未决审定；即使同一对象证据满足策略，也只输出身份归并复核建议，不归并对象、不改写subject_ref、不发布、不授权也不执行身份更新；
+- ✅ 已发布GT39对象身份归并提案案例：新增第29类公共制品和第30份公共Schema，将GT38对象同一性审定结果、调用方选择的现有主对象引用、提案理由和审批角色组合为ready_for_review提案；提案只覆盖两条原始轨迹，提出一项subject_ref改写，保留非主主体为别名，并声明阻断、撤销和回退要求，不创建新身份、不删除别名、不审批、不修改对象关系图或世界状态，也不发布、授权或执行更新；
+- ✅ 已建立中英文独立项目入口及术语映射，并明确“契约、规范、协议、合同”四类中文用法，机器标识保持稳定；
+- 继续扩展对象身份归并审批、对象关系图变更请求、后继世界状态生成和可撤销身份治理规范；
 - 发布可复用的行业扩展接口和非行业敏感的参考实现；
 - 建立验错率、漏检率、纠偏成功率、增量复核范围和执行时延基准；
 - 支持社区维护的验证提供方、案例、算子和通用扩展目录。
@@ -186,8 +187,9 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published GT36 for acceleration and motion continuity: caller-declared segment-midpoint representative time and maximum observation interval produce scalar estimates of 0 and 1/300 horizontal units per second squared for the first two adjacent speed transitions; the third transition becomes `unverifiable` with null speed change and acceleration because the next segment lasts 600 seconds. The thirteenth deterministic operator rejects instantaneous/vector acceleration, direction change, cross-gap computation, prediction, and action inference;
 - ✅ Published GT37 for object-identity candidates: the final explicit sample of one trajectory and the first explicit sample of another are evaluated under caller-declared time, distance, and object-class policy to return `same_object_candidate`, `different_object_candidate`, or `unverifiable`. The fourteenth deterministic operator preserves original trajectory, subject, and class references while rejecting automatic identity merge, `subject_ref` mutation, real-world identity self-verification, interpolation, prediction, and action inference;
 - ✅ Published GT38 for identity-candidate evidence and explicit adjudication: the twenty-eighth public Artifact and twenty-ninth public Schema bind the exact GT37 candidate, Verification Request, caller-authored Assurance Profile, and two independently grouped Provider responses into confirmed-same, confirmed-different, or unresolved adjudication. Even confirmed same-object evidence only enables merge review and never merges objects, mutates `subject_ref`, publishes, authorizes, or executes an identity update;
-- ✅ Established separate Chinese and English project entry points plus terminology maps while keeping machine identifiers stable;
-- continue with identity-merge proposals, canonical-identity selection, object-graph change requests, and reversible identity-governance contracts;
+- ✅ Published GT39 for bounded identity-merge proposals: the twenty-ninth public Artifact and thirtieth public Schema bind one exact GT38 same-object adjudication to a caller-selected existing canonical subject, exactly one proposed `subject_ref` rewrite, retained alias history, approval roles, closed blocking and withdrawal conditions, and an inverse reversal plan. The proposal never creates or deletes identity, approves itself, mutates the object graph or World State, publishes, authorizes, or executes an update;
+- ✅ Established separate Chinese and English project entry points plus terminology maps while keeping machine identifiers stable; the Chinese guide now distinguishes software contracts, specifications, protocols, and legal/commercial contracts by function;
+- continue with identity-merge approval, object-graph change requests, successor World State generation, and reversible identity-governance specifications;
 - publish reusable extension interfaces and non-sensitive reference implementations;
 - establish benchmarks for error-detection rate, missed errors, correction success, incremental scope, and execution latency;
 - support community-maintained catalogs of Verification Providers, cases, operators, and generic extensions.

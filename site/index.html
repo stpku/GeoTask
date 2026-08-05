@@ -179,7 +179,7 @@
           <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读中文白皮书</a>
         </div>
         <div class="trust-strip" aria-label="项目概览">
-          <div class="trust-item"><strong>38</strong><span>公开应用案例</span></div>
+          <div class="trust-item"><strong>39</strong><span>公开应用案例</span></div>
           <div class="trust-item"><strong>8</strong><span>本地确定性算子</span></div>
           <div class="trust-item"><strong>27</strong><span>公共制品</span></div>
           <div class="trust-item"><strong>MIT</strong><span>GeoTask核心许可</span></div>
@@ -221,7 +221,7 @@
     <section class="block" id="cases">
       <div class="shell">
         <div class="section-head">
-          <div><h2>GT01—GT38渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>
+          <div><h2>GT01—GT39渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>
           <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/README.md">查看中文文档导航 →</a>
         </div>
         <div class="stage">
@@ -281,7 +281,7 @@
           <h3 class="stage-heading"><span class="stage-num">6</span>验证提供方生态：外部核验与可信保证</h3>
           <div class="case-grid">
             <a class="case" href="gt29/"><span class="case-id">GT29</span><h3>气象服务数据和现场传感器冲突时，AI应该相信谁？</h3><p>模拟气象服务给出8米/秒，现场传感器给出13米/秒。两个来源都新鲜且相互独立，但数值仍然冲突，因此天气结论保持未知，并请求第三个独立来源。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt30/"><span class="case-id">GT30</span><h3>第三个独立气象来源加入后，冲突就自动解决了吗？</h3><p>第三个独立来源也给出13米/秒，形成二比一；但可信保证档案没有声明多数表决规则，因此系统仍保持未知，不静默删除8米/秒来源，并请求显式气象裁决。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt30/"><span class="case-id">GT30</span><h3>第三个独立气象来源加入后，冲突就自动解决了吗？</h3><p>第三个独立来源也给出13米/秒，形成二比一；但可信保证策略没有声明多数表决规则，因此系统仍保持未知，不静默删除8米/秒来源，并请求显式气象审定。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt31/"><span class="case-id">GT31</span><h3>人工复核解决气象冲突后，天气合格就能自动起飞吗？</h3><p>人工复核精确绑定GT30冲突响应与虚构上下文证据，保留三份原始响应并将两份13米/秒读数限定为局部测试气流影响；8米/秒天气结论可用，但自动起飞授权与起飞指令继续阻断。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt32/"><span class="case-id">GT32</span><h3>五项授权陆续到达后，什么时候才算可起飞？</h3><p>空域、运营人、起降场、气象放行和任务授权逐项到达，未知项从5降至0；最后两个起飞相关输出转为可用，但公共核心不发布结果、不发送指令，也不执行飞行动作。</p><span class="go">进入体验 →</span></a>
           </div>
@@ -293,8 +293,9 @@
             <a class="case" href="gt34/"><span class="case-id">GT34</span><h3>三个轨迹样本之间，每一段到底移动了多远、多快？</h3><p>将三次明确观测按相邻顺序绑定为两个分段，分别计算持续120/180秒、距离60/90个文档水平单位和0.5水平单位/秒平均速度；不插值、不推断瞬时速度、不预测未来或执行动作。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt35/"><span class="case-id">GT35</span><h3>位置几乎没变就是停留，十分钟没观测就是失联吗？</h3><p>使用调用方显式声明的5米停留半径、120秒最短时长、300秒最大观测间隔和缺口许可，将三个相邻分段分类为停留候选、已观测移动和观测缺口；不允许缺口标记时返回不可核验，不推断失联、异常或连续运动。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt36/"><span class="case-id">GT36</span><h3>两段平均速度变了，就能证明瞬时加速度和连续运动吗？</h3><p>以相邻分段中点为代表时刻，在调用方声明的300秒最大观测间隔内计算平均速度变化率；输出零加速度、正加速度和缺口驱动的不可核验，不推断瞬时或向量加速度、方向变化、未来位置或现实动作。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt37/"><span class="case-id">GT37</span><h3>两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？</h3><p>比较前一轨迹末样本与后一轨迹首样本，在调用方声明的时间、距离和对象类别策略下输出同对象候选、不同对象候选或不可核验；不自动合并身份、不改写subject_ref，也不证明现实身份。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt38/"><span class="case-id">GT38</span><h3>两个独立证据都支持同一对象，Core就可以直接合并身份吗？</h3><p>将GT37身份候选与精确绑定的Verification Request、Assurance Profile、两个独立Provider及响应组合为可审计身份裁决；可建议进入身份合并复核，但不合并对象、不改写subject_ref、不发布或执行身份更新。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt37/"><span class="case-id">GT37</span><h3>两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？</h3><p>比较前一轨迹末样本与后一轨迹首样本，在调用方声明的时间、距离和对象类别策略下输出对象同一性候选、不同对象候选或不可核验；不自动归并身份、不改写subject_ref，也不证明现实身份。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt38/"><span class="case-id">GT38</span><h3>两个独立证据都支持同一对象，Core就可以直接归并身份吗？</h3><p>将GT37对象同一性候选与原始字节级绑定的验证请求、可信保证策略、两个独立验证提供方及响应组合为可审计的对象同一性审定；可建议进入归并复核，但不归并对象、不改写subject_ref、不发布或执行身份更新。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt39/"><span class="case-id">GT39</span><h3>证据支持同一对象后，系统可以直接归并身份吗？</h3><p>精确绑定GT38对象同一性审定结果，从两个现有主体中显式选择主对象引用，形成包含拟改写引用、保留别名、审批要求、阻断条件、撤销条件和归并回退方案的对象身份归并提案；不创建新身份、不删除别名、不修改对象关系图或世界状态。</p><span class="go">进入体验 →</span></a>
           </div>
         </div>
       </div>
@@ -347,7 +348,7 @@
           <article class="capability-card open"><h3>3 · 关系与约束计算</h3><ul><li>14个公共确定性算子</li><li>空间、时间、高度、拓扑、离散轨迹、分段指标、显式分类、加速度估计与身份候选</li><li>本地、可重复、无网络验证路径</li></ul></article>
           <article class="capability-card open"><h3>4 · 事实验证与证据治理</h3><ul><li>已验证、已矛盾与不可核验状态</li><li>来源、证据绑定、冲突与审计信息</li><li>智能体限定修订和证据恢复</li></ul></article>
           <article class="capability-card open"><h3>5 · 状态变化与影响传播</h3><ul><li>世界状态、状态转换和验证会话形成状态演化证据链</li><li>差异报告、纠偏请求与影响图表达限定修订和影响关系</li><li>受限物化生成后继快照，增量复核结果闭合复核目标、验收条件和门禁结果</li></ul></article>
-          <article class="capability-card open"><h3>6 · 验证生态与行动门控</h3><ul><li>验证提供方描述身份、能力、时效、独立性和校准状态</li><li>可信保证档案管理输出门禁和下一步动作</li><li>运行时连接人工复核、外部授权和生产系统</li></ul></article>
+          <article class="capability-card open"><h3>6 · 验证生态与行动门控</h3><ul><li>验证提供方描述身份、能力、时效、独立性和校准状态</li><li>可信保证策略管理输出门禁和下一步动作</li><li>运行时连接人工复核、外部授权和生产系统</li></ul></article>
         </div>
       </div>
     </section>

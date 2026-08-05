@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GT39｜证据支持同一对象后，系统可以直接归并身份吗？</title>
+  <meta name="description" content="GeoTask把GT38对象同一性审定结果转化为可审计、可撤销的对象身份归并提案，但不修改对象关系图或世界状态。">
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#171717;background:#f4f4f1;line-height:1.65}*{box-sizing:border-box}body{margin:0}.shell{width:min(1120px,calc(100% - 32px));margin:auto}header{background:#fff;border-bottom:1px solid #ddd}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;color:#111;text-decoration:none}.nav a{color:#333;text-decoration:none;margin-left:18px}.hero{padding:72px 0 50px;background:#fff}.eyebrow{font-size:13px;font-weight:800;letter-spacing:.12em;color:#555}.hero h1{font-size:clamp(34px,6vw,62px);line-height:1.08;max-width:1040px;margin:12px 0 22px}.lead{font-size:20px;max-width:900px;color:#444}.statement{margin-top:28px;padding:22px;border-left:5px solid #111;background:#efefeb;font-size:21px;font-weight:700}section{padding:54px 0}.section-title{font-size:34px;margin:0 0 12px}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}.step,.card,.fact{background:#fff;border:1px solid #ccc;border-radius:14px;padding:21px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}.card strong{display:block;font-size:23px}.tag{display:inline-block;border:1px solid #aaa;border-radius:999px;padding:3px 9px;font-size:12px}.dark{background:#1c1c1c;color:#fff}.dark .card{background:#292929;border-color:#4b4b4b}.choice{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.choice button{border:1px solid #222;background:#fff;border-radius:9px;padding:13px 18px;font-size:15px;cursor:pointer}.choice button.safe{background:#111;color:#fff}#result{min-height:94px;padding:18px;border:1px solid #bbb;border-radius:10px;background:#fff}.ok{font-weight:800}.bad{font-weight:800;color:#8a1f1f}.facts{display:grid;grid-template-columns:1fr 1fr;gap:16px}pre{overflow:auto;background:#151515;color:#f3f3f3;border-radius:12px;padding:22px;font-size:14px}.footer{background:#111;color:#ddd;padding:38px 0}.footer a{color:#fff}@media(max-width:900px){.grid,.flow,.facts{grid-template-columns:1fr}.nav nav{display:none}}
+  </style>
+  <link rel="stylesheet" href="../assets/case-shared.css" data-geotask-case-shared>
+</head>
+<body>
+<header><div class="shell nav"><a class="brand" href="../" aria-label="返回GeoTask项目首页">GeoTask · GT39</a><nav><a href="../gt38/">上一案例</a><a href="https://github.com/stpku/GeoTask">GitHub</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell"><div class="eyebrow">GT39 · 对象身份归并提案</div><h1>证据支持同一对象后，系统可以直接归并身份吗？</h1><p class="lead">仍然不可以。GT39精确绑定GT38对象同一性审定结果，由调用方从两个现有主体中选择主对象引用，生成受限、可审计、可撤销的归并提案。</p><div class="statement">ready_for_review ≠ proposal_approved。提出subject_ref改写方案，也不等于已经改写对象关系图。</div></div></section>
+  <section><div class="shell"><h2 class="section-title">从审定到提案的四步</h2><div class="flow"><article class="step"><span class="tag">1 · 来源</span><h3>精确绑定GT38</h3><p>只接受same_object_confirmed、aligned和recommend_identity_merge_review。</p></article><article class="step"><span class="tag">2 · 选择</span><h3>主对象引用</h3><p>只能在provisional_alpha和provisional_beta中选择，不能创建新身份。</p></article><article class="step"><span class="tag">3 · 范围</span><h3>两条轨迹</h3><p>只覆盖track_alpha和track_beta，并仅提出一条subject_ref改写。</p></article><article class="step"><span class="tag">4 · 治理</span><h3>审批与回退</h3><p>保留别名，声明阻断、撤销、审批要求和归并回退方案。</p></article></div></div></section>
+  <section class="dark"><div class="shell"><h2 class="section-title">固定提案</h2><div class="grid"><article class="card"><span class="tag">主对象引用</span><strong>provisional_alpha</strong><p>调用方从现有两个主体中显式选择。</p></article><article class="card"><span class="tag">拟归并对象</span><strong>provisional_beta</strong><p>拟停用为主标识，但必须保留为可追溯别名。</p></article><article class="card"><span class="tag">下一步</span><strong>request_identity_merge_approval</strong><p>请求独立审批，不执行对象归并。</p></article></div></div></section>
+  <section><div class="shell"><h2 class="section-title">选择系统动作</h2><div class="choice"><button id="apply">立即改写track_beta的subject_ref</button><button id="delete">删除provisional_beta</button><button id="create">创建一个新的主身份</button><button id="review" class="safe">保留别名并提交归并提案审批</button><button id="verify">执行边界检查</button></div><div id="result" aria-live="polite">尚未选择。</div></div></section>
+  <section><div class="shell"><h2 class="section-title">能力边界</h2><div class="facts"><div class="fact"><h3>提案明确声明</h3><p>GT38原始字节级绑定</p><p>主对象引用与拟归并对象</p><p>受影响轨迹及拟改写引用</p><p>保留别名、阻断条件、撤销条件和回退方案</p></div><div class="fact"><h3>公共核心仍不执行</h3><p>审批提案或证明现实身份</p><p>创建新身份或删除旧标识</p><p>修改对象关系图、subject_ref或世界状态</p><p>发布、授权或执行现实动作</p></div><pre>artifact_id: geotask.identity-merge-proposal
+proposal_state: ready_for_review
+canonical_subject_ref: provisional_alpha
+merge_subject_ref: provisional_beta
+review_action: review_identity_merge_proposal
+next_action: request_identity_merge_approval
+aliases_preserved: true
+new_identity_created: false
+alias_deleted: false
+proposal_approved: false
+object_graph_mutated: false
+identity_merge_performed: false
+subject_refs_mutated: false
+world_state_updated: false
+production_output_released: false
+action_authorized: false
+action_executed: false</pre></div></section>
+</main>
+<footer class="footer"><div class="shell">GT39把对象同一性审定升级为可审计归并提案，但任何对象关系图变更仍需独立审批和外部执行流程。返回<a href="../">GeoTask项目首页</a>。</div></footer>
+<script>(()=>{let selected='';const box=document.getElementById('result');const choose=(v,l)=>{selected=v;box.textContent='已选择：'+l;box.className='';};document.getElementById('apply').onclick=()=>choose('apply','立即改写subject_ref');document.getElementById('delete').onclick=()=>choose('delete','删除旧主体');document.getElementById('create').onclick=()=>choose('create','创建新身份');document.getElementById('review').onclick=()=>choose('review','保留别名并提交审批');document.getElementById('verify').onclick=()=>{if(selected==='review'){box.innerHTML='<span class="ok">检查通过：</span>提案保留provisional_beta别名，记录一条拟改写引用和完整回退方案，只请求审批；对象关系图和世界状态保持不变。';}else{box.innerHTML='<span class="bad">检查未通过：</span>ready_for_review只允许提交对象身份归并提案，公共核心不能直接改写引用、删除旧标识或创建新身份。';}};})();</script>
+  <script src="../assets/case-navigation.js" defer data-geotask-case-shared></script>
+</body>
+</html>

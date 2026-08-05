@@ -184,6 +184,39 @@
       "minItems": 2,
       "maxItems": 2
     },
+    "trajectorySample": {
+      "type": "object",
+      "required": ["observed_at", "coordinates"],
+      "additionalProperties": false,
+      "properties": {
+        "observed_at": {"type": "string", "format": "date-time"},
+        "coordinates": {"$ref": "#/$defs/coordinate"}
+      }
+    },
+    "trajectorySampleList": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"$ref": "#/$defs/trajectorySample"}
+    },
+    "movingObjectData": {
+      "type": "object",
+      "required": ["object_class", "identity"],
+      "additionalProperties": false,
+      "properties": {
+        "object_class": {"type": "string", "minLength": 1},
+        "identity": {"type": "string", "minLength": 1}
+      }
+    },
+    "trajectoryData": {
+      "type": "object",
+      "required": ["subject_ref", "interpolation", "samples"],
+      "additionalProperties": false,
+      "properties": {
+        "subject_ref": {"$ref": "#/$defs/id"},
+        "interpolation": {"const": "none"},
+        "samples": {"$ref": "#/$defs/trajectorySampleList"}
+      }
+    },
     "objectData": {
       "type": "object",
       "additionalProperties": true,
@@ -202,7 +235,12 @@
         "unit": {"type": "string"},
         "datum": {"type": "string"},
         "feature_type": {"type": "string"},
-        "features": {"type": "array"}
+        "features": {"type": "array"},
+        "object_class": {"type": "string"},
+        "identity": {"type": "string"},
+        "subject_ref": {"$ref": "#/$defs/id"},
+        "interpolation": {"const": "none"},
+        "samples": {"$ref": "#/$defs/trajectorySampleList"}
       }
     },
     "multiPolylineData": {
@@ -245,6 +283,8 @@
             "time_interval",
             "altitude_interval",
             "feature_collection",
+            "moving_object",
+            "trajectory",
             "line",
             "time",
             "altitude"
@@ -265,7 +305,12 @@
         "unit": {"type": "string"},
         "datum": {"type": "string"},
         "feature_type": {"type": "string"},
-        "features": {"type": "array"}
+        "features": {"type": "array"},
+        "object_class": {"type": "string", "minLength": 1},
+        "identity": {"type": "string", "minLength": 1},
+        "subject_ref": {"$ref": "#/$defs/id"},
+        "interpolation": {"const": "none"},
+        "samples": {"$ref": "#/$defs/trajectorySampleList"}
       },
       "allOf": [
         {
@@ -345,6 +390,26 @@
         {
           "if": {"properties": {"type": {"const": "feature_collection"}}},
           "then": {"anyOf": [{"required": ["features"]}, {"required": ["data"]}]}
+        },
+        {
+          "if": {"properties": {"type": {"const": "moving_object"}}},
+          "then": {
+            "properties": {"data": {"$ref": "#/$defs/movingObjectData"}},
+            "anyOf": [
+              {"required": ["object_class", "identity"]},
+              {"required": ["data"]}
+            ]
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "trajectory"}}},
+          "then": {
+            "properties": {"data": {"$ref": "#/$defs/trajectoryData"}},
+            "anyOf": [
+              {"required": ["subject_ref", "interpolation", "samples"]},
+              {"required": ["data"]}
+            ]
+          }
         }
       ]
     },

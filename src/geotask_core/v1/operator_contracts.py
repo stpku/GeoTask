@@ -437,6 +437,61 @@ ALTITUDE_OVERLAP = OperatorContract(
     implementation="geotask_core.ops.altitude_overlap",
 )
 
+TRAJECTORY_DURATION_SECONDS = OperatorContract(
+    name="trajectory_duration_seconds",
+    version="1.0",
+    family="temporal",
+    description="Elapsed seconds between the first and last explicit trajectory samples.",
+    arity=1,
+    input_types=["trajectory"],
+    output={"type": "number", "unit_behavior": "fixed_second"},
+    deterministic=True,
+    semantics={
+        "sample_order": "strictly increasing timezone-aware observed_at",
+        "interpolation": "none",
+        "excluded_behaviors": [
+            "trajectory interpolation",
+            "future-position prediction",
+            "map matching",
+            "resampling",
+            "action execution",
+        ],
+    },
+    model_execution={
+        "level": "M1",
+        "supported": True,
+        "recommended_max_items": 1000,
+    },
+    invariants=[
+        {"id": "non_negative", "expression": "result >= 0"},
+        {"id": "endpoint_only", "expression": "result == last_time - first_time"},
+    ],
+    error_codes=[
+        "invalid_interval",
+        "invalid_coordinates",
+        "invalid_reference",
+        "object_type_mismatch",
+    ],
+    examples=[
+        {
+            "inputs": {
+                "trajectory": [
+                    {
+                        "observed_at": "2026-08-05T08:00:00+08:00",
+                        "coordinates": [0, 0],
+                    },
+                    {
+                        "observed_at": "2026-08-05T08:05:00+08:00",
+                        "coordinates": [30, 40],
+                    },
+                ]
+            },
+            "expected": 300.0,
+        },
+    ],
+    implementation="geotask_core.ops.trajectory_duration_seconds",
+)
+
 
 # -- Operator Registry
 
@@ -589,6 +644,7 @@ class AssertionDispatcher:
             (fallback: ``data["interval"]``)
           - ``altitude_interval`` → ``[data["min"], data["max"]]``
             (fallback: ``data["range"]``)
+          - ``trajectory`` → ``data["samples"]``
         """
         params: list = []
         for ref, expected_type in zip(obj_refs, contract.input_types):
@@ -722,6 +778,17 @@ class AssertionDispatcher:
                 )
             return range_val
 
+        # trajectory
+        if expected_type == "trajectory":
+            if obj_type != "trajectory":
+                raise ValueError(
+                    f"Expected type 'trajectory' for '{obj.id}', got '{obj_type}'"
+                )
+            samples = data.get("samples")
+            if samples is None:
+                raise ValueError(f"Trajectory object '{obj.id}' has no samples field.")
+            return samples
+
         raise ValueError(
             f"Unsupported expected type '{expected_type}' "
             f"for object '{obj.id}'."
@@ -777,6 +844,7 @@ _BUILTIN_CONTRACTS: list[OperatorContract] = [
     RECT_CONTAINS_POINT,
     TIME_OVERLAP,
     ALTITUDE_OVERLAP,
+    TRAJECTORY_DURATION_SECONDS,
 ]
 
 #: Default pre-populated registry with all built-in Core operators.

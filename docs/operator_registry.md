@@ -31,6 +31,7 @@ invariants.
 | `rect_contains_point` | `bool` | rect + point | Boundary contact counts as containment. |
 | `time_overlap` | `bool` | time interval + time interval | Boundary contact counts as overlap. |
 | `altitude_overlap` | `bool` | altitude range + altitude range | Boundary contact counts as overlap. |
+| `trajectory_duration_seconds` | `float` | trajectory | Elapsed seconds between the first and last explicit samples; no interpolation or prediction. |
 
 ## Metadata Fields
 

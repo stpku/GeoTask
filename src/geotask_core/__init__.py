@@ -16,6 +16,9 @@ from geotask_core.models import (
     RectObject,
     PolygonObject,
     MultiPolylineObject,
+    MovingObject,
+    TrajectorySample,
+    TrajectoryObject,
     StirDocument,
 )
 from geotask_core.parser import (
@@ -27,6 +30,7 @@ from geotask_core.ops import (
     multi_polyline_intersects_rect,
     point_in_polygon,
     polygon_contains_point,
+    trajectory_duration_seconds,
 )
 from geotask_core.runner import run_geotask, run_stir
 from geotask_core.normalizer import normalize_model_output
@@ -468,6 +472,9 @@ __all__ = [
     "RectObject",
     "PolygonObject",
     "MultiPolylineObject",
+    "MovingObject",
+    "TrajectorySample",
+    "TrajectoryObject",
     "StirDocument",
     "load_geotask",
     "validate_geotask",
@@ -478,6 +485,7 @@ __all__ = [
     "multi_polyline_intersects_rect",
     "point_in_polygon",
     "polygon_contains_point",
+    "trajectory_duration_seconds",
     "run_geotask",
     "run_stir",
     "normalize_model_output",

@@ -10,6 +10,7 @@ All functions are pure — no side effects, no mutation of the input document.
 from __future__ import annotations
 
 import math
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from geotask_core.v1.enums import (
@@ -31,6 +32,7 @@ from geotask_core.v1.enums import (
     MISSING_FIELD,
     OBJECT_TYPE_MISMATCH,
     OUTPUT_CONTRACT_VIOLATION,
+    UNKNOWN_FIELD,
     UNKNOWN_OBJECT_TYPE,
     UNIT_MISMATCH,
     UNSUPPORTED_EXECUTION_MODE,
@@ -537,6 +539,33 @@ def _check_objects(objects: dict[str, GeoObject]) -> list[dict]:
         # Per-type data validation
         diags.extend(_check_object_data(obj_path, obj))
 
+    # A trajectory is meaningful only when it binds to one declared moving object.
+    for obj_id, obj in objects.items():
+        if obj.type != "trajectory":
+            continue
+        subject_ref = obj.data.get("subject_ref")
+        if not isinstance(subject_ref, str) or not subject_ref:
+            continue
+        subject = objects.get(subject_ref)
+        if subject is None:
+            diags.append(
+                _diagnostic(
+                    f"objects.{obj_id}.data.subject_ref",
+                    INVALID_REFERENCE,
+                    f"Trajectory subject_ref '{subject_ref}' does not resolve.",
+                    "Reference one declared moving_object id.",
+                )
+            )
+        elif subject.type != "moving_object":
+            diags.append(
+                _diagnostic(
+                    f"objects.{obj_id}.data.subject_ref",
+                    OBJECT_TYPE_MISMATCH,
+                    f"Trajectory subject_ref '{subject_ref}' has type '{subject.type}', expected 'moving_object'.",
+                    "Bind the trajectory to a moving_object, not a static geometry.",
+                )
+            )
+
     return diags
 
 
@@ -561,6 +590,10 @@ def _check_object_data(path: str, obj: GeoObject) -> list[dict]:
         return _check_altitude_interval_data(path, data)
     elif obj_type == "feature_collection":
         return _check_feature_collection_data(path, data)
+    elif obj_type == "moving_object":
+        return _check_moving_object_data(path, data)
+    elif obj_type == "trajectory":
+        return _check_trajectory_data(path, data)
     return []
 
 
@@ -1017,6 +1050,163 @@ def _validate_altitude_pair(
             )
         )
 
+    return diags
+
+
+def _check_moving_object_data(path: str, data: dict) -> list[dict]:
+    """Validate the minimal identity-only moving-object contract."""
+    diags: list[dict] = []
+    allowed = {"object_class", "identity"}
+    for field_name in sorted(set(data) - allowed):
+        diags.append(
+            _diagnostic(
+                f"{path}.data.{field_name}",
+                UNKNOWN_FIELD,
+                f"Moving object contains unsupported field '{field_name}'.",
+                "Keep position and time observations in a separate trajectory object.",
+            )
+        )
+    for field_name in ("object_class", "identity"):
+        value = data.get(field_name)
+        if not isinstance(value, str) or not value.strip():
+            diags.append(
+                _diagnostic(
+                    f"{path}.data.{field_name}",
+                    MISSING_FIELD,
+                    f"Moving object {field_name} must be a non-empty string.",
+                    f"Provide data.{field_name} as a stable caller-declared string.",
+                )
+            )
+    return diags
+
+
+def _parse_trajectory_time(value: object) -> datetime | None:
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        return None
+    return parsed
+
+
+def _check_trajectory_data(path: str, data: dict) -> list[dict]:
+    """Validate discrete trajectory samples without inferring intermediate state."""
+    diags: list[dict] = []
+    allowed = {"subject_ref", "interpolation", "samples"}
+    for field_name in sorted(set(data) - allowed):
+        diags.append(
+            _diagnostic(
+                f"{path}.data.{field_name}",
+                UNKNOWN_FIELD,
+                f"Trajectory contains unsupported field '{field_name}'.",
+                "Use only subject_ref, interpolation, and explicit samples.",
+            )
+        )
+
+    subject_ref = data.get("subject_ref")
+    if not isinstance(subject_ref, str) or not is_valid_geotask_id(subject_ref):
+        diags.append(
+            _diagnostic(
+                f"{path}.data.subject_ref",
+                INVALID_REFERENCE,
+                "Trajectory subject_ref must be a valid non-empty GeoTask id.",
+                "Reference one declared moving_object id.",
+            )
+        )
+
+    if data.get("interpolation") != "none":
+        diags.append(
+            _diagnostic(
+                f"{path}.data.interpolation",
+                INVALID_TYPE,
+                "Trajectory interpolation must be exactly 'none'.",
+                "Set interpolation to 'none'; Core does not infer intermediate positions.",
+            )
+        )
+
+    samples = data.get("samples")
+    if not isinstance(samples, list) or len(samples) < 2:
+        diags.append(
+            _diagnostic(
+                f"{path}.data.samples",
+                MISSING_DATA,
+                "Trajectory must contain at least two explicit samples.",
+                "Provide two or more timestamped coordinate samples.",
+            )
+        )
+        return diags
+
+    previous_time: datetime | None = None
+    for index, sample in enumerate(samples):
+        sample_path = f"{path}.data.samples[{index}]"
+        if not isinstance(sample, dict):
+            diags.append(
+                _diagnostic(
+                    sample_path,
+                    INVALID_TYPE,
+                    "Trajectory sample must be an object.",
+                    "Provide observed_at and coordinates fields.",
+                )
+            )
+            continue
+
+        sample_allowed = {"observed_at", "coordinates"}
+        for field_name in sorted(set(sample) - sample_allowed):
+            diags.append(
+                _diagnostic(
+                    f"{sample_path}.{field_name}",
+                    UNKNOWN_FIELD,
+                    f"Trajectory sample contains unsupported field '{field_name}'.",
+                    "Keep each sample limited to observed_at and coordinates.",
+                )
+            )
+
+        observed_at = _parse_trajectory_time(sample.get("observed_at"))
+        if observed_at is None:
+            diags.append(
+                _diagnostic(
+                    f"{sample_path}.observed_at",
+                    INVALID_INTERVAL,
+                    "Trajectory observed_at must be a timezone-aware ISO date-time.",
+                    "Use RFC3339/ISO 8601 with Z or an explicit UTC offset.",
+                )
+            )
+        elif previous_time is not None and observed_at <= previous_time:
+            diags.append(
+                _diagnostic(
+                    f"{sample_path}.observed_at",
+                    INVALID_INTERVAL,
+                    "Trajectory sample times must be strictly increasing.",
+                    "Order samples chronologically and remove duplicate timestamps.",
+                )
+            )
+        if observed_at is not None:
+            previous_time = observed_at
+
+        coordinates = sample.get("coordinates")
+        if not isinstance(coordinates, (list, tuple)) or len(coordinates) != 2:
+            diags.append(
+                _diagnostic(
+                    f"{sample_path}.coordinates",
+                    INVALID_COORDINATES,
+                    "Trajectory coordinates must be exactly two values.",
+                    "Provide [x, y] in the document coordinate order.",
+                )
+            )
+            continue
+        for coordinate_index, value in enumerate(coordinates):
+            if not _is_finite_number(value):
+                diags.append(
+                    _diagnostic(
+                        f"{sample_path}.coordinates[{coordinate_index}]",
+                        INVALID_COORDINATES,
+                        f"Trajectory coordinate is not finite: {value!r}.",
+                        "Use finite numeric coordinates only.",
+                    )
+                )
     return diags
 
 

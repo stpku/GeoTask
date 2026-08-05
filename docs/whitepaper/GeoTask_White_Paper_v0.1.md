@@ -272,7 +272,7 @@ expected_results: # 可选测试夹具
 
 ### 4.1 对象
 
-公共 Core 当前支持八类Canonical对象：
+公共 Core 当前支持十类Canonical对象：
 
 - `point`
 - `polyline`
@@ -282,12 +282,14 @@ expected_results: # 可选测试夹具
 - `time_interval`
 - `altitude_interval`
 - `feature_collection`
+- `moving_object`
+- `trajectory`
 
-对象必须具有稳定 id，并在断言中通过 `object_refs` 引用。对象数据可以使用 v1 原生字段，也可以通过兼容层读取部分旧字段。
+对象必须具有稳定 id，并在断言中通过 `object_refs` 引用。`moving_object`只声明身份；`trajectory`通过严格递增、带时区的二维观测样本引用一个移动对象，并显式禁止隐式插值。对象数据可以使用 v1 原生字段，也可以通过兼容层读取部分旧字段。
 
 ### 4.2 算子
 
-公共 Core 当前提供九个本地确定性算子：
+公共 Core 当前提供十个本地确定性算子：
 
 | 算子 | 作用 |
 |---|---|
@@ -300,6 +302,7 @@ expected_results: # 可选测试夹具
 | `rect_contains_point` | 矩形是否包含点，边界计入 |
 | `time_overlap` | 两个闭时间区间是否重叠 |
 | `altitude_overlap` | 两个闭高度区间是否重叠 |
+| `trajectory_duration_seconds` | 离散轨迹首末明确观测之间的持续秒数，不插值、不预测 |
 
 算子语义必须稳定。Domain Pack 可以组合 Core 算子，但不应修改同名算子的边界规则。
 

@@ -28,7 +28,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 
 ## Start here
 
-- [Try the GT01–GT36 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT37 experience](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -130,7 +130,7 @@ The cases show how model proposals are materialized, recomputed, contradicted, e
 | Action and feasibility | GT10–GT20 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, city-event deduplication, equipment-capability, and high-risk action-gate constraints? |
 | World-state cycle | GT21–GT28 | How do multi-source observations, state change, impact scope, bounded correction, incremental reevaluation, and action gates close the loop? |
 | Verification Provider ecosystem | GT29–GT32 | How do independent sources, explicit adjudication, progressive authorization, and action gates remain separate? |
-| Dynamic world objects | GT33–GT36 | How are moving-object identity, timestamped observations, trajectory segments, distance, average speed, caller-declared classifications, and acceleration estimates bound without silent interpolation, cross-gap computation, lost-link inference, prediction, or action? |
+| Dynamic world objects | GT33–GT37 | How are moving-object identity, timestamped observations, trajectory segments, distance, average speed, caller-declared classifications, acceleration estimates, and identity candidates bound without silent interpolation, cross-gap computation, automatic identity merge, prediction, or action? |
 
 Selected examples:
 
@@ -163,8 +163,9 @@ Selected examples:
 - **GT34:** three explicit observations bind into two adjacent trajectory segments. Core returns 120/180-second durations, 60/90 document-horizontal-unit distances, and 0.5 horizontal-unit-per-second averages without treating average speed as instantaneous state, interpolating, predicting, or executing action.
 - **GT35:** with a caller-declared 5-unit stationary radius, 120-second minimum duration, 300-second maximum observation interval, and explicit gap permission, three adjacent segments become `stationary_candidate`, `moving_observed`, and `observation_gap`. When gap marking is disallowed, the same excessive interval becomes `unverifiable`; Core does not infer lost link, anomaly, or continuous stationary motion.
 - **GT36:** segment midpoints represent adjacent segment-average speeds under a caller-declared 300-second maximum interval. The first two transitions produce scalar acceleration estimates of 0 and 1/300 horizontal units per second squared; the third becomes `unverifiable` with null speed change and acceleration because the next segment lasts 600 seconds. Core does not infer instantaneous or vector acceleration, direction change, future position, or action.
+- **GT37:** two trajectory fragments bound to different provisional identities have boundary samples 60 seconds and 5 meters apart and share the same object class. Under caller-declared 120-second, 10-unit, and class-equality limits, Core returns `same_object_candidate` while preserving both identities and subject references. It does not verify real-world identity, merge objects, publish, or execute an identity update.
 
-See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32, and the [Trajectory and Moving Object Profile](docs/spec/geotask-trajectory-profile-v0.1.md) for GT33–GT36.
+See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32, and the [Trajectory and Moving Object Profile](docs/spec/geotask-trajectory-profile-v0.1.md) for GT33–GT37.
 
 ## Implemented public Core
 
@@ -191,6 +192,7 @@ A `moving_object` declares stable identity without embedding position. A `trajec
 | `trajectory_segment_metrics` | discrete trajectory | ordered segment list with duration, horizontal distance, and average speed |
 | `trajectory_segment_classifications` | discrete trajectory + explicit thresholds | ordered `stationary_candidate`, `moving_observed`, `observation_gap`, or `unverifiable` records |
 | `trajectory_segment_acceleration_estimates` | discrete trajectory + explicit midpoint/gap parameters | adjacent segment-average speed-change rates; gap transitions are `unverifiable` with null values |
+| `trajectory_identity_candidate` | two discrete trajectories + explicit time/distance/class policy | `same_object_candidate`, `different_object_candidate`, or `unverifiable` without identity merge or reference mutation |
 
 ### Cross-task space contract
 
@@ -208,7 +210,7 @@ Documents may optionally declare `provenance.sources`, `evidence_bindings`, and 
 geotask benchmark core --enforce-performance --output core-benchmark.json
 ```
 
-The offline benchmark uses nine fixed fictional cases to cover all thirteen public deterministic operators, result round trips, semantic replay digests, and provenance evidence bindings. It measures the full `JSON decode → canonicalize → validate → execute → serialize` path. The default 100 ms p95 threshold is only a broad local regression guardrail, not a cross-hardware ranking, production SLA, or model-quality benchmark. The retained report is registered as `geotask.core-benchmark-report` and can be strictly validated again.
+The offline benchmark uses ten fixed fictional cases to cover all fourteen public deterministic operators, result round trips, semantic replay digests, and provenance evidence bindings. It measures the full `JSON decode → canonicalize → validate → execute → serialize` path. The default 100 ms p95 threshold is only a broad local regression guardrail, not a cross-hardware ranking, production SLA, or model-quality benchmark. The retained report is registered as `geotask.core-benchmark-report` and can be strictly validated again.
 
 ### Execution chain
 

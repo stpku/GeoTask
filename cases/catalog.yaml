@@ -317,3 +317,11 @@ cases:
     page: site/gt36/index.html
     example: examples/core/gt36_trajectory_acceleration.json
     lastmod: "2026-08-05"
+  - id: GT37
+    slug: gt37
+    stage: dynamic_world_objects
+    title_zh: 两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？
+    summary_zh: 比较前一轨迹末样本与后一轨迹首样本，在调用方声明的时间、距离和对象类别策略下输出同对象候选、不同对象候选或不可核验；不自动合并身份、不改写subject_ref，也不证明现实身份。
+    page: site/gt37/index.html
+    example: examples/core/gt37_trajectory_identity_candidate.json
+    lastmod: "2026-08-05"

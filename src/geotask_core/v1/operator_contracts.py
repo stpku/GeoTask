@@ -819,6 +819,131 @@ TRAJECTORY_SEGMENT_ACCELERATION_ESTIMATES = OperatorContract(
 )
 
 
+TRAJECTORY_IDENTITY_CANDIDATE = OperatorContract(
+    name="trajectory_identity_candidate",
+    version="1.0",
+    family="trajectory_identity",
+    description=(
+        "Classify whether two discrete trajectory fragments are a same-object "
+        "candidate, different-object candidate, or unverifiable using only "
+        "their explicit boundary samples and caller-declared limits."
+    ),
+    arity=2,
+    input_types=["trajectory", "trajectory"],
+    output={"type": "object", "unit_behavior": "structured_boundary_evidence"},
+    deterministic=True,
+    semantics={
+        "comparison_boundary": (
+            "first trajectory final explicit sample to second trajectory first explicit sample"
+        ),
+        "required_parameters": [
+            "maximum_identity_gap_seconds",
+            "maximum_identity_distance_in_horizontal_unit",
+            "require_same_object_class",
+        ],
+        "candidate_vocabulary": [
+            "same_object_candidate",
+            "different_object_candidate",
+            "unverifiable",
+        ],
+        "temporal_precedence": (
+            "a positive gap above the declared maximum is unverifiable before "
+            "class or distance candidate evaluation"
+        ),
+        "identity_merge_performed": False,
+        "subject_refs_mutated": False,
+        "excluded_behaviors": [
+            "automatic identity merge",
+            "subject reference mutation",
+            "identity inference beyond boundary samples",
+            "trajectory interpolation",
+            "trajectory smoothing",
+            "trajectory resampling",
+            "map matching",
+            "future-position prediction",
+            "external identity verification",
+            "output release",
+            "command delivery",
+            "action authorization",
+            "action execution",
+        ],
+    },
+    model_execution={"level": "M1", "supported": True, "recommended_max_items": 2},
+    invariants=[
+        {
+            "id": "boundary_sample_binding",
+            "expression": (
+                "first_boundary_sample_index is final first sample and "
+                "second_boundary_sample_index == 0"
+            ),
+        },
+        {
+            "id": "no_identity_mutation",
+            "expression": (
+                "identity_merge_performed == false and subject_refs_mutated == false"
+            ),
+        },
+        {
+            "id": "gap_fail_closed",
+            "expression": (
+                "temporal_gap_seconds > maximum_identity_gap_seconds implies "
+                "candidate_state == unverifiable"
+            ),
+        },
+    ],
+    error_codes=[
+        "invalid_parameters",
+        "invalid_interval",
+        "invalid_coordinates",
+        "invalid_reference",
+        "object_type_mismatch",
+    ],
+    examples=[
+        {
+            "inputs": {
+                "first_trajectory": {
+                    "trajectory_ref": "track_a",
+                    "subject_ref": "provisional_a",
+                    "object_class": "uav",
+                    "samples": [
+                        {
+                            "observed_at": "2026-08-05T08:00:00+08:00",
+                            "coordinates": [0, 0],
+                        },
+                        {
+                            "observed_at": "2026-08-05T08:02:00+08:00",
+                            "coordinates": [36, 48],
+                        },
+                    ],
+                },
+                "second_trajectory": {
+                    "trajectory_ref": "track_b",
+                    "subject_ref": "provisional_b",
+                    "object_class": "uav",
+                    "samples": [
+                        {
+                            "observed_at": "2026-08-05T08:03:00+08:00",
+                            "coordinates": [39, 52],
+                        },
+                        {
+                            "observed_at": "2026-08-05T08:05:00+08:00",
+                            "coordinates": [75, 100],
+                        },
+                    ],
+                },
+            },
+            "parameters": {
+                "maximum_identity_gap_seconds": 120,
+                "maximum_identity_distance_in_horizontal_unit": 10,
+                "require_same_object_class": True,
+            },
+            "expected": {"candidate_state": "same_object_candidate"},
+        }
+    ],
+    implementation="geotask_core.ops.trajectory_identity_candidate",
+)
+
+
 # -- Operator Registry
 
 
@@ -937,15 +1062,55 @@ class AssertionDispatcher:
                 f"{assertion.object_refs}"
             )
 
-        # Extract parameters
-        params = self._extract_params(
-            contract, assertion.object_refs, objects
-        )
+        # Extract parameters. Identity-candidate evaluation needs the stable
+        # trajectory/subject/class reference chain in addition to samples.
+        if contract.name == "trajectory_identity_candidate":
+            params = [
+                self._extract_trajectory_identity_context(ref, objects)
+                for ref in assertion.object_refs
+            ]
+        else:
+            params = self._extract_params(
+                contract, assertion.object_refs, objects
+            )
 
         # Get and call implementation — pass assertion.parameters as kwargs
         impl = self._get_implementation(contract)
         kwargs: dict[str, Any] = dict(assertion.parameters) if assertion.parameters else {}
         return impl(*params, **kwargs)
+
+    def _extract_trajectory_identity_context(
+        self,
+        trajectory_ref: str,
+        objects: dict[str, GeoObject],
+    ) -> dict[str, Any]:
+        """Resolve a trajectory and its moving-object class without mutation."""
+        trajectory = objects.get(trajectory_ref)
+        if trajectory is None or trajectory.type != "trajectory":
+            raise ValueError(
+                f"Identity candidate requires trajectory '{trajectory_ref}'."
+            )
+        subject_ref = trajectory.data.get("subject_ref")
+        if not isinstance(subject_ref, str) or not subject_ref:
+            raise ValueError(
+                f"Trajectory '{trajectory_ref}' has no valid subject_ref."
+            )
+        subject = objects.get(subject_ref)
+        if subject is None or subject.type != "moving_object":
+            raise ValueError(
+                f"Trajectory '{trajectory_ref}' subject '{subject_ref}' is not a moving_object."
+            )
+        object_class = subject.data.get("object_class")
+        if not isinstance(object_class, str) or not object_class:
+            raise ValueError(
+                f"Moving object '{subject_ref}' has no valid object_class."
+            )
+        return {
+            "trajectory_ref": trajectory_ref,
+            "subject_ref": subject_ref,
+            "object_class": object_class,
+            "samples": trajectory.data.get("samples"),
+        }
 
     # -- Parameter Extraction
 
@@ -1174,6 +1339,7 @@ _BUILTIN_CONTRACTS: list[OperatorContract] = [
     TRAJECTORY_SEGMENT_METRICS,
     TRAJECTORY_SEGMENT_CLASSIFICATIONS,
     TRAJECTORY_SEGMENT_ACCELERATION_ESTIMATES,
+    TRAJECTORY_IDENTITY_CANDIDATE,
 ]
 
 #: Default pre-populated registry with all built-in Core operators.

@@ -43,6 +43,9 @@ _OPERATOR_INPUT_TYPES: dict[str, list[str]] = {
     "altitude_overlap":           ["altitude_interval", "altitude_interval"],
     "trajectory_duration_seconds": ["trajectory"],
     "trajectory_segment_metrics":  ["trajectory"],
+    "trajectory_segment_classifications": ["trajectory"],
+    "trajectory_segment_acceleration_estimates": ["trajectory"],
+    "trajectory_identity_candidate": ["trajectory", "trajectory"],
 }
 
 # Legacy field-name → canonical data-key for GeoObject.data

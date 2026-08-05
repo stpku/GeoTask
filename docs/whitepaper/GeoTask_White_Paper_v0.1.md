@@ -289,7 +289,7 @@ expected_results: # 可选测试夹具
 
 ### 4.2 算子
 
-公共 Core 当前提供十三个本地确定性算子：
+公共 Core 当前提供十四个本地确定性算子：
 
 | 算子 | 作用 |
 |---|---|
@@ -306,6 +306,7 @@ expected_results: # 可选测试夹具
 | `trajectory_segment_metrics` | 相邻明确样本的持续时间、二维距离与平均速度，不把平均速度冒充瞬时状态 |
 | `trajectory_segment_classifications` | 使用调用方显式声明的停留与观测间隔阈值，将相邻分段分类为停留候选、已观测移动、观测缺口或不可核验，不推断失联或异常 |
 | `trajectory_segment_acceleration_estimates` | 将相邻分段平均速度绑定到显式中点代表时刻，计算标量速度变化率；任一分段超过声明的最大观测间隔时返回不可核验并保持数值为空 |
+| `trajectory_identity_candidate` | 比较两段轨迹的显式边界样本，在调用方声明的时间、距离和类别策略下输出同对象候选、不同对象候选或不可核验，不合并身份、不改写引用 |
 
 算子语义必须稳定。Domain Pack 可以组合 Core 算子，但不应修改同名算子的边界规则。
 

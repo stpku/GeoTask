@@ -37,6 +37,7 @@ EXPECTED_OPERATORS = (
     "rect_contains_point",
     "time_overlap",
     "trajectory_duration_seconds",
+    "trajectory_segment_classifications",
     "trajectory_segment_metrics",
 )
 
@@ -68,8 +69,8 @@ def test_benchmark_covers_all_public_operators_and_contracts() -> None:
 
     assert CORE_BENCHMARK_OPERATOR_COVERAGE == EXPECTED_OPERATORS
     assert tuple(body["conformance"]["operator_coverage"]) == EXPECTED_OPERATORS
-    assert body["conformance"]["case_count"] == 7
-    assert body["conformance"]["passed"] == 7
+    assert body["conformance"]["case_count"] == 8
+    assert body["conformance"]["passed"] == 8
     assert body["conformance"]["failed"] == 0
     assert body["conformance"]["valid"] is True
     assert body["overall"] == {
@@ -199,8 +200,8 @@ def test_unified_artifact_validation_summarizes_benchmark() -> None:
     assert payload["valid"] is True
     assert payload["schema_verified"] is True
     assert payload["summary"]["benchmark_state"] == "passed"
-    assert payload["summary"]["case_count"] == 7
-    assert payload["summary"]["operator_count"] == 11
+    assert payload["summary"]["case_count"] == 8
+    assert payload["summary"]["operator_count"] == 12
     assert payload["diagnostics"] == []
 
     tampered = _report()
@@ -239,7 +240,7 @@ def test_cli_benchmark_json_yaml_and_output_file(tmp_path: Path) -> None:
         "yaml",
     )
     assert yaml_result.returncode == 0
-    assert yaml.safe_load(yaml_result.stdout)["core_benchmark"]["conformance"]["passed"] == 7
+    assert yaml.safe_load(yaml_result.stdout)["core_benchmark"]["conformance"]["passed"] == 8
 
     output = tmp_path / "core-benchmark.json"
     file_result = _run_cli(
@@ -307,7 +308,7 @@ def test_cli_generated_report_can_be_validated_as_artifact(tmp_path: Path) -> No
     assert validated.returncode == 0
     body = json.loads(validated.stdout)["artifact_validation"]
     assert body["valid"] is True
-    assert body["summary"]["operator_count"] == 11
+    assert body["summary"]["operator_count"] == 12
 
 
 def test_public_namespaces_export_benchmark_contract() -> None:
@@ -325,7 +326,7 @@ def test_public_namespaces_export_benchmark_contract() -> None:
 def test_benchmark_modules_remain_bounded_and_public_safe() -> None:
     paths = {
         "core_benchmark_contract.py": 100,
-        "core_benchmark_cases.py": 500,
+        "core_benchmark_cases.py": 650,
         "core_benchmark.py": 400,
         "core_benchmark_report.py": 550,
         "core_benchmark_cli.py": 250,

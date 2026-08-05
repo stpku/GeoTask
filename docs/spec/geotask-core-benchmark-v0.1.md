@@ -43,7 +43,7 @@ Artifact validation checks the registered JSON Schema and strict report cross-fi
 
 ## 3. Fixed Conformance Cases
 
-The v0.1 case set contains seven fictional documents and covers all eleven public deterministic operators:
+The v0.1 case set contains eight fictional documents and covers all twelve public deterministic operators:
 
 | Case | Operators and contracts |
 |---|---|
@@ -54,6 +54,7 @@ The v0.1 case set contains seven fictional documents and covers all eleven publi
 | `provenance_evidence` | Distance execution plus validated assertion evidence propagation |
 | `trajectory_duration` | Moving-object binding plus strictly ordered discrete trajectory duration |
 | `trajectory_segments` | Adjacent-sample binding plus per-segment duration, planar distance, and average speed |
+| `trajectory_classifications` | Caller-declared stationary and observation-gap thresholds plus closed stop/move/gap/unverifiable classification |
 
 Each case uses only local fictional coordinates and metadata. No benchmark case represents real operational, regulatory, customer, or external evidence.
 

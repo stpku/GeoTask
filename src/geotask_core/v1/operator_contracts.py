@@ -591,6 +591,117 @@ TRAJECTORY_SEGMENT_METRICS = OperatorContract(
 )
 
 
+TRAJECTORY_SEGMENT_CLASSIFICATIONS = OperatorContract(
+    name="trajectory_segment_classifications",
+    version="1.0",
+    family="trajectory_classification",
+    description=(
+        "Classify every adjacent explicit trajectory segment using caller-declared "
+        "stationary and observation-gap thresholds."
+    ),
+    arity=1,
+    input_types=["trajectory"],
+    output={
+        "type": "array",
+        "unit_behavior": "caller_declared_horizontal_and_second_thresholds",
+    },
+    deterministic=True,
+    semantics={
+        "segment_definition": "every adjacent explicit sample pair",
+        "classification_vocabulary": [
+            "stationary_candidate",
+            "moving_observed",
+            "observation_gap",
+            "unverifiable",
+        ],
+        "required_parameters": [
+            "stationary_radius_in_horizontal_unit",
+            "minimum_stationary_duration_seconds",
+            "maximum_observation_gap_seconds",
+            "allow_observation_gap",
+        ],
+        "stationary_candidate_rule": (
+            "distance <= stationary_radius and duration >= minimum_stationary_duration"
+        ),
+        "observation_gap_rule": (
+            "duration > maximum_observation_gap and allow_observation_gap == true"
+        ),
+        "unverifiable_rule": (
+            "duration > maximum_observation_gap and allow_observation_gap == false"
+        ),
+        "interpolation": "none",
+        "excluded_behaviors": [
+            "implicit threshold selection",
+            "trajectory interpolation",
+            "smoothing",
+            "resampling",
+            "loss-of-link inference",
+            "anomaly inference",
+            "future-position prediction",
+            "map matching",
+            "external truth verification",
+            "output release",
+            "command delivery",
+            "action authorization",
+            "action execution",
+        ],
+    },
+    model_execution={
+        "level": "M1",
+        "supported": True,
+        "recommended_max_items": 1000,
+    },
+    invariants=[
+        {
+            "id": "segment_count",
+            "expression": "len(result) == len(samples) - 1",
+        },
+        {
+            "id": "closed_vocabulary",
+            "expression": (
+                "all(classification in stationary_candidate, moving_observed, "
+                "observation_gap, unverifiable)"
+            ),
+        },
+        {
+            "id": "thresholds_preserved",
+            "expression": "every result record repeats the caller-declared thresholds",
+        },
+    ],
+    error_codes=[
+        "invalid_parameters",
+        "invalid_interval",
+        "invalid_coordinates",
+        "invalid_reference",
+        "object_type_mismatch",
+    ],
+    examples=[
+        {
+            "inputs": {
+                "trajectory": [
+                    {
+                        "observed_at": "2026-08-05T08:00:00+08:00",
+                        "coordinates": [0, 0],
+                    },
+                    {
+                        "observed_at": "2026-08-05T08:02:00+08:00",
+                        "coordinates": [3, 4],
+                    },
+                ],
+                "parameters": {
+                    "stationary_radius_in_horizontal_unit": 5,
+                    "minimum_stationary_duration_seconds": 120,
+                    "maximum_observation_gap_seconds": 300,
+                    "allow_observation_gap": True,
+                },
+            },
+            "expected_classification": "stationary_candidate",
+        }
+    ],
+    implementation="geotask_core.ops.trajectory_segment_classifications",
+)
+
+
 # -- Operator Registry
 
 
@@ -944,6 +1055,7 @@ _BUILTIN_CONTRACTS: list[OperatorContract] = [
     ALTITUDE_OVERLAP,
     TRAJECTORY_DURATION_SECONDS,
     TRAJECTORY_SEGMENT_METRICS,
+    TRAJECTORY_SEGMENT_CLASSIFICATIONS,
 ]
 
 #: Default pre-populated registry with all built-in Core operators.

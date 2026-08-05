@@ -362,6 +362,7 @@ def test_operator_registry_has_builtin_operators() -> None:
         "altitude_overlap",
         "trajectory_duration_seconds",
         "trajectory_segment_metrics",
+        "trajectory_segment_classifications",
     ]
 
 

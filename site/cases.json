@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 34,
+  "case_count": 35,
   "cases": [
     {
       "id": "GT01",
@@ -238,6 +238,13 @@
       "slug": "gt34",
       "title_zh": "三个轨迹样本之间，每一段到底移动了多远、多快？",
       "previous": "gt33",
+      "next": "gt35"
+    },
+    {
+      "id": "GT35",
+      "slug": "gt35",
+      "title_zh": "位置几乎没变就是停留，十分钟没观测就是失联吗？",
+      "previous": "gt34",
       "next": null
     }
   ]

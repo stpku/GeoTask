@@ -28,7 +28,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 
 ## Start here
 
-- [Try the GT01–GT34 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT35 experience](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -130,7 +130,7 @@ The cases show how model proposals are materialized, recomputed, contradicted, e
 | Action and feasibility | GT10–GT20 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, city-event deduplication, equipment-capability, and high-risk action-gate constraints? |
 | World-state cycle | GT21–GT28 | How do multi-source observations, state change, impact scope, bounded correction, incremental reevaluation, and action gates close the loop? |
 | Verification Provider ecosystem | GT29–GT32 | How do independent sources, explicit adjudication, progressive authorization, and action gates remain separate? |
-| Dynamic world objects | GT33–GT34 | How are moving-object identity, timestamped observations, trajectory segments, distance, and average speed bound without silent interpolation, prediction, or action? |
+| Dynamic world objects | GT33–GT35 | How are moving-object identity, timestamped observations, trajectory segments, distance, average speed, and caller-declared classifications bound without silent interpolation, lost-link inference, prediction, or action? |
 
 Selected examples:
 
@@ -161,8 +161,9 @@ Selected examples:
 - **GT32:** five fictional authorization records arrive one by one, reducing unknown authorization fields from five to zero. The final control evaluation makes automatic takeoff authorization and the takeoff command eligible, while Core still does not publish output, send a command, authorize reality, or execute flight.
 - **GT33:** three timezone-aware position observations bind to one moving object as a strictly ordered discrete trajectory. Core deterministically returns a 300-second duration without interpolation, prediction, map matching, publication, or action execution.
 - **GT34:** three explicit observations bind into two adjacent trajectory segments. Core returns 120/180-second durations, 60/90 document-horizontal-unit distances, and 0.5 horizontal-unit-per-second averages without treating average speed as instantaneous state, interpolating, predicting, or executing action.
+- **GT35:** with a caller-declared 5-unit stationary radius, 120-second minimum duration, 300-second maximum observation interval, and explicit gap permission, three adjacent segments become `stationary_candidate`, `moving_observed`, and `observation_gap`. When gap marking is disallowed, the same excessive interval becomes `unverifiable`; Core does not infer lost link, anomaly, or continuous stationary motion.
 
-See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32, and the [Trajectory and Moving Object Profile](docs/spec/geotask-trajectory-profile-v0.1.md) for GT33–GT34.
+See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32, and the [Trajectory and Moving Object Profile](docs/spec/geotask-trajectory-profile-v0.1.md) for GT33–GT35.
 
 ## Implemented public Core
 
@@ -187,6 +188,7 @@ A `moving_object` declares stable identity without embedding position. A `trajec
 | `altitude_overlap` | altitude interval, altitude interval | boolean |
 | `trajectory_duration_seconds` | discrete trajectory | seconds |
 | `trajectory_segment_metrics` | discrete trajectory | ordered segment list with duration, horizontal distance, and average speed |
+| `trajectory_segment_classifications` | discrete trajectory + explicit thresholds | ordered `stationary_candidate`, `moving_observed`, `observation_gap`, or `unverifiable` records |
 
 ### Cross-task space contract
 
@@ -204,7 +206,7 @@ Documents may optionally declare `provenance.sources`, `evidence_bindings`, and 
 geotask benchmark core --enforce-performance --output core-benchmark.json
 ```
 
-The offline benchmark uses seven fixed fictional cases to cover all eleven public deterministic operators, result round trips, semantic replay digests, and provenance evidence bindings. It measures the full `JSON decode → canonicalize → validate → execute → serialize` path. The default 100 ms p95 threshold is only a broad local regression guardrail, not a cross-hardware ranking, production SLA, or model-quality benchmark. The retained report is registered as `geotask.core-benchmark-report` and can be strictly validated again.
+The offline benchmark uses eight fixed fictional cases to cover all twelve public deterministic operators, result round trips, semantic replay digests, and provenance evidence bindings. It measures the full `JSON decode → canonicalize → validate → execute → serialize` path. The default 100 ms p95 threshold is only a broad local regression guardrail, not a cross-hardware ranking, production SLA, or model-quality benchmark. The retained report is registered as `geotask.core-benchmark-report` and can be strictly validated again.
 
 ### Execution chain
 

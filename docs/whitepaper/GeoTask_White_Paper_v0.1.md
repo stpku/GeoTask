@@ -289,7 +289,7 @@ expected_results: # 可选测试夹具
 
 ### 4.2 算子
 
-公共 Core 当前提供十一个本地确定性算子：
+公共 Core 当前提供十二个本地确定性算子：
 
 | 算子 | 作用 |
 |---|---|
@@ -304,6 +304,7 @@ expected_results: # 可选测试夹具
 | `altitude_overlap` | 两个闭高度区间是否重叠 |
 | `trajectory_duration_seconds` | 离散轨迹首末明确观测之间的持续秒数，不插值、不预测 |
 | `trajectory_segment_metrics` | 相邻明确样本的持续时间、二维距离与平均速度，不把平均速度冒充瞬时状态 |
+| `trajectory_segment_classifications` | 使用调用方显式声明的停留与观测间隔阈值，将相邻分段分类为停留候选、已观测移动、观测缺口或不可核验，不推断失联或异常 |
 
 算子语义必须稳定。Domain Pack 可以组合 Core 算子，但不应修改同名算子的边界规则。
 

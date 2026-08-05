@@ -305,6 +305,81 @@ def trajectory_segment_metrics(samples: list[dict]) -> list[dict]:
     return segments
 
 
+def trajectory_segment_classifications(
+    samples: list[dict],
+    *,
+    stationary_radius_in_horizontal_unit: float,
+    minimum_stationary_duration_seconds: float,
+    maximum_observation_gap_seconds: float,
+    allow_observation_gap: bool,
+) -> list[dict]:
+    """Classify adjacent explicit samples using only caller-declared thresholds.
+
+    The operator returns exactly one classification for each adjacent sample
+    pair: ``stationary_candidate``, ``moving_observed``, ``observation_gap``,
+    or ``unverifiable``. It performs no interpolation and does not interpret an
+    observation gap as loss of link, anomaly, or a real-world action condition.
+    """
+    numeric_parameters = {
+        "stationary_radius_in_horizontal_unit": stationary_radius_in_horizontal_unit,
+        "minimum_stationary_duration_seconds": minimum_stationary_duration_seconds,
+        "maximum_observation_gap_seconds": maximum_observation_gap_seconds,
+    }
+    for name, value in numeric_parameters.items():
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"{name} must be a finite number")
+        if not math.isfinite(float(value)):
+            raise ValueError(f"{name} must be a finite number")
+    if stationary_radius_in_horizontal_unit < 0:
+        raise ValueError("stationary_radius_in_horizontal_unit must be non-negative")
+    if minimum_stationary_duration_seconds <= 0:
+        raise ValueError("minimum_stationary_duration_seconds must be positive")
+    if maximum_observation_gap_seconds <= 0:
+        raise ValueError("maximum_observation_gap_seconds must be positive")
+    if not isinstance(allow_observation_gap, bool):
+        raise ValueError("allow_observation_gap must be boolean")
+
+    classifications: list[dict] = []
+    for segment in trajectory_segment_metrics(samples):
+        duration = segment["duration_seconds"]
+        distance = segment["distance_in_horizontal_unit"]
+        if duration > maximum_observation_gap_seconds:
+            if allow_observation_gap:
+                classification = "observation_gap"
+                reason = "duration_exceeds_declared_maximum_gap"
+            else:
+                classification = "unverifiable"
+                reason = "duration_exceeds_maximum_gap_but_gap_marking_is_disallowed"
+        elif (
+            distance <= stationary_radius_in_horizontal_unit
+            and duration >= minimum_stationary_duration_seconds
+        ):
+            classification = "stationary_candidate"
+            reason = "within_declared_radius_and_meets_declared_minimum_duration"
+        else:
+            classification = "moving_observed"
+            reason = "does_not_meet_declared_stationary_candidate_conditions"
+
+        classifications.append(
+            {
+                **segment,
+                "classification": classification,
+                "classification_reason": reason,
+                "stationary_radius_in_horizontal_unit": float(
+                    stationary_radius_in_horizontal_unit
+                ),
+                "minimum_stationary_duration_seconds": float(
+                    minimum_stationary_duration_seconds
+                ),
+                "maximum_observation_gap_seconds": float(
+                    maximum_observation_gap_seconds
+                ),
+                "allow_observation_gap": allow_observation_gap,
+            }
+        )
+    return classifications
+
+
 def _time_to_minutes(t: str) -> int:
     """Convert HH:MM string to minutes since midnight."""
     parts = t.split(":")

@@ -74,6 +74,8 @@ _PLANAR_OPERATOR_NAMES: frozenset[str] = frozenset(
         "polygon_contains_point",
         "point_to_line_distance_2d",
         "rect_contains_point",
+        "trajectory_segment_metrics",
+        "trajectory_segment_classifications",
     }
 )
 _BOUNDARY_SENSITIVE_OPERATOR_NAMES: frozenset[str] = frozenset(
@@ -1433,6 +1435,85 @@ def _check_operator_binding(
                             )
                         )
 
+            if assertion.operator == "trajectory_segment_classifications":
+                diags.extend(
+                    _check_trajectory_classification_parameters(
+                        f"{apath}.parameters", assertion.parameters
+                    )
+                )
+
+    return diags
+
+
+def _check_trajectory_classification_parameters(path: str, parameters: dict) -> list[dict]:
+    """Validate the exact caller-authored trajectory classification thresholds."""
+    diags: list[dict] = []
+    required = {
+        "stationary_radius_in_horizontal_unit",
+        "minimum_stationary_duration_seconds",
+        "maximum_observation_gap_seconds",
+        "allow_observation_gap",
+    }
+    actual = set(parameters)
+    for name in sorted(required - actual):
+        diags.append(
+            _diagnostic(
+                f"{path}.{name}",
+                MISSING_FIELD,
+                f"trajectory_segment_classifications requires parameter '{name}'.",
+                "Declare every GT35 threshold explicitly; Core does not choose defaults.",
+            )
+        )
+    for name in sorted(actual - required):
+        diags.append(
+            _diagnostic(
+                f"{path}.{name}",
+                UNKNOWN_FIELD,
+                f"Unknown trajectory classification parameter '{name}'.",
+                f"Use only {sorted(required)}.",
+            )
+        )
+
+    numeric_rules = {
+        "stationary_radius_in_horizontal_unit": "non_negative",
+        "minimum_stationary_duration_seconds": "positive",
+        "maximum_observation_gap_seconds": "positive",
+    }
+    for name, rule in numeric_rules.items():
+        if name not in parameters:
+            continue
+        value = parameters[name]
+        valid = _is_finite_number(value)
+        if valid and rule == "non_negative":
+            valid = value >= 0
+        if valid and rule == "positive":
+            valid = value > 0
+        if not valid:
+            expectation = (
+                "a finite non-negative number"
+                if rule == "non_negative"
+                else "a finite positive number"
+            )
+            diags.append(
+                _diagnostic(
+                    f"{path}.{name}",
+                    INVALID_TYPE,
+                    f"Parameter '{name}' must be {expectation}.",
+                    "Provide an explicit numeric threshold in the document's declared units.",
+                )
+            )
+
+    if "allow_observation_gap" in parameters and not isinstance(
+        parameters["allow_observation_gap"], bool
+    ):
+        diags.append(
+            _diagnostic(
+                f"{path}.allow_observation_gap",
+                INVALID_TYPE,
+                "Parameter 'allow_observation_gap' must be boolean.",
+                "Use true to permit observation_gap, or false to return unverifiable.",
+            )
+        )
     return diags
 
 

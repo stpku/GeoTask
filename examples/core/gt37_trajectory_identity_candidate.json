@@ -1,0 +1,101 @@
+{
+  "scenario": {
+    "id": "gt37-trajectory-identity-candidate",
+    "title_zh": "两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？",
+    "title_en": "Can two trajectory fragments 60 seconds and 5 meters apart be automatically merged as one object?",
+    "problem": {
+      "first_trajectory_ref": "track_alpha",
+      "second_trajectory_ref": "track_beta",
+      "first_subject_ref": "provisional_alpha",
+      "second_subject_ref": "provisional_beta",
+      "maximum_identity_gap_seconds": 120,
+      "maximum_identity_distance_in_horizontal_unit": 10,
+      "require_same_object_class": true,
+      "horizontal_unit": "meter",
+      "interpolation": "none"
+    },
+    "deterministic_candidate": {
+      "candidate_state": "same_object_candidate",
+      "candidate_reason": "boundary_samples_within_declared_time_and_distance_limits",
+      "first_trajectory_ref": "track_alpha",
+      "second_trajectory_ref": "track_beta",
+      "first_subject_ref": "provisional_alpha",
+      "second_subject_ref": "provisional_beta",
+      "first_object_class": "uav",
+      "second_object_class": "uav",
+      "first_boundary_sample_index": 1,
+      "second_boundary_sample_index": 0,
+      "first_boundary_observed_at": "2026-08-05T08:02:00+08:00",
+      "second_boundary_observed_at": "2026-08-05T08:03:00+08:00",
+      "first_boundary_coordinates": [
+        36,
+        48
+      ],
+      "second_boundary_coordinates": [
+        39,
+        52
+      ],
+      "temporal_gap_seconds": 60.0,
+      "spatial_distance_in_horizontal_unit": 5.0,
+      "maximum_identity_gap_seconds": 120.0,
+      "maximum_identity_distance_in_horizontal_unit": 10.0,
+      "require_same_object_class": true,
+      "evidence_basis": "first_trajectory_final_sample_to_second_trajectory_first_sample",
+      "identity_merge_performed": false,
+      "subject_refs_mutated": false
+    },
+    "alternative_outcomes": {
+      "far_boundary": "different_object_candidate",
+      "class_mismatch_when_required": "different_object_candidate",
+      "temporal_gap_exceeds_maximum": "unverifiable"
+    },
+    "deterministic_result": {
+      "status": "verified",
+      "assurance_level": "local_deterministic",
+      "output_eligible": true
+    },
+    "not_inferred": [
+      "real_world_identity_equality",
+      "automatic_identity_merge",
+      "subject_ref_rewrite",
+      "continuous_path_between_fragments",
+      "sensor_track_association_truth",
+      "future_position",
+      "action_authorization"
+    ],
+    "incorrect_actions": [
+      "merge_provisional_alpha_and_provisional_beta",
+      "rewrite_track_beta_subject_ref",
+      "treat_same_object_candidate_as_verified_identity",
+      "interpolate_a_path_between_boundary_samples",
+      "ignore_the_declared_time_or_distance_limits",
+      "publish_or_execute_an_identity_update"
+    ],
+    "sha256": {
+      "task": "b98f7a698a27712464c9da98a18e87324642a082f3053a90bd41c546d217e359",
+      "execution_result": "2c59d17746cb695711625cf3c2bc96b89d3c6a1f8a2955226bc9c20a18c91334"
+    },
+    "boundaries": {
+      "fictional_data": true,
+      "trajectory_references_verified": true,
+      "subject_bindings_verified": true,
+      "object_classes_bound": true,
+      "boundary_samples_only": true,
+      "caller_declared_limits": true,
+      "same_object_candidate_computed": true,
+      "real_world_identity_verified": false,
+      "identity_merge_performed": false,
+      "subject_refs_mutated": false,
+      "trajectory_interpolated": false,
+      "trajectory_smoothed": false,
+      "trajectory_resampled": false,
+      "map_matched": false,
+      "future_position_predicted": false,
+      "external_truth_verified_by_core": false,
+      "production_output_released": false,
+      "command_sent": false,
+      "action_authorized_by_core": false,
+      "action_executed": false
+    }
+  }
+}

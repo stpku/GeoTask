@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 36,
+  "case_count": 37,
   "cases": [
     {
       "id": "GT01",
@@ -252,6 +252,13 @@
       "slug": "gt36",
       "title_zh": "两段平均速度变了，就能证明瞬时加速度和连续运动吗？",
       "previous": "gt35",
+      "next": "gt37"
+    },
+    {
+      "id": "GT37",
+      "slug": "gt37",
+      "title_zh": "两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？",
+      "previous": "gt36",
       "next": null
     }
   ]

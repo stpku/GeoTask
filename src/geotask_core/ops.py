@@ -505,6 +505,156 @@ def trajectory_segment_acceleration_estimates(
     return estimates
 
 
+def trajectory_identity_candidate(
+    first_trajectory: dict,
+    second_trajectory: dict,
+    *,
+    maximum_identity_gap_seconds: float,
+    maximum_identity_distance_in_horizontal_unit: float,
+    require_same_object_class: bool,
+) -> dict:
+    """Classify a boundary-sample identity candidate for two trajectories.
+
+    The function compares only the final explicit sample of the first
+    trajectory with the first explicit sample of the second trajectory. It
+    never mutates subject references, creates a merged identity, interpolates,
+    smooths, map matches, predicts, verifies external identity, publishes
+    output, authorizes action, or executes action.
+    """
+    for name, value, allow_zero in (
+        ("maximum_identity_gap_seconds", maximum_identity_gap_seconds, False),
+        (
+            "maximum_identity_distance_in_horizontal_unit",
+            maximum_identity_distance_in_horizontal_unit,
+            True,
+        ),
+    ):
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(float(value))
+        ):
+            raise ValueError(f"{name} must be a finite number")
+        if allow_zero:
+            if value < 0:
+                raise ValueError(f"{name} must be non-negative")
+        elif value <= 0:
+            raise ValueError(f"{name} must be positive")
+    if not isinstance(require_same_object_class, bool):
+        raise ValueError("require_same_object_class must be a boolean")
+
+    def _validate_context(name: str, context: dict) -> tuple[list[dict], str, str, str]:
+        if not isinstance(context, dict):
+            raise ValueError(f"{name} must be a trajectory context object")
+        required = {"trajectory_ref", "subject_ref", "object_class", "samples"}
+        missing = sorted(required - set(context))
+        if missing:
+            raise ValueError(f"{name} is missing required fields: {missing}")
+        trajectory_ref = context["trajectory_ref"]
+        subject_ref = context["subject_ref"]
+        object_class = context["object_class"]
+        if not isinstance(trajectory_ref, str) or not trajectory_ref.strip():
+            raise ValueError(f"{name}.trajectory_ref must be a non-empty string")
+        if not isinstance(subject_ref, str) or not subject_ref.strip():
+            raise ValueError(f"{name}.subject_ref must be a non-empty string")
+        if not isinstance(object_class, str) or not object_class.strip():
+            raise ValueError(f"{name}.object_class must be a non-empty string")
+        samples = context["samples"]
+        trajectory_segment_metrics(samples)
+        return samples, trajectory_ref, subject_ref, object_class
+
+    first_samples, first_ref, first_subject, first_class = _validate_context(
+        "first_trajectory", first_trajectory
+    )
+    second_samples, second_ref, second_subject, second_class = _validate_context(
+        "second_trajectory", second_trajectory
+    )
+    if first_ref == second_ref:
+        raise ValueError("trajectory_identity_candidate requires two distinct trajectories")
+
+    first_index = len(first_samples) - 1
+    second_index = 0
+    first_sample = first_samples[first_index]
+    second_sample = second_samples[second_index]
+    first_time = datetime.fromisoformat(
+        str(first_sample["observed_at"]).replace("Z", "+00:00")
+    )
+    second_time = datetime.fromisoformat(
+        str(second_sample["observed_at"]).replace("Z", "+00:00")
+    )
+    if first_time.tzinfo is None or second_time.tzinfo is None:
+        raise ValueError("trajectory_identity_candidate requires timezone-aware timestamps")
+    temporal_gap_seconds = (second_time - first_time).total_seconds()
+    if temporal_gap_seconds <= 0:
+        raise ValueError(
+            "trajectory_identity_candidate requires the second trajectory to start "
+            "after the first trajectory ends"
+        )
+
+    def _boundary_coordinates(value: object, *, label: str) -> list[float]:
+        if not isinstance(value, (list, tuple)) or len(value) != 2:
+            raise ValueError(f"{label} must contain exactly two coordinates")
+        coordinates = list(value)
+        for coordinate in coordinates:
+            if (
+                isinstance(coordinate, bool)
+                or not isinstance(coordinate, (int, float))
+                or not math.isfinite(float(coordinate))
+            ):
+                raise ValueError(f"{label} coordinates must be finite numbers")
+        return coordinates
+
+    first_coordinates = _boundary_coordinates(
+        first_sample["coordinates"], label="first boundary sample"
+    )
+    second_coordinates = _boundary_coordinates(
+        second_sample["coordinates"], label="second boundary sample"
+    )
+    spatial_distance = distance_2d(first_coordinates, second_coordinates)
+
+    if temporal_gap_seconds > maximum_identity_gap_seconds:
+        state = "unverifiable"
+        reason = "temporal_gap_exceeds_declared_maximum"
+    elif require_same_object_class and first_class != second_class:
+        state = "different_object_candidate"
+        reason = "object_classes_differ_under_declared_requirement"
+    elif spatial_distance <= maximum_identity_distance_in_horizontal_unit:
+        state = "same_object_candidate"
+        reason = "boundary_samples_within_declared_time_and_distance_limits"
+    else:
+        state = "different_object_candidate"
+        reason = "boundary_distance_exceeds_declared_maximum"
+
+    return {
+        "candidate_state": state,
+        "candidate_reason": reason,
+        "first_trajectory_ref": first_ref,
+        "second_trajectory_ref": second_ref,
+        "first_subject_ref": first_subject,
+        "second_subject_ref": second_subject,
+        "first_object_class": first_class,
+        "second_object_class": second_class,
+        "first_boundary_sample_index": first_index,
+        "second_boundary_sample_index": second_index,
+        "first_boundary_observed_at": first_time.isoformat(timespec="seconds"),
+        "second_boundary_observed_at": second_time.isoformat(timespec="seconds"),
+        "first_boundary_coordinates": first_coordinates,
+        "second_boundary_coordinates": second_coordinates,
+        "temporal_gap_seconds": temporal_gap_seconds,
+        "spatial_distance_in_horizontal_unit": spatial_distance,
+        "maximum_identity_gap_seconds": float(maximum_identity_gap_seconds),
+        "maximum_identity_distance_in_horizontal_unit": float(
+            maximum_identity_distance_in_horizontal_unit
+        ),
+        "require_same_object_class": require_same_object_class,
+        "evidence_basis": (
+            "first_trajectory_final_sample_to_second_trajectory_first_sample"
+        ),
+        "identity_merge_performed": False,
+        "subject_refs_mutated": False,
+    }
+
+
 def _time_to_minutes(t: str) -> int:
     """Convert HH:MM string to minutes since midnight."""
     parts = t.split(":")

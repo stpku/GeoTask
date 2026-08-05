@@ -680,6 +680,103 @@ CORE_BENCHMARK_CASES: tuple[dict[str, Any], ...] = (
             ]
         },
     ),
+    _case(
+        "trajectory_identity",
+        _base_document(
+            document_id="benchmark.trajectory-identity",
+            name="Trajectory identity candidate benchmark",
+            objects={
+                "provisional_a": {
+                    "type": "moving_object",
+                    "data": {
+                        "object_class": "uav",
+                        "identity": "fictional-benchmark-provisional-a",
+                    },
+                },
+                "provisional_b": {
+                    "type": "moving_object",
+                    "data": {
+                        "object_class": "uav",
+                        "identity": "fictional-benchmark-provisional-b",
+                    },
+                },
+                "track_a": {
+                    "type": "trajectory",
+                    "data": {
+                        "subject_ref": "provisional_a",
+                        "interpolation": "none",
+                        "samples": [
+                            {
+                                "observed_at": "2026-08-05T08:00:00+08:00",
+                                "coordinates": [0, 0],
+                            },
+                            {
+                                "observed_at": "2026-08-05T08:02:00+08:00",
+                                "coordinates": [36, 48],
+                            },
+                        ],
+                    },
+                },
+                "track_b": {
+                    "type": "trajectory",
+                    "data": {
+                        "subject_ref": "provisional_b",
+                        "interpolation": "none",
+                        "samples": [
+                            {
+                                "observed_at": "2026-08-05T08:03:00+08:00",
+                                "coordinates": [39, 52],
+                            },
+                            {
+                                "observed_at": "2026-08-05T08:05:00+08:00",
+                                "coordinates": [75, 100],
+                            },
+                        ],
+                    },
+                },
+            },
+            operators=["trajectory_identity_candidate"],
+            assertions=[
+                {
+                    "id": "identity_candidate",
+                    "operator": "trajectory_identity_candidate",
+                    "object_refs": ["track_a", "track_b"],
+                    "parameters": {
+                        "maximum_identity_gap_seconds": 120,
+                        "maximum_identity_distance_in_horizontal_unit": 10,
+                        "require_same_object_class": True,
+                    },
+                    "expected_type": "object",
+                }
+            ],
+        ),
+        expected_outputs={
+            "identity_candidate": {
+                "candidate_state": "same_object_candidate",
+                "candidate_reason": "boundary_samples_within_declared_time_and_distance_limits",
+                "first_trajectory_ref": "track_a",
+                "second_trajectory_ref": "track_b",
+                "first_subject_ref": "provisional_a",
+                "second_subject_ref": "provisional_b",
+                "first_object_class": "uav",
+                "second_object_class": "uav",
+                "first_boundary_sample_index": 1,
+                "second_boundary_sample_index": 0,
+                "first_boundary_observed_at": "2026-08-05T08:02:00+08:00",
+                "second_boundary_observed_at": "2026-08-05T08:03:00+08:00",
+                "first_boundary_coordinates": [36, 48],
+                "second_boundary_coordinates": [39, 52],
+                "temporal_gap_seconds": 60.0,
+                "spatial_distance_in_horizontal_unit": 5.0,
+                "maximum_identity_gap_seconds": 120.0,
+                "maximum_identity_distance_in_horizontal_unit": 10.0,
+                "require_same_object_class": True,
+                "evidence_basis": "first_trajectory_final_sample_to_second_trajectory_first_sample",
+                "identity_merge_performed": False,
+                "subject_refs_mutated": False,
+            }
+        },
+    ),
 )
 
 

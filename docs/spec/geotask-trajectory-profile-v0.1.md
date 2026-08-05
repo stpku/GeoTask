@@ -1,8 +1,8 @@
 # GeoTask Trajectory and Moving Object Profile v0.1
 
 Status: implemented public profile  
-Reference cases: GT33–GT36
-Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, and bounded scalar acceleration estimates only
+Reference cases: GT33–GT37
+Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, bounded scalar acceleration estimates, and boundary-sample identity candidates only
 
 ## Purpose
 
@@ -75,6 +75,8 @@ A segment becomes `stationary_candidate` only when its distance is within the de
 
 `trajectory_segment_acceleration_estimates(trajectory, parameters...)` builds one record for every adjacent pair of trajectory segments. The caller must explicitly provide `representative_time_method: segment_midpoint` and a finite positive `maximum_observation_gap_seconds`. Each segment-average speed is bound to its temporal midpoint; scalar acceleration is `(next_average_speed - prior_average_speed) / (next_midpoint_time - prior_midpoint_time)`. When either participating segment exceeds the declared maximum gap, the transition state is `unverifiable` and both speed change and acceleration are `null`. The operator does not claim instantaneous or vector acceleration, infer direction change, interpolate or smooth observations, predict future position, or authorize action.
 
+`trajectory_identity_candidate(first_trajectory, second_trajectory, parameters...)` compares only the first trajectory's final explicit sample with the second trajectory's first explicit sample. The caller must declare a finite positive `maximum_identity_gap_seconds`, a finite non-negative `maximum_identity_distance_in_horizontal_unit`, and boolean `require_same_object_class`. A positive boundary gap above the declared maximum returns `unverifiable` before class or distance evaluation. Otherwise, a required class mismatch or excessive boundary distance returns `different_object_candidate`; a class-compatible boundary within both limits returns `same_object_candidate`. The result preserves both trajectory refs, subject refs, object classes, boundary samples, time gap, distance, and policy. It never merges identities, mutates `subject_ref`, proves real-world identity, interpolates a path, predicts motion, publishes, authorizes, or executes action.
+
 ## Fail-closed behavior
 
 Validation fails when:
@@ -87,7 +89,8 @@ Validation fails when:
 - a static `polyline` is supplied to the trajectory operator;
 - any GT35 threshold is missing, non-finite, negative where non-negative is required, non-positive where positive is required, or has the wrong type;
 - undeclared classification parameters are present;
-- GT36 omits either the midpoint method or maximum-gap parameter, uses a method other than `segment_midpoint`, or declares a non-finite/non-positive maximum gap.
+- GT36 omits either the midpoint method or maximum-gap parameter, uses a method other than `segment_midpoint`, or declares a non-finite/non-positive maximum gap;
+- GT37 omits any identity-candidate parameter, declares an invalid time/distance/class policy, reuses the same trajectory ref twice, or places the second trajectory boundary at or before the first trajectory boundary.
 
 ## Boundary
 
@@ -107,7 +110,11 @@ A valid trajectory proves only that the submitted discrete sequence is structura
 - `examples/core/gt36_trajectory_acceleration.yaml`
 - `examples/core/gt36_trajectory_acceleration_result.json`
 - `examples/core/gt36_trajectory_acceleration.json`
+- `examples/core/gt37_trajectory_identity_candidate.yaml`
+- `examples/core/gt37_trajectory_identity_candidate_result.json`
+- `examples/core/gt37_trajectory_identity_candidate.json`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
 - `site/gt35/index.html`
 - `site/gt36/index.html`
+- `site/gt37/index.html`

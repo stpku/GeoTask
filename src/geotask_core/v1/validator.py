@@ -77,6 +77,7 @@ _PLANAR_OPERATOR_NAMES: frozenset[str] = frozenset(
         "trajectory_segment_metrics",
         "trajectory_segment_classifications",
         "trajectory_segment_acceleration_estimates",
+        "trajectory_identity_candidate",
     }
 )
 _BOUNDARY_SENSITIVE_OPERATOR_NAMES: frozenset[str] = frozenset(
@@ -1448,6 +1449,12 @@ def _check_operator_binding(
                         f"{apath}.parameters", assertion.parameters
                     )
                 )
+            if assertion.operator == "trajectory_identity_candidate":
+                diags.extend(
+                    _check_trajectory_identity_parameters(
+                        f"{apath}.parameters", assertion.parameters
+                    )
+                )
 
     return diags
 
@@ -1573,6 +1580,73 @@ def _check_trajectory_acceleration_parameters(path: str, parameters: dict) -> li
                     "Provide the caller-declared maximum interval in seconds.",
                 )
             )
+    return diags
+
+
+def _check_trajectory_identity_parameters(path: str, parameters: dict) -> list[dict]:
+    """Validate the exact GT37 identity-candidate parameter contract."""
+    diags: list[dict] = []
+    required = {
+        "maximum_identity_gap_seconds",
+        "maximum_identity_distance_in_horizontal_unit",
+        "require_same_object_class",
+    }
+    actual = set(parameters)
+    for name in sorted(required - actual):
+        diags.append(
+            _diagnostic(
+                f"{path}.{name}",
+                MISSING_FIELD,
+                f"trajectory_identity_candidate requires parameter '{name}'.",
+                "Declare the GT37 time, distance, and class policy explicitly.",
+            )
+        )
+    for name in sorted(actual - required):
+        diags.append(
+            _diagnostic(
+                f"{path}.{name}",
+                UNKNOWN_FIELD,
+                f"Unknown trajectory identity parameter '{name}'.",
+                f"Use only {sorted(required)}.",
+            )
+        )
+
+    if "maximum_identity_gap_seconds" in parameters:
+        value = parameters["maximum_identity_gap_seconds"]
+        if not _is_finite_number(value) or value <= 0:
+            diags.append(
+                _diagnostic(
+                    f"{path}.maximum_identity_gap_seconds",
+                    INVALID_TYPE,
+                    "Parameter 'maximum_identity_gap_seconds' must be a finite positive number.",
+                    "Provide the caller-declared maximum boundary interval in seconds.",
+                )
+            )
+    if "maximum_identity_distance_in_horizontal_unit" in parameters:
+        value = parameters["maximum_identity_distance_in_horizontal_unit"]
+        if not _is_finite_number(value) or value < 0:
+            diags.append(
+                _diagnostic(
+                    f"{path}.maximum_identity_distance_in_horizontal_unit",
+                    INVALID_TYPE,
+                    (
+                        "Parameter 'maximum_identity_distance_in_horizontal_unit' "
+                        "must be a finite non-negative number."
+                    ),
+                    "Provide the boundary distance in the document horizontal unit.",
+                )
+            )
+    if "require_same_object_class" in parameters and not isinstance(
+        parameters["require_same_object_class"], bool
+    ):
+        diags.append(
+            _diagnostic(
+                f"{path}.require_same_object_class",
+                INVALID_TYPE,
+                "Parameter 'require_same_object_class' must be a boolean.",
+                "Declare whether object-class equality is required.",
+            )
+        )
     return diags
 
 

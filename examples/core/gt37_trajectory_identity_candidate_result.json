@@ -1,0 +1,104 @@
+{
+  "geotask_result": {
+    "schema_version": "1.0",
+    "task_id": "gt37-trajectory-identity-candidate",
+    "execution": {
+      "mode": "local_only",
+      "status": "completed",
+      "started_at": "2026-08-05T08:40:00+00:00",
+      "finished_at": "2026-08-05T08:40:00+00:00"
+    },
+    "checks": [
+      {
+        "assertion_id": "identity_candidate",
+        "operator": "trajectory_identity_candidate",
+        "object_refs": [
+          "track_alpha",
+          "track_beta"
+        ],
+        "executor": "local",
+        "value": {
+          "candidate_state": "same_object_candidate",
+          "candidate_reason": "boundary_samples_within_declared_time_and_distance_limits",
+          "first_trajectory_ref": "track_alpha",
+          "second_trajectory_ref": "track_beta",
+          "first_subject_ref": "provisional_alpha",
+          "second_subject_ref": "provisional_beta",
+          "first_object_class": "uav",
+          "second_object_class": "uav",
+          "first_boundary_sample_index": 1,
+          "second_boundary_sample_index": 0,
+          "first_boundary_observed_at": "2026-08-05T08:02:00+08:00",
+          "second_boundary_observed_at": "2026-08-05T08:03:00+08:00",
+          "first_boundary_coordinates": [
+            36,
+            48
+          ],
+          "second_boundary_coordinates": [
+            39,
+            52
+          ],
+          "temporal_gap_seconds": 60.0,
+          "spatial_distance_in_horizontal_unit": 5.0,
+          "maximum_identity_gap_seconds": 120.0,
+          "maximum_identity_distance_in_horizontal_unit": 10.0,
+          "require_same_object_class": true,
+          "evidence_basis": "first_trajectory_final_sample_to_second_trajectory_first_sample",
+          "identity_merge_performed": false,
+          "subject_refs_mutated": false
+        },
+        "unit": "",
+        "status": "verified",
+        "assurance_level": "local_deterministic",
+        "deterministic": true,
+        "evidence_refs": [],
+        "error": null
+      }
+    ],
+    "outputs": {
+      "identity_candidate": {
+        "candidate_state": "same_object_candidate",
+        "candidate_reason": "boundary_samples_within_declared_time_and_distance_limits",
+        "first_trajectory_ref": "track_alpha",
+        "second_trajectory_ref": "track_beta",
+        "first_subject_ref": "provisional_alpha",
+        "second_subject_ref": "provisional_beta",
+        "first_object_class": "uav",
+        "second_object_class": "uav",
+        "first_boundary_sample_index": 1,
+        "second_boundary_sample_index": 0,
+        "first_boundary_observed_at": "2026-08-05T08:02:00+08:00",
+        "second_boundary_observed_at": "2026-08-05T08:03:00+08:00",
+        "first_boundary_coordinates": [
+          36,
+          48
+        ],
+        "second_boundary_coordinates": [
+          39,
+          52
+        ],
+        "temporal_gap_seconds": 60.0,
+        "spatial_distance_in_horizontal_unit": 5.0,
+        "maximum_identity_gap_seconds": 120.0,
+        "maximum_identity_distance_in_horizontal_unit": 10.0,
+        "require_same_object_class": true,
+        "evidence_basis": "first_trajectory_final_sample_to_second_trajectory_first_sample",
+        "identity_merge_performed": false,
+        "subject_refs_mutated": false
+      }
+    },
+    "summary": {
+      "total_checks": 1,
+      "verified": 1,
+      "contradicted": 0,
+      "need_review": 0,
+      "invalid": 0
+    },
+    "overall": {
+      "status": "verified",
+      "assurance_level": "local_deterministic"
+    },
+    "warnings": [],
+    "errors": []
+  }
+}

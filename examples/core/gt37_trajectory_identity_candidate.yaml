@@ -1,0 +1,84 @@
+geotask:
+  id: gt37-trajectory-identity-candidate
+  name: GT37 Trajectory Identity Candidate
+  description: Classify two discrete trajectory fragments using explicit boundary-sample time, distance, and object-class policy without merging identities.
+  schema_version: "1.0"
+  language: en
+  domain: general_spatial
+
+space:
+  crs:
+    type: local_cartesian
+    identifier: fictional_local_xy_m
+  axes:
+    x: east
+    y: north
+  horizontal_unit: meter
+  coordinate_order: [x, y]
+  boundary_semantics: closed
+
+objects:
+  provisional_alpha:
+    type: moving_object
+    object_class: uav
+    identity: fictional-provisional-alpha
+  provisional_beta:
+    type: moving_object
+    object_class: uav
+    identity: fictional-provisional-beta
+  track_alpha:
+    type: trajectory
+    subject_ref: provisional_alpha
+    interpolation: none
+    samples:
+      - observed_at: "2026-08-05T08:00:00+08:00"
+        coordinates: [0, 0]
+      - observed_at: "2026-08-05T08:02:00+08:00"
+        coordinates: [36, 48]
+  track_beta:
+    type: trajectory
+    subject_ref: provisional_beta
+    interpolation: none
+    samples:
+      - observed_at: "2026-08-05T08:03:00+08:00"
+        coordinates: [39, 52]
+      - observed_at: "2026-08-05T08:05:00+08:00"
+        coordinates: [75, 100]
+
+operator_set:
+  - trajectory_identity_candidate
+
+tasks:
+  - id: classify_identity_candidate
+    family: trajectory_identity
+    goal: Classify whether the two trajectory fragments are a same-object candidate without merging identities.
+    assertions:
+      - id: identity_candidate
+        operator: trajectory_identity_candidate
+        object_refs: [track_alpha, track_beta]
+        parameters:
+          maximum_identity_gap_seconds: 120
+          maximum_identity_distance_in_horizontal_unit: 10
+          require_same_object_class: true
+        expected_type: object
+        on_error: stop
+    outputs: [identity_candidate]
+
+execution:
+  mode: local_only
+  steps:
+    - id: classify_identity
+      executor: local
+      assertion_refs: [identity_candidate]
+      depends_on: []
+      on_error: stop
+
+verification:
+  mode: local_deterministic
+  required_assurance: local_deterministic
+
+output_contract:
+  format: structured
+  required_fields: [identity_candidate]
+  allow_additional_fields: false
+  allow_model_inference: false

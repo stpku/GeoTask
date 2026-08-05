@@ -154,6 +154,34 @@ class TrajectorySegmentAccelerationEstimate:
 
 
 @dataclass
+class TrajectoryIdentityCandidate:
+    """A boundary-sample identity candidate without object-graph mutation."""
+
+    candidate_state: str
+    candidate_reason: str
+    first_trajectory_ref: str
+    second_trajectory_ref: str
+    first_subject_ref: str
+    second_subject_ref: str
+    first_object_class: str
+    second_object_class: str
+    first_boundary_sample_index: int
+    second_boundary_sample_index: int
+    first_boundary_observed_at: str
+    second_boundary_observed_at: str
+    first_boundary_coordinates: list[float]
+    second_boundary_coordinates: list[float]
+    temporal_gap_seconds: float
+    spatial_distance_in_horizontal_unit: float
+    maximum_identity_gap_seconds: float
+    maximum_identity_distance_in_horizontal_unit: float
+    require_same_object_class: bool
+    evidence_basis: str
+    identity_merge_performed: bool
+    subject_refs_mutated: bool
+
+
+@dataclass
 class StirDocument:
     """Top-level GeoTask (formerly STIR) document after parsing."""
 

@@ -1,8 +1,8 @@
 # GeoTask Trajectory and Moving Object Profile v0.1
 
 Status: implemented public profile  
-Reference cases: GT33–GT35
-Scope: discrete observations, adjacent-sample metrics, and caller-declared segment classifications only
+Reference cases: GT33–GT36
+Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, and bounded scalar acceleration estimates only
 
 ## Purpose
 
@@ -71,7 +71,9 @@ The segment operator does not treat average speed as instantaneous velocity and 
 - `maximum_observation_gap_seconds`, a finite positive duration;
 - `allow_observation_gap`, a boolean that decides whether an excessive interval may be labeled `observation_gap`.
 
-A segment becomes `stationary_candidate` only when its distance is within the declared radius and its duration reaches the declared minimum. A duration above the maximum gap becomes `observation_gap` only when gap marking is allowed; otherwise the segment is `unverifiable`. All other valid segments are `moving_observed`. Core does not select default thresholds, infer lost link or anomaly, prove continuous stationary motion, or interpolate inside a gap. Acceleration remains outside this profile version.
+A segment becomes `stationary_candidate` only when its distance is within the declared radius and its duration reaches the declared minimum. A duration above the maximum gap becomes `observation_gap` only when gap marking is allowed; otherwise the segment is `unverifiable`. All other valid segments are `moving_observed`. Core does not select default thresholds, infer lost link or anomaly, prove continuous stationary motion, or interpolate inside a gap.
+
+`trajectory_segment_acceleration_estimates(trajectory, parameters...)` builds one record for every adjacent pair of trajectory segments. The caller must explicitly provide `representative_time_method: segment_midpoint` and a finite positive `maximum_observation_gap_seconds`. Each segment-average speed is bound to its temporal midpoint; scalar acceleration is `(next_average_speed - prior_average_speed) / (next_midpoint_time - prior_midpoint_time)`. When either participating segment exceeds the declared maximum gap, the transition state is `unverifiable` and both speed change and acceleration are `null`. The operator does not claim instantaneous or vector acceleration, infer direction change, interpolate or smooth observations, predict future position, or authorize action.
 
 ## Fail-closed behavior
 
@@ -84,7 +86,8 @@ Validation fails when:
 - interpolation is anything other than `none`;
 - a static `polyline` is supplied to the trajectory operator;
 - any GT35 threshold is missing, non-finite, negative where non-negative is required, non-positive where positive is required, or has the wrong type;
-- undeclared classification parameters are present.
+- undeclared classification parameters are present;
+- GT36 omits either the midpoint method or maximum-gap parameter, uses a method other than `segment_midpoint`, or declares a non-finite/non-positive maximum gap.
 
 ## Boundary
 
@@ -101,6 +104,10 @@ A valid trajectory proves only that the submitted discrete sequence is structura
 - `examples/core/gt35_trajectory_stop_move_gap.yaml`
 - `examples/core/gt35_trajectory_stop_move_gap_result.json`
 - `examples/core/gt35_trajectory_stop_move_gap.json`
+- `examples/core/gt36_trajectory_acceleration.yaml`
+- `examples/core/gt36_trajectory_acceleration_result.json`
+- `examples/core/gt36_trajectory_acceleration.json`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
 - `site/gt35/index.html`
+- `site/gt36/index.html`

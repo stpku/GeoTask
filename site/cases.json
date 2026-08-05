@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 35,
+  "case_count": 36,
   "cases": [
     {
       "id": "GT01",
@@ -245,6 +245,13 @@
       "slug": "gt35",
       "title_zh": "位置几乎没变就是停留，十分钟没观测就是失联吗？",
       "previous": "gt34",
+      "next": "gt36"
+    },
+    {
+      "id": "GT36",
+      "slug": "gt36",
+      "title_zh": "两段平均速度变了，就能证明瞬时加速度和连续运动吗？",
+      "previous": "gt35",
       "next": null
     }
   ]

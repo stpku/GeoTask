@@ -309,3 +309,11 @@ cases:
     page: site/gt35/index.html
     example: examples/core/gt35_trajectory_stop_move_gap.json
     lastmod: "2026-08-05"
+  - id: GT36
+    slug: gt36
+    stage: dynamic_world_objects
+    title_zh: 两段平均速度变了，就能证明瞬时加速度和连续运动吗？
+    summary_zh: 以相邻分段中点为代表时刻，在调用方声明的300秒最大观测间隔内计算平均速度变化率；输出零加速度、正加速度和缺口驱动的不可核验，不推断瞬时或向量加速度、方向变化、未来位置或现实动作。
+    page: site/gt36/index.html
+    example: examples/core/gt36_trajectory_acceleration.json
+    lastmod: "2026-08-05"

@@ -1,7 +1,7 @@
 GeoTask Core Public Release Report
 ==================================
-Started:  2026-08-05 04:54:46 UTC
-Finished: 2026-08-05 04:54:48 UTC
+Started:  2026-08-05 05:52:41 UTC
+Finished: 2026-08-05 05:52:43 UTC
 Duration: 2.4s
 Stages:   5 passed, 0 failed
-Output:   /home/dev/geotask-public-gt35-verify
+Output:   /home/dev/geotask-public-gt36-verify

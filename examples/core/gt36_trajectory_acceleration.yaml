@@ -1,0 +1,76 @@
+geotask:
+  id: gt36-trajectory-acceleration
+  name: GT36 Trajectory Acceleration and Motion Continuity
+  description: Estimate scalar acceleration between adjacent segment-average speeds with explicit midpoint timing and a caller-declared maximum observation interval.
+  schema_version: "1.0"
+  language: en
+  domain: general_spatial
+
+space:
+  crs:
+    type: local_cartesian
+    identifier: fictional_local_xy_m
+  axes:
+    x: east
+    y: north
+  horizontal_unit: meter
+  coordinate_order: [x, y]
+  boundary_semantics: closed
+
+objects:
+  uav_alpha:
+    type: moving_object
+    object_class: uav
+    identity: fictional-uav-alpha
+  uav_alpha_track:
+    type: trajectory
+    subject_ref: uav_alpha
+    interpolation: none
+    samples:
+      - observed_at: "2026-08-05T08:00:00+08:00"
+        coordinates: [0, 0]
+      - observed_at: "2026-08-05T08:02:00+08:00"
+        coordinates: [36, 48]
+      - observed_at: "2026-08-05T08:05:00+08:00"
+        coordinates: [36, 138]
+      - observed_at: "2026-08-05T08:07:00+08:00"
+        coordinates: [156, 138]
+      - observed_at: "2026-08-05T08:17:00+08:00"
+        coordinates: [156, 138]
+
+operator_set:
+  - trajectory_segment_acceleration_estimates
+
+tasks:
+  - id: estimate_trajectory_acceleration
+    family: trajectory_acceleration
+    goal: Estimate scalar acceleration only across continuity-eligible adjacent segments.
+    assertions:
+      - id: trajectory_acceleration_estimates
+        operator: trajectory_segment_acceleration_estimates
+        object_refs: [uav_alpha_track]
+        parameters:
+          representative_time_method: segment_midpoint
+          maximum_observation_gap_seconds: 300
+        expected_type: array
+        on_error: stop
+    outputs: [trajectory_acceleration_estimates]
+
+execution:
+  mode: local_only
+  steps:
+    - id: estimate_acceleration
+      executor: local
+      assertion_refs: [trajectory_acceleration_estimates]
+      depends_on: []
+      on_error: stop
+
+verification:
+  mode: local_deterministic
+  required_assurance: local_deterministic
+
+output_contract:
+  format: structured
+  required_fields: [trajectory_acceleration_estimates]
+  allow_additional_fields: false
+  allow_model_inference: false

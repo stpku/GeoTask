@@ -218,7 +218,7 @@ External adapters may implement model calls or other operations, but their outpu
 
 ### 3.6 Public conformance and performance gate
 
-The public Core benchmark executes fixed fictional cases through production parsing, canonicalization, validation, execution, and result serialization. It covers all twelve deterministic operators, including discrete trajectory duration, adjacent-segment metrics, and caller-declared segment classifications, replay hashes, result round trips, and evidence propagation.
+The public Core benchmark executes fixed fictional cases through production parsing, canonicalization, validation, execution, and result serialization. It covers all thirteen deterministic operators, including discrete trajectory duration, adjacent-segment metrics, caller-declared segment classifications, and bounded scalar acceleration estimates, replay hashes, result round trips, and evidence propagation.
 
 Modules:
 

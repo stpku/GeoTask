@@ -380,6 +380,131 @@ def trajectory_segment_classifications(
     return classifications
 
 
+def trajectory_segment_acceleration_estimates(
+    samples: list[dict],
+    *,
+    representative_time_method: str,
+    maximum_observation_gap_seconds: float,
+) -> list[dict]:
+    """Estimate scalar acceleration between adjacent segment-average speeds.
+
+    Each segment is represented at its temporal midpoint. Acceleration is the
+    change between two adjacent segment-average speeds divided by the elapsed
+    time between those midpoints. If either participating segment exceeds the
+    caller-declared maximum observation interval, the transition is returned as
+    ``unverifiable`` and no speed change or acceleration value is emitted.
+
+    The result is not an instantaneous or vector acceleration measurement and
+    performs no interpolation, smoothing, resampling, prediction, map matching,
+    lost-link inference, anomaly inference, authorization, or action execution.
+    """
+    if representative_time_method != "segment_midpoint":
+        raise ValueError("representative_time_method must be 'segment_midpoint'")
+    if (
+        isinstance(maximum_observation_gap_seconds, bool)
+        or not isinstance(maximum_observation_gap_seconds, (int, float))
+        or not math.isfinite(float(maximum_observation_gap_seconds))
+    ):
+        raise ValueError("maximum_observation_gap_seconds must be a finite number")
+    if maximum_observation_gap_seconds <= 0:
+        raise ValueError("maximum_observation_gap_seconds must be positive")
+
+    segments = trajectory_segment_metrics(samples)
+    estimates: list[dict] = []
+    for transition_index in range(len(segments) - 1):
+        prior = segments[transition_index]
+        next_segment = segments[transition_index + 1]
+
+        prior_start = datetime.fromisoformat(
+            str(prior["start_observed_at"]).replace("Z", "+00:00")
+        )
+        prior_end = datetime.fromisoformat(
+            str(prior["end_observed_at"]).replace("Z", "+00:00")
+        )
+        next_start = datetime.fromisoformat(
+            str(next_segment["start_observed_at"]).replace("Z", "+00:00")
+        )
+        next_end = datetime.fromisoformat(
+            str(next_segment["end_observed_at"]).replace("Z", "+00:00")
+        )
+        if prior_end != next_start:
+            raise ValueError(
+                "trajectory_segment_acceleration_estimates requires adjacent segments "
+                "to share one explicit sample"
+            )
+
+        prior_midpoint = prior_start + (prior_end - prior_start) / 2
+        next_midpoint = next_start + (next_end - next_start) / 2
+        representative_interval_seconds = (
+            next_midpoint - prior_midpoint
+        ).total_seconds()
+        if representative_interval_seconds <= 0:
+            raise ValueError(
+                "trajectory_segment_acceleration_estimates requires increasing "
+                "segment midpoint times"
+            )
+
+        prior_gap = prior["duration_seconds"] > maximum_observation_gap_seconds
+        next_gap = next_segment["duration_seconds"] > maximum_observation_gap_seconds
+        if prior_gap or next_gap:
+            continuity_state = "unverifiable"
+            if prior_gap and next_gap:
+                continuity_reason = "both_segments_exceed_declared_maximum_gap"
+            elif prior_gap:
+                continuity_reason = "prior_segment_exceeds_declared_maximum_gap"
+            else:
+                continuity_reason = "next_segment_exceeds_declared_maximum_gap"
+            speed_change = None
+            acceleration = None
+        else:
+            continuity_state = "continuous_observation"
+            continuity_reason = "both_segments_within_declared_maximum_gap"
+            speed_change = (
+                next_segment["average_speed_in_horizontal_units_per_second"]
+                - prior["average_speed_in_horizontal_units_per_second"]
+            )
+            acceleration = speed_change / representative_interval_seconds
+
+        estimates.append(
+            {
+                "transition_index": transition_index,
+                "prior_segment_index": prior["segment_index"],
+                "next_segment_index": next_segment["segment_index"],
+                "shared_sample_index": prior["end_sample_index"],
+                "prior_start_sample_index": prior["start_sample_index"],
+                "prior_end_sample_index": prior["end_sample_index"],
+                "next_start_sample_index": next_segment["start_sample_index"],
+                "next_end_sample_index": next_segment["end_sample_index"],
+                "prior_start_observed_at": prior["start_observed_at"],
+                "shared_observed_at": prior["end_observed_at"],
+                "next_end_observed_at": next_segment["end_observed_at"],
+                "prior_start_coordinates": prior["start_coordinates"],
+                "shared_coordinates": prior["end_coordinates"],
+                "next_end_coordinates": next_segment["end_coordinates"],
+                "prior_duration_seconds": prior["duration_seconds"],
+                "next_duration_seconds": next_segment["duration_seconds"],
+                "prior_average_speed_in_horizontal_units_per_second": prior[
+                    "average_speed_in_horizontal_units_per_second"
+                ],
+                "next_average_speed_in_horizontal_units_per_second": next_segment[
+                    "average_speed_in_horizontal_units_per_second"
+                ],
+                "prior_representative_at": prior_midpoint.isoformat(timespec="seconds"),
+                "next_representative_at": next_midpoint.isoformat(timespec="seconds"),
+                "representative_interval_seconds": representative_interval_seconds,
+                "speed_change_in_horizontal_units_per_second": speed_change,
+                "acceleration_in_horizontal_units_per_second_squared": acceleration,
+                "continuity_state": continuity_state,
+                "continuity_reason": continuity_reason,
+                "representative_time_method": representative_time_method,
+                "maximum_observation_gap_seconds": float(
+                    maximum_observation_gap_seconds
+                ),
+            }
+        )
+    return estimates
+
+
 def _time_to_minutes(t: str) -> int:
     """Convert HH:MM string to minutes since midnight."""
     parts = t.split(":")

@@ -34,6 +34,7 @@ invariants.
 | `trajectory_duration_seconds` | `float` | trajectory | Elapsed seconds between the first and last explicit samples; no interpolation or prediction. |
 | `trajectory_segment_metrics` | `list` | trajectory | Ordered adjacent-sample bindings with duration, planar distance, and average speed in document horizontal units per second. |
 | `trajectory_segment_classifications` | `list` | trajectory + explicit thresholds | Classifies each adjacent segment as `stationary_candidate`, `moving_observed`, `observation_gap`, or `unverifiable` without selecting defaults or interpolating gaps. |
+| `trajectory_segment_acceleration_estimates` | `list` | trajectory + explicit midpoint/gap parameters | Estimates scalar acceleration between adjacent segment-average speeds; any participating segment beyond the declared maximum gap yields `unverifiable` with null acceleration. |
 
 ## Metadata Fields
 

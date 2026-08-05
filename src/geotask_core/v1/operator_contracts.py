@@ -702,6 +702,123 @@ TRAJECTORY_SEGMENT_CLASSIFICATIONS = OperatorContract(
 )
 
 
+TRAJECTORY_SEGMENT_ACCELERATION_ESTIMATES = OperatorContract(
+    name="trajectory_segment_acceleration_estimates",
+    version="1.0",
+    family="trajectory_acceleration",
+    description=(
+        "Estimate scalar acceleration between adjacent segment-average speeds "
+        "using explicit midpoint timing and a caller-declared continuity limit."
+    ),
+    arity=1,
+    input_types=["trajectory"],
+    output={
+        "type": "array",
+        "unit_behavior": "horizontal_unit_per_second_squared_when_continuous",
+    },
+    deterministic=True,
+    semantics={
+        "transition_definition": "every adjacent pair of trajectory segments",
+        "representative_time_method": "segment_midpoint",
+        "required_parameters": [
+            "representative_time_method",
+            "maximum_observation_gap_seconds",
+        ],
+        "continuity_vocabulary": ["continuous_observation", "unverifiable"],
+        "acceleration_formula": (
+            "(next_average_speed - prior_average_speed) / "
+            "(next_midpoint_time - prior_midpoint_time)"
+        ),
+        "unverifiable_rule": (
+            "prior_duration > maximum_observation_gap or "
+            "next_duration > maximum_observation_gap"
+        ),
+        "interpolation": "none",
+        "excluded_behaviors": [
+            "implicit representative-time selection",
+            "implicit maximum-gap selection",
+            "instantaneous acceleration claim",
+            "vector acceleration claim",
+            "direction-change inference",
+            "trajectory interpolation",
+            "smoothing",
+            "resampling",
+            "loss-of-link inference",
+            "anomaly inference",
+            "future-position prediction",
+            "map matching",
+            "external truth verification",
+            "output release",
+            "command delivery",
+            "action authorization",
+            "action execution",
+        ],
+    },
+    model_execution={
+        "level": "M1",
+        "supported": True,
+        "recommended_max_items": 1000,
+    },
+    invariants=[
+        {
+            "id": "transition_count",
+            "expression": "len(result) == max(len(samples) - 2, 0)",
+        },
+        {
+            "id": "shared_sample_binding",
+            "expression": (
+                "prior_end_sample_index == next_start_sample_index == shared_sample_index"
+            ),
+        },
+        {
+            "id": "unverifiable_has_no_acceleration",
+            "expression": (
+                "continuity_state == unverifiable implies speed_change == null "
+                "and acceleration == null"
+            ),
+        },
+    ],
+    error_codes=[
+        "invalid_parameters",
+        "invalid_interval",
+        "invalid_coordinates",
+        "invalid_reference",
+        "object_type_mismatch",
+    ],
+    examples=[
+        {
+            "inputs": {
+                "trajectory": [
+                    {
+                        "observed_at": "2026-08-05T08:00:00+08:00",
+                        "coordinates": [0, 0],
+                    },
+                    {
+                        "observed_at": "2026-08-05T08:02:00+08:00",
+                        "coordinates": [36, 48],
+                    },
+                    {
+                        "observed_at": "2026-08-05T08:05:00+08:00",
+                        "coordinates": [36, 138],
+                    },
+                ],
+                "parameters": {
+                    "representative_time_method": "segment_midpoint",
+                    "maximum_observation_gap_seconds": 300,
+                },
+            },
+            "expected": [
+                {
+                    "continuity_state": "continuous_observation",
+                    "acceleration_in_horizontal_units_per_second_squared": 0.0,
+                }
+            ],
+        }
+    ],
+    implementation="geotask_core.ops.trajectory_segment_acceleration_estimates",
+)
+
+
 # -- Operator Registry
 
 
@@ -1056,6 +1173,7 @@ _BUILTIN_CONTRACTS: list[OperatorContract] = [
     TRAJECTORY_DURATION_SECONDS,
     TRAJECTORY_SEGMENT_METRICS,
     TRAJECTORY_SEGMENT_CLASSIFICATIONS,
+    TRAJECTORY_SEGMENT_ACCELERATION_ESTIMATES,
 ]
 
 #: Default pre-populated registry with all built-in Core operators.

@@ -20,6 +20,7 @@ EXPECTED_PUBLIC_SAFE_OPERATORS = {
     "trajectory_duration_seconds",
     "trajectory_segment_metrics",
     "trajectory_segment_classifications",
+    "trajectory_segment_acceleration_estimates",
 }
 
 

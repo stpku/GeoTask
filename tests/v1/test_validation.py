@@ -363,6 +363,7 @@ def test_operator_registry_has_builtin_operators() -> None:
         "trajectory_duration_seconds",
         "trajectory_segment_metrics",
         "trajectory_segment_classifications",
+        "trajectory_segment_acceleration_estimates",
     ]
 
 

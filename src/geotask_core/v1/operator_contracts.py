@@ -493,6 +493,104 @@ TRAJECTORY_DURATION_SECONDS = OperatorContract(
 )
 
 
+TRAJECTORY_SEGMENT_METRICS = OperatorContract(
+    name="trajectory_segment_metrics",
+    version="1.0",
+    family="trajectory_measurement",
+    description=(
+        "Ordered duration, planar distance, and average-speed metrics for every "
+        "adjacent pair of explicit trajectory samples."
+    ),
+    arity=1,
+    input_types=["trajectory"],
+    output={
+        "type": "array",
+        "unit_behavior": "horizontal_unit_and_second_fields",
+    },
+    deterministic=True,
+    semantics={
+        "segment_definition": "every adjacent explicit sample pair",
+        "sample_order": "strictly increasing timezone-aware observed_at",
+        "distance_unit": "inherit_horizontal_unit",
+        "duration_unit": "second",
+        "speed_unit": "horizontal_unit_per_second",
+        "interpolation": "none",
+        "excluded_behaviors": [
+            "trajectory interpolation",
+            "smoothing",
+            "resampling",
+            "future-position prediction",
+            "map matching",
+            "external truth verification",
+            "output release",
+            "command delivery",
+            "action authorization",
+            "action execution",
+        ],
+    },
+    model_execution={
+        "level": "M1",
+        "supported": True,
+        "recommended_max_items": 1000,
+    },
+    invariants=[
+        {
+            "id": "segment_count",
+            "expression": "len(result) == len(samples) - 1",
+        },
+        {
+            "id": "positive_duration",
+            "expression": "all(segment.duration_seconds > 0)",
+        },
+        {
+            "id": "non_negative_distance",
+            "expression": "all(segment.distance_in_horizontal_unit >= 0)",
+        },
+        {
+            "id": "average_speed_ratio",
+            "expression": "speed == distance / duration_seconds",
+        },
+    ],
+    error_codes=[
+        "invalid_interval",
+        "invalid_coordinates",
+        "invalid_reference",
+        "object_type_mismatch",
+    ],
+    examples=[
+        {
+            "inputs": {
+                "trajectory": [
+                    {
+                        "observed_at": "2026-08-05T08:00:00+08:00",
+                        "coordinates": [0, 0],
+                    },
+                    {
+                        "observed_at": "2026-08-05T08:02:00+08:00",
+                        "coordinates": [12, 5],
+                    },
+                ]
+            },
+            "expected": [
+                {
+                    "segment_index": 0,
+                    "start_sample_index": 0,
+                    "end_sample_index": 1,
+                    "start_observed_at": "2026-08-05T08:00:00+08:00",
+                    "end_observed_at": "2026-08-05T08:02:00+08:00",
+                    "start_coordinates": [0, 0],
+                    "end_coordinates": [12, 5],
+                    "duration_seconds": 120.0,
+                    "distance_in_horizontal_unit": 13.0,
+                    "average_speed_in_horizontal_units_per_second": 13.0 / 120.0,
+                }
+            ],
+        }
+    ],
+    implementation="geotask_core.ops.trajectory_segment_metrics",
+)
+
+
 # -- Operator Registry
 
 
@@ -845,6 +943,7 @@ _BUILTIN_CONTRACTS: list[OperatorContract] = [
     TIME_OVERLAP,
     ALTITUDE_OVERLAP,
     TRAJECTORY_DURATION_SECONDS,
+    TRAJECTORY_SEGMENT_METRICS,
 ]
 
 #: Default pre-populated registry with all built-in Core operators.

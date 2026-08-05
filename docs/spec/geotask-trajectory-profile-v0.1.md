@@ -1,8 +1,8 @@
 # GeoTask Trajectory and Moving Object Profile v0.1
 
 Status: implemented public profile  
-Reference case: GT33  
-Scope: discrete observations only
+Reference cases: GT33–GT34
+Scope: discrete observations and adjacent-sample metrics only
 
 ## Purpose
 
@@ -52,9 +52,17 @@ The contract requires:
 - sample times are strictly increasing;
 - coordinates are exactly two finite numbers in document coordinate order.
 
-## Deterministic operator
+## Deterministic operators
 
-`trajectory_duration_seconds(trajectory)` returns the elapsed seconds between the first and last explicit sample. It does not inspect intermediate geometry beyond validation and does not compute distance, speed, acceleration, interpolation, prediction, or map matching.
+`trajectory_duration_seconds(trajectory)` returns the elapsed seconds between the first and last explicit sample.
+
+`trajectory_segment_metrics(trajectory)` returns one ordered record for every adjacent explicit sample pair. Each record binds the start/end sample indexes, timestamps, and coordinates, then reports:
+
+- `duration_seconds`;
+- `distance_in_horizontal_unit`, inherited from the document Space contract;
+- `average_speed_in_horizontal_units_per_second`.
+
+The segment operator does not treat average speed as instantaneous velocity and does not interpolate, smooth, resample, predict, map match, verify external truth, publish output, deliver commands, authorize action, or execute action. Acceleration and stop/move classification remain outside this profile version.
 
 ## Fail-closed behavior
 
@@ -76,4 +84,8 @@ A valid trajectory proves only that the submitted discrete sequence is structura
 - `examples/core/gt33_moving_object_trajectory.yaml`
 - `examples/core/gt33_moving_object_trajectory_result.json`
 - `examples/core/gt33_moving_object_trajectory.json`
+- `examples/core/gt34_trajectory_segment_metrics.yaml`
+- `examples/core/gt34_trajectory_segment_metrics_result.json`
+- `examples/core/gt34_trajectory_segment_metrics.json`
 - `site/gt33/index.html`
+- `site/gt34/index.html`

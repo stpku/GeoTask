@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 33,
+  "case_count": 34,
   "cases": [
     {
       "id": "GT01",
@@ -231,6 +231,13 @@
       "slug": "gt33",
       "title_zh": "三个带时间位置点连起来，就是一条可验证轨迹吗？",
       "previous": "gt32",
+      "next": "gt34"
+    },
+    {
+      "id": "GT34",
+      "slug": "gt34",
+      "title_zh": "三个轨迹样本之间，每一段到底移动了多远、多快？",
+      "previous": "gt33",
       "next": null
     }
   ]

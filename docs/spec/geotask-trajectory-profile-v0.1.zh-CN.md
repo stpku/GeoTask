@@ -1,8 +1,8 @@
 # GeoTask轨迹与移动对象Profile v0.1
 
 状态：公共实现已落地  
-参考案例：GT33  
-范围：仅表达离散观测
+参考案例：GT33—GT34
+范围：仅表达离散观测与相邻样本指标
 
 ## 目的
 
@@ -54,7 +54,15 @@ uav_alpha_track:
 
 ## 确定性算子
 
-`trajectory_duration_seconds(trajectory)`返回第一个和最后一个明确样本之间的秒数。除结构验证外，它不解释中间几何，不计算距离、速度、加速度、插值、预测或地图匹配。
+`trajectory_duration_seconds(trajectory)`返回第一个和最后一个明确样本之间的秒数。
+
+`trajectory_segment_metrics(trajectory)`为每一对相邻明确样本生成一条有序分段记录。每条记录绑定起止样本索引、时间戳和坐标，并输出：
+
+- `duration_seconds`；
+- `distance_in_horizontal_unit`，继承文档Space合同中的水平单位；
+- `average_speed_in_horizontal_units_per_second`。
+
+分段算子不会把平均速度当作瞬时速度，也不执行插值、平滑、重采样、预测、地图匹配、外部真实性验证、生产发布、指令发送、动作授权或动作执行。加速度以及停留/移动分类仍不属于本Profile版本。
 
 ## 失败关闭
 
@@ -76,4 +84,8 @@ uav_alpha_track:
 - `examples/core/gt33_moving_object_trajectory.yaml`
 - `examples/core/gt33_moving_object_trajectory_result.json`
 - `examples/core/gt33_moving_object_trajectory.json`
+- `examples/core/gt34_trajectory_segment_metrics.yaml`
+- `examples/core/gt34_trajectory_segment_metrics_result.json`
+- `examples/core/gt34_trajectory_segment_metrics.json`
 - `site/gt33/index.html`
+- `site/gt34/index.html`

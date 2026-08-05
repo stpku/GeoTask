@@ -1,0 +1,127 @@
+{
+  "scenario": {
+    "id": "gt34-trajectory-segment-metrics",
+    "title_zh": "三个轨迹样本之间，每一段到底移动了多远、多快？",
+    "title_en": "How far and how fast did each explicit trajectory segment move?",
+    "problem": {
+      "moving_object": "uav_alpha",
+      "object_class": "uav",
+      "trajectory": "uav_alpha_track",
+      "subject_ref": "uav_alpha",
+      "sample_count": 3,
+      "segment_count": 2,
+      "interpolation": "none",
+      "horizontal_unit": "meter",
+      "duration_unit": "second",
+      "speed_unit": "horizontal_unit_per_second"
+    },
+    "explicit_samples": [
+      {
+        "observed_at": "2026-08-05T08:00:00+08:00",
+        "coordinates": [
+          0,
+          0
+        ]
+      },
+      {
+        "observed_at": "2026-08-05T08:02:00+08:00",
+        "coordinates": [
+          36,
+          48
+        ]
+      },
+      {
+        "observed_at": "2026-08-05T08:05:00+08:00",
+        "coordinates": [
+          36,
+          138
+        ]
+      }
+    ],
+    "deterministic_segments": [
+      {
+        "segment_index": 0,
+        "start_sample_index": 0,
+        "end_sample_index": 1,
+        "start_observed_at": "2026-08-05T08:00:00+08:00",
+        "end_observed_at": "2026-08-05T08:02:00+08:00",
+        "start_coordinates": [
+          0,
+          0
+        ],
+        "end_coordinates": [
+          36,
+          48
+        ],
+        "duration_seconds": 120.0,
+        "distance_in_horizontal_unit": 60.0,
+        "average_speed_in_horizontal_units_per_second": 0.5
+      },
+      {
+        "segment_index": 1,
+        "start_sample_index": 1,
+        "end_sample_index": 2,
+        "start_observed_at": "2026-08-05T08:02:00+08:00",
+        "end_observed_at": "2026-08-05T08:05:00+08:00",
+        "start_coordinates": [
+          36,
+          48
+        ],
+        "end_coordinates": [
+          36,
+          138
+        ],
+        "duration_seconds": 180.0,
+        "distance_in_horizontal_unit": 90.0,
+        "average_speed_in_horizontal_units_per_second": 0.5
+      }
+    ],
+    "deterministic_result": {
+      "status": "verified",
+      "assurance_level": "local_deterministic",
+      "output_eligible": true
+    },
+    "not_computed": [
+      "intermediate_positions",
+      "smoothed_trajectory",
+      "resampled_trajectory",
+      "future_positions",
+      "acceleration",
+      "map_matched_path",
+      "real_world_identity_authenticity",
+      "action_command"
+    ],
+    "incorrect_actions": [
+      "treat_non_adjacent_samples_as_one_segment_without_declaration",
+      "divide_distance_by_zero_or_reversed_time",
+      "label_all_horizontal_units_as_meters",
+      "interpolate_or_smooth_between_samples",
+      "predict_future_motion_from_two_segment_averages",
+      "treat_local_segment_metrics_as_action_authorization"
+    ],
+    "sha256": {
+      "task": "5716cbb63ba4c71f48d462e56a2f45b1f330c5516286fc6947ad1651393ea9fe",
+      "execution_result": "338e52a7a75de59709d5157dd9206d941214caf771548882a878c4d4dd4e4719"
+    },
+    "boundaries": {
+      "fictional_data": true,
+      "sample_order_verified": true,
+      "subject_binding_verified": true,
+      "adjacent_segment_binding_verified": true,
+      "duration_positive": true,
+      "distance_unit_inherited_from_document": true,
+      "speed_unit_composed_from_horizontal_unit_and_second": true,
+      "trajectory_interpolated": false,
+      "trajectory_smoothed": false,
+      "trajectory_resampled": false,
+      "future_position_predicted": false,
+      "acceleration_computed": false,
+      "map_matched": false,
+      "external_truth_verified_by_core": false,
+      "production_output_released": false,
+      "command_sent": false,
+      "action_authorized_by_core": false,
+      "action_executed": false
+    }
+  }
+}

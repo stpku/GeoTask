@@ -376,6 +376,80 @@ CORE_BENCHMARK_CASES: tuple[dict[str, Any], ...] = (
         ),
         expected_outputs={"trajectory_duration": 300.0},
     ),
+    _case(
+        "trajectory_segments",
+        _base_document(
+            document_id="benchmark.trajectory-segments",
+            name="Discrete trajectory segment benchmark",
+            objects={
+                "moving_asset": {
+                    "type": "moving_object",
+                    "data": {
+                        "object_class": "uav",
+                        "identity": "fictional-benchmark-segment-uav",
+                    },
+                },
+                "asset_track": {
+                    "type": "trajectory",
+                    "data": {
+                        "subject_ref": "moving_asset",
+                        "interpolation": "none",
+                        "samples": [
+                            {
+                                "observed_at": "2026-08-05T08:00:00+08:00",
+                                "coordinates": [0, 0],
+                            },
+                            {
+                                "observed_at": "2026-08-05T08:02:00+08:00",
+                                "coordinates": [36, 48],
+                            },
+                            {
+                                "observed_at": "2026-08-05T08:05:00+08:00",
+                                "coordinates": [36, 138],
+                            },
+                        ],
+                    },
+                },
+            },
+            operators=["trajectory_segment_metrics"],
+            assertions=[
+                {
+                    "id": "trajectory_segments",
+                    "operator": "trajectory_segment_metrics",
+                    "object_refs": ["asset_track"],
+                    "expected_type": "array",
+                }
+            ],
+        ),
+        expected_outputs={
+            "trajectory_segments": [
+                {
+                    "segment_index": 0,
+                    "start_sample_index": 0,
+                    "end_sample_index": 1,
+                    "start_observed_at": "2026-08-05T08:00:00+08:00",
+                    "end_observed_at": "2026-08-05T08:02:00+08:00",
+                    "start_coordinates": [0, 0],
+                    "end_coordinates": [36, 48],
+                    "duration_seconds": 120.0,
+                    "distance_in_horizontal_unit": 60.0,
+                    "average_speed_in_horizontal_units_per_second": 0.5,
+                },
+                {
+                    "segment_index": 1,
+                    "start_sample_index": 1,
+                    "end_sample_index": 2,
+                    "start_observed_at": "2026-08-05T08:02:00+08:00",
+                    "end_observed_at": "2026-08-05T08:05:00+08:00",
+                    "start_coordinates": [36, 48],
+                    "end_coordinates": [36, 138],
+                    "duration_seconds": 180.0,
+                    "distance_in_horizontal_unit": 90.0,
+                    "average_speed_in_horizontal_units_per_second": 0.5,
+                },
+            ]
+        },
+    ),
 )
 
 

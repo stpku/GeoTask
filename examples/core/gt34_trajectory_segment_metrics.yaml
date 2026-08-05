@@ -1,0 +1,69 @@
+geotask:
+  id: gt34-trajectory-segment-metrics
+  name: GT34 Trajectory Segment Metrics
+  description: Compute explicit adjacent-sample duration, distance, and average-speed metrics for one fictional moving object.
+  schema_version: "1.0"
+  language: en
+  domain: general_spatial
+
+space:
+  crs:
+    type: local_cartesian
+    identifier: fictional_local_xy_m
+  axes:
+    x: east
+    y: north
+  horizontal_unit: meter
+  coordinate_order: [x, y]
+  boundary_semantics: closed
+
+objects:
+  uav_alpha:
+    type: moving_object
+    object_class: uav
+    identity: fictional-uav-alpha
+  uav_alpha_track:
+    type: trajectory
+    subject_ref: uav_alpha
+    interpolation: none
+    samples:
+      - observed_at: "2026-08-05T08:00:00+08:00"
+        coordinates: [0, 0]
+      - observed_at: "2026-08-05T08:02:00+08:00"
+        coordinates: [36, 48]
+      - observed_at: "2026-08-05T08:05:00+08:00"
+        coordinates: [36, 138]
+
+operator_set:
+  - trajectory_segment_metrics
+
+tasks:
+  - id: measure_trajectory_segments
+    family: trajectory_measurement
+    goal: Compute one explicit metric record for each adjacent trajectory sample pair.
+    assertions:
+      - id: trajectory_segments
+        operator: trajectory_segment_metrics
+        object_refs: [uav_alpha_track]
+        expected_type: array
+        on_error: stop
+    outputs: [trajectory_segments]
+
+execution:
+  mode: local_only
+  steps:
+    - id: measure_segments
+      executor: local
+      assertion_refs: [trajectory_segments]
+      depends_on: []
+      on_error: stop
+
+verification:
+  mode: local_deterministic
+  required_assurance: local_deterministic
+
+output_contract:
+  format: structured
+  required_fields: [trajectory_segments]
+  allow_additional_fields: false
+  allow_model_inference: false

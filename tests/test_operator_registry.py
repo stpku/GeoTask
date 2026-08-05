@@ -18,6 +18,7 @@ EXPECTED_PUBLIC_SAFE_OPERATORS = {
     "time_overlap",
     "altitude_overlap",
     "trajectory_duration_seconds",
+    "trajectory_segment_metrics",
 }
 
 
@@ -41,7 +42,7 @@ def test_operator_metadata_has_required_fields():
         assert not missing, f"{metadata.get('name')} missing {missing}"
         assert metadata["name"] in EXPECTED_PUBLIC_SAFE_OPERATORS
         assert metadata["input_shape"]
-        assert metadata["output_type"] in {"float", "bool"}
+        assert metadata["output_type"] in {"float", "bool", "list"}
         assert metadata["deterministic"] is True
         assert metadata["supported_geometry"]
         assert metadata["error_codes"]

@@ -32,6 +32,7 @@ invariants.
 | `time_overlap` | `bool` | time interval + time interval | Boundary contact counts as overlap. |
 | `altitude_overlap` | `bool` | altitude range + altitude range | Boundary contact counts as overlap. |
 | `trajectory_duration_seconds` | `float` | trajectory | Elapsed seconds between the first and last explicit samples; no interpolation or prediction. |
+| `trajectory_segment_metrics` | `list` | trajectory | Ordered adjacent-sample bindings with duration, planar distance, and average speed in document horizontal units per second. |
 
 ## Metadata Fields
 
@@ -39,7 +40,7 @@ Each registry entry includes:
 
 - `name`: stable operator identifier.
 - `input_shape`: expected public-safe input shape.
-- `output_type`: result type, currently `float` or `bool`.
+- `output_type`: result type, currently `float`, `bool`, or `list`.
 - `deterministic`: always `true` for Core operators.
 - `supported_geometry`: compatible object or interval categories.
 - `error_codes`: stable diagnostic categories that callers can surface.

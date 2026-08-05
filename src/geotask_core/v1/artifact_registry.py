@@ -76,6 +76,10 @@ from geotask_core.v1.trajectory_identity_adjudication import (
     TRAJECTORY_IDENTITY_ADJUDICATION_SCHEMA_ID,
     TRAJECTORY_IDENTITY_ADJUDICATION_SCHEMA_VERSION,
 )
+from geotask_core.v1.identity_merge_proposal import (
+    IDENTITY_MERGE_PROPOSAL_SCHEMA_ID,
+    IDENTITY_MERGE_PROPOSAL_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -193,6 +197,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "trajectory-identity-adjudication*.json",
         "trajectory_identity_adjudication*.json",
         "examples/core/trajectory_identity_adjudication*.json",
+    ),
+    "geotask.identity-merge-proposal": (
+        "*.geotask-identity-merge-proposal.json",
+        "identity-merge-proposal*.json",
+        "identity_merge_proposal*.json",
+        "examples/core/identity_merge_proposal*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -614,6 +624,37 @@ _ARTIFACTS = (
             "Generic validation does not recheck exact source bytes. Binding validation and "
             "adjudication do not fetch external truth, merge identities, mutate subject_ref, "
             "release production output, authorize action, or execute action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.identity-merge-proposal",
+        title="GeoTask Identity Merge Proposal v0.1",
+        kind="identity_merge_proposal",
+        schema_id=IDENTITY_MERGE_PROPOSAL_SCHEMA_ID,
+        schema_version=IDENTITY_MERGE_PROPOSAL_SCHEMA_VERSION,
+        schema_path="schemas/geotask-identity-merge-proposal-v0.1.schema.json",
+        specification_path="docs/spec/geotask-identity-merge-proposal-v0.1.md",
+        wrapper_key="identity_merge_proposal",
+        generation_command=None,
+        generation_note=(
+            "Produced by bounded Core proposal generation from one exact GT38 identity "
+            "adjudication plus caller-declared canonical-subject selection, rationale, "
+            "and approval roles."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.identity-merge-proposal "
+            "<identity-merge-proposal.json>"
+        ),
+        description=(
+            "Review-only proposal that selects one existing canonical subject, scopes one "
+            "subject-reference rewrite, preserves the other subject as an alias, and records "
+            "blocking, withdrawal, approval, and reversal requirements."
+        ),
+        execution_boundary=(
+            "Generic validation does not recheck exact source bytes. Proposal generation and "
+            "binding validation do not approve or apply the proposal, create a new identity, "
+            "delete aliases, mutate the object graph or World State, release production output, "
+            "authorize action, or execute action."
         ),
     ),
     ArtifactDescriptor(

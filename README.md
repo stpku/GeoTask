@@ -24,11 +24,11 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - **验证与控制机制负责维护世界：** 保留已证实事实，标记冲突和未知，限定纠偏范围，并管理行动资格；
 - **运行时与行业能力包负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
 
-> **工程边界：** GeoTask核心提供可验证时空世界模型的公共状态契约、验证内核和制品基础，“可验证时空任务协议”仍是当前实现形式。当前公共实现覆盖观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、受限重算推导、受限后继状态物化、增量复核结果，以及验证提供方描述符、验证请求、验证响应和可信保证档案。公共核心只校验结构、语义和精确绑定，不获取外部真实数据、不推断未声明的来源优先级、不发布生产结果，也不授权或执行现实动作。
+> **工程边界：** GeoTask核心提供可验证时空世界模型的公共状态规范、接口契约、验证内核和制品基础，“可验证时空任务协议”仍是当前实现形式。当前公共实现覆盖观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、受限重算推导、受限后继状态物化、增量复核结果，以及验证提供方描述符、验证请求、验证响应、可信保证策略、对象同一性审定和对象身份归并提案。公共核心只校验结构、语义和原始字节级绑定，不获取外部事实、不推断未声明的来源优先级、不发布生产环境输出，也不授权或执行现实动作。
 
 ## 从这里开始
 
-- [立即体验GT01—GT38](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT39](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -80,7 +80,7 @@ flowchart LR
   N[新观察到来] --> W
 ```
 
-当前公共核心已经实现世界对象与空间合同、来源与证据绑定、观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、来源绑定的受限重算推导、受限后继状态物化、增量复核结果、验证提供方公共合同、世界命题、确定性关系验证、控制状态、智能体机械修复和限定路径重试。自动差异计算、对象身份发现、未声明策略的歧义冲突消解、影响关系自动发现与传播执行和通用推导方法仍属于后续路线图。
+当前公共核心已经实现世界对象与空间参考约束、来源与证据绑定、观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、来源绑定的受限重算推导、受限后继状态物化、增量复核结果、验证提供方公共接口契约、对象同一性审定、对象身份归并提案、世界命题、确定性关系验证、控制状态、智能体机械修复和限定路径重试。自动差异计算、未声明策略的歧义冲突消解、影响关系自动发现与传播执行、归并提案审批执行和通用推导方法仍属于后续路线图。
 
 ## 5分钟运行
 
@@ -123,7 +123,7 @@ geotask validate my_distance.yaml
 geotask run my_distance.yaml
 ```
 
-## 38个公开应用案例
+## 39个公开应用案例
 
 GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示模型方案如何被结构化、复算、验错、补证、纠偏和行动门控。
 
@@ -135,7 +135,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 | 行动与可行性 | GT10—GT20 | 约束确认以后，下一步具体执行什么？ |
 | 世界状态循环 | GT21—GT28 | 多源观测、状态变化、影响范围、限定纠偏和行动门禁怎样闭环？ |
 | 验证提供方生态 | GT29—GT32 | 多个外部来源冲突、显式裁决、渐进授权和行动门禁怎样形成独立可信保证？ |
-| 动态世界对象 | GT33—GT38 | 移动对象、时间观测、轨迹分段、距离、平均速度、显式阈值分类、加速度估计、身份候选与独立证据裁决怎样绑定，而不静默插值、自动合并身份、改写引用、发布或执行动作？ |
+| 动态世界对象 | GT33—GT39 | 移动对象、时间观测、轨迹指标、显式阈值分类、对象同一性候选与审定、身份归并提案怎样绑定，而不静默插值、自动归并身份、改写引用、更新世界状态、发布或执行动作？ |
 
 重点案例：
 
@@ -161,17 +161,18 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT27：** 东区风速由6升至12米/秒后，只复核同区域且处于更新生效时段的任务A、D；任务A变为不适飞，任务D复核后仍适飞，任务B、C继续复用；
 - **GT28：** 路线、高度、天气窗口和风速预检全部通过，但空域、运营人、起降场、气象放行和任务授权仍缺失；预检结论可引用，自动起飞授权与起飞指令保持阻断；
 - **GT29：** 模拟气象服务给出8米/秒，现场传感器给出13米/秒；两个来源都新鲜且来自不同独立分组，但结果仍然冲突，因此天气结论保持未知并请求第三个独立来源；
-- **GT30：** 第三个独立来源也给出13米/秒，形成二比一；但可信保证档案未声明多数表决，因此系统仍保持未知、保留8米/秒少数来源，并请求显式气象裁决；
+- **GT30：** 第三个独立来源也给出13米/秒，形成二比一；但可信保证策略未声明多数表决，因此系统仍保持未知、保留8米/秒少数来源，并请求显式气象审定；
 - **GT31：** 人工复核精确绑定三份冲突响应和虚构上下文证据，保留原始读数并将两份13米/秒限定为局部测试气流影响；8米/秒天气结论可用，但自动起飞授权和起飞指令继续阻断；
 - **GT32：** 空域、运营人、起降场、气象放行和任务授权逐项到达，未知项从5降至0；最后两个起飞相关输出转为可用，但公共核心不发布结果、不发送指令，也不执行飞行动作；
 - **GT33：** 三次带时区位置观测绑定同一移动对象，形成严格递增的离散轨迹并确定性计算持续300秒；公共核心不插值、不预测、不地图匹配，也不执行现实动作。
 - **GT34：** 三次明确观测按相邻顺序绑定为两个轨迹分段，分别计算120/180秒持续时间、60/90个文档水平单位距离和0.5水平单位/秒平均速度；公共核心不把平均速度冒充瞬时速度，不插值、预测或执行动作；
 - **GT35：** 调用方显式声明5米停留半径、120秒最短停留时长、300秒最大观测间隔和缺口许可后，三个相邻分段分别输出`stationary_candidate`、`moving_observed`和`observation_gap`；缺口不允许时同一超限分段返回`unverifiable`，公共核心不推断失联、异常或连续停留；
 - **GT36：** 以分段中点为代表时刻，在300秒最大观测间隔内计算相邻分段平均速度变化率；前两个转换输出0和1/300水平单位/秒²，第三个转换因下一分段持续600秒而返回`unverifiable`并保持速度差和加速度为`null`，公共核心不推断瞬时或向量加速度、方向变化、未来位置或现实动作；
-- **GT37：** 两个不同临时身份绑定的轨迹边界相隔60秒、5米且对象类别相同，在调用方声明的120秒、10米和同类要求下输出`same_object_candidate`；公共核心保留两个原始身份和`subject_ref`，不自动合并对象、不证明现实身份，也不发布或执行身份更新。
-- **GT38：** GT37身份候选与一份精确绑定的Verification Request、一份调用方声明的Assurance Profile、两个独立Provider及其响应形成`same_object_confirmed`裁决；公共核心只输出`recommend_identity_merge_review`和`review_identity_merge`，保留两个原始主体，不合并对象、不改写`subject_ref`、不发布、不授权也不执行身份更新。
+- **GT37：** 两个不同临时身份绑定的轨迹边界相隔60秒、5米且对象类别相同，在调用方声明的120秒、10米和同类要求下输出`same_object_candidate`对象同一性候选；公共核心保留两个原始身份和`subject_ref`，不自动归并对象、不证明现实身份，也不发布或执行身份更新。
+- **GT38：** GT37对象同一性候选与一份原始字节级绑定的验证请求、一份调用方声明的可信保证策略、两个独立验证提供方及其响应形成`same_object_confirmed`对象同一性审定结果；公共核心只输出归并复核建议，保留两个原始主体，不归并对象、不改写`subject_ref`、不发布、不授权也不执行身份更新。
+- **GT39：** GT38对象同一性审定结果与调用方选择的主对象引用、提案理由和审批角色形成`ready_for_review`对象身份归并提案；提案只覆盖两条原始轨迹，保留非主主体为别名，并记录阻断条件、撤销条件和归并回退方案，不创建新身份、不删除别名、不修改对象关系图或世界状态。
 
-GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33—GT38见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)，GT38裁决制品见[Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md)。
+GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33—GT39见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)，GT38审定制品见[Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md)，GT39归并提案见[Identity Merge Proposal v0.1](docs/spec/geotask-identity-merge-proposal-v0.1.md)。
 
 ## 当前公共Core真正支持什么
 
@@ -200,7 +201,7 @@ GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT
 | `trajectory_segment_acceleration_estimates` | 离散轨迹+显式中点/间隔参数 | 相邻分段平均速度变化率；缺口转换返回`unverifiable`且数值为`null` |
 | `trajectory_identity_candidate` | 两段离散轨迹+显式时间/距离/类别策略 | `same_object_candidate`、`different_object_candidate`或`unverifiable`；不合并身份、不改写引用 |
 
-### 跨任务空间合同
+### 跨任务空间参考与单位约束
 
 同一文档中的全部任务共享一套CRS、坐标顺序、水平/垂直单位和边界语义。平面算子只接受`local_cartesian`或带标识的`projected`坐标，且坐标顺序必须为`[x, y]`；Core不会把经纬度直接当作欧氏坐标，也不会自动换算单位。距离断言与高度对象必须匹配文档单位；当前边界敏感算子只支持`closed`，声明`open`会失败关闭。纯时间任务不受平面CRS门禁影响。
 
@@ -288,7 +289,7 @@ geotask verify examples/core/verification_session_uav_recheck.json --state examp
 geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json --bind base-world-state=examples/core/world_state_uav_separation_recheck.json --bind successor-world-state=examples/core/world_state_uav_separation_successor.json --bind impact-graph-uav-recheck=examples/core/impact_graph_uav_recheck.json --bind correction-uav-recheck=examples/core/correction_request_uav_recheck.json --bind discrepancy-uav-recheck=examples/core/discrepancy_report_uav_recheck.json --bind result-gt16-reevaluation=examples/core/incremental_reevaluation_uav_execution_result.json --format json
 ```
 
-公共仓还提供[`examples/adapters/http_json_runtime_adapter.py`](examples/adapters/http_json_runtime_adapter.py)，演示如何在`geotask_core`之外把已离线检查的Descriptor绑定到独立HTTP Runtime。配套的[`examples/endpoints/reference_runtime_http_server.py`](examples/endpoints/reference_runtime_http_server.py)可在回环地址启动一个真实HTTP Endpoint，形成Adapter—Endpoint端到端闭环。两者均不在线获取Descriptor、不处理凭据、不重试、不调用模型，也不执行生产动作；传输错误与Runtime状态严格分离，返回结果仍由Core执行Descriptor / Request / Response三方合同校验。
+公共仓还提供[`examples/adapters/http_json_runtime_adapter.py`](examples/adapters/http_json_runtime_adapter.py)，演示如何在`geotask_core`之外把已离线检查的Descriptor绑定到独立HTTP Runtime。配套的[`examples/endpoints/reference_runtime_http_server.py`](examples/endpoints/reference_runtime_http_server.py)可在回环地址启动一个真实HTTP Endpoint，形成Adapter—Endpoint端到端闭环。两者均不在线获取Descriptor、不处理凭据、不重试、不调用模型，也不执行生产动作；传输错误与Runtime状态严格分离，返回结果仍由Core执行Descriptor / Request / Response三方契约校验。
 
 [`examples/model_adapters/provider_neutral/`](examples/model_adapters/provider_neutral/)进一步提供一个可独立构建的Provider-neutral模型Adapter包骨架：定义非秘密配置、结构化Provider Protocol、Mock Provider和`execute-nonlocal`映射，并在调用前验证输入Artifact、调用后验证输出Artifact及模型真实性。它拒绝模型结果冒充`verified`、`local_deterministic`或确定性执行。
 
@@ -303,7 +304,7 @@ geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json -
 | 语言与执行规范 | `1.0` | 当前公共实现规范 |
 | Agent Integration Profile | `0.1` | 模型无关工具契约、补证据恢复与恢复报告Artifact |
 | 运行时接口规范 | `0.1` | 核心与外部运行时之间的描述符、请求、响应契约 |
-| 验证提供方接口规范 | `0.1` | 验证提供方描述符、验证请求、验证响应和可信保证档案 |
+| 验证提供方接口规范 | `0.1` | 验证提供方描述符、验证请求、验证响应和可信保证策略 |
 | 白皮书 | `0.1` | 公开概念草案 |
 
 ## 文档

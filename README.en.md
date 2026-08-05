@@ -28,7 +28,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 
 ## Start here
 
-- [Try the GT01–GT38 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT39 experience](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -130,7 +130,7 @@ The cases show how model proposals are materialized, recomputed, contradicted, e
 | Action and feasibility | GT10–GT20 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, city-event deduplication, equipment-capability, and high-risk action-gate constraints? |
 | World-state cycle | GT21–GT28 | How do multi-source observations, state change, impact scope, bounded correction, incremental reevaluation, and action gates close the loop? |
 | Verification Provider ecosystem | GT29–GT32 | How do independent sources, explicit adjudication, progressive authorization, and action gates remain separate? |
-| Dynamic world objects | GT33–GT38 | How are moving-object identity, timestamped observations, segment metrics, caller-declared classifications, acceleration estimates, identity candidates, and independent evidence adjudication bound without silent interpolation, automatic identity merge, reference mutation, publication, or action? |
+| Dynamic world objects | GT33–GT39 | How are moving-object identity, timestamped observations, segment metrics, caller-declared classifications, identity candidates, evidence adjudication, and review-only merge proposals bound without silent interpolation, automatic identity merge, reference mutation, World State update, publication, or action? |
 
 Selected examples:
 
@@ -165,8 +165,9 @@ Selected examples:
 - **GT36:** segment midpoints represent adjacent segment-average speeds under a caller-declared 300-second maximum interval. The first two transitions produce scalar acceleration estimates of 0 and 1/300 horizontal units per second squared; the third becomes `unverifiable` with null speed change and acceleration because the next segment lasts 600 seconds. Core does not infer instantaneous or vector acceleration, direction change, future position, or action.
 - **GT37:** two trajectory fragments bound to different provisional identities have boundary samples 60 seconds and 5 meters apart and share the same object class. Under caller-declared 120-second, 10-unit, and class-equality limits, Core returns `same_object_candidate` while preserving both identities and subject references. It does not verify real-world identity, merge objects, publish, or execute an identity update.
 - **GT38:** the exact GT37 candidate result, one Verification Request, one caller-authored Assurance Profile, and two independently grouped Provider responses produce `same_object_confirmed`. Core emits only `recommend_identity_merge_review` and `review_identity_merge`; it preserves both provisional subjects and does not merge objects, mutate `subject_ref`, publish, authorize, or execute an identity update.
+- **GT39:** the exact GT38 adjudication, one caller-selected existing canonical subject, rationale, and approval roles produce a `ready_for_review` Identity Merge Proposal. The proposal scopes one subject-reference rewrite, retains the other subject as an alias, and records blocking, withdrawal, and reversal requirements without creating a new identity, deleting aliases, mutating the object graph or World State, publishing, authorizing, or executing an update.
 
-See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32, the [Trajectory and Moving Object Profile](docs/spec/geotask-trajectory-profile-v0.1.md) for GT33–GT38, and the [Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md) for the GT38 Artifact.
+See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32, the [Trajectory and Moving Object Profile](docs/spec/geotask-trajectory-profile-v0.1.md) for GT33–GT39, the [Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md) for GT38, and the [Identity Merge Proposal v0.1](docs/spec/geotask-identity-merge-proposal-v0.1.md) for GT39.
 
 ## Implemented public Core
 

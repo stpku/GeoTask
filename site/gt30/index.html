@@ -56,7 +56,7 @@
       <div class="step"><strong>独立性满足</strong><br>3个独立分组</div><div class="arrow">→</div>
       <div class="step"><strong>数值仍冲突</strong><br>8 ≠ 13</div>
     </div>
-    <p class="statement">可信保证状态保持未知；请求显式气象裁决，而不是偷偷采用二比一。</p>
+    <p class="statement">可信保证状态保持未知；请求显式气象审定，而不是偷偷采用二比一。</p>
   </div></section>
 
   <section><div class="shell">
@@ -65,7 +65,7 @@
     <div class="choice">
       <button id="btn-majority">按二比一采用13米/秒</button>
       <button id="btn-discard">删除8米/秒来源</button>
-      <button id="btn-adjudicate" class="safe">请求显式气象裁决</button>
+      <button id="btn-adjudicate" class="safe">请求显式气象审定</button>
       <button id="verify">执行本地检查</button>
     </div>
     <div id="result" aria-live="polite">尚未选择。</div>
@@ -75,7 +75,7 @@
     <h2 class="section-title">固定结果</h2>
     <div class="facts">
       <div class="fact"><h3>可信保证</h3><p>状态：未知</p><p>原因：独立来源仍然冲突</p><p>可用提供方：3</p><p>独立分组：3</p></div>
-      <div class="fact"><h3>门禁状态</h3><p>天气核验输出：阻断</p><p>自动起飞授权：阻断</p><p>起飞指令：阻断</p><p>下一步：请求显式气象裁决</p></div>
+      <div class="fact"><h3>门禁状态</h3><p>天气核验输出：阻断</p><p>自动起飞授权：阻断</p><p>起飞指令：阻断</p><p>下一步：请求显式气象审定</p></div>
     </div>
     <pre>state: unknown
 reason: independent_provider_conflict
@@ -91,7 +91,7 @@ action_executed: false</pre>
 
   <section><div class="shell">
     <h2 class="section-title">能力边界</h2>
-    <p>本案例只验证调用方明确提交的三份描述符、三份响应、请求和可信保证档案，并检查精确文件绑定、独立分组、时效、可复现性、校准状态和数值一致性。</p>
+    <p>本案例只验证调用方明确提交的三份描述符、三份响应、请求和可信保证策略，并检查精确文件绑定、独立分组、时效、可复现性、校准状态和数值一致性。</p>
     <p>公共核心没有访问真实气象服务，没有证明任何来源现实中正确，没有声明多数表决政策，没有删除少数意见，没有发布生产结果，也没有授权或执行起飞动作。</p>
   </div></section>
 </main>
@@ -106,7 +106,7 @@ action_executed: false</pre>
   const choose=(value,label)=>{selected=value;box.textContent='已选择：'+label;box.className='';};
   document.getElementById('btn-majority').onclick=()=>choose('implicit_majority_vote','按二比一采用13米/秒');
   document.getElementById('btn-discard').onclick=()=>choose('discard_minority_source','删除8米/秒来源');
-  document.getElementById('btn-adjudicate').onclick=()=>choose(allowed,'请求显式气象裁决');
+  document.getElementById('btn-adjudicate').onclick=()=>choose(allowed,'请求显式气象审定');
   document.getElementById('verify').onclick=()=>{
     const checks=[values.length===3,new Set(groups).size===3,values.filter(v=>v===13).length===2,new Set(values).size===2,selected===allowed];
     if(checks.every(Boolean)){

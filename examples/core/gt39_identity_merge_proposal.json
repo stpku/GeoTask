@@ -1,0 +1,27 @@
+{
+  "case_id": "GT39",
+  "title": "证据支持同一对象后，系统可以直接归并身份吗？",
+  "source_artifact": "examples/core/trajectory_identity_adjudication_gt38.json",
+  "proposal_artifact": "examples/core/identity_merge_proposal_gt39.json",
+  "canonical_subject_ref": "provisional_alpha",
+  "merge_subject_ref": "provisional_beta",
+  "affected_trajectory_refs": [
+    "track_alpha",
+    "track_beta"
+  ],
+  "proposal_state": "ready_for_review",
+  "review_action": "review_identity_merge_proposal",
+  "next_action": "request_identity_merge_approval",
+  "boundaries": {
+    "new_identity_created": false,
+    "alias_deleted": false,
+    "proposal_approved": false,
+    "object_graph_mutated": false,
+    "identity_merge_performed": false,
+    "subject_refs_mutated": false,
+    "world_state_updated": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

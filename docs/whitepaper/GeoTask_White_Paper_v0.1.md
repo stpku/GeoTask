@@ -109,7 +109,7 @@ State Update / Bounded Correction ← New Observation
         Action Eligibility Gate
 ```
 
-当前公共 Core 已实现世界对象和空间合同、来源与证据绑定、Observation v0.1、World State v0.1、支持`require_equal`与完整显式优先级的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Recompute Derivation Result v0.1、受限后继状态物化、Incremental Reevaluation Result v0.1、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。自动差异计算、对象身份发现、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行以及受限推导方法扩展仍是后续工程目标。
+当前公共核心已实现世界对象与空间参考约束、来源与证据绑定、Observation v0.1、World State v0.1、支持`require_equal`与完整显式优先级的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Recompute Derivation Result v0.1、受限后继状态物化、Incremental Reevaluation Result v0.1、对象同一性候选、对象同一性审定、对象身份归并提案、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。自动差异计算、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行、归并提案审批执行以及受限推导方法扩展仍是后续工程目标。
 
 ---
 
@@ -306,11 +306,13 @@ expected_results: # 可选测试夹具
 | `trajectory_segment_metrics` | 相邻明确样本的持续时间、二维距离与平均速度，不把平均速度冒充瞬时状态 |
 | `trajectory_segment_classifications` | 使用调用方显式声明的停留与观测间隔阈值，将相邻分段分类为停留候选、已观测移动、观测缺口或不可核验，不推断失联或异常 |
 | `trajectory_segment_acceleration_estimates` | 将相邻分段平均速度绑定到显式中点代表时刻，计算标量速度变化率；任一分段超过声明的最大观测间隔时返回不可核验并保持数值为空 |
-| `trajectory_identity_candidate` | 比较两段轨迹的显式边界样本，在调用方声明的时间、距离和类别策略下输出同对象候选、不同对象候选或不可核验，不合并身份、不改写引用 |
+| `trajectory_identity_candidate` | 比较两段轨迹的显式边界样本，在调用方声明的时间、距离和类别策略下输出对象同一性候选、不同对象候选或不可核验，不归并身份、不改写引用 |
 
 算子语义必须稳定。Domain Pack 可以组合 Core 算子，但不应修改同名算子的边界规则。
 
-GT38进一步把`trajectory_identity_candidate`输出接入第28类公共Artifact `geotask.trajectory-identity-adjudication`：精确绑定候选结果、Verification Request、Assurance Profile、Provider Descriptor与Verification Response，在满足独立证据策略后输出身份合并复核建议。该制品不会自行证明现实身份、合并对象、改写`subject_ref`、发布生产结果、授权或执行身份更新。公共Schema总数同步扩展为29。
+GT38进一步把`trajectory_identity_candidate`输出接入第28类公共制品`geotask.trajectory-identity-adjudication`：原始字节级绑定候选结果、验证请求、可信保证策略、验证提供方描述符与验证响应，在满足独立证据策略后输出对象身份归并复核建议。该制品不会自行证明现实身份、归并对象、改写`subject_ref`、发布生产环境输出、授权或执行身份更新。
+
+GT39新增第29类公共制品`geotask.identity-merge-proposal`：在GT38对象同一性审定基础上，由调用方从两个现有主体中选择主对象引用，公共核心确定性生成一项受限`subject_ref`改写提案、保留别名、审批要求、阻断条件、撤销条件和归并回退方案。提案有效不等于已获批，更不表示对象关系图或世界状态已经改变。公共Schema总数同步扩展为30。
 
 ### 4.3 断言
 

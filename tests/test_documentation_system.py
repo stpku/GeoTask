@@ -15,6 +15,8 @@ ROOT_README_ZH = ROOT / "README.md"
 ROOT_README_EN = ROOT / "README.en.md"
 DOC_INDEX_ZH = ROOT / "docs" / "README.md"
 DOC_INDEX_EN = ROOT / "docs" / "README.en.md"
+TERMINOLOGY_ZH = ROOT / "docs" / "terminology.zh-CN.md"
+TERMINOLOGY_EN = ROOT / "docs" / "terminology.en.md"
 WHITEPAPER = ROOT / "docs" / "whitepaper" / "GeoTask_White_Paper_v0.1.md"
 WHITEPAPER_BUILD = ROOT / "docs" / "whitepaper" / "README.md"
 ARCHITECTURE = ROOT / "docs" / "architecture.md"
@@ -338,8 +340,43 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
     assert "Implemented public profile" in en_text
     assert "System-level target direction" in en_text
     assert "Legacy compatibility" in en_text
-    assert "28类公共制品" in zh_text
-    assert "twenty-eight public Artifacts" in en_text
+    assert "29类公共制品" in zh_text
+    assert "twenty-nine public Artifacts" in en_text
+
+
+def test_terminology_distinguishes_contract_specification_protocol_and_legal_contract() -> None:
+    zh_text = TERMINOLOGY_ZH.read_text(encoding="utf-8")
+    en_text = TERMINOLOGY_EN.read_text(encoding="utf-8")
+
+    for fragment in (
+        "契约、规范、协议与合同",
+        "算子契约",
+        "世界状态规范",
+        "可验证时空任务协议",
+        "商业服务合同",
+        "可信保证策略",
+        "对象同一性候选",
+        "对象同一性审定",
+        "对象身份归并提案",
+        "主对象引用",
+        "保留别名",
+        "提案阻断条件",
+        "提案撤销条件",
+        "归并回退方案",
+    ):
+        assert fragment in zh_text
+
+    for fragment in (
+        "Identity Merge Proposal",
+        "Canonical Subject Reference",
+        "Retained Alias",
+        "Merge Reversal Plan",
+        "translate software `contract` according to function",
+    ):
+        assert fragment in en_text
+
+    assert "可信保证档案" not in zh_text
+    assert "核心负责校验公共合同" not in zh_text
 
 
 def test_architecture_and_target_status_include_bounded_observation_merge() -> None:
@@ -361,7 +398,9 @@ def test_architecture_and_target_status_include_bounded_observation_merge() -> N
         "7. [GeoTask Observation Merge Result v0.1]",
         "13. [GeoTask Recompute Derivation Result v0.1]",
         "14. [GeoTask World State Materialization Result v0.1]",
-        "20. [Operator Registry]",
+        "18. [GeoTask Trajectory Identity Adjudication v0.1]",
+        "19. [GeoTask Identity Merge Proposal v0.1]",
+        "22. [Operator Registry]",
         "World State, Observation Merge Result, State Transition",
         "caller-declared `require_equal`",
         "undeclared ambiguous-conflict resolution",
@@ -702,6 +741,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.recompute-derivation-result",
         "geotask.observation-merge-result",
         "geotask.trajectory-identity-adjudication",
+        "geotask.identity-merge-proposal",
         "geotask.world-state-materialization-result",
         "geotask.incremental-reevaluation-result",
         "geotask.execution-result",
@@ -718,8 +758,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.verification-response",
         "geotask.assurance-profile",
         "geotask.core-benchmark-report",
-        "exactly twenty-eight artifacts",
-        "all twenty-nine public JSON Schemas",
+        "exactly twenty-nine artifacts",
+        "all thirty public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

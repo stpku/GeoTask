@@ -12,6 +12,7 @@ English-facing GeoTask pages and documents should use consistent English termino
 4. Keep code blocks, commands, JSON fields, Artifact IDs, and schema IDs unchanged.
 5. Product names, programming-language names, standards, and trademarks may remain in their original form.
 6. Do not use untranslated Chinese labels in English navigation, buttons, diagrams, metrics, or explanatory prose.
+7. In Chinese materials, translate software `contract` according to function: 契约 for component obligations and invariants, 规范 for formal structural or behavioral definitions, 协议 for multi-party exchanges, and 合同 only for legal or commercial agreements.
 
 ## Core terminology map
 
@@ -37,12 +38,22 @@ English-facing GeoTask pages and documents should use consistent English termino
 | Verification Provider Descriptor | 验证提供方描述符 | `geotask.verification-provider-descriptor` |
 | Verification Request | 验证请求 | `geotask.verification-request` |
 | Verification Response | 验证响应 | `geotask.verification-response` |
-| Assurance Profile | 可信保证档案 | `geotask.assurance-profile` |
-| Domain Pack | 行业能力包 | industry extension interface |
+| Assurance Profile | 可信保证策略 | `geotask.assurance-profile` |
+| Domain Pack | 领域扩展包 | domain extension interface |
 | Semantic Fingerprint | 语义指纹 | `semantic_fingerprint` |
-| Fail-closed | 失败关闭 | safety handling principle |
-| Action Eligibility | 行动资格 | control outcome |
+| Fail-closed | 校验失败即阻断 | safety handling principle |
+| Action Eligibility | 行动准入状态 | control outcome |
 | External Side Effect | 外部副作用 | external read, write, or real-world action |
+| Identity Candidate | 对象同一性候选 | `same_object_candidate` |
+| Identity Adjudication | 对象同一性审定 | `geotask.trajectory-identity-adjudication` |
+| Identity Merge Proposal | 对象身份归并提案 | `geotask.identity-merge-proposal` |
+| Canonical Subject Reference | 主对象引用 | `canonical_subject_ref` |
+| Merge Subject | 拟归并对象 | `merge_subject_ref` |
+| Retained Alias | 保留别名 | `retained_aliases` |
+| Proposed Retired Identifier | 拟停用标识 | `proposed_retired_subject_refs` |
+| Proposal Blocking Condition | 提案阻断条件 | `blocking_conditions` |
+| Proposal Withdrawal Condition | 提案撤销条件 | `withdrawal_conditions` |
+| Merge Reversal Plan | 归并回退方案 | `reversal_plan` |
 
 ## Recommended style
 
@@ -50,7 +61,8 @@ English-facing GeoTask pages and documents should use consistent English termino
 - Avoid: “The system receives a new 观测记录 and forms a new 世界状态.”
 - Recommended: “A Verification Provider returns a Verification Response but cannot declare that independent verification is complete.”
 - Avoid: “The 验证提供方 returns a Response and upgrades the 可信保证等级.”
+- Recommended Chinese equivalent: “GT39生成对象身份归并提案，声明主对象引用、保留别名、阻断条件和归并回退方案。”
 
 ## Maintenance
 
-This guide is the language baseline for the English documentation system and English project homepage. Every new public Artifact or architecture concept should update both terminology guides, and documentation tests should check that the English entry points do not contain untranslated Chinese prose.
+This guide is the language baseline for the English documentation system and English project homepage. Every new public Artifact or architecture concept should update both terminology guides, and documentation tests should check that the English entry points do not contain untranslated Chinese prose. Historical release notes may preserve the terminology used at release time; current README, white paper, specifications, case pages, and roadmap should use the active terminology baseline.

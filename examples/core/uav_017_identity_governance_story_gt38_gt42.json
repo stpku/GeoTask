@@ -1,0 +1,89 @@
+{
+  "composite_case": {
+    "id": "gt38-gt42-uav-017-reidentification",
+    "title_zh": "巡检无人机UAV-017短暂失联后被重新编号，如何确认并安全归并身份？",
+    "title_en": "How should a briefly lost inspection drone be re-identified and safely merged after receiving a new track identity?",
+    "fictional_data": true,
+    "operational_context": "园区电力线路巡检",
+    "asset_label": "巡检无人机UAV-017",
+    "timeline": [
+      {
+        "observed_at": "2026-08-05T08:02:00+08:00",
+        "event_zh": "无人机进入建筑遮挡区前留下最后一次观测",
+        "trajectory_ref": "track_alpha",
+        "subject_ref": "provisional_alpha",
+        "display_label_zh": "UAV-017原始主体"
+      },
+      {
+        "observed_at": "2026-08-05T08:03:00+08:00",
+        "event_zh": "恢复观测时，跟踪系统建立了新的轨迹和临时主体",
+        "trajectory_ref": "track_beta",
+        "subject_ref": "provisional_beta",
+        "display_label_zh": "遮挡后临时主体"
+      }
+    ],
+    "boundary_observation": {
+      "temporal_gap_seconds": 60,
+      "spatial_distance_meters": 5,
+      "object_class": "uav"
+    },
+    "independent_evidence": [
+      {
+        "source_zh": "虚构资产登记系统",
+        "finding_zh": "失联前后观测对应相同Remote ID和设备序列号"
+      },
+      {
+        "source_zh": "虚构人工复核",
+        "finding_zh": "任务编号、机型、运营人和时间连续性均一致"
+      }
+    ],
+    "business_risks": {
+      "false_merge": [
+        "可能把另一架无人机的轨迹错误并入UAV-017",
+        "污染任务历史、风险判断和责任追溯"
+      ],
+      "missed_merge": [
+        "同一架无人机被重复计数为两个对象",
+        "连续任务轨迹和风险状态被拆成两段"
+      ]
+    },
+    "machine_to_display_mapping": {
+      "track_alpha": "失联前轨迹",
+      "track_beta": "恢复后轨迹",
+      "provisional_alpha": "UAV-017原始主体",
+      "provisional_beta": "遮挡后临时主体"
+    },
+    "stages": [
+      {
+        "case_id": "GT38",
+        "stage": 1,
+        "label_zh": "证据审定",
+        "question_zh": "两个独立证据源是否足以确认是同一架无人机？"
+      },
+      {
+        "case_id": "GT39",
+        "stage": 2,
+        "label_zh": "归并提案",
+        "question_zh": "哪个现有主体应保留为主身份？"
+      },
+      {
+        "case_id": "GT40",
+        "stage": 3,
+        "label_zh": "提案审批",
+        "question_zh": "谁批准这项归并提案？"
+      },
+      {
+        "case_id": "GT41",
+        "stage": 4,
+        "label_zh": "变更请求",
+        "question_zh": "系统具体准备改写哪一条引用？"
+      },
+      {
+        "case_id": "GT42",
+        "stage": 5,
+        "label_zh": "应用审批",
+        "question_zh": "谁批准该请求进入后续受限应用阶段？"
+      }
+    ]
+  }
+}

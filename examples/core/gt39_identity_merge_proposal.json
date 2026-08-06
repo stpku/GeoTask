@@ -1,6 +1,20 @@
 {
   "case_id": "GT39",
-  "title": "证据支持同一对象后，系统可以直接归并身份吗？",
+  "title": "确认是同一架无人机后，哪个主体记录应保留为主身份？",
+  "composite_case": {
+    "id": "gt38-gt42-uav-017-reidentification",
+    "stage": 2,
+    "stage_count": 5,
+    "stage_label_zh": "归并提案",
+    "story_file": "examples/core/uav_017_identity_governance_story_gt38_gt42.json",
+    "asset_label": "巡检无人机UAV-017",
+    "machine_to_display_mapping": {
+      "track_alpha": "失联前轨迹",
+      "track_beta": "恢复后轨迹",
+      "provisional_alpha": "UAV-017原始主体",
+      "provisional_beta": "遮挡后临时主体"
+    }
+  },
   "source_artifact": "examples/core/trajectory_identity_adjudication_gt38.json",
   "proposal_artifact": "examples/core/identity_merge_proposal_gt39.json",
   "canonical_subject_ref": "provisional_alpha",

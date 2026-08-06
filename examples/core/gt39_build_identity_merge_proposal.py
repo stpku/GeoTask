@@ -17,6 +17,7 @@ EXAMPLES = ROOT / "examples" / "core"
 ADJUDICATION_PATH = EXAMPLES / "trajectory_identity_adjudication_gt38.json"
 PROPOSAL_PATH = EXAMPLES / "identity_merge_proposal_gt39.json"
 SCENARIO_PATH = EXAMPLES / "gt39_identity_merge_proposal.json"
+STORY_PATH = EXAMPLES / "uav_017_identity_governance_story_gt38_gt42.json"
 
 
 def _json_bytes(payload: dict[str, object]) -> bytes:
@@ -47,9 +48,19 @@ def build() -> dict[str, object]:
         loaded,
         adjudication_bytes=adjudication_bytes,
     )
+    story = json.loads(STORY_PATH.read_text(encoding="utf-8"))["composite_case"]
     scenario = {
         "case_id": "GT39",
-        "title": "证据支持同一对象后，系统可以直接归并身份吗？",
+        "title": "确认是同一架无人机后，哪个主体记录应保留为主身份？",
+        "composite_case": {
+            "id": story["id"],
+            "stage": 2,
+            "stage_count": len(story["stages"]),
+            "stage_label_zh": story["stages"][1]["label_zh"],
+            "story_file": STORY_PATH.relative_to(ROOT).as_posix(),
+            "asset_label": story["asset_label"],
+            "machine_to_display_mapping": story["machine_to_display_mapping"],
+        },
         "source_artifact": ADJUDICATION_PATH.relative_to(ROOT).as_posix(),
         "proposal_artifact": PROPOSAL_PATH.relative_to(ROOT).as_posix(),
         "canonical_subject_ref": loaded.canonical_subject_ref,

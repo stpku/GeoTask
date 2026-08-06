@@ -18,6 +18,7 @@ PROPOSAL_PATH = EXAMPLES / "identity_merge_proposal_gt39.json"
 APPROVAL_PATH = EXAMPLES / "identity_merge_approval_record_gt40.json"
 REQUEST_PATH = EXAMPLES / "object_graph_change_request_gt41.json"
 SCENARIO_PATH = EXAMPLES / "gt41_object_graph_change_request.json"
+STORY_PATH = EXAMPLES / "uav_017_identity_governance_story_gt38_gt42.json"
 
 
 def _json_bytes(payload: dict[str, object]) -> bytes:
@@ -43,9 +44,19 @@ def build() -> dict[str, object]:
         approval_record_bytes=approval_bytes,
     )
     operation = loaded.change_operations[0]
+    story = json.loads(STORY_PATH.read_text(encoding="utf-8"))["composite_case"]
     scenario = {
         "case_id": "GT41",
-        "title": "归并提案已获批，是否可以直接改写对象关系图？",
+        "title": "提案获批后，系统究竟准备修改UAV-017的哪一条记录？",
+        "composite_case": {
+            "id": story["id"],
+            "stage": 4,
+            "stage_count": len(story["stages"]),
+            "stage_label_zh": story["stages"][3]["label_zh"],
+            "story_file": STORY_PATH.relative_to(ROOT).as_posix(),
+            "asset_label": story["asset_label"],
+            "machine_to_display_mapping": story["machine_to_display_mapping"],
+        },
         "proposal_artifact": PROPOSAL_PATH.relative_to(ROOT).as_posix(),
         "approval_artifact": APPROVAL_PATH.relative_to(ROOT).as_posix(),
         "change_request_artifact": REQUEST_PATH.relative_to(ROOT).as_posix(),

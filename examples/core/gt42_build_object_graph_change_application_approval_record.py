@@ -21,6 +21,7 @@ APPROVAL_PATH = (
 SCENARIO_PATH = (
     EXAMPLES / "gt42_object_graph_change_application_approval_record.json"
 )
+STORY_PATH = EXAMPLES / "uav_017_identity_governance_story_gt38_gt42.json"
 
 
 def _json_bytes(payload: dict[str, object]) -> bytes:
@@ -71,9 +72,19 @@ def build() -> dict[str, object]:
         loaded,
         change_request_bytes=request_bytes,
     )
+    story = json.loads(STORY_PATH.read_text(encoding="utf-8"))["composite_case"]
     scenario = {
         "case_id": "GT42",
-        "title": "对象关系图变更请求已通过应用审批，是否等于变更已经应用？",
+        "title": "应用审批通过后，UAV-017的轨迹引用已经改变了吗？",
+        "composite_case": {
+            "id": story["id"],
+            "stage": 5,
+            "stage_count": len(story["stages"]),
+            "stage_label_zh": story["stages"][4]["label_zh"],
+            "story_file": STORY_PATH.relative_to(ROOT).as_posix(),
+            "asset_label": story["asset_label"],
+            "machine_to_display_mapping": story["machine_to_display_mapping"],
+        },
         "change_request_artifact": REQUEST_PATH.relative_to(ROOT).as_posix(),
         "application_approval_artifact": APPROVAL_PATH.relative_to(ROOT).as_posix(),
         "aggregate_decision": loaded.aggregate_decision,

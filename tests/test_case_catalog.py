@@ -98,17 +98,39 @@ def test_generated_case_outputs_are_current() -> None:
 
 
 def test_portal_cards_are_generated_from_catalog() -> None:
-    cases = _catalog()["cases"]
+    data = _catalog()
+    cases = data["cases"]
+    series = data["series"]
     html = PORTAL.read_text(encoding="utf-8")
 
     assert "<!-- CASE_CATALOG:START -->" in html
     assert "<!-- CASE_CATALOG:END -->" in html
-    assert html.count('<a class="case" href="') == len(cases)
+    hidden_series_members = sum(len(item["case_ids"]) - 1 for item in series)
+    scene_entry_count = len(cases) - hidden_series_members
+    assert html.count('<a class="case" href="') == scene_entry_count - len(series)
+    assert html.count('<article class="case case-series">') == len(series)
+
+    series_case_ids = {
+        case_id for item in series for case_id in item["case_ids"]
+    }
     for case in cases:
         assert f'href="{case["slug"]}/"' in html
+        if case["id"] in series_case_ids:
+            continue
         assert f'<span class="case-id">{case["id"]}</span>' in html
         assert case["title_zh"] in html
         assert case["summary_zh"] in html
+
+    identity_series = series[0]
+    assert identity_series["title_zh"] in html
+    assert identity_series["summary_zh"] in html
+    assert identity_series["label_zh"] in html
+    for case_id, stage_label in zip(
+        identity_series["case_ids"], identity_series["stage_labels_zh"]
+    ):
+        assert f'href="{case_id.lower()}/"' in html
+        assert stage_label in html
+    assert f"共{len(cases)}个可验证参考例，对应{scene_entry_count}个场景入口" in html
 
 
 def test_sitemap_and_deployment_slug_list_match_catalog() -> None:
@@ -128,17 +150,29 @@ def test_sitemap_and_deployment_slug_list_match_catalog() -> None:
 
 
 def test_navigation_index_has_contiguous_previous_and_next_links() -> None:
-    cases = _catalog()["cases"]
+    data = _catalog()
+    cases = data["cases"]
     navigation = json.loads(CASE_NAVIGATION.read_text(encoding="utf-8"))
     entries = navigation["cases"]
 
     assert navigation["case_count"] == len(cases)
+    assert navigation["scene_entry_count"] == 38
+    assert navigation["series"] == data["series"]
     assert [entry["slug"] for entry in entries] == [case["slug"] for case in cases]
     for index, entry in enumerate(entries):
         expected_previous = cases[index - 1]["slug"] if index > 0 else None
         expected_next = cases[index + 1]["slug"] if index + 1 < len(cases) else None
         assert entry["previous"] == expected_previous
         assert entry["next"] == expected_next
+
+    for stage_number, case_id in enumerate(
+        data["series"][0]["case_ids"], start=1
+    ):
+        entry = next(item for item in entries if item["id"] == case_id)
+        assert entry["series_id"] == "uav_017_identity_governance"
+        assert entry["series_entry"] == "gt38"
+        assert entry["series_stage"] == stage_number
+        assert entry["series_stage_count"] == 5
 
 
 def test_case_pages_load_only_the_shared_local_assets() -> None:

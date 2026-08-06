@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 49346,
-    "sha256": "e3c8dfeb6a73bad3db27a615572d1009d69f3eb0b86249e32df2bc3700377e7a"
+    "size": 49937,
+    "sha256": "cb9129ff3eaabd67e36fc9a2a957ccc7ee0ac10c99a3b0a59df284313aa3a5f6"
   },
   {
     "path": "CITATION.cff",
@@ -51,13 +51,13 @@
   },
   {
     "path": "README.en.md",
-    "size": 30469,
-    "sha256": "c6e9ea3cdefea3625ca1a70a63e4fcd2a02292d95d42041dcb270ee20e5b213d"
+    "size": 29782,
+    "sha256": "df023df6356f91036922ce4e4eee125e04db1f3a59de5a72655b41c4cbb91a84"
   },
   {
     "path": "README.md",
-    "size": 27824,
-    "sha256": "695ca290e2ba7353fa54608af46d01d7e9797d9f4cc42a2b42112d552a350d02"
+    "size": 27184,
+    "sha256": "1230f926291a7f67e40b506b17d11779cc9e2e677eed563819d86b5d051c9d48"
   },
   {
     "path": "ROADMAP.md",
@@ -176,8 +176,8 @@
   },
   {
     "path": "tests/test_case_catalog.py",
-    "size": 7357,
-    "sha256": "47a527ad56e962add7c71ce824acc5c7446a059d8c22b68abe990b494391677f"
+    "size": 8777,
+    "sha256": "bd29e1279887dd1bf102e55929925664945a9490c1e4a1a8eee892277d88ed01"
   },
   {
     "path": "tests/test_case_scaffold.py",
@@ -566,8 +566,13 @@
   },
   {
     "path": "tests/test_gt38_experience_page.py",
-    "size": 2583,
-    "sha256": "375ebb8992f8b914f6f434a5fb3d002182dac0a9b2bdb36645868133a2608a79"
+    "size": 3615,
+    "sha256": "10f38dfacad9d5f75680917a7a08558575398d4d1ec5e05bbf6dfcbd1a4325d8"
+  },
+  {
+    "path": "tests/test_gt38_gt42_uav_identity_governance_story.py",
+    "size": 3860,
+    "sha256": "9a38ec99ebe090be6c9726a2f4a2380f90faeadc435993493f63553e73e7ac45"
   },
   {
     "path": "tests/test_gt38_trajectory_identity_adjudication_case.py",
@@ -576,8 +581,8 @@
   },
   {
     "path": "tests/test_gt39_experience_page.py",
-    "size": 2855,
-    "sha256": "6aa1e7e5ad7c3e35691fa38cae2ac81e19382fd526dc28b67c33cbfb5284d011"
+    "size": 2957,
+    "sha256": "52d4aefe7b6de45784c42e9d156390055108757bb5eb8ccd826470003d3b9d32"
   },
   {
     "path": "tests/test_gt39_identity_merge_proposal_case.py",
@@ -586,8 +591,8 @@
   },
   {
     "path": "tests/test_gt40_experience_page.py",
-    "size": 941,
-    "sha256": "f8581411c1876258344c32c3b4ee97294dcdfb7186161c0694ab2108851e2c2b"
+    "size": 1150,
+    "sha256": "7fef86bdc29ff37b90e525d4f93be2b1905680166eda4ee567da40a5b9deb095"
   },
   {
     "path": "tests/test_gt40_identity_merge_approval_record_case.py",
@@ -596,8 +601,8 @@
   },
   {
     "path": "tests/test_gt41_experience_page.py",
-    "size": 952,
-    "sha256": "810b83e8d89acae59030c6a9f2e8c6158f62e8ee4f5a07a67c787038b712fefc"
+    "size": 1163,
+    "sha256": "a9866a6b39b38d707f49dcc0e0a88174e6138d2008337e18c0eb83e2a48aa0a1"
   },
   {
     "path": "tests/test_gt41_object_graph_change_request_case.py",
@@ -606,8 +611,8 @@
   },
   {
     "path": "tests/test_gt42_experience_page.py",
-    "size": 1067,
-    "sha256": "7b90ef6f0ea7400ba4f80a40b59e9e03bad187209cf6f7a8d58d9020c2e339bb"
+    "size": 1284,
+    "sha256": "b0a3022299ad84d1c3d9c49e662807ef5e766b42bb14011ed54ceb455360eedb"
   },
   {
     "path": "tests/test_gt42_object_graph_change_application_approval_record_case.py",
@@ -666,8 +671,8 @@
   },
   {
     "path": "tests/test_project_portal.py",
-    "size": 9227,
-    "sha256": "f7966a662e93a723a931d1429d9fe9190b0900138ce232d6b7d4c019d4bc2396"
+    "size": 9443,
+    "sha256": "22e63ead594f730ce05b27bfac3bb575a3a7ce8904456c480cc8179eaaeab32b"
   },
   {
     "path": "tests/test_provider_neutral_model_adapter_example.py",
@@ -1506,53 +1511,53 @@
   },
   {
     "path": "examples/core/gt38_build_trajectory_identity_adjudication.py",
-    "size": 16241,
-    "sha256": "52653ffd44cb843d8a60c46a214e86821c15042125f059fb72dace61bc57a5b4"
+    "size": 17131,
+    "sha256": "8048e68f1ce341fd82cbb9d798bf3c1b27a9fc53efc671c2508ded5abae83222"
   },
   {
     "path": "examples/core/gt38_trajectory_identity_adjudication.json",
-    "size": 3146,
-    "sha256": "5a709f1a49919d6c7f6f0654b4f69095d32187ee5978ffd4542d4bbbfd5024d6"
+    "size": 5147,
+    "sha256": "b91813671c5f7b9bc365f64981255d7a15920940cd4699d12081ac8cc8936a15"
   },
   {
     "path": "examples/core/gt39_build_identity_merge_proposal.py",
-    "size": 3172,
-    "sha256": "4106b93c2560234b04b09de8f9a06fa9632f00c524a3425007e4e25910d9e9d0"
+    "size": 3737,
+    "sha256": "f0cc484083f81e597274d82e727af63275501e0ebaa1d9ec4802439c20a41285"
   },
   {
     "path": "examples/core/gt39_identity_merge_proposal.json",
-    "size": 932,
-    "sha256": "ffe19d855c3980e74fa2afc023e395c0d65e5ee909975910c0aa666e682a0efd"
+    "size": 1442,
+    "sha256": "9e74e41a1f1eef45384a6bdf4b20419223bcf493ffafb9c49532a5be2618eb00"
   },
   {
     "path": "examples/core/gt40_build_identity_merge_approval_record.py",
-    "size": 3795,
-    "sha256": "c44dbb813dffaf0265bcd10210877a0c8fa910de243c4cdd57c4276844ccc158"
+    "size": 4366,
+    "sha256": "b9b71d0ff1f0d15cf7c4e7bc169421ff81241f181e4683869f699c8fde13e0f5"
   },
   {
     "path": "examples/core/gt40_identity_merge_approval_record.json",
-    "size": 883,
-    "sha256": "c51eaa9ca139ac90608626aaf1fd28b728de5890015231c382c231d89fb730a7"
+    "size": 1399,
+    "sha256": "4d1136d76dd1b9675615872addaddc9439e2e9736890961634d6e0580717b8fb"
   },
   {
     "path": "examples/core/gt41_build_object_graph_change_request.py",
-    "size": 3085,
-    "sha256": "d93fc3670d02a705182523c0adf8b07a855dd5d886f982e22b9d56049b8f04dd"
+    "size": 3645,
+    "sha256": "f9d7a5fbcf3a8bddc4c1fb9052b28fd67a62dedf6b4857cb2b9442030b8004c7"
   },
   {
     "path": "examples/core/gt41_object_graph_change_request.json",
-    "size": 3728,
-    "sha256": "6314d23e345d708f70f0df2cb9a6cb5ce947e2bcb6e0ee0ba975d07f357ed904"
+    "size": 4233,
+    "sha256": "a8156a28e82e99e7b09141c56e1fb052a69e4e47f32e169ba9da0bd2b090f1d0"
   },
   {
     "path": "examples/core/gt42_build_object_graph_change_application_approval_record.py",
-    "size": 4274,
-    "sha256": "5b979149ac0095afee305e96c73981ee817a1f33c494a274c057df57e9f16599"
+    "size": 4813,
+    "sha256": "2435aef3b6d59b2d1f0cf2ee7944672732c1f139f656a97e7122bffc171bb26c"
   },
   {
     "path": "examples/core/gt42_object_graph_change_application_approval_record.json",
-    "size": 1040,
-    "sha256": "8203d518ac294d35a20637ef559bdaae4846ab5517e109bedf068cec074f6dbf"
+    "size": 1524,
+    "sha256": "1faf6db27d04601f48f4ef6fa911ec08724bd5409d0d01f832533d5f9266e58f"
   },
   {
     "path": "examples/core/identity_merge_approval_record_gt40.json",
@@ -1783,6 +1788,11 @@
     "path": "examples/core/trajectory_identity_adjudication_gt38.json",
     "size": 4246,
     "sha256": "51800311f68beaa5217cb2942c25433d2a424f482dffac55c966e9c5c59e77ad"
+  },
+  {
+    "path": "examples/core/uav_017_identity_governance_story_gt38_gt42.json",
+    "size": 2960,
+    "sha256": "3bdca1d3bc74a759bbb3e36a40a32e0db4c33eb74ece1b148298952abeba3eb9"
   },
   {
     "path": "examples/core/uav_arrival_ground_clearance_release.yaml",
@@ -2206,8 +2216,8 @@
   },
   {
     "path": "site/cases.json",
-    "size": 8032,
-    "sha256": "7891482b35d0001c7bb68d197d713e23aa792794b7e2d9d51770a6616d41540d"
+    "size": 10195,
+    "sha256": "954316886917642e0482843cca40d40650cda0a6616bf405208d716e8723d308"
   },
   {
     "path": "site/cases.txt",
@@ -2221,8 +2231,8 @@
   },
   {
     "path": "site/index.html",
-    "size": 43467,
-    "sha256": "3656586c72671fc24376e9a2b7ce19918d1be9dfcf51acafe3e17102f36a303d"
+    "size": 42378,
+    "sha256": "53162bcf1704dc203778ce7404cfe6a95855d31a7f8002f636456914a8c45c6f"
   },
   {
     "path": "site/robots.txt",
@@ -2266,8 +2276,8 @@
   },
   {
     "path": "site/assets/case-navigation.js",
-    "size": 3232,
-    "sha256": "2987cd2e4d4b2df6cdb11fd8b196b01e7b5dfd091efe37bd141c5236d8fd2700"
+    "size": 3238,
+    "sha256": "1c75ab029d5f5e087a72fa4969e8d367d8088f75b0bbb4aad5339e72c369ae9a"
   },
   {
     "path": "site/assets/case-shared.css",
@@ -2276,8 +2286,8 @@
   },
   {
     "path": "site/en/index.html",
-    "size": 13352,
-    "sha256": "f12d1f403d0be6dda5e159879c312194315d0d29d269085bf02821487c60c74e"
+    "size": 13385,
+    "sha256": "49a48610fd1b056269fb722b372f4f7a519cbfb61dcfa8c5a8b9b158c761339e"
   },
   {
     "path": "site/gt07/index.html",
@@ -2331,8 +2341,8 @@
   },
   {
     "path": "site/gt40/index.html",
-    "size": 7693,
-    "sha256": "4dae485206ce97bfdf6a89d742d520a5d9beec514d3cc592864f65674b53a708"
+    "size": 6405,
+    "sha256": "dd1ea03a73f9f76f5a34c1bf955af29bbbcc989bf42e3a12b3470d538690cd6b"
   },
   {
     "path": "site/gt09/index.html",
@@ -2341,8 +2351,8 @@
   },
   {
     "path": "site/gt38/index.html",
-    "size": 7707,
-    "sha256": "82bf8495bb0550344ed95abbcd6911de1536c233e85d6230b3b18d0345dfaf5e"
+    "size": 9608,
+    "sha256": "4ba25934d5c11dcb9f0d5f90d7a7b13109faea7ac45bf11447e09b3e70dea9c4"
   },
   {
     "path": "site/gt24/index.html",
@@ -2371,8 +2381,8 @@
   },
   {
     "path": "site/gt41/index.html",
-    "size": 7913,
-    "sha256": "7e84185aa5fb142e389475d8d9aca8ae09003f72d9a92ac1679fe4be7a4557cf"
+    "size": 7068,
+    "sha256": "ccb14af89c2dea3eafdc4d5c03df43528fb96cca877aa03dc2745f7727117098"
   },
   {
     "path": "site/gt03/index.html",
@@ -2401,8 +2411,8 @@
   },
   {
     "path": "site/gt42/index.html",
-    "size": 7974,
-    "sha256": "0141262677beb001bafa7575acb7d5efb055320ec5141a7d143dc169aaeb8fb4"
+    "size": 6745,
+    "sha256": "ca9029edbbc11587f0d26540b3b32c8da1d5459b1dd00c70af066a1f15ee5dd2"
   },
   {
     "path": "site/gt10/index.html",
@@ -2411,8 +2421,8 @@
   },
   {
     "path": "site/gt39/index.html",
-    "size": 7786,
-    "sha256": "ca0b981f0272067c7a38838789f96d410994deccbcd76add88a8e8c7deba92a6"
+    "size": 7026,
+    "sha256": "89d1612050ad29e8eb9be78eba9aae206077994859aa24ddff221a573bb2b9a2"
   },
   {
     "path": "site/gt19/index.html",
@@ -2771,18 +2781,18 @@
   },
   {
     "path": "cases/catalog.yaml",
-    "size": 19180,
-    "sha256": "bed6d0828ed60ce95147d980498a5f4ef70dd9a13e9cd2f6c5ae48d750284da5"
+    "size": 19362,
+    "sha256": "2b289d6963e3e350d7071b68b8c02e4111acad6304ce4b35bd610a7d36fce1dd"
   },
   {
     "path": "docs/README.en.md",
-    "size": 13190,
-    "sha256": "31fc8bd55c1fc0f8b54c241e0cfccf2b0e1b28a0e7de010e01a2325705014301"
+    "size": 13620,
+    "sha256": "854895bc5044701210a41318ca5686bab288f5df05c9fae3a9ec03ffef0ac2c9"
   },
   {
     "path": "docs/README.md",
-    "size": 12185,
-    "sha256": "9567e6204527994d1edd22be0e0659af7cce3bd979627ea09f4ea1f7c7eca818"
+    "size": 12561,
+    "sha256": "33a553f858bbaf32712b3efb1edde34c9a7573ad6a3966956f65134c2bdcf10f"
   },
   {
     "path": "docs/architecture.md",
@@ -2898,6 +2908,16 @@
     "path": "docs/cookbook/gt21-gt28.zh-CN.md",
     "size": 19682,
     "sha256": "9fa7d69e958b878bbc00984ef419278b14de1beb1ea1b84101155178e71034b5"
+  },
+  {
+    "path": "docs/cookbook/gt38-gt42-uav-identity-governance.md",
+    "size": 3518,
+    "sha256": "4379cc1f43b71ffed3a42a63514ce363817aa37da63b8ca2af18066da028de9a"
+  },
+  {
+    "path": "docs/cookbook/gt38-gt42-uav-identity-governance.zh-CN.md",
+    "size": 2984,
+    "sha256": "1212747352a1372cb88754af5d09e9760b1d0da16b1cbd8c9fce53630ab76e51"
   },
   {
     "path": "docs/tutorials/quickstart.md",
@@ -3086,8 +3106,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 41497,
-    "sha256": "53d1dc7520c1b4ceff71df60cd6764e7100a88e5ea7e3df5ef901bc795d9cf12"
+    "size": 41926,
+    "sha256": "8b1a01a6cd771d84898d6218cf5487a4720f6e849caa164773b10e11b436589f"
   },
   {
     "path": ".release/release_public.py",
@@ -3121,8 +3141,8 @@
   },
   {
     "path": "tools/generate_case_catalog.py",
-    "size": 11706,
-    "sha256": "fd19f49148bf802cd873dacf1799679886f335fe42c0735aa6f16ec0accab660"
+    "size": 16086,
+    "sha256": "c7aef05c2a5b2cd57a89c0d2024c156a7fcda4ad1dfe5797d50730282ffedf3b"
   },
   {
     "path": "tools/scaffold_case.py",

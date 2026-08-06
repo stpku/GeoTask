@@ -33,7 +33,11 @@ def test_root_page_is_project_portal_not_gt01_experience() -> None:
     assert "公共Artifact" not in html
     assert "保护商业运行层" not in html
     assert "商业边界" not in html
-    assert "GT01—GT42渐进式案例" in html
+    assert "GT01—GT42公开参考例" in html
+    assert "42个可验证参考例" in html
+    assert "38个场景入口" in html
+    assert "巡检无人机短暂失联后被重新编号" in html
+    assert html.count('<article class="case case-series">') == 1
     assert 'id="demo"' in html
     assert 'id="cases"' in html
     assert 'id="architecture"' in html

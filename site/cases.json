@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 39,
+  "case_count": 40,
   "cases": [
     {
       "id": "GT01",
@@ -273,6 +273,13 @@
       "slug": "gt39",
       "title_zh": "证据支持同一对象后，系统可以直接归并身份吗？",
       "previous": "gt38",
+      "next": "gt40"
+    },
+    {
+      "id": "GT40",
+      "slug": "gt40",
+      "title_zh": "归并提案完成审批后，身份就已经被改写了吗？",
+      "previous": "gt39",
       "next": null
     }
   ]

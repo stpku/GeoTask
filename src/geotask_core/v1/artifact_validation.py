@@ -77,6 +77,10 @@ from geotask_core.v1.identity_merge_proposal import (
     IdentityMergeProposalError,
     load_identity_merge_proposal,
 )
+from geotask_core.v1.identity_merge_approval_record import (
+    IdentityMergeApprovalRecordError,
+    load_identity_merge_approval_record,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1570,6 +1574,62 @@ def _validate_identity_merge_proposal_payload(
     )
 
 
+def _validate_identity_merge_approval_record_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_identity_merge_approval_record(payload)
+    except IdentityMergeApprovalRecordError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_identity_merge_approval_record",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Identity Merge Approval "
+                        "Record v0.1. Generic validation does not recheck exact proposal "
+                        "bytes and approval never applies the merge, rewrites subject "
+                        "references, mutates the object graph or World State, releases "
+                        "production output, authorizes action, or executes action."
+                    ),
+                ),
+            ),
+        )
+
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "approval_record_id": result.approval_record_id,
+            "record_state": result.record_state,
+            "aggregate_decision": result.aggregate_decision,
+            "required_approval_count": len(result.required_approval_roles),
+            "proposal_approval_complete": result.proposal_approval_complete,
+            "change_request_eligible": result.change_request_eligible,
+            "next_action": result.next_action,
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "proposal_binding_verified": False,
+            "identity_merge_performed": False,
+            "subject_refs_mutated": False,
+            "object_graph_mutated": False,
+            "world_state_updated": False,
+            "production_output_released": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_incremental_reevaluation_result_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1709,6 +1769,12 @@ def _validate_verified_payload(
         )
     if descriptor.artifact_id == "geotask.identity-merge-proposal":
         return _validate_identity_merge_proposal_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
+    if descriptor.artifact_id == "geotask.identity-merge-approval-record":
+        return _validate_identity_merge_approval_record_payload(
             descriptor,
             payload,
             file=file,

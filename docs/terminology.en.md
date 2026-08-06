@@ -47,6 +47,9 @@ English-facing GeoTask pages and documents should use consistent English termino
 | Identity Candidate | 对象同一性候选 | `same_object_candidate` |
 | Identity Adjudication | 对象同一性审定 | `geotask.trajectory-identity-adjudication` |
 | Identity Merge Proposal | 对象身份归并提案 | `geotask.identity-merge-proposal` |
+| Identity Merge Approval Record | 对象身份归并审批记录 | `geotask.identity-merge-approval-record` |
+| Proposal Approval Complete | 提案审批完成 | `proposal_approval_complete` |
+| Change Request Eligible | 变更请求具备条件 | `change_request_eligible` |
 | Canonical Subject Reference | 主对象引用 | `canonical_subject_ref` |
 | Merge Subject | 拟归并对象 | `merge_subject_ref` |
 | Retained Alias | 保留别名 | `retained_aliases` |

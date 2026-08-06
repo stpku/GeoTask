@@ -341,3 +341,11 @@ cases:
     page: site/gt39/index.html
     example: examples/core/gt39_identity_merge_proposal.json
     lastmod: "2026-08-05"
+  - id: GT40
+    slug: gt40
+    stage: dynamic_world_objects
+    title_zh: 归并提案完成审批后，身份就已经被改写了吗？
+    summary_zh: 原始字节级绑定GT39对象身份归并提案，为每个必需审批角色记录批准、拒绝或要求补证据的显式决定；全部批准只使后续受限变更请求具备条件，不执行身份归并、不改写subject_ref、不修改对象关系图或世界状态。
+    page: site/gt40/index.html
+    example: examples/core/gt40_identity_merge_approval_record.json
+    lastmod: "2026-08-06"

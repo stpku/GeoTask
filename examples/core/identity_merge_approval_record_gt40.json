@@ -1,0 +1,75 @@
+{
+  "identity_merge_approval_record": {
+    "approval_version": "0.1",
+    "approval_record_id": "gt40-provisional-subject-merge-approval",
+    "created_at": "2026-08-06T08:00:00+08:00",
+    "source_proposal_ref": {
+      "artifact_id": "geotask.identity-merge-proposal",
+      "proposal_id": "gt39-provisional-subject-merge-proposal",
+      "content_sha256": "ea7df4731bdb3308930802acd10e3e5af7dc6c4ea8d5f70f8564146a26906c57"
+    },
+    "record_state": "decision_recorded",
+    "aggregate_decision": "approved",
+    "decision_reason": "all_required_approval_roles_approved",
+    "canonical_subject_ref": "provisional_alpha",
+    "merge_subject_ref": "provisional_beta",
+    "affected_trajectory_refs": [
+      "track_alpha",
+      "track_beta"
+    ],
+    "required_approval_roles": [
+      "identity_governance_reviewer",
+      "world_state_maintainer"
+    ],
+    "approval_decisions": [
+      {
+        "approval_role": "identity_governance_reviewer",
+        "reviewer_ref": "fictional-reviewer-identity-01",
+        "decision": "approved",
+        "rationale": "The proposal preserves alias history, closes the affected scope, and provides a reversible subject-reference rewrite.",
+        "decided_at": "2026-08-06T07:55:00+08:00",
+        "evidence_refs": [
+          "gt38-identity-adjudication",
+          "gt39-merge-proposal"
+        ]
+      },
+      {
+        "approval_role": "world_state_maintainer",
+        "reviewer_ref": "fictional-reviewer-state-01",
+        "decision": "approved",
+        "rationale": "The proposal is eligible for a separate bounded change request; no object graph or World State mutation is performed here.",
+        "decided_at": "2026-08-06T07:58:00+08:00",
+        "evidence_refs": [
+          "gt39-reversal-plan"
+        ]
+      }
+    ],
+    "approved_roles": [
+      "identity_governance_reviewer",
+      "world_state_maintainer"
+    ],
+    "rejected_roles": [],
+    "evidence_required_roles": [],
+    "proposal_binding_verified": true,
+    "decision_scope_closed": true,
+    "required_roles_covered": true,
+    "proposal_approval_complete": true,
+    "change_request_eligible": true,
+    "blocked_operations": [
+      "identity_merge_execution",
+      "subject_ref_mutation",
+      "object_graph_mutation",
+      "world_state_update",
+      "production_output_release",
+      "action_execution"
+    ],
+    "next_action": "prepare_identity_merge_change_request",
+    "identity_merge_performed": false,
+    "subject_refs_mutated": false,
+    "object_graph_mutated": false,
+    "world_state_updated": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

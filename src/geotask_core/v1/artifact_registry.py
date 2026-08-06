@@ -80,6 +80,10 @@ from geotask_core.v1.identity_merge_proposal import (
     IDENTITY_MERGE_PROPOSAL_SCHEMA_ID,
     IDENTITY_MERGE_PROPOSAL_SCHEMA_VERSION,
 )
+from geotask_core.v1.identity_merge_approval_record import (
+    IDENTITY_MERGE_APPROVAL_RECORD_SCHEMA_ID,
+    IDENTITY_MERGE_APPROVAL_RECORD_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -203,6 +207,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "identity-merge-proposal*.json",
         "identity_merge_proposal*.json",
         "examples/core/identity_merge_proposal*.json",
+    ),
+    "geotask.identity-merge-approval-record": (
+        "*.geotask-identity-merge-approval-record.json",
+        "identity-merge-approval-record*.json",
+        "identity_merge_approval_record*.json",
+        "examples/core/identity_merge_approval_record*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -655,6 +665,39 @@ _ARTIFACTS = (
             "binding validation do not approve or apply the proposal, create a new identity, "
             "delete aliases, mutate the object graph or World State, release production output, "
             "authorize action, or execute action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.identity-merge-approval-record",
+        title="GeoTask Identity Merge Approval Record v0.1",
+        kind="identity_merge_approval_record",
+        schema_id=IDENTITY_MERGE_APPROVAL_RECORD_SCHEMA_ID,
+        schema_version=IDENTITY_MERGE_APPROVAL_RECORD_SCHEMA_VERSION,
+        schema_path=(
+            "schemas/geotask-identity-merge-approval-record-v0.1.schema.json"
+        ),
+        specification_path=(
+            "docs/spec/geotask-identity-merge-approval-record-v0.1.md"
+        ),
+        wrapper_key="identity_merge_approval_record",
+        generation_command=None,
+        generation_note=(
+            "Produced from one exact GT39 proposal and one explicit decision for every "
+            "required approval role."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.identity-merge-approval-record "
+            "<identity-merge-approval-record.json>"
+        ),
+        description=(
+            "Auditable approval record that aggregates approved, rejected, or "
+            "evidence-required role decisions and may make a later bounded change "
+            "request eligible."
+        ),
+        execution_boundary=(
+            "Generic validation does not recheck exact proposal bytes. Approval does "
+            "not apply the merge, rewrite subject references, mutate the object graph "
+            "or World State, release production output, authorize action, or execute action."
         ),
     ),
     ArtifactDescriptor(

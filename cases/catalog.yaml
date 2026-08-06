@@ -357,3 +357,11 @@ cases:
     page: site/gt41/index.html
     example: examples/core/gt41_object_graph_change_request.json
     lastmod: "2026-08-06"
+  - id: GT42
+    slug: gt42
+    stage: dynamic_world_objects
+    title_zh: 对象关系图变更请求通过应用审批后，是否等于变更已经应用？
+    summary_zh: 原始字节级绑定GT41对象关系图变更请求，由调用方显式声明应用审批角色并为每个角色记录批准、拒绝或要求补证据的决定；全部批准只使后续受限应用制品具备条件，不授权或应用变更，不改写subject_ref，不修改对象关系图或世界状态。
+    page: site/gt42/index.html
+    example: examples/core/gt42_object_graph_change_application_approval_record.json
+    lastmod: "2026-08-06"

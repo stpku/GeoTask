@@ -10,7 +10,7 @@ GeoTask publishes several machine-readable artifacts with different producers,
 wrappers, JSON Schemas, and validation commands. The Artifact Registry provides
 one stable public discovery surface for those contracts.
 
-The registry currently contains exactly thirty-one artifacts:
+The registry currently contains exactly thirty-two artifacts:
 
 1. GeoTask Document v1.0;
 2. GeoTask Observation v0.1;
@@ -28,25 +28,26 @@ The registry currently contains exactly thirty-one artifacts:
 14. GeoTask Identity Merge Proposal v0.1;
 15. GeoTask Identity Merge Approval Record v0.1;
 16. GeoTask Object Graph Change Request v0.1;
-17. GeoTask Execution Result v1.0;
-18. GeoTask Control Evaluation Result v1.0;
-19. GeoTask Agent Generation Preparation Report v0.1;
-20. GeoTask Agent Revision Verification Report v0.1;
-21. GeoTask Agent Revision Retry Report v0.1;
-22. GeoTask Agent Evidence Recovery Report v0.1;
-23. GeoTask Runtime Descriptor v0.1;
-24. GeoTask Runtime Request v0.1;
-25. GeoTask Runtime Response v0.1;
-26. GeoTask Verification Provider Descriptor v0.1;
-27. GeoTask Verification Request v0.1;
-28. GeoTask Verification Response v0.1;
-29. GeoTask Assurance Profile v0.1;
-30. GeoTask Core Benchmark Report v0.1;
-31. GeoTask Artifact Validation Report v1.0.
+17. GeoTask Object Graph Change Application Approval Record v0.1;
+18. GeoTask Execution Result v1.0;
+19. GeoTask Control Evaluation Result v1.0;
+20. GeoTask Agent Generation Preparation Report v0.1;
+21. GeoTask Agent Revision Verification Report v0.1;
+22. GeoTask Agent Revision Retry Report v0.1;
+23. GeoTask Agent Evidence Recovery Report v0.1;
+24. GeoTask Runtime Descriptor v0.1;
+25. GeoTask Runtime Request v0.1;
+26. GeoTask Runtime Response v0.1;
+27. GeoTask Verification Provider Descriptor v0.1;
+28. GeoTask Verification Request v0.1;
+29. GeoTask Verification Response v0.1;
+30. GeoTask Assurance Profile v0.1;
+31. GeoTask Core Benchmark Report v0.1;
+32. GeoTask Artifact Validation Report v1.0.
 
 The Verification Provider entries use stable Artifact IDs `geotask.verification-provider-descriptor`, `geotask.verification-request`, `geotask.verification-response`, and `geotask.assurance-profile`. They describe Provider capability, bind one explicit verification request, record one Provider response, and evaluate cross-response assurance without allowing a Provider to self-upgrade trust or authorize action.
 
-The trajectory-identity adjudication contract uses `geotask.trajectory-identity-adjudication`; it binds one exact GT37 candidate, one Verification Request, one Assurance Profile, and matching Provider Descriptors and Responses to a review recommendation while preserving both original subjects and forcing identity merge, `subject_ref` mutation, production release, authorization, and execution to remain false. The identity-merge proposal contract uses `geotask.identity-merge-proposal`; it binds one exact GT38 adjudication to a caller-selected existing canonical subject, one bounded rewrite proposal, retained alias history, approval roles, blocking and withdrawal conditions, and a reversal plan while keeping approval, object-graph mutation, World State update, publication, authorization, and execution false. The approval-record contract uses `geotask.identity-merge-approval-record`; it binds one exact GT39 proposal to one explicit decision per required role, derives approved, rejected, or evidence-required state, and may make a later change request eligible without applying the merge or changing references, the object graph, or World State. The object-graph change-request contract uses `geotask.object-graph-change-request`; it binds exact GT39 proposal and GT40 approval-record bytes, derives one closed trajectory `/subject_ref` rewrite with retained alias history, application preconditions, acceptance criteria, and rollback requirements, while keeping application authorization, mutation, publication, and execution false. The world-model input contract uses `geotask.observation`; it records structured claims but does not verify truth or automatically update a World State. The snapshot contract uses `geotask.world-state`; it validates one explicit state snapshot but does not itself merge observations or materialize a later state. The bounded merge contract uses `geotask.observation-merge-result`; it binds exact base, Observation, and successor bytes, applies complete explicit claim mappings only to existing attributes or relations, and audits caller-declared `require_equal` or complete `explicit_precedence` policies when multiple claims target the same path, without identity inference, invented precedence, source ranking, undeclared ambiguous-conflict resolution, or State Transition computation. The transition contract uses `geotask.state-transition`; it binds two snapshot fingerprints and records explicit changes but does not calculate a diff, apply changes, verify truth, or authorize action. The audit-snapshot contract uses `geotask.verification-session`; it binds one World State to exact serialized artifacts plus eligibility and recheck records, but does not validate linked artifact semantics or execute the declared work. The discrepancy contract uses `geotask.discrepancy-report`; it records explicit expected/observed differences, declared impact, and bounded correction scope, but does not compare sources, propagate impact, apply correction, or authorize action. The correction contract uses `geotask.correction-request`; it binds an immutable base state and exact discrepancy reports, constrains successor-state changes and acceptance criteria, and keeps outputs/actions gated without applying changes or materializing the successor. The impact contract uses `geotask.impact-graph`; it validates a source-bound directed acyclic graph from discrepancies and correction entities to affected paths, assertions, outputs, actions, and reevaluation targets, but does not discover dependencies or execute propagation or reevaluation. The recompute-derivation contract uses `geotask.recompute-derivation-result`; it binds every requested recompute change to exact source Artifact paths and evaluates only a small deterministic method allowlist, while forbidding arbitrary code, model calls, state materialization, reevaluation, and action authorization. The materialization-result contract uses `geotask.world-state-materialization-result`; it records exact base/request/successor bindings and complete bounded change application while keeping reevaluation, output release, and action authorization false. The incremental-result contract uses `geotask.incremental-reevaluation-result`; it binds exact base/successor snapshots and source Artifacts, closes node, target, criterion, discrepancy, and gate outcomes, and verifies bounded successor semantics without executing reevaluation, generating the successor, authorizing actions, or executing actions.
+The trajectory-identity adjudication contract uses `geotask.trajectory-identity-adjudication`; it binds one exact GT37 candidate, one Verification Request, one Assurance Profile, and matching Provider Descriptors and Responses to a review recommendation while preserving both original subjects and forcing identity merge, `subject_ref` mutation, production release, authorization, and execution to remain false. The identity-merge proposal contract uses `geotask.identity-merge-proposal`; it binds one exact GT38 adjudication to a caller-selected existing canonical subject, one bounded rewrite proposal, retained alias history, approval roles, blocking and withdrawal conditions, and a reversal plan while keeping approval, object-graph mutation, World State update, publication, authorization, and execution false. The approval-record contract uses `geotask.identity-merge-approval-record`; it binds one exact GT39 proposal to one explicit decision per required role, derives approved, rejected, or evidence-required state, and may make a later change request eligible without applying the merge or changing references, the object graph, or World State. The object-graph change-request contract uses `geotask.object-graph-change-request`; it binds exact GT39 proposal and GT40 approval-record bytes, derives one closed trajectory `/subject_ref` rewrite with retained alias history, application preconditions, acceptance criteria, and rollback requirements, while keeping application authorization, mutation, publication, and execution false. The object-graph change application-approval contract uses `geotask.object-graph-change-application-approval-record`; it binds exact GT41 request bytes, records one explicit decision for every caller-declared application-approval role, and may make a later bounded application Artifact eligible while keeping application authorization, mutation, publication, and execution false. The world-model input contract uses `geotask.observation`; it records structured claims but does not verify truth or automatically update a World State. The snapshot contract uses `geotask.world-state`; it validates one explicit state snapshot but does not itself merge observations or materialize a later state. The bounded merge contract uses `geotask.observation-merge-result`; it binds exact base, Observation, and successor bytes, applies complete explicit claim mappings only to existing attributes or relations, and audits caller-declared `require_equal` or complete `explicit_precedence` policies when multiple claims target the same path, without identity inference, invented precedence, source ranking, undeclared ambiguous-conflict resolution, or State Transition computation. The transition contract uses `geotask.state-transition`; it binds two snapshot fingerprints and records explicit changes but does not calculate a diff, apply changes, verify truth, or authorize action. The audit-snapshot contract uses `geotask.verification-session`; it binds one World State to exact serialized artifacts plus eligibility and recheck records, but does not validate linked artifact semantics or execute the declared work. The discrepancy contract uses `geotask.discrepancy-report`; it records explicit expected/observed differences, declared impact, and bounded correction scope, but does not compare sources, propagate impact, apply correction, or authorize action. The correction contract uses `geotask.correction-request`; it binds an immutable base state and exact discrepancy reports, constrains successor-state changes and acceptance criteria, and keeps outputs/actions gated without applying changes or materializing the successor. The impact contract uses `geotask.impact-graph`; it validates a source-bound directed acyclic graph from discrepancies and correction entities to affected paths, assertions, outputs, actions, and reevaluation targets, but does not discover dependencies or execute propagation or reevaluation. The recompute-derivation contract uses `geotask.recompute-derivation-result`; it binds every requested recompute change to exact source Artifact paths and evaluates only a small deterministic method allowlist, while forbidding arbitrary code, model calls, state materialization, reevaluation, and action authorization. The materialization-result contract uses `geotask.world-state-materialization-result`; it records exact base/request/successor bindings and complete bounded change application while keeping reevaluation, output release, and action authorization false. The incremental-result contract uses `geotask.incremental-reevaluation-result`; it binds exact base/successor snapshots and source Artifacts, closes node, target, criterion, discrepancy, and gate outcomes, and verifies bounded successor semantics without executing reevaluation, generating the successor, authorizing actions, or executing actions.
 
 It does not scan the filesystem, discover private modules, or infer unpublished
 contracts. New entries require an explicit public contract and compatibility
@@ -84,7 +85,7 @@ geotask inspect schemas geotask.execution-result --verify --format json
 ```
 
 `--verify` appends a sibling `schema_bundle_verification` object. Full discovery
-checks the Registry Schema plus all thirty-one registered Artifact Schemas; exact
+checks the Registry Schema plus all thirty-two registered Artifact Schemas; exact
 lookup checks only the selected artifact Schema. An invalid Bundle still emits
 the composite JSON or YAML report and exits non-zero. Without `--verify`, output
 remains the original Artifact Registry v1.0 payload and continues to validate
@@ -202,8 +203,8 @@ The same names are exported from `geotask_core.v1`.
 
 ### 3.1 Installed Schema Bundle
 
-The wheel and source distribution include all thirty-two public JSON Schemas needed to
-interpret the Registry and its thirty-one registered Artifacts. Callers can load them
+The wheel and source distribution include all thirty-three public JSON Schemas needed to
+interpret the Registry and its thirty-two registered Artifacts. Callers can load them
 without network access:
 
 ```python
@@ -297,7 +298,7 @@ and non-execution boundary.
   "artifact_registry": {
     "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-artifact-registry-v1.0.schema.json",
     "registry_version": "1.0",
-    "artifact_count": 31,
+    "artifact_count": 32,
     "artifacts": [
       {
         "artifact_id": "geotask.document",
@@ -320,7 +321,7 @@ and non-execution boundary.
 }
 ```
 
-The complete payload contains all thirty-one descriptors in stable display order.
+The complete payload contains all thirty-two descriptors in stable display order.
 
 ## 5. Descriptor fields
 

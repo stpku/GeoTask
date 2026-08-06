@@ -88,6 +88,10 @@ from geotask_core.v1.object_graph_change_request import (
     OBJECT_GRAPH_CHANGE_REQUEST_SCHEMA_ID,
     OBJECT_GRAPH_CHANGE_REQUEST_SCHEMA_VERSION,
 )
+from geotask_core.v1.object_graph_change_application_approval_record import (
+    OBJECT_GRAPH_CHANGE_APPLICATION_APPROVAL_RECORD_SCHEMA_ID,
+    OBJECT_GRAPH_CHANGE_APPLICATION_APPROVAL_RECORD_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -223,6 +227,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "object-graph-change-request*.json",
         "object_graph_change_request*.json",
         "examples/core/object_graph_change_request*.json",
+    ),
+    "geotask.object-graph-change-application-approval-record": (
+        "*.geotask-object-graph-change-application-approval-record.json",
+        "object-graph-change-application-approval-record*.json",
+        "object_graph_change_application_approval_record*.json",
+        "examples/core/object_graph_change_application_approval_record*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -736,6 +746,40 @@ _ARTIFACTS = (
             "Generic validation does not recheck exact GT39/GT40 bytes. The request does "
             "not authorize or apply a change, mutate the object graph or World State, "
             "release production output, authorize action, or execute action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.object-graph-change-application-approval-record",
+        title="GeoTask Object Graph Change Application Approval Record v0.1",
+        kind="object_graph_change_application_approval_record",
+        schema_id=OBJECT_GRAPH_CHANGE_APPLICATION_APPROVAL_RECORD_SCHEMA_ID,
+        schema_version=OBJECT_GRAPH_CHANGE_APPLICATION_APPROVAL_RECORD_SCHEMA_VERSION,
+        schema_path=(
+            "schemas/geotask-object-graph-change-application-approval-record-v0.1.schema.json"
+        ),
+        specification_path=(
+            "docs/spec/geotask-object-graph-change-application-approval-record-v0.1.md"
+        ),
+        wrapper_key="object_graph_change_application_approval_record",
+        generation_command=None,
+        generation_note=(
+            "Produced from exact GT41 request bytes, caller-declared required "
+            "application-approval roles, and one explicit decision per role."
+        ),
+        validation_command=(
+            "geotask artifact validate "
+            "geotask.object-graph-change-application-approval-record "
+            "<object-graph-change-application-approval-record.json>"
+        ),
+        description=(
+            "Auditable application-approval record that aggregates approved, "
+            "rejected, or evidence-required decisions and may make a later bounded "
+            "change application eligible."
+        ),
+        execution_boundary=(
+            "Generic validation does not recheck exact GT41 bytes. Approval does not "
+            "authorize or apply the change, mutate subject references, the object graph "
+            "or World State, release production output, authorize action, or execute action."
         ),
     ),
     ArtifactDescriptor(

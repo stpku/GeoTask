@@ -1,0 +1,29 @@
+{
+  "case_id": "GT42",
+  "title": "对象关系图变更请求已通过应用审批，是否等于变更已经应用？",
+  "change_request_artifact": "examples/core/object_graph_change_request_gt41.json",
+  "application_approval_artifact": "examples/core/object_graph_change_application_approval_record_gt42.json",
+  "aggregate_decision": "approved",
+  "required_approval_roles": [
+    "object_graph_change_owner",
+    "world_state_governance_reviewer"
+  ],
+  "approved_roles": [
+    "object_graph_change_owner",
+    "world_state_governance_reviewer"
+  ],
+  "application_approval_complete": true,
+  "change_application_eligible": true,
+  "next_action": "prepare_bounded_object_graph_change_application",
+  "boundaries": {
+    "application_authorized": false,
+    "change_applied": false,
+    "identity_merge_performed": false,
+    "subject_refs_mutated": false,
+    "object_graph_mutated": false,
+    "world_state_updated": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

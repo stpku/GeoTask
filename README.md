@@ -124,7 +124,7 @@ geotask validate my_distance.yaml
 geotask run my_distance.yaml
 ```
 
-## 41个公开应用案例
+## 42个公开应用案例
 
 GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示模型方案如何被结构化、复算、验错、补证、纠偏和行动门控。
 
@@ -136,7 +136,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 | 行动与可行性 | GT10—GT20 | 约束确认以后，下一步具体执行什么？ |
 | 世界状态循环 | GT21—GT28 | 多源观测、状态变化、影响范围、限定纠偏和行动门禁怎样闭环？ |
 | 验证提供方生态 | GT29—GT32 | 多个外部来源冲突、显式裁决、渐进授权和行动门禁怎样形成独立可信保证？ |
-| 动态世界对象 | GT33—GT41 | 移动对象、时间观测、轨迹指标、显式阈值分类、对象同一性候选与审定、身份归并提案、审批记录和对象关系图变更请求怎样绑定，而不静默插值、自动归并身份、改写引用、更新世界状态、发布或执行动作？ |
+| 动态世界对象 | GT33—GT42 | 移动对象、时间观测、轨迹指标、显式阈值分类、对象同一性候选与审定、身份归并提案、审批记录、对象关系图变更请求及其应用审批怎样绑定，而不静默插值、自动归并身份、改写引用、更新世界状态、发布或执行动作？ |
 
 重点案例：
 
@@ -174,8 +174,9 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT39：** GT38对象同一性审定结果与调用方选择的主对象引用、提案理由和审批角色形成`ready_for_review`对象身份归并提案；提案只覆盖两条原始轨迹，保留非主主体为别名，并记录阻断条件、撤销条件和归并回退方案，不创建新身份、不删除别名、不修改对象关系图或世界状态。
 - **GT40：** GT39对象身份归并提案与两个必需审批角色的显式决定形成`decision_recorded`审批记录；全部角色批准时只将后续受限变更请求标记为具备条件，不执行身份归并、不改写`subject_ref`、不修改对象关系图或世界状态。
 - **GT41：** GT39提案与GT40审批记录原始字节级绑定后，公共核心派生唯一的轨迹`/subject_ref`改写请求、保留别名、七项应用前置条件、五项验收条件和逆向回退操作；请求仍需独立应用审批，不授权或应用变更，不修改对象关系图或世界状态。
+- **GT42：** GT41对象关系图变更请求与两个调用方声明的应用审批角色决定形成`decision_recorded`审批记录；全部批准只使后续受限应用制品具备条件，`application_authorized`和所有实际变更标志继续保持`false`。
 
-GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33—GT41见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)，GT38审定制品见[Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md)，GT39归并提案见[Identity Merge Proposal v0.1](docs/spec/geotask-identity-merge-proposal-v0.1.md)，GT40审批记录见[Identity Merge Approval Record v0.1](docs/spec/geotask-identity-merge-approval-record-v0.1.md)，GT41变更请求见[Object Graph Change Request v0.1](docs/spec/geotask-object-graph-change-request-v0.1.md)。
+GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33—GT42见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)，GT38审定制品见[Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md)，GT39归并提案见[Identity Merge Proposal v0.1](docs/spec/geotask-identity-merge-proposal-v0.1.md)，GT40审批记录见[Identity Merge Approval Record v0.1](docs/spec/geotask-identity-merge-approval-record-v0.1.md)，GT41变更请求见[Object Graph Change Request v0.1](docs/spec/geotask-object-graph-change-request-v0.1.md)，GT42应用审批记录见[Object Graph Change Application Approval Record v0.1](docs/spec/geotask-object-graph-change-application-approval-record-v0.1.md)。
 
 ## 当前公共Core真正支持什么
 

@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 41,
+  "case_count": 42,
   "cases": [
     {
       "id": "GT01",
@@ -287,6 +287,13 @@
       "slug": "gt41",
       "title_zh": "归并提案已获批，是否可以直接改写对象关系图？",
       "previous": "gt40",
+      "next": "gt42"
+    },
+    {
+      "id": "GT42",
+      "slug": "gt42",
+      "title_zh": "对象关系图变更请求通过应用审批后，是否等于变更已经应用？",
+      "previous": "gt41",
       "next": null
     }
   ]

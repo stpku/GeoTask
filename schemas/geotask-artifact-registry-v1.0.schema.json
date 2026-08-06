@@ -78,6 +78,7 @@
             "trajectory_identity_adjudication",
             "identity_merge_proposal",
             "identity_merge_approval_record",
+            "object_graph_change_request",
             "execution_result",
             "control_evaluation_result",
             "agent_generation_preparation_report",

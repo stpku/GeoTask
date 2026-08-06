@@ -316,6 +316,7 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "spec/geotask-verification-provider-profile-v0.1.md",
         "spec/geotask-verification-provider-profile-v0.1.zh-CN.md",
         "spec/geotask-identity-merge-approval-record-v0.1.md",
+        "spec/geotask-object-graph-change-request-v0.1.md",
         "terminology.en.md",
         "terminology.zh-CN.md",
         "../skills/geotask-core/SKILL.md",
@@ -341,8 +342,8 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
     assert "Implemented public profile" in en_text
     assert "System-level target direction" in en_text
     assert "Legacy compatibility" in en_text
-    assert "30类公共制品" in zh_text
-    assert "thirty public Artifacts" in en_text
+    assert "31类公共制品" in zh_text
+    assert "thirty-one public Artifacts" in en_text
 
 
 def test_terminology_distinguishes_contract_specification_protocol_and_legal_contract() -> None:
@@ -402,7 +403,8 @@ def test_architecture_and_target_status_include_bounded_observation_merge() -> N
         "18. [GeoTask Trajectory Identity Adjudication v0.1]",
         "19. [GeoTask Identity Merge Proposal v0.1]",
         "20. [GeoTask Identity Merge Approval Record v0.1]",
-        "23. [Operator Registry]",
+        "21. [GeoTask Object Graph Change Request v0.1]",
+        "24. [Operator Registry]",
         "World State, Observation Merge Result, State Transition",
         "caller-declared `require_equal`",
         "undeclared ambiguous-conflict resolution",
@@ -745,6 +747,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.trajectory-identity-adjudication",
         "geotask.identity-merge-proposal",
         "geotask.identity-merge-approval-record",
+        "geotask.object-graph-change-request",
         "geotask.world-state-materialization-result",
         "geotask.incremental-reevaluation-result",
         "geotask.execution-result",
@@ -761,8 +764,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.verification-response",
         "geotask.assurance-profile",
         "geotask.core-benchmark-report",
-        "exactly thirty artifacts",
-        "all thirty-one public JSON Schemas",
+        "exactly thirty-one artifacts",
+        "all thirty-two public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

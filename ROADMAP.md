@@ -89,8 +89,9 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ 已发布GT38对象同一性证据与显式审定案例：新增第28类公共制品和第29份公共Schema，将GT37候选与原始字节级绑定的验证请求、可信保证策略、两个独立验证提供方及其响应组合为同一对象确认、不同对象确认或未决审定；即使同一对象证据满足策略，也只输出身份归并复核建议，不归并对象、不改写subject_ref、不发布、不授权也不执行身份更新；
 - ✅ 已发布GT39对象身份归并提案案例：新增第29类公共制品和第30份公共Schema，将GT38对象同一性审定结果、调用方选择的现有主对象引用、提案理由和审批角色组合为ready_for_review提案；提案只覆盖两条原始轨迹，提出一项subject_ref改写，保留非主主体为别名，并声明阻断、撤销和回退要求，不创建新身份、不删除别名、不审批、不修改对象关系图或世界状态，也不发布、授权或执行更新；
 - ✅ 已发布GT40对象身份归并审批记录案例：新增第30类公共制品和第31份公共Schema，原始字节级绑定GT39提案，对每个必需审批角色记录批准、拒绝或要求补证据的显式决定；任一拒绝优先，补证据继续阻断，全部批准只使后续受限变更请求具备条件，不执行身份归并、不改写subject_ref、不修改对象关系图或世界状态，也不发布、授权或执行更新；
+- ✅ 已发布GT41对象关系图变更请求案例：新增第31类公共制品和第32份公共Schema，原始字节级绑定GT39提案与GT40全部批准记录，由公共核心派生唯一的轨迹`subject_ref`改写、保留别名、七项应用前置条件、五项验收条件和逆向回退操作；请求必须进入独立应用审批，不授权或应用变更，不修改对象关系图或世界状态，也不发布、授权或执行更新；
 - ✅ 已建立中英文独立项目入口及术语映射，并明确“契约、规范、协议、合同”四类中文用法，机器标识保持稳定；
-- 继续扩展对象关系图变更请求、后继世界状态生成和可撤销身份治理规范；
+- 继续扩展对象关系图变更应用审批、受限应用结果、后继世界状态生成和可撤销身份治理规范；
 - 发布可复用的行业扩展接口和非行业敏感的参考实现；
 - 建立验错率、漏检率、纠偏成功率、增量复核范围和执行时延基准；
 - 支持社区维护的验证提供方、案例、算子和通用扩展目录。
@@ -190,8 +191,9 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - ✅ Published GT38 for identity-candidate evidence and explicit adjudication: the twenty-eighth public Artifact and twenty-ninth public Schema bind the exact GT37 candidate, Verification Request, caller-authored Assurance Profile, and two independently grouped Provider responses into confirmed-same, confirmed-different, or unresolved adjudication. Even confirmed same-object evidence only enables merge review and never merges objects, mutates `subject_ref`, publishes, authorizes, or executes an identity update;
 - ✅ Published GT39 for bounded identity-merge proposals: the twenty-ninth public Artifact and thirtieth public Schema bind one exact GT38 same-object adjudication to a caller-selected existing canonical subject, exactly one proposed `subject_ref` rewrite, retained alias history, approval roles, closed blocking and withdrawal conditions, and an inverse reversal plan. The proposal never creates or deletes identity, approves itself, mutates the object graph or World State, publishes, authorizes, or executes an update;
 - ✅ Published GT40 for identity-merge approval records: the thirtieth public Artifact and thirty-first public Schema bind one exact GT39 proposal to one explicit approved, rejected, or evidence-required decision for every required role. Rejection takes precedence, evidence requests keep the proposal blocked, and all-role approval only makes a later bounded change request eligible without merging identity, mutating `subject_ref`, changing the object graph or World State, publishing, authorizing, or executing an update;
+- ✅ Published GT41 for bounded object-graph change requests: the thirty-first public Artifact and thirty-second public Schema bind exact GT39 proposal and GT40 all-role approval bytes, then derive exactly one trajectory `subject_ref` rewrite, retained alias history, seven application preconditions, five acceptance criteria, and one inverse rollback operation. The request still requires separate application approval and does not authorize or apply a change, mutate the object graph or World State, publish, authorize, or execute an update;
 - ✅ Established separate Chinese and English project entry points plus terminology maps while keeping machine identifiers stable; the Chinese guide now distinguishes software contracts, specifications, protocols, and legal/commercial contracts by function;
-- continue with object-graph change requests, successor World State generation, and reversible identity-governance specifications;
+- continue with object-graph change application approval, bounded application results, successor World State generation, and reversible identity-governance specifications;
 - publish reusable extension interfaces and non-sensitive reference implementations;
 - establish benchmarks for error-detection rate, missed errors, correction success, incremental scope, and execution latency;
 - support community-maintained catalogs of Verification Providers, cases, operators, and generic extensions.

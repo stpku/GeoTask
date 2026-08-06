@@ -81,6 +81,10 @@ from geotask_core.v1.identity_merge_approval_record import (
     IdentityMergeApprovalRecordError,
     load_identity_merge_approval_record,
 )
+from geotask_core.v1.object_graph_change_request import (
+    ObjectGraphChangeRequestError,
+    load_object_graph_change_request,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1630,6 +1634,65 @@ def _validate_identity_merge_approval_record_payload(
     )
 
 
+def _validate_object_graph_change_request_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_object_graph_change_request(payload)
+    except ObjectGraphChangeRequestError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_object_graph_change_request",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Object Graph Change "
+                        "Request v0.1. Generic validation does not recheck exact GT39/GT40 "
+                        "bytes and the request never authorizes or applies a change, mutates "
+                        "the object graph or World State, releases production output, "
+                        "authorizes action, or executes action."
+                    ),
+                ),
+            ),
+        )
+
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "change_request_id": result.change_request_id,
+            "request_state": result.request_state,
+            "change_operation_count": len(result.change_operations),
+            "precondition_count": len(result.preconditions),
+            "acceptance_criterion_count": len(result.acceptance_criteria),
+            "application_review_required": result.application_review_required,
+            "application_authorized": False,
+            "next_action": result.next_action,
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "proposal_binding_verified": False,
+            "approval_record_binding_verified": False,
+            "change_applied": False,
+            "identity_merge_performed": False,
+            "subject_refs_mutated": False,
+            "object_graph_mutated": False,
+            "world_state_updated": False,
+            "production_output_released": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_incremental_reevaluation_result_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1775,6 +1838,12 @@ def _validate_verified_payload(
         )
     if descriptor.artifact_id == "geotask.identity-merge-approval-record":
         return _validate_identity_merge_approval_record_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
+    if descriptor.artifact_id == "geotask.object-graph-change-request":
+        return _validate_object_graph_change_request_payload(
             descriptor,
             payload,
             file=file,

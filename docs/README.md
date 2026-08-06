@@ -2,7 +2,7 @@
 
 **简体中文** | [English](README.en.md)
 
-GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和GT01—GT40案例掌握当前公共核心已经实现的世界模型基础与能力边界。
+GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和GT01—GT41案例掌握当前公共核心已经实现的世界模型基础与能力边界。
 
 ## 从这里开始
 
@@ -25,14 +25,15 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [Recompute Derivation Result v0.1](spec/geotask-recompute-derivation-result-v0.1.md)：将Correction Request中的每个`recompute`变更绑定到精确Observation/任务文档路径，通过受限确定性方法生成完整重算值映射，不执行任意表达式、模型调用或状态物化。
 - [World State Materialization Result v0.1](spec/geotask-world-state-materialization-result-v0.1.md)：由不可变基准World State、已绑定Correction Request和显式重算值确定性生成后继快照，记录精确字节与逐项变更，同时保留输出/动作门禁。
 - [Incremental Reevaluation Result v0.1](spec/geotask-incremental-reevaluation-result-v0.1.md)：绑定基准/后继World State、Impact Graph与精确来源文件，记录节点、目标、验收条件、差异消解及输出/动作门禁结果，但不执行复核或授权动作。
-- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现30类公共制品、31份结构规范、版本及操作命令。
+- [制品注册表v1.0](spec/geotask-artifact-registry-v1.0.md)：通过`geotask inspect schemas`统一发现31类公共制品、32份结构规范、版本及操作命令。
 - [验证提供方接口规范v0.1](spec/geotask-verification-provider-profile-v0.1.zh-CN.md)：定义验证提供方描述符、验证请求、验证响应、可信保证策略及只读命令行接口。
-- [轨迹与移动对象Profile v0.1](spec/geotask-trajectory-profile-v0.1.zh-CN.md)：定义身份与位置观测分离、严格递增带时区样本、相邻分段指标、调用方显式分类、对象同一性候选与审定、身份归并提案和审批记录，以及GT33—GT40非预测/非执行边界。
+- [轨迹与移动对象Profile v0.1](spec/geotask-trajectory-profile-v0.1.zh-CN.md)：定义身份与位置观测分离、严格递增带时区样本、相邻分段指标、调用方显式分类、对象同一性候选与审定、身份归并提案、审批记录和对象关系图变更请求，以及GT33—GT41非预测/非执行边界。
 - [Trajectory Identity Adjudication v0.1](spec/geotask-trajectory-identity-adjudication-v0.1.md)：原始字节级绑定GT37候选、验证请求、可信保证策略、验证提供方描述符与响应，形成对象同一性审定与归并复核建议，但不修改对象关系图。
 - [Identity Merge Proposal v0.1](spec/geotask-identity-merge-proposal-v0.1.md)：从GT38审定结果生成受限对象身份归并提案，声明主对象引用、保留别名、审批要求和归并回退方案，但不审批或执行归并。
 - [Identity Merge Approval Record v0.1](spec/geotask-identity-merge-approval-record-v0.1.md)：原始字节级绑定GT39提案，为每个必需角色记录批准、拒绝或补证据决定，但不执行归并或修改对象关系图。
+- [Object Graph Change Request v0.1](spec/geotask-object-graph-change-request-v0.1.md)：原始字节级绑定GT39提案与GT40审批记录，派生唯一的轨迹引用改写、保留别名、应用前置条件、验收条件和回退要求，但不授权或应用变更。
 - [中文术语规范](terminology.zh-CN.md)：建立中英文术语映射，并约束中文页面和中文文档避免不必要的中英文混编。
-- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定制品标识校验30类公共制品，包括对象同一性审定、对象身份归并提案、归并审批记录、观测记录、世界状态、观测合并结果、状态转换、验证会话、差异报告、纠偏请求、影响图、重算推导结果、世界状态物化结果、增量复核结果、智能体报告、运行时消息、验证提供方制品、核心基准报告与验证报告自身，并输出统一文本或JSON报告。
+- [统一制品校验v1.0](spec/geotask-artifact-validation-v1.0.md)：通过`geotask artifact validate`按稳定制品标识校验31类公共制品，包括对象同一性审定、对象身份归并提案、归并审批记录、对象关系图变更请求、观测记录、世界状态、观测合并结果、状态转换、验证会话、差异报告、纠偏请求、影响图、重算推导结果、世界状态物化结果、增量复核结果、智能体报告、运行时消息、验证提供方制品、核心基准报告与验证报告自身，并输出统一文本或JSON报告。
 - [版本化载荷校验v1.0](spec/geotask-versioned-payload-validation-v1.0.md)：统一执行结果与控制结果的严格加载、Schema元数据、诊断和文本/JSON报告。
 - [控制扩展Profile v1.0](spec/geotask-control-extension-profile-v1.0.md)：对证据请求、证据冲突、决策规则和任务门控进行版本化校验。
 - [控制表达式语言v1.0](spec/geotask-control-expression-language-v1.0.md)：定义安全有限语法、三值逻辑、比较语义和公共解析求值API。

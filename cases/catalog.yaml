@@ -349,3 +349,11 @@ cases:
     page: site/gt40/index.html
     example: examples/core/gt40_identity_merge_approval_record.json
     lastmod: "2026-08-06"
+  - id: GT41
+    slug: gt41
+    stage: dynamic_world_objects
+    title_zh: 归并提案已获批，是否可以直接改写对象关系图？
+    summary_zh: 原始字节级绑定GT39提案和GT40审批记录，由公共核心派生唯一的轨迹subject_ref改写请求、保留别名、七项应用前置条件、五项验收条件和逆向回退操作；变更请求仍不授权或应用变更，不修改对象关系图或世界状态。
+    page: site/gt41/index.html
+    example: examples/core/gt41_object_graph_change_request.json
+    lastmod: "2026-08-06"

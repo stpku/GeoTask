@@ -84,6 +84,10 @@ from geotask_core.v1.identity_merge_approval_record import (
     IDENTITY_MERGE_APPROVAL_RECORD_SCHEMA_ID,
     IDENTITY_MERGE_APPROVAL_RECORD_SCHEMA_VERSION,
 )
+from geotask_core.v1.object_graph_change_request import (
+    OBJECT_GRAPH_CHANGE_REQUEST_SCHEMA_ID,
+    OBJECT_GRAPH_CHANGE_REQUEST_SCHEMA_VERSION,
+)
 from geotask_core.v1.result import (
     GEOTASK_RESULT_SCHEMA_ID,
     GEOTASK_RESULT_SCHEMA_VERSION,
@@ -213,6 +217,12 @@ _IDE_FILE_PATTERNS: dict[str, tuple[str, ...]] = {
         "identity-merge-approval-record*.json",
         "identity_merge_approval_record*.json",
         "examples/core/identity_merge_approval_record*.json",
+    ),
+    "geotask.object-graph-change-request": (
+        "*.geotask-object-graph-change-request.json",
+        "object-graph-change-request*.json",
+        "object_graph_change_request*.json",
+        "examples/core/object_graph_change_request*.json",
     ),
     "geotask.execution-result": ("*.geotask-result.json", "execution-result*.json"),
     "geotask.control-evaluation": ("*control-evaluation*.json",),
@@ -698,6 +708,34 @@ _ARTIFACTS = (
             "Generic validation does not recheck exact proposal bytes. Approval does "
             "not apply the merge, rewrite subject references, mutate the object graph "
             "or World State, release production output, authorize action, or execute action."
+        ),
+    ),
+    ArtifactDescriptor(
+        artifact_id="geotask.object-graph-change-request",
+        title="GeoTask Object Graph Change Request v0.1",
+        kind="object_graph_change_request",
+        schema_id=OBJECT_GRAPH_CHANGE_REQUEST_SCHEMA_ID,
+        schema_version=OBJECT_GRAPH_CHANGE_REQUEST_SCHEMA_VERSION,
+        schema_path="schemas/geotask-object-graph-change-request-v0.1.schema.json",
+        specification_path="docs/spec/geotask-object-graph-change-request-v0.1.md",
+        wrapper_key="object_graph_change_request",
+        generation_command=None,
+        generation_note=(
+            "Produced from exact GT39 proposal and GT40 approved-record bytes. Core "
+            "derives the closed rewrite scope rather than accepting arbitrary paths."
+        ),
+        validation_command=(
+            "geotask artifact validate geotask.object-graph-change-request "
+            "<object-graph-change-request.json>"
+        ),
+        description=(
+            "Bounded request for one trajectory subject-reference rewrite with retained "
+            "alias history, preconditions, acceptance criteria, and rollback requirements."
+        ),
+        execution_boundary=(
+            "Generic validation does not recheck exact GT39/GT40 bytes. The request does "
+            "not authorize or apply a change, mutate the object graph or World State, "
+            "release production output, authorize action, or execute action."
         ),
     ),
     ArtifactDescriptor(

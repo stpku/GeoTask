@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-object-graph-change-request-v0.1.schema.json",
+  "title": "GeoTask Object Graph Change Request v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["object_graph_change_request"],
+  "properties": {
+    "object_graph_change_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_version",
+        "change_request_id",
+        "created_at",
+        "source_proposal_ref",
+        "source_approval_record_ref",
+        "request_state",
+        "request_reason",
+        "canonical_subject_ref",
+        "merge_subject_ref",
+        "object_class",
+        "affected_trajectory_refs",
+        "change_operations",
+        "retained_aliases",
+        "preconditions",
+        "acceptance_criteria",
+        "rollback_plan",
+        "proposal_binding_verified",
+        "approval_record_binding_verified",
+        "approved_scope_verified",
+        "request_scope_closed",
+        "retained_aliases_preserved",
+        "application_review_required",
+        "application_authorized",
+        "blocked_operations",
+        "next_action",
+        "change_applied",
+        "identity_merge_performed",
+        "subject_refs_mutated",
+        "object_graph_mutated",
+        "world_state_updated",
+        "production_output_released",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "request_version": {"const": "0.1"},
+        "change_request_id": {"$ref": "#/$defs/nonEmptyString"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "source_proposal_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact_id", "proposal_id", "content_sha256"],
+          "properties": {
+            "artifact_id": {"const": "geotask.identity-merge-proposal"},
+            "proposal_id": {"$ref": "#/$defs/nonEmptyString"},
+            "content_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "source_approval_record_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact_id", "approval_record_id", "content_sha256"],
+          "properties": {
+            "artifact_id": {"const": "geotask.identity-merge-approval-record"},
+            "approval_record_id": {"$ref": "#/$defs/nonEmptyString"},
+            "content_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "request_state": {"const": "ready_for_application_review"},
+        "request_reason": {
+          "const": "approved_identity_merge_supports_bounded_object_graph_change_request"
+        },
+        "canonical_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "merge_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "object_class": {"$ref": "#/$defs/nonEmptyString"},
+        "affected_trajectory_refs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "change_operations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "operation_id",
+              "operation_kind",
+              "target_object_kind",
+              "target_ref",
+              "target_path",
+              "before_subject_ref",
+              "after_subject_ref",
+              "state"
+            ],
+            "properties": {
+              "operation_id": {"$ref": "#/$defs/nonEmptyString"},
+              "operation_kind": {"const": "replace_subject_ref"},
+              "target_object_kind": {"const": "trajectory"},
+              "target_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "target_path": {"const": "/subject_ref"},
+              "before_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "after_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "state": {"const": "requested"}
+            }
+          }
+        },
+        "retained_aliases": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "alias_subject_ref",
+              "canonical_subject_ref",
+              "source_trajectory_refs",
+              "state"
+            ],
+            "properties": {
+              "alias_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "canonical_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "source_trajectory_refs": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"$ref": "#/$defs/nonEmptyString"}
+              },
+              "state": {"const": "retain_as_alias"}
+            }
+          }
+        },
+        "preconditions": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["precondition_id", "requirement", "evaluation_state"],
+            "properties": {
+              "precondition_id": {"$ref": "#/$defs/nonEmptyString"},
+              "requirement": {"$ref": "#/$defs/nonEmptyString"},
+              "evaluation_state": {
+                "enum": ["verified", "requires_application_check"]
+              }
+            }
+          }
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["criterion_id", "requirement", "evaluation_state"],
+            "properties": {
+              "criterion_id": {"$ref": "#/$defs/nonEmptyString"},
+              "requirement": {"$ref": "#/$defs/nonEmptyString"},
+              "evaluation_state": {"const": "pending_application"}
+            }
+          }
+        },
+        "rollback_plan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "restore_operations",
+            "preserve_alias_history",
+            "require_post_rollback_validation",
+            "rollback_authorization_required",
+            "rollback_executed"
+          ],
+          "properties": {
+            "restore_operations": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "target_object_kind",
+                  "target_ref",
+                  "target_path",
+                  "restore_subject_ref",
+                  "state"
+                ],
+                "properties": {
+                  "target_object_kind": {"const": "trajectory"},
+                  "target_ref": {"$ref": "#/$defs/nonEmptyString"},
+                  "target_path": {"const": "/subject_ref"},
+                  "restore_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+                  "state": {"const": "available"}
+                }
+              }
+            },
+            "preserve_alias_history": {"const": true},
+            "require_post_rollback_validation": {"const": true},
+            "rollback_authorization_required": {"const": true},
+            "rollback_executed": {"const": false}
+          }
+        },
+        "proposal_binding_verified": {"const": true},
+        "approval_record_binding_verified": {"const": true},
+        "approved_scope_verified": {"const": true},
+        "request_scope_closed": {"const": true},
+        "retained_aliases_preserved": {"const": true},
+        "application_review_required": {"const": true},
+        "application_authorized": {"const": false},
+        "blocked_operations": {
+          "const": [
+            "unreviewed_change_application",
+            "undeclared_path_mutation",
+            "alias_deletion",
+            "identity_creation",
+            "world_state_update",
+            "production_output_release",
+            "action_execution"
+          ]
+        },
+        "next_action": {
+          "const": "request_object_graph_change_application_approval"
+        },
+        "change_applied": {"const": false},
+        "identity_merge_performed": {"const": false},
+        "subject_refs_mutated": {"const": false},
+        "object_graph_mutated": {"const": false},
+        "world_state_updated": {"const": false},
+        "production_output_released": {"const": false},
+        "action_authorized": {"const": false},
+        "action_executed": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

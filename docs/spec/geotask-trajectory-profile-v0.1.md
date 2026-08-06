@@ -1,8 +1,8 @@
 # GeoTask Trajectory and Moving Object Profile v0.1
 
 Status: implemented public profile  
-Reference cases: GT33–GT40
-Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, bounded scalar acceleration estimates, boundary-sample identity candidates, exact-bound external identity adjudication, review-only identity-merge proposals, and non-executing approval records
+Reference cases: GT33–GT41
+Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, bounded scalar acceleration estimates, boundary-sample identity candidates, exact-bound external identity adjudication, review-only identity-merge proposals, non-executing approval records, and bounded object-graph change requests
 
 ## Purpose
 
@@ -83,6 +83,8 @@ GT39 adds the registered `geotask.identity-merge-proposal` Artifact. It accepts 
 
 GT40 adds the registered `geotask.identity-merge-approval-record` Artifact. It binds one exact GT39 proposal and requires one explicit `approved`, `rejected`, or `evidence_required` decision for every declared approval role. Any rejection takes precedence; otherwise any evidence request blocks completion; only all-role approval makes a later bounded change request eligible. Even then, the record does not merge identity, rewrite `subject_ref`, mutate the object graph or World State, publish, authorize, or execute an update. See [Identity Merge Approval Record v0.1](geotask-identity-merge-approval-record-v0.1.md).
 
+GT41 adds the registered `geotask.object-graph-change-request` Artifact. It binds the exact GT39 proposal and exact GT40 all-role approval record, derives exactly one trajectory `/subject_ref` rewrite from the approved scope, preserves the non-canonical subject as an alias, records seven application preconditions and five pending acceptance criteria, and carries the inverse rewrite as a rollback operation. The request still requires separate application approval and does not authorize or apply the change, mutate `subject_ref`, the object graph, or World State, publish, authorize, or execute an update. See [Object Graph Change Request v0.1](geotask-object-graph-change-request-v0.1.md).
+
 ## Fail-closed behavior
 
 Validation fails when:
@@ -99,7 +101,8 @@ Validation fails when:
 - GT37 omits any identity-candidate parameter, declares an invalid time/distance/class policy, reuses the same trajectory ref twice, or places the second trajectory boundary at or before the first trajectory boundary;
 - GT38 cannot close exact candidate/request/profile/provider/response references, the Assurance Profile does not block automatic merge and reference mutation, evidence conflicts or is insufficient, response partitions disagree with verdicts, or any field claims Core merged identities, rewrote `subject_ref`, published, authorized, or executed an update;
 - GT39 selects a canonical subject outside the exact GT38 pair, expands the affected trajectory scope, omits alias preservation, changes the closed blocking or withdrawal conditions, lacks a reversible inverse rewrite, or claims that the proposal was approved, applied, published, authorized, or executed;
-- GT40 omits or duplicates a required approval role, accepts an undeclared role or decision, records `evidence_required` without an evidence reference, derives an aggregate decision that disagrees with role decisions, or claims that approval applied the merge, rewrote references, changed the object graph or World State, published, authorized, or executed an update.
+- GT40 omits or duplicates a required approval role, accepts an undeclared role or decision, records `evidence_required` without an evidence reference, derives an aggregate decision that disagrees with role decisions, or claims that approval applied the merge, rewrote references, changed the object graph or World State, published, authorized, or executed an update;
+- GT41 receives a non-approved or mismatched GT40 record, expands the GT39 operation scope, changes the trajectory `/subject_ref` target, deletes the retained alias, alters the closed precondition or acceptance-criterion sets, provides an incomplete inverse rollback, or claims that the request was authorized, applied, published, or executed.
 
 ## Boundary
 
@@ -131,6 +134,9 @@ A valid trajectory proves only that the submitted discrete sequence is structura
 - `examples/core/identity_merge_approval_record_gt40.json`
 - `examples/core/gt40_identity_merge_approval_record.json`
 - `docs/spec/geotask-identity-merge-approval-record-v0.1.md`
+- `examples/core/object_graph_change_request_gt41.json`
+- `examples/core/gt41_object_graph_change_request.json`
+- `docs/spec/geotask-object-graph-change-request-v0.1.md`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
 - `site/gt35/index.html`
@@ -139,3 +145,4 @@ A valid trajectory proves only that the submitted discrete sequence is structura
 - `site/gt38/index.html`
 - `site/gt39/index.html`
 - `site/gt40/index.html`
+- `site/gt41/index.html`

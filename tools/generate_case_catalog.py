@@ -95,6 +95,47 @@ def validate_catalog(data: dict[str, Any]) -> None:
             f"case ids must be contiguous and ordered: expected {expected_ids}, got {actual_ids}"
         )
 
+    series = data.get("series", [])
+    if not isinstance(series, list):
+        raise CatalogError("series must be a list when present")
+    series_ids: set[str] = set()
+    series_members: set[str] = set()
+    known_case_ids = set(actual_ids)
+    for item in series:
+        if not isinstance(item, dict):
+            raise CatalogError("every series entry must be a mapping")
+        series_id = item.get("id")
+        if not isinstance(series_id, str) or not series_id:
+            raise CatalogError("every series needs a non-empty id")
+        if series_id in series_ids:
+            raise CatalogError(f"duplicate series id: {series_id}")
+        series_ids.add(series_id)
+        for field in ("entry_case", "label_zh", "title_zh", "summary_zh"):
+            if not isinstance(item.get(field), str) or not item[field].strip():
+                raise CatalogError(f"{series_id}: missing non-empty {field}")
+        case_ids = item.get("case_ids")
+        stage_labels = item.get("stage_labels_zh")
+        if not isinstance(case_ids, list) or len(case_ids) < 2:
+            raise CatalogError(f"{series_id}: case_ids must contain at least two cases")
+        if len(case_ids) != len(set(case_ids)):
+            raise CatalogError(f"{series_id}: case_ids must be unique")
+        if any(case_id not in known_case_ids for case_id in case_ids):
+            raise CatalogError(f"{series_id}: case_ids contain an unknown case")
+        if item["entry_case"] not in case_ids:
+            raise CatalogError(f"{series_id}: entry_case must be included in case_ids")
+        if not isinstance(stage_labels, list) or len(stage_labels) != len(case_ids):
+            raise CatalogError(
+                f"{series_id}: stage_labels_zh must align one-to-one with case_ids"
+            )
+        if any(not isinstance(label, str) or not label.strip() for label in stage_labels):
+            raise CatalogError(f"{series_id}: stage labels must be non-empty strings")
+        overlap = series_members.intersection(case_ids)
+        if overlap:
+            raise CatalogError(
+                f"{series_id}: cases already assigned to another series: {sorted(overlap)}"
+            )
+        series_members.update(case_ids)
+
     slugs: set[str] = set()
     for case in cases:
         case_id = case["id"]
@@ -128,9 +169,22 @@ def validate_catalog(data: dict[str, Any]) -> None:
                 raise CatalogError(f"{case_id}: missing {path_field} file {value}")
 
 
+def series_membership(data: dict[str, Any]) -> dict[str, tuple[dict[str, Any], int]]:
+    membership: dict[str, tuple[dict[str, Any], int]] = {}
+    for item in data.get("series", []):
+        for index, case_id in enumerate(item["case_ids"]):
+            membership[case_id] = (item, index)
+    return membership
+
+
 def render_case_section(data: dict[str, Any]) -> str:
     cases = data["cases"]
     latest_id = cases[-1]["id"]
+    membership = series_membership(data)
+    hidden_series_members = sum(
+        len(item["case_ids"]) - 1 for item in data.get("series", [])
+    )
+    scene_entry_count = len(cases) - hidden_series_members
     handbook = data.get("handbook") or {
         "path": f"docs/cookbook/gt01-{latest_id.lower()}.zh-CN.md",
         "label_zh": "查看中文案例手册 →",
@@ -140,7 +194,7 @@ def render_case_section(data: dict[str, Any]) -> str:
         '    <section class="block" id="cases">',
         '      <div class="shell">',
         '        <div class="section-head">',
-        f'          <div><h2>GT01—{latest_id}渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>',
+        f'          <div><h2>GT01—{latest_id}公开参考例</h2><p>共{len(cases)}个可验证参考例，对应{scene_entry_count}个场景入口；GT38—GT42作为一个五阶段复合案例，完整展示无人机身份从证据审定到应用审批的治理链。</p></div>',
         f'          <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/{html.escape(handbook["path"])}">{html.escape(handbook["label_zh"])}</a>',
         '        </div>',
     ]
@@ -156,6 +210,21 @@ def render_case_section(data: dict[str, Any]) -> str:
             ]
         )
         for case in stage_cases:
+            series_info = membership.get(case["id"])
+            if series_info is not None:
+                series, _ = series_info
+                if case["id"] != series["entry_case"]:
+                    continue
+                stage_links = "".join(
+                    f'<a class="case-series-link" href="{case_id.lower()}/">{html.escape(label)}</a>'
+                    for case_id, label in zip(
+                        series["case_ids"], series["stage_labels_zh"]
+                    )
+                )
+                lines.append(
+                    f'            <article class="case case-series"><span class="case-id">{html.escape(series["label_zh"])}</span><h3>{html.escape(series["title_zh"])}</h3><p>{html.escape(series["summary_zh"])}</p><div class="case-series-links">{stage_links}</div></article>'
+                )
+                continue
             lines.append(
                 f'            <a class="case" href="{case["slug"]}/"><span class="case-id">{case["id"]}</span><h3>{html.escape(case["title_zh"])}</h3><p>{html.escape(case["summary_zh"])}</p><span class="go">进入体验 →</span></a>'
             )
@@ -181,8 +250,8 @@ def render_portal(data: dict[str, Any], current: str) -> str:
     case_count = len(data["cases"])
     latest_id = data["cases"][-1]["id"]
     updated = re.sub(
-        r"<strong>\d+</strong><span>公开应用案例</span>",
-        f"<strong>{case_count}</strong><span>公开应用案例</span>",
+        r"<strong>\d+</strong><span>公开(?:应用案例|可验证示例)</span>",
+        f"<strong>{case_count}</strong><span>公开可验证示例</span>",
         updated,
         count=1,
     )
@@ -212,20 +281,37 @@ def render_slugs(data: dict[str, Any]) -> str:
 
 def render_navigation(data: dict[str, Any]) -> str:
     cases = data["cases"]
+    membership = series_membership(data)
     entries = []
     for index, case in enumerate(cases):
-        entries.append(
-            {
-                "id": case["id"],
-                "slug": case["slug"],
-                "title_zh": case["title_zh"],
-                "previous": cases[index - 1]["slug"] if index > 0 else None,
-                "next": cases[index + 1]["slug"] if index + 1 < len(cases) else None,
-            }
-        )
+        series_info = membership.get(case["id"])
+        entry = {
+            "id": case["id"],
+            "slug": case["slug"],
+            "title_zh": case["title_zh"],
+            "previous": cases[index - 1]["slug"] if index > 0 else None,
+            "next": cases[index + 1]["slug"] if index + 1 < len(cases) else None,
+        }
+        if series_info is not None:
+            series, stage_index = series_info
+            entry.update(
+                {
+                    "series_id": series["id"],
+                    "series_title_zh": series["title_zh"],
+                    "series_entry": series["entry_case"].lower(),
+                    "series_stage": stage_index + 1,
+                    "series_stage_count": len(series["case_ids"]),
+                }
+            )
+        entries.append(entry)
+    hidden_series_members = sum(
+        len(item["case_ids"]) - 1 for item in data.get("series", [])
+    )
     payload = {
         "catalog_version": data["catalog_version"],
         "case_count": len(cases),
+        "scene_entry_count": len(cases) - hidden_series_members,
+        "series": data.get("series", []),
         "cases": entries,
     }
     return json.dumps(payload, ensure_ascii=False, indent=2) + "\n"

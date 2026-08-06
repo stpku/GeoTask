@@ -2,7 +2,7 @@
 
 [简体中文](README.md) | **English**
 
-GeoTask documentation is organized from world-model positioning to implemented contracts and future state-evolution extensions. Start with the white paper to understand the explicit and verifiable spatiotemporal world model, then use the specifications and tutorials to distinguish the current public foundation from roadmap abstractions.
+GeoTask documentation is organized from world-model positioning to implemented contracts and future state-evolution extensions. Start with the white paper to understand the explicit and verifiable spatiotemporal world model, then use the specifications, tutorials, and 42 public reference examples to distinguish the current public foundation from roadmap abstractions. The 42 examples correspond to 38 scenario entries because GT38–GT42 form one five-stage UAV identity-governance composite case.
 
 ## Start here
 
@@ -42,6 +42,7 @@ GeoTask documentation is organized from world-model positioning to implemented c
 - [Quickstart](tutorials/quickstart.md) — install, validate, execute, inspect, and extend a first task.
 - [GT01–GT20 Cookbook](cookbook/gt01-gt20.md) — progressive examples from distance calculation to evidence governance, object-specific feasibility, emergency dispatch, equipment capability, and high-risk action gating.
 - [GT21–GT28 World-State Cycle Cookbook](cookbook/gt21-gt28.md) — Observation conflict, snapshots, state change, impact, bounded correction, incremental reevaluation, and action eligibility.
+- [GT38–GT42 UAV Identity-Governance Composite Case](cookbook/gt38-gt42-uav-identity-governance.md) — one concrete inspection-drone re-identification story spanning evidence adjudication, merge proposal, proposal approval, change request, and application approval.
 - [v0.3.0 Agent Integration release notes](release_v0_3_0.md) — adds generated-task preparation, guarded revision, evidence recovery, four Agent report Artifacts, and unified validation across eight Artifacts and nine Schemas.
 - [v0.2.0 artifact-contract release notes](release_v0_2_0.md) — adds the Artifact Registry, offline Schema Bundle, unified Artifact validation, and validation-report self-validation.
 - [v0.1.1 PyPI hotfix release notes](release_v0_1_1.md) — fixes package/runtime version consistency and records clean-environment installation verification.

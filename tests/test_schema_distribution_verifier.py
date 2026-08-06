@@ -38,6 +38,7 @@ SCHEMA_FILENAMES = (
     "geotask-trajectory-identity-adjudication-v0.1.schema.json",
     "geotask-identity-merge-proposal-v0.1.schema.json",
     "geotask-identity-merge-approval-record-v0.1.schema.json",
+    "geotask-object-graph-change-request-v0.1.schema.json",
     "geotask-result-v1.0.schema.json",
     "geotask-runtime-descriptor-v0.1.schema.json",
     "geotask-runtime-request-v0.1.schema.json",
@@ -163,6 +164,9 @@ def _create_distribution(
         "src/geotask_core/v1/observation_merge.py": (
             ROOT / "src" / "geotask_core" / "v1" / "observation_merge.py"
         ).read_bytes(),
+        "src/geotask_core/v1/object_graph_change_request.py": (
+            ROOT / "src" / "geotask_core" / "v1" / "object_graph_change_request.py"
+        ).read_bytes(),
         "src/geotask_core/v1/runtime_interface.py": (
             ROOT / "src" / "geotask_core" / "v1" / "runtime_interface.py"
         ).read_bytes(),
@@ -191,7 +195,7 @@ def test_distribution_verifier_accepts_matching_wheel_and_sdist(tmp_path: Path) 
 
     assert report["valid"] is True
     assert report["bundle_version"] == "1.0"
-    assert report["schema_count"] == 31
+    assert report["schema_count"] == 32
     assert all(item["valid"] for item in report["schemas"])
     assert report["errors"] == []
 
@@ -250,7 +254,7 @@ def test_distribution_verifier_cli_emits_machine_readable_report(tmp_path: Path)
     assert result.stderr == ""
     report = json.loads(result.stdout)["schema_distribution_verification"]
     assert report["valid"] is True
-    assert report["schema_count"] == 31
+    assert report["schema_count"] == 32
 
 
 def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:

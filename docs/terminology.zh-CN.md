@@ -65,6 +65,12 @@ GeoTask面向人的中文页面和中文文档应以中文为主，不在普通�
 | 对象同一性审定 | Identity Adjudication | `geotask.trajectory-identity-adjudication` |
 | 对象身份归并提案 | Identity Merge Proposal | `geotask.identity-merge-proposal` |
 | 对象身份归并审批记录 | Identity Merge Approval Record | `geotask.identity-merge-approval-record` |
+| 对象关系图变更请求 | Object Graph Change Request | `geotask.object-graph-change-request` |
+| 变更操作 | Change Operation | `change_operations` |
+| 应用前置条件 | Application Precondition | `preconditions` |
+| 验收条件 | Acceptance Criterion | `acceptance_criteria` |
+| 应用审批 | Application Approval | `application_authorized` |
+| 回退方案 | Rollback Plan | `rollback_plan` |
 | 提案审批完成 | Proposal Approval Complete | `proposal_approval_complete` |
 | 变更请求具备条件 | Change Request Eligible | `change_request_eligible` |
 | 主对象引用 | Canonical Subject Reference | `canonical_subject_ref` |
@@ -89,6 +95,8 @@ GeoTask面向人的中文页面和中文文档应以中文为主，不在普通�
 - 不推荐：“GT39生成身份合并合同，并废弃旧身份。”
 - 推荐：“GT40记录对象身份归并审批结果；提案审批完成只表示后续变更请求具备条件，不表示归并已经执行。”
 - 不推荐：“GT40审批通过后，核心自动合并身份并更新世界状态。”
+- 推荐：“GT41形成对象关系图变更请求，声明唯一变更操作、应用前置条件、验收条件和回退方案；请求仍需独立应用审批。”
+- 不推荐：“GT41生成变更请求后，核心立即改写对象关系图。”
 
 ## 版本与维护
 

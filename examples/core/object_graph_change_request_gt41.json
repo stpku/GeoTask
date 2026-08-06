@@ -1,0 +1,152 @@
+{
+  "object_graph_change_request": {
+    "request_version": "0.1",
+    "change_request_id": "gt41-provisional-subject-object-graph-change",
+    "created_at": "2026-08-06T09:30:00+08:00",
+    "source_proposal_ref": {
+      "artifact_id": "geotask.identity-merge-proposal",
+      "proposal_id": "gt39-provisional-subject-merge-proposal",
+      "content_sha256": "ea7df4731bdb3308930802acd10e3e5af7dc6c4ea8d5f70f8564146a26906c57"
+    },
+    "source_approval_record_ref": {
+      "artifact_id": "geotask.identity-merge-approval-record",
+      "approval_record_id": "gt40-provisional-subject-merge-approval",
+      "content_sha256": "39b339d01a61c16f2f4386975527b7e8cceae7053af07d04d66a105a3c7a5722"
+    },
+    "request_state": "ready_for_application_review",
+    "request_reason": "approved_identity_merge_supports_bounded_object_graph_change_request",
+    "canonical_subject_ref": "provisional_alpha",
+    "merge_subject_ref": "provisional_beta",
+    "object_class": "uav",
+    "affected_trajectory_refs": [
+      "track_alpha",
+      "track_beta"
+    ],
+    "change_operations": [
+      {
+        "operation_id": "rewrite-track_beta-subject-ref",
+        "operation_kind": "replace_subject_ref",
+        "target_object_kind": "trajectory",
+        "target_ref": "track_beta",
+        "target_path": "/subject_ref",
+        "before_subject_ref": "provisional_beta",
+        "after_subject_ref": "provisional_alpha",
+        "state": "requested"
+      }
+    ],
+    "retained_aliases": [
+      {
+        "alias_subject_ref": "provisional_beta",
+        "canonical_subject_ref": "provisional_alpha",
+        "source_trajectory_refs": [
+          "track_beta"
+        ],
+        "state": "retain_as_alias"
+      }
+    ],
+    "preconditions": [
+      {
+        "precondition_id": "proposal_binding_verified",
+        "requirement": "The request must remain bound to the exact approved GT39 proposal bytes.",
+        "evaluation_state": "verified"
+      },
+      {
+        "precondition_id": "approval_record_binding_verified",
+        "requirement": "The request must remain bound to the exact GT40 approval record bytes.",
+        "evaluation_state": "verified"
+      },
+      {
+        "precondition_id": "approval_complete",
+        "requirement": "Every required approval role must have approved the source proposal.",
+        "evaluation_state": "verified"
+      },
+      {
+        "precondition_id": "canonical_subject_available",
+        "requirement": "The canonical subject must still exist when application is reviewed.",
+        "evaluation_state": "requires_application_check"
+      },
+      {
+        "precondition_id": "target_subject_binding_unchanged",
+        "requirement": "The target trajectory must still reference the declared merge subject.",
+        "evaluation_state": "requires_application_check"
+      },
+      {
+        "precondition_id": "no_withdrawal_condition_active",
+        "requirement": "No proposal withdrawal condition may be active at application time.",
+        "evaluation_state": "requires_application_check"
+      },
+      {
+        "precondition_id": "rollback_plan_available",
+        "requirement": "The inverse subject-reference rewrite must remain available.",
+        "evaluation_state": "verified"
+      }
+    ],
+    "acceptance_criteria": [
+      {
+        "criterion_id": "requested_subject_ref_rewrite_applied",
+        "requirement": "Only the declared trajectory subject_ref changes from the merge subject to the canonical subject.",
+        "evaluation_state": "pending_application"
+      },
+      {
+        "criterion_id": "retained_alias_preserved",
+        "requirement": "The merge subject remains recorded as an alias of the canonical subject.",
+        "evaluation_state": "pending_application"
+      },
+      {
+        "criterion_id": "no_undeclared_paths_changed",
+        "requirement": "No object-graph path outside the declared operation changes.",
+        "evaluation_state": "pending_application"
+      },
+      {
+        "criterion_id": "post_application_binding_validation_passed",
+        "requirement": "Post-application validation confirms exact source and target bindings.",
+        "evaluation_state": "pending_application"
+      },
+      {
+        "criterion_id": "rollback_plan_remains_available",
+        "requirement": "The inverse rollback operation remains complete after application.",
+        "evaluation_state": "pending_application"
+      }
+    ],
+    "rollback_plan": {
+      "restore_operations": [
+        {
+          "target_object_kind": "trajectory",
+          "target_ref": "track_beta",
+          "target_path": "/subject_ref",
+          "restore_subject_ref": "provisional_beta",
+          "state": "available"
+        }
+      ],
+      "preserve_alias_history": true,
+      "require_post_rollback_validation": true,
+      "rollback_authorization_required": true,
+      "rollback_executed": false
+    },
+    "proposal_binding_verified": true,
+    "approval_record_binding_verified": true,
+    "approved_scope_verified": true,
+    "request_scope_closed": true,
+    "retained_aliases_preserved": true,
+    "application_review_required": true,
+    "application_authorized": false,
+    "blocked_operations": [
+      "unreviewed_change_application",
+      "undeclared_path_mutation",
+      "alias_deletion",
+      "identity_creation",
+      "world_state_update",
+      "production_output_release",
+      "action_execution"
+    ],
+    "next_action": "request_object_graph_change_application_approval",
+    "change_applied": false,
+    "identity_merge_performed": false,
+    "subject_refs_mutated": false,
+    "object_graph_mutated": false,
+    "world_state_updated": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

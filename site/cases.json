@@ -1,6 +1,6 @@
 {
   "catalog_version": "1.0",
-  "case_count": 40,
+  "case_count": 41,
   "cases": [
     {
       "id": "GT01",
@@ -280,6 +280,13 @@
       "slug": "gt40",
       "title_zh": "归并提案完成审批后，身份就已经被改写了吗？",
       "previous": "gt39",
+      "next": "gt41"
+    },
+    {
+      "id": "GT41",
+      "slug": "gt41",
+      "title_zh": "归并提案已获批，是否可以直接改写对象关系图？",
+      "previous": "gt40",
       "next": null
     }
   ]

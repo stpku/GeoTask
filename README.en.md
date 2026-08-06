@@ -24,11 +24,11 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - **Verification and control maintain the world:** preserve supported facts, expose conflict and unknown states, constrain correction, and manage action eligibility.
 - **Runtimes and Domain Packs connect reality:** authoritative data, industry rules, local predictive models, human review, and production actions.
 
-> **Engineering boundary:** GeoTask Core provides public world-state contracts, deterministic validation, exact Artifact binding, and fail-closed control semantics; the verifiable task protocol remains the current implementation form. The implemented public profile covers Observation, World State, bounded Observation Merge, State Transition, Verification Session, Discrepancy Report, Correction Request, Impact Graph, bounded recompute derivation, bounded successor materialization, Incremental Reevaluation Result, Verification Provider Descriptor, Verification Request, Verification Response, Assurance Profile, Trajectory Identity Adjudication, Identity Merge Proposal, and Identity Merge Approval Record. Core does not fetch external truth, invent undeclared source precedence, publish production output, authorize actions, or execute side effects.
+> **Engineering boundary:** GeoTask Core provides public world-state contracts, deterministic validation, exact Artifact binding, and fail-closed control semantics; the verifiable task protocol remains the current implementation form. The implemented public profile covers Observation, World State, bounded Observation Merge, State Transition, Verification Session, Discrepancy Report, Correction Request, Impact Graph, bounded recompute derivation, bounded successor materialization, Incremental Reevaluation Result, Verification Provider Descriptor, Verification Request, Verification Response, Assurance Profile, Trajectory Identity Adjudication, Identity Merge Proposal, Identity Merge Approval Record, and Object Graph Change Request. Core does not fetch external truth, invent undeclared source precedence, publish production output, authorize actions, or execute side effects.
 
 ## Start here
 
-- [Try the GT01–GT40 experience](https://stpku.github.io/GeoTask/)
+- [Try the GT01–GT41 experience](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [Quickstart](docs/tutorials/quickstart.md)
 - [White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -48,6 +48,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [GeoTask Agent Integration Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
 - [GeoTask Runtime Interface Profile v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [GeoTask Verification Provider Profile v0.1](docs/spec/geotask-verification-provider-profile-v0.1.md)
+- [GeoTask Object Graph Change Request v0.1](docs/spec/geotask-object-graph-change-request-v0.1.md)
 - [English Terminology Guide](docs/terminology.en.md)
 - [GeoTask Core Agent Skill](skills/geotask-core/SKILL.md)
 - [VS Code Schema association example](.vscode/settings.json)
@@ -80,7 +81,7 @@ flowchart LR
   N[New observation arrives] --> W
 ```
 
-The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation, World State, bounded Observation Merge, State Transition, Verification Session, Discrepancy Report, Correction Request, Impact Graph, source-bound bounded recompute derivation, bounded successor-state materialization, Incremental Reevaluation Result, Verification Provider contracts, Trajectory Identity Adjudication, Identity Merge Proposal, Identity Merge Approval Record, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. Automatic diff computation, resolution of ambiguous claims without a declared policy, automatic impact discovery and propagation execution, bounded object-graph change requests and application, and general-purpose derivation methods remain roadmap capabilities.
+The current public Core implements world objects and spatial contracts, source and evidence bindings, Observation, World State, bounded Observation Merge, State Transition, Verification Session, Discrepancy Report, Correction Request, Impact Graph, source-bound bounded recompute derivation, bounded successor-state materialization, Incremental Reevaluation Result, Verification Provider contracts, Trajectory Identity Adjudication, Identity Merge Proposal, Identity Merge Approval Record, Object Graph Change Request, world claims, deterministic relation verification, control states, mechanical Agent repair, and bounded-path retry. Automatic diff computation, resolution of ambiguous claims without a declared policy, automatic impact discovery and propagation execution, object-graph change application and application-result records, and general-purpose derivation methods remain roadmap capabilities.
 
 ## Five-minute quickstart
 
@@ -130,7 +131,7 @@ The cases show how model proposals are materialized, recomputed, contradicted, e
 | Action and feasibility | GT10–GT20 | What executable action follows from verified spatial, resource, response, live-environment, multi-UAV conflict, city-event deduplication, equipment-capability, and high-risk action-gate constraints? |
 | World-state cycle | GT21–GT28 | How do multi-source observations, state change, impact scope, bounded correction, incremental reevaluation, and action gates close the loop? |
 | Verification Provider ecosystem | GT29–GT32 | How do independent sources, explicit adjudication, progressive authorization, and action gates remain separate? |
-| Dynamic world objects | GT33–GT40 | How are moving-object identity, timestamped observations, segment metrics, caller-declared classifications, identity candidates, evidence adjudication, review-only merge proposals, and approval records bound without silent interpolation, automatic identity merge, reference mutation, World State update, publication, or action? |
+| Dynamic world objects | GT33–GT41 | How are moving-object identity, timestamped observations, segment metrics, caller-declared classifications, identity candidates, evidence adjudication, review-only merge proposals, approval records, and object-graph change requests bound without silent interpolation, automatic identity merge, reference mutation, World State update, publication, or action? |
 
 Selected examples:
 
@@ -167,8 +168,9 @@ Selected examples:
 - **GT38:** the exact GT37 candidate result, one Verification Request, one caller-authored Assurance Profile, and two independently grouped Provider responses produce `same_object_confirmed`. Core emits only `recommend_identity_merge_review` and `review_identity_merge`; it preserves both provisional subjects and does not merge objects, mutate `subject_ref`, publish, authorize, or execute an identity update.
 - **GT39:** the exact GT38 adjudication, one caller-selected existing canonical subject, rationale, and approval roles produce a `ready_for_review` Identity Merge Proposal. The proposal scopes one subject-reference rewrite, retains the other subject as an alias, and records blocking, withdrawal, and reversal requirements without creating a new identity, deleting aliases, mutating the object graph or World State, publishing, authorizing, or executing an update.
 - **GT40:** the exact GT39 proposal and one explicit decision for every required approval role produce a `decision_recorded` Identity Merge Approval Record. All-role approval only makes a later bounded change request eligible; it does not merge identity, mutate `subject_ref`, change the object graph or World State, publish, authorize, or execute an update.
+- **GT41:** the exact GT39 proposal and GT40 approval record produce one closed Object Graph Change Request with a single trajectory `/subject_ref` rewrite, retained alias, seven application preconditions, five acceptance criteria, and an inverse rollback operation. It still requires independent application approval and does not authorize or apply the change.
 
-See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32, the [Trajectory and Moving Object Profile](docs/spec/geotask-trajectory-profile-v0.1.md) for GT33–GT40, the [Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md) for GT38, the [Identity Merge Proposal v0.1](docs/spec/geotask-identity-merge-proposal-v0.1.md) for GT39, and the [Identity Merge Approval Record v0.1](docs/spec/geotask-identity-merge-approval-record-v0.1.md) for GT40.
+See the [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md), the [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md), the [Verification Provider Profile](docs/spec/geotask-verification-provider-profile-v0.1.md) for GT29–GT32, the [Trajectory and Moving Object Profile](docs/spec/geotask-trajectory-profile-v0.1.md) for GT33–GT41, the [Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md) for GT38, the [Identity Merge Proposal v0.1](docs/spec/geotask-identity-merge-proposal-v0.1.md) for GT39, the [Identity Merge Approval Record v0.1](docs/spec/geotask-identity-merge-approval-record-v0.1.md) for GT40, and the [Object Graph Change Request v0.1](docs/spec/geotask-object-graph-change-request-v0.1.md) for GT41.
 
 ## Implemented public Core
 

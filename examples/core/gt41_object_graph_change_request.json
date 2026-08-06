@@ -1,0 +1,94 @@
+{
+  "case_id": "GT41",
+  "title": "归并提案已获批，是否可以直接改写对象关系图？",
+  "proposal_artifact": "examples/core/identity_merge_proposal_gt39.json",
+  "approval_artifact": "examples/core/identity_merge_approval_record_gt40.json",
+  "change_request_artifact": "examples/core/object_graph_change_request_gt41.json",
+  "request_state": "ready_for_application_review",
+  "operation": {
+    "operation_id": "rewrite-track_beta-subject-ref",
+    "operation_kind": "replace_subject_ref",
+    "target_object_kind": "trajectory",
+    "target_ref": "track_beta",
+    "target_path": "/subject_ref",
+    "before_subject_ref": "provisional_beta",
+    "after_subject_ref": "provisional_alpha",
+    "state": "requested"
+  },
+  "preconditions": [
+    {
+      "precondition_id": "proposal_binding_verified",
+      "requirement": "The request must remain bound to the exact approved GT39 proposal bytes.",
+      "evaluation_state": "verified"
+    },
+    {
+      "precondition_id": "approval_record_binding_verified",
+      "requirement": "The request must remain bound to the exact GT40 approval record bytes.",
+      "evaluation_state": "verified"
+    },
+    {
+      "precondition_id": "approval_complete",
+      "requirement": "Every required approval role must have approved the source proposal.",
+      "evaluation_state": "verified"
+    },
+    {
+      "precondition_id": "canonical_subject_available",
+      "requirement": "The canonical subject must still exist when application is reviewed.",
+      "evaluation_state": "requires_application_check"
+    },
+    {
+      "precondition_id": "target_subject_binding_unchanged",
+      "requirement": "The target trajectory must still reference the declared merge subject.",
+      "evaluation_state": "requires_application_check"
+    },
+    {
+      "precondition_id": "no_withdrawal_condition_active",
+      "requirement": "No proposal withdrawal condition may be active at application time.",
+      "evaluation_state": "requires_application_check"
+    },
+    {
+      "precondition_id": "rollback_plan_available",
+      "requirement": "The inverse subject-reference rewrite must remain available.",
+      "evaluation_state": "verified"
+    }
+  ],
+  "acceptance_criteria": [
+    {
+      "criterion_id": "requested_subject_ref_rewrite_applied",
+      "requirement": "Only the declared trajectory subject_ref changes from the merge subject to the canonical subject.",
+      "evaluation_state": "pending_application"
+    },
+    {
+      "criterion_id": "retained_alias_preserved",
+      "requirement": "The merge subject remains recorded as an alias of the canonical subject.",
+      "evaluation_state": "pending_application"
+    },
+    {
+      "criterion_id": "no_undeclared_paths_changed",
+      "requirement": "No object-graph path outside the declared operation changes.",
+      "evaluation_state": "pending_application"
+    },
+    {
+      "criterion_id": "post_application_binding_validation_passed",
+      "requirement": "Post-application validation confirms exact source and target bindings.",
+      "evaluation_state": "pending_application"
+    },
+    {
+      "criterion_id": "rollback_plan_remains_available",
+      "requirement": "The inverse rollback operation remains complete after application.",
+      "evaluation_state": "pending_application"
+    }
+  ],
+  "next_action": "request_object_graph_change_application_approval",
+  "boundaries": {
+    "application_authorized": false,
+    "change_applied": false,
+    "identity_merge_performed": false,
+    "subject_refs_mutated": false,
+    "object_graph_mutated": false,
+    "world_state_updated": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

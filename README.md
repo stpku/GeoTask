@@ -24,11 +24,11 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - **验证与控制机制负责维护世界：** 保留已证实事实，标记冲突和未知，限定纠偏范围，并管理行动资格；
 - **运行时与行业能力包负责连接现实：** 接入权威数据、行业规则、本地预测模型、人工复核和生产动作。
 
-> **工程边界：** GeoTask核心提供可验证时空世界模型的公共状态规范、接口契约、验证内核和制品基础，“可验证时空任务协议”仍是当前实现形式。当前公共实现覆盖观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、受限重算推导、受限后继状态物化、增量复核结果，以及验证提供方描述符、验证请求、验证响应、可信保证策略、对象同一性审定、对象身份归并提案和对象身份归并审批记录。公共核心只校验结构、语义和原始字节级绑定，不获取外部事实、不推断未声明的来源优先级、不发布生产环境输出，也不授权或执行现实动作。
+> **工程边界：** GeoTask核心提供可验证时空世界模型的公共状态规范、接口契约、验证内核和制品基础，“可验证时空任务协议”仍是当前实现形式。当前公共实现覆盖观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、受限重算推导、受限后继状态物化、增量复核结果，以及验证提供方描述符、验证请求、验证响应、可信保证策略、对象同一性审定、对象身份归并提案、对象身份归并审批记录和对象关系图变更请求。公共核心只校验结构、语义和原始字节级绑定，不获取外部事实、不推断未声明的来源优先级、不发布生产环境输出，也不授权或执行现实动作。
 
 ## 从这里开始
 
-- [立即体验GT01—GT40](https://stpku.github.io/GeoTask/)
+- [立即体验GT01—GT41](https://stpku.github.io/GeoTask/)
 - [English ecosystem homepage](https://stpku.github.io/GeoTask/en/)
 - [5分钟中文入门](docs/tutorials/quickstart.zh-CN.md)
 - [GeoTask白皮书v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
@@ -50,6 +50,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - [Agent集成Profile v0.1](docs/spec/geotask-agent-integration-profile-v0.1.md)
 - [运行时接口规范 v0.1](docs/spec/geotask-runtime-interface-profile-v0.1.md)
 - [验证提供方接口规范 v0.1](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)
+- [对象关系图变更请求 v0.1](docs/spec/geotask-object-graph-change-request-v0.1.md)
 - [中文术语规范](docs/terminology.zh-CN.md)
 - [GeoTask核心智能体技能](skills/geotask-core/SKILL.md)
 - [VS Code Schema配置示例](.vscode/settings.json)
@@ -80,7 +81,7 @@ flowchart LR
   N[新观察到来] --> W
 ```
 
-当前公共核心已经实现世界对象与空间参考约束、来源与证据绑定、观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、来源绑定的受限重算推导、受限后继状态物化、增量复核结果、验证提供方公共接口契约、对象同一性审定、对象身份归并提案、对象身份归并审批记录、世界命题、确定性关系验证、控制状态、智能体机械修复和限定路径重试。自动差异计算、未声明策略的歧义冲突消解、影响关系自动发现与传播执行、对象关系图变更请求及执行和通用推导方法仍属于后续路线图。
+当前公共核心已经实现世界对象与空间参考约束、来源与证据绑定、观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、来源绑定的受限重算推导、受限后继状态物化、增量复核结果、验证提供方公共接口契约、对象同一性审定、对象身份归并提案、对象身份归并审批记录、对象关系图变更请求、世界命题、确定性关系验证、控制状态、智能体机械修复和限定路径重试。自动差异计算、未声明策略的歧义冲突消解、影响关系自动发现与传播执行、对象关系图变更应用与应用结果以及通用推导方法仍属于后续路线图。
 
 ## 5分钟运行
 
@@ -123,7 +124,7 @@ geotask validate my_distance.yaml
 geotask run my_distance.yaml
 ```
 
-## 40个公开应用案例
+## 41个公开应用案例
 
 GeoTask不是只展示几个几何函数，而是通过机器人、无人机、车辆和低空任务，逐步展示模型方案如何被结构化、复算、验错、补证、纠偏和行动门控。
 
@@ -135,7 +136,7 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 | 行动与可行性 | GT10—GT20 | 约束确认以后，下一步具体执行什么？ |
 | 世界状态循环 | GT21—GT28 | 多源观测、状态变化、影响范围、限定纠偏和行动门禁怎样闭环？ |
 | 验证提供方生态 | GT29—GT32 | 多个外部来源冲突、显式裁决、渐进授权和行动门禁怎样形成独立可信保证？ |
-| 动态世界对象 | GT33—GT40 | 移动对象、时间观测、轨迹指标、显式阈值分类、对象同一性候选与审定、身份归并提案和审批记录怎样绑定，而不静默插值、自动归并身份、改写引用、更新世界状态、发布或执行动作？ |
+| 动态世界对象 | GT33—GT41 | 移动对象、时间观测、轨迹指标、显式阈值分类、对象同一性候选与审定、身份归并提案、审批记录和对象关系图变更请求怎样绑定，而不静默插值、自动归并身份、改写引用、更新世界状态、发布或执行动作？ |
 
 重点案例：
 
@@ -172,8 +173,9 @@ GeoTask不是只展示几个几何函数，而是通过机器人、无人机、�
 - **GT38：** GT37对象同一性候选与一份原始字节级绑定的验证请求、一份调用方声明的可信保证策略、两个独立验证提供方及其响应形成`same_object_confirmed`对象同一性审定结果；公共核心只输出归并复核建议，保留两个原始主体，不归并对象、不改写`subject_ref`、不发布、不授权也不执行身份更新。
 - **GT39：** GT38对象同一性审定结果与调用方选择的主对象引用、提案理由和审批角色形成`ready_for_review`对象身份归并提案；提案只覆盖两条原始轨迹，保留非主主体为别名，并记录阻断条件、撤销条件和归并回退方案，不创建新身份、不删除别名、不修改对象关系图或世界状态。
 - **GT40：** GT39对象身份归并提案与两个必需审批角色的显式决定形成`decision_recorded`审批记录；全部角色批准时只将后续受限变更请求标记为具备条件，不执行身份归并、不改写`subject_ref`、不修改对象关系图或世界状态。
+- **GT41：** GT39提案与GT40审批记录原始字节级绑定后，公共核心派生唯一的轨迹`/subject_ref`改写请求、保留别名、七项应用前置条件、五项验收条件和逆向回退操作；请求仍需独立应用审批，不授权或应用变更，不修改对象关系图或世界状态。
 
-GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33—GT40见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)，GT38审定制品见[Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md)，GT39归并提案见[Identity Merge Proposal v0.1](docs/spec/geotask-identity-merge-proposal-v0.1.md)，GT40审批记录见[Identity Merge Approval Record v0.1](docs/spec/geotask-identity-merge-approval-record-v0.1.md)。
+GT01—GT20见[基础案例手册](docs/cookbook/gt01-gt20.zh-CN.md)，GT21—GT28见[世界状态循环案例手册](docs/cookbook/gt21-gt28.zh-CN.md)，GT29—GT32见[验证提供方接口规范](docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md)，GT33—GT41见[轨迹与移动对象Profile](docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md)，GT38审定制品见[Trajectory Identity Adjudication v0.1](docs/spec/geotask-trajectory-identity-adjudication-v0.1.md)，GT39归并提案见[Identity Merge Proposal v0.1](docs/spec/geotask-identity-merge-proposal-v0.1.md)，GT40审批记录见[Identity Merge Approval Record v0.1](docs/spec/geotask-identity-merge-approval-record-v0.1.md)，GT41变更请求见[Object Graph Change Request v0.1](docs/spec/geotask-object-graph-change-request-v0.1.md)。
 
 ## 当前公共Core真正支持什么
 

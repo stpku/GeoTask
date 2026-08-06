@@ -1,0 +1,27 @@
+{
+  "case_id": "GT40",
+  "title": "归并提案完成审批后，身份就已经被改写了吗？",
+  "source_artifact": "examples/core/identity_merge_proposal_gt39.json",
+  "approval_artifact": "examples/core/identity_merge_approval_record_gt40.json",
+  "aggregate_decision": "approved",
+  "required_approval_roles": [
+    "identity_governance_reviewer",
+    "world_state_maintainer"
+  ],
+  "approved_roles": [
+    "identity_governance_reviewer",
+    "world_state_maintainer"
+  ],
+  "proposal_approval_complete": true,
+  "change_request_eligible": true,
+  "next_action": "prepare_identity_merge_change_request",
+  "boundaries": {
+    "identity_merge_performed": false,
+    "subject_refs_mutated": false,
+    "object_graph_mutated": false,
+    "world_state_updated": false,
+    "production_output_released": false,
+    "action_authorized": false,
+    "action_executed": false
+  }
+}

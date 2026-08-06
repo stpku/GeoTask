@@ -109,7 +109,7 @@ State Update / Bounded Correction ← New Observation
         Action Eligibility Gate
 ```
 
-当前公共核心已实现世界对象与空间参考约束、来源与证据绑定、Observation v0.1、World State v0.1、支持`require_equal`与完整显式优先级的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Recompute Derivation Result v0.1、受限后继状态物化、Incremental Reevaluation Result v0.1、对象同一性候选、对象同一性审定、对象身份归并提案、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。自动差异计算、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行、归并提案审批执行以及受限推导方法扩展仍是后续工程目标。
+当前公共核心已实现世界对象与空间参考约束、来源与证据绑定、Observation v0.1、World State v0.1、支持`require_equal`与完整显式优先级的受限Observation Merge v0.1、State Transition v0.1、Verification Session v0.1、Discrepancy Report v0.1、Correction Request v0.1、Impact Graph v0.1、Recompute Derivation Result v0.1、受限后继状态物化、Incremental Reevaluation Result v0.1、对象同一性候选、对象同一性审定、对象身份归并提案、对象身份归并审批记录、世界命题、本地确定性验证、控制状态、Agent机械修复、限定路径重试和证据恢复。自动差异计算、未声明策略的歧义命题冲突消解、Impact Graph自动发现与传播执行、对象关系图变更请求及执行以及受限推导方法扩展仍是后续工程目标。
 
 ---
 
@@ -312,7 +312,9 @@ expected_results: # 可选测试夹具
 
 GT38进一步把`trajectory_identity_candidate`输出接入第28类公共制品`geotask.trajectory-identity-adjudication`：原始字节级绑定候选结果、验证请求、可信保证策略、验证提供方描述符与验证响应，在满足独立证据策略后输出对象身份归并复核建议。该制品不会自行证明现实身份、归并对象、改写`subject_ref`、发布生产环境输出、授权或执行身份更新。
 
-GT39新增第29类公共制品`geotask.identity-merge-proposal`：在GT38对象同一性审定基础上，由调用方从两个现有主体中选择主对象引用，公共核心确定性生成一项受限`subject_ref`改写提案、保留别名、审批要求、阻断条件、撤销条件和归并回退方案。提案有效不等于已获批，更不表示对象关系图或世界状态已经改变。公共Schema总数同步扩展为30。
+GT39新增第29类公共制品`geotask.identity-merge-proposal`：在GT38对象同一性审定基础上，由调用方从两个现有主体中选择主对象引用，公共核心确定性生成一项受限`subject_ref`改写提案、保留别名、审批要求、阻断条件、撤销条件和归并回退方案。提案有效不等于已获批，更不表示对象关系图或世界状态已经改变。
+
+GT40新增第30类公共制品`geotask.identity-merge-approval-record`：原始字节级绑定GT39提案，并为每个必需审批角色记录批准、拒绝或要求补证据的显式决定。任一拒绝优先，补证据继续阻断，全部批准只使后续受限对象关系图变更请求具备条件；身份、引用、对象关系图和世界状态仍保持不变。公共Schema总数同步扩展为31。
 
 ### 4.3 断言
 

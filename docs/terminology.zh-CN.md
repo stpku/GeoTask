@@ -64,6 +64,9 @@ GeoTask面向人的中文页面和中文文档应以中文为主，不在普通�
 | 对象同一性候选 | Identity Candidate | `same_object_candidate` |
 | 对象同一性审定 | Identity Adjudication | `geotask.trajectory-identity-adjudication` |
 | 对象身份归并提案 | Identity Merge Proposal | `geotask.identity-merge-proposal` |
+| 对象身份归并审批记录 | Identity Merge Approval Record | `geotask.identity-merge-approval-record` |
+| 提案审批完成 | Proposal Approval Complete | `proposal_approval_complete` |
+| 变更请求具备条件 | Change Request Eligible | `change_request_eligible` |
 | 主对象引用 | Canonical Subject Reference | `canonical_subject_ref` |
 | 拟归并对象 | Merge Subject | `merge_subject_ref` |
 | 保留别名 | Retained Alias | `retained_aliases` |
@@ -84,6 +87,8 @@ GeoTask面向人的中文页面和中文文档应以中文为主，不在普通�
 - 不推荐：“两个Provider满足Assurance Profile后，Core直接完成身份裁决和自动合并。”
 - 推荐：“GT39生成对象身份归并提案，声明主对象引用、保留别名、阻断条件和归并回退方案。”
 - 不推荐：“GT39生成身份合并合同，并废弃旧身份。”
+- 推荐：“GT40记录对象身份归并审批结果；提案审批完成只表示后续变更请求具备条件，不表示归并已经执行。”
+- 不推荐：“GT40审批通过后，核心自动合并身份并更新世界状态。”
 
 ## 版本与维护
 

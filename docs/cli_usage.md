@@ -162,7 +162,7 @@ python -m geotask_core.cli inspect examples
 
 - `inspect operators` lists public-safe Core operator registry metadata.
 - `inspect schema` summarizes the minimal GeoTask document structure.
-- `inspect schemas` lists all twenty-nine public Artifacts, covering the GeoTask
+- `inspect schemas` lists all thirty public Artifacts, covering the GeoTask
   document, execution and control results, Agent and Runtime contracts, world-state
   cycle Artifacts, the Core Benchmark Report, and the Artifact Validation Report.
   Each entry includes Schema identity, repository paths, generation guidance,
@@ -170,7 +170,7 @@ python -m geotask_core.cli inspect examples
   `--format json` emits clean machine-readable JSON. Supplying one stable Artifact
   ID returns a one-entry registry envelope; unknown IDs fail explicitly. `--verify`
   appends a sibling `schema_bundle_verification` report. With no Artifact ID it
-  verifies the Registry Schema and all twenty-nine Artifact Schemas; with an
+  verifies the Registry Schema and all thirty Artifact Schemas; with an
   Artifact ID it verifies only that Artifact's Schema. Without `--verify`, the
   Artifact Registry v1.0 envelope remains structurally compatible.
 - `schema export <artifact-id>` writes the installed JSON Schema for one
@@ -181,7 +181,7 @@ python -m geotask_core.cli inspect examples
   generated manifest before returning JSON.
 - `schema verify` checks the versioned Bundle Manifest, expected filenames,
   byte sizes, SHA-256 digests, JSON parsing, and published Schema `$id` values.
-  With no Artifact ID it checks all thirty bundled Schemas; supplying one
+  With no Artifact ID it checks all thirty-one bundled Schemas; supplying one
   stable Artifact ID checks only that artifact. Text is the default and
   `--format json` emits a machine-readable report with stable non-zero failure
   behavior.

@@ -1,8 +1,8 @@
 # GeoTask Trajectory and Moving Object Profile v0.1
 
 Status: implemented public profile  
-Reference cases: GT33–GT39
-Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, bounded scalar acceleration estimates, boundary-sample identity candidates, exact-bound external identity adjudication, and review-only identity-merge proposals
+Reference cases: GT33–GT40
+Scope: discrete observations, adjacent-sample metrics, caller-declared classifications, bounded scalar acceleration estimates, boundary-sample identity candidates, exact-bound external identity adjudication, review-only identity-merge proposals, and non-executing approval records
 
 ## Purpose
 
@@ -81,6 +81,8 @@ GT38 adds the registered `geotask.trajectory-identity-adjudication` Artifact. It
 
 GT39 adds the registered `geotask.identity-merge-proposal` Artifact. It accepts one exact GT38 adjudication only when the source confirms the same object, aligns with the GT37 candidate, recommends merge review, and preserves every non-execution boundary. The caller must select one of the two existing subject refs as `canonical_subject_ref`; Core proposes exactly one bounded rewrite for the other trajectory, retains the non-canonical subject as an alias, records approval roles plus closed blocking and withdrawal conditions, and provides the inverse rewrite as a reversal plan. The proposal never creates a new identity, deletes an alias, approves itself, mutates an object graph or World State, publishes, authorizes, or executes an update. See [Identity Merge Proposal v0.1](geotask-identity-merge-proposal-v0.1.md).
 
+GT40 adds the registered `geotask.identity-merge-approval-record` Artifact. It binds one exact GT39 proposal and requires one explicit `approved`, `rejected`, or `evidence_required` decision for every declared approval role. Any rejection takes precedence; otherwise any evidence request blocks completion; only all-role approval makes a later bounded change request eligible. Even then, the record does not merge identity, rewrite `subject_ref`, mutate the object graph or World State, publish, authorize, or execute an update. See [Identity Merge Approval Record v0.1](geotask-identity-merge-approval-record-v0.1.md).
+
 ## Fail-closed behavior
 
 Validation fails when:
@@ -96,7 +98,8 @@ Validation fails when:
 - GT36 omits either the midpoint method or maximum-gap parameter, uses a method other than `segment_midpoint`, or declares a non-finite/non-positive maximum gap;
 - GT37 omits any identity-candidate parameter, declares an invalid time/distance/class policy, reuses the same trajectory ref twice, or places the second trajectory boundary at or before the first trajectory boundary;
 - GT38 cannot close exact candidate/request/profile/provider/response references, the Assurance Profile does not block automatic merge and reference mutation, evidence conflicts or is insufficient, response partitions disagree with verdicts, or any field claims Core merged identities, rewrote `subject_ref`, published, authorized, or executed an update;
-- GT39 selects a canonical subject outside the exact GT38 pair, expands the affected trajectory scope, omits alias preservation, changes the closed blocking or withdrawal conditions, lacks a reversible inverse rewrite, or claims that the proposal was approved, applied, published, authorized, or executed.
+- GT39 selects a canonical subject outside the exact GT38 pair, expands the affected trajectory scope, omits alias preservation, changes the closed blocking or withdrawal conditions, lacks a reversible inverse rewrite, or claims that the proposal was approved, applied, published, authorized, or executed;
+- GT40 omits or duplicates a required approval role, accepts an undeclared role or decision, records `evidence_required` without an evidence reference, derives an aggregate decision that disagrees with role decisions, or claims that approval applied the merge, rewrote references, changed the object graph or World State, published, authorized, or executed an update.
 
 ## Boundary
 
@@ -125,6 +128,9 @@ A valid trajectory proves only that the submitted discrete sequence is structura
 - `examples/core/identity_merge_proposal_gt39.json`
 - `examples/core/gt39_identity_merge_proposal.json`
 - `docs/spec/geotask-identity-merge-proposal-v0.1.md`
+- `examples/core/identity_merge_approval_record_gt40.json`
+- `examples/core/gt40_identity_merge_approval_record.json`
+- `docs/spec/geotask-identity-merge-approval-record-v0.1.md`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
 - `site/gt35/index.html`
@@ -132,3 +138,4 @@ A valid trajectory proves only that the submitted discrete sequence is structura
 - `site/gt37/index.html`
 - `site/gt38/index.html`
 - `site/gt39/index.html`
+- `site/gt40/index.html`

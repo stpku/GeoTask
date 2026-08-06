@@ -317,6 +317,7 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
         "spec/geotask-verification-provider-profile-v0.1.zh-CN.md",
         "spec/geotask-identity-merge-approval-record-v0.1.md",
         "spec/geotask-object-graph-change-request-v0.1.md",
+        "spec/geotask-object-graph-change-application-approval-record-v0.1.md",
         "terminology.en.md",
         "terminology.zh-CN.md",
         "../skills/geotask-core/SKILL.md",
@@ -342,8 +343,8 @@ def test_document_indexes_link_primary_layers_and_localized_guides() -> None:
     assert "Implemented public profile" in en_text
     assert "System-level target direction" in en_text
     assert "Legacy compatibility" in en_text
-    assert "31类公共制品" in zh_text
-    assert "thirty-one public Artifacts" in en_text
+    assert "32类公共制品" in zh_text
+    assert "thirty-two public Artifacts" in en_text
 
 
 def test_terminology_distinguishes_contract_specification_protocol_and_legal_contract() -> None:
@@ -360,6 +361,10 @@ def test_terminology_distinguishes_contract_specification_protocol_and_legal_con
         "对象同一性候选",
         "对象同一性审定",
         "对象身份归并提案",
+        "对象关系图变更应用审批记录",
+        "应用审批完成",
+        "变更应用具备条件",
+        "应用授权",
         "主对象引用",
         "保留别名",
         "提案阻断条件",
@@ -370,6 +375,10 @@ def test_terminology_distinguishes_contract_specification_protocol_and_legal_con
 
     for fragment in (
         "Identity Merge Proposal",
+        "Object Graph Change Application Approval Record",
+        "Application Approval Complete",
+        "Change Application Eligible",
+        "Application Authorization",
         "Canonical Subject Reference",
         "Retained Alias",
         "Merge Reversal Plan",
@@ -404,7 +413,8 @@ def test_architecture_and_target_status_include_bounded_observation_merge() -> N
         "19. [GeoTask Identity Merge Proposal v0.1]",
         "20. [GeoTask Identity Merge Approval Record v0.1]",
         "21. [GeoTask Object Graph Change Request v0.1]",
-        "24. [Operator Registry]",
+        "22. [GeoTask Object Graph Change Application Approval Record v0.1]",
+        "25. [Operator Registry]",
         "World State, Observation Merge Result, State Transition",
         "caller-declared `require_equal`",
         "undeclared ambiguous-conflict resolution",
@@ -748,6 +758,7 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.identity-merge-proposal",
         "geotask.identity-merge-approval-record",
         "geotask.object-graph-change-request",
+        "geotask.object-graph-change-application-approval-record",
         "geotask.world-state-materialization-result",
         "geotask.incremental-reevaluation-result",
         "geotask.execution-result",
@@ -764,8 +775,8 @@ def test_language_spec_matches_current_public_enums_and_operators() -> None:
         "geotask.verification-response",
         "geotask.assurance-profile",
         "geotask.core-benchmark-report",
-        "exactly thirty-one artifacts",
-        "all thirty-two public JSON Schemas",
+        "exactly thirty-two artifacts",
+        "all thirty-three public JSON Schemas",
         "does not scan the filesystem",
     ):
         assert fragment in registry_text

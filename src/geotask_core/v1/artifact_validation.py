@@ -85,6 +85,10 @@ from geotask_core.v1.object_graph_change_request import (
     ObjectGraphChangeRequestError,
     load_object_graph_change_request,
 )
+from geotask_core.v1.object_graph_change_application_approval_record import (
+    ObjectGraphChangeApplicationApprovalRecordError,
+    load_object_graph_change_application_approval_record,
+)
 from geotask_core.v1.runtime_interface import (
     RuntimeInterfaceFormatError,
     load_runtime_descriptor,
@@ -1693,6 +1697,64 @@ def _validate_object_graph_change_request_payload(
     )
 
 
+def _validate_object_graph_change_application_approval_record_payload(
+    descriptor: ArtifactDescriptor,
+    payload: Mapping[str, object],
+    *,
+    file: str,
+) -> ArtifactValidationReport:
+    try:
+        result = load_object_graph_change_application_approval_record(payload)
+    except ObjectGraphChangeApplicationApprovalRecordError as exc:
+        return ArtifactValidationReport(
+            descriptor=descriptor,
+            file=file,
+            valid=False,
+            schema_verified=True,
+            summary={},
+            diagnostics=(
+                _diagnostic(
+                    code="invalid_object_graph_change_application_approval_record",
+                    message=str(exc),
+                    suggested_fix=(
+                        "Revise the payload according to GeoTask Object Graph Change "
+                        "Application Approval Record v0.1. Generic validation does not "
+                        "recheck exact GT41 bytes, infer organizational authority, "
+                        "authorize or apply the change, mutate the object graph or World "
+                        "State, release production output, authorize action, or execute action."
+                    ),
+                ),
+            ),
+        )
+
+    return ArtifactValidationReport(
+        descriptor=descriptor,
+        file=file,
+        valid=True,
+        schema_verified=True,
+        summary={
+            "approval_record_id": result.approval_record_id,
+            "record_state": result.record_state,
+            "aggregate_decision": result.aggregate_decision,
+            "required_approval_count": len(result.required_approval_roles),
+            "application_approval_complete": result.application_approval_complete,
+            "change_application_eligible": result.change_application_eligible,
+            "application_authorized": False,
+            "next_action": result.next_action,
+            "semantic_fingerprint": result.semantic_fingerprint(),
+            "change_request_binding_verified": False,
+            "change_applied": False,
+            "identity_merge_performed": False,
+            "subject_refs_mutated": False,
+            "object_graph_mutated": False,
+            "world_state_updated": False,
+            "production_output_released": False,
+            "action_authorized": False,
+            "action_executed": False,
+        },
+    )
+
+
 def _validate_incremental_reevaluation_result_payload(
     descriptor: ArtifactDescriptor,
     payload: Mapping[str, object],
@@ -1844,6 +1906,14 @@ def _validate_verified_payload(
         )
     if descriptor.artifact_id == "geotask.object-graph-change-request":
         return _validate_object_graph_change_request_payload(
+            descriptor,
+            payload,
+            file=file,
+        )
+    if descriptor.artifact_id == (
+        "geotask.object-graph-change-application-approval-record"
+    ):
+        return _validate_object_graph_change_application_approval_record_payload(
             descriptor,
             payload,
             file=file,

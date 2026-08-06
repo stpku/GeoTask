@@ -49,10 +49,13 @@ English-facing GeoTask pages and documents should use consistent English termino
 | Identity Merge Proposal | 对象身份归并提案 | `geotask.identity-merge-proposal` |
 | Identity Merge Approval Record | 对象身份归并审批记录 | `geotask.identity-merge-approval-record` |
 | Object Graph Change Request | 对象关系图变更请求 | `geotask.object-graph-change-request` |
+| Object Graph Change Application Approval Record | 对象关系图变更应用审批记录 | `geotask.object-graph-change-application-approval-record` |
 | Change Operation | 变更操作 | `change_operations` |
 | Application Precondition | 应用前置条件 | `preconditions` |
 | Acceptance Criterion | 验收条件 | `acceptance_criteria` |
-| Application Approval | 应用审批 | `application_authorized` |
+| Application Approval Complete | 应用审批完成 | `application_approval_complete` |
+| Change Application Eligible | 变更应用具备条件 | `change_application_eligible` |
+| Application Authorization | 应用授权 | `application_authorized` |
 | Rollback Plan | 回退方案 | `rollback_plan` |
 | Proposal Approval Complete | 提案审批完成 | `proposal_approval_complete` |
 | Change Request Eligible | 变更请求具备条件 | `change_request_eligible` |

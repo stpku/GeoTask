@@ -43,6 +43,7 @@ REGISTRY_RESPONSE = CORE / "verification_response_asset_registry_gt38.json"
 HUMAN_RESPONSE = CORE / "verification_response_human_identity_reviewer_gt38.json"
 ADJUDICATION = CORE / "trajectory_identity_adjudication_gt38.json"
 SCENARIO = CORE / "gt38_trajectory_identity_adjudication.json"
+STORY = CORE / "uav_017_identity_governance_story_gt38_gt42.json"
 
 
 class GT38BuildError(ValueError):
@@ -304,11 +305,25 @@ def build() -> dict[str, object]:
     ):
         raise GT38BuildError("GT38 crossed its non-execution boundary")
 
+    story = json.loads(STORY.read_text(encoding="utf-8"))["composite_case"]
     scenario = {
         "scenario": {
             "id": "gt38-trajectory-identity-adjudication",
-            "title_zh": "两个独立证据都支持同一对象，Core就可以直接合并身份吗？",
-            "title_en": "When two independent evidence sources support one identity, may Core merge the objects directly?",
+            "title_zh": "巡检无人机失联后出现新轨迹编号，两个证据源足以确认是同一架吗？",
+            "title_en": "After an inspection drone is briefly lost and assigned a new track identity, are two independent evidence sources enough to confirm it is the same drone?",
+            "composite_case": {
+                "id": story["id"],
+                "stage": 1,
+                "stage_count": len(story["stages"]),
+                "stage_label_zh": story["stages"][0]["label_zh"],
+                "story_file": STORY.relative_to(ROOT).as_posix(),
+                "asset_label": story["asset_label"],
+                "operational_context": story["operational_context"],
+                "timeline": story["timeline"],
+                "independent_evidence": story["independent_evidence"],
+                "business_risks": story["business_risks"],
+                "machine_to_display_mapping": story["machine_to_display_mapping"],
+            },
             "candidate": {
                 "source_case": "GT37",
                 "state": loaded.candidate_state,

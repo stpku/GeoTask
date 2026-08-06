@@ -66,9 +66,9 @@
     navigation.append(
       createLink({
         href: new URL("#cases", siteRoot).href,
-        text: `全部 ${payload.case_count} 个案例`,
+        text: `全部 ${payload.case_count} 个参考例`,
         className: "gt-case-navigation__link--index",
-        title: "返回GeoTask公开案例目录",
+        title: "返回GeoTask公开参考例目录",
       })
     );
 

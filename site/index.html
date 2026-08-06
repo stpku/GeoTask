@@ -92,6 +92,11 @@
     .case h3 { margin: 7px 0 8px; color: var(--navy); font-size: 19px; line-height: 1.35; }
     .case p { margin: 0; color: var(--muted); font-size: 14px; }
     .case .go { margin-top: auto; padding-top: 16px; color: var(--blue); font-weight: 800; }
+    .case-series { grid-column: 1 / -1; min-height: 0; background: linear-gradient(135deg,#f0f9f7,#f4f7ff); border-color: #9bcfc6; }
+    .case-series:hover { transform: none; }
+    .case-series-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .case-series-link { padding: 8px 11px; border: 1px solid #a9c8d8; border-radius: 999px; background: white; color: var(--blue); font-size: 13px; font-weight: 850; text-decoration: none; }
+    .case-series-link:hover, .case-series-link:focus-visible { border-color: var(--teal); outline: none; }
     .architecture { padding: 30px; border-radius: 28px; background: linear-gradient(145deg,var(--navy),var(--navy-2)); color: white; box-shadow: var(--shadow); }
     .architecture h2 { margin: 0; font-size: clamp(28px,4vw,40px); }
     .architecture > p { max-width: 840px; color: #d6e6ee; }
@@ -179,7 +184,7 @@
           <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/docs/whitepaper/GeoTask_White_Paper_v0.1.md">阅读中文白皮书</a>
         </div>
         <div class="trust-strip" aria-label="项目概览">
-          <div class="trust-item"><strong>42</strong><span>公开应用案例</span></div>
+          <div class="trust-item"><strong>42</strong><span>公开可验证示例</span></div>
           <div class="trust-item"><strong>14</strong><span>本地确定性算子</span></div>
           <div class="trust-item"><strong>31</strong><span>公共制品</span></div>
           <div class="trust-item"><strong>MIT</strong><span>GeoTask核心许可</span></div>
@@ -221,7 +226,7 @@
     <section class="block" id="cases">
       <div class="shell">
         <div class="section-head">
-          <div><h2>GT01—GT42渐进式案例</h2><p>从一个5米距离开始，逐步进入三值逻辑、证据冲突、对象可行性、高风险动作门控，以及多源运行数据冲突、统一快照和状态变化。</p></div>
+          <div><h2>GT01—GT42公开参考例</h2><p>共42个可验证参考例，对应38个场景入口；GT38—GT42作为一个五阶段复合案例，完整展示无人机身份从证据审定到应用审批的治理链。</p></div>
           <a class="text-link" href="https://github.com/stpku/GeoTask/blob/main/docs/README.md">查看中文文档导航 →</a>
         </div>
         <div class="stage">
@@ -294,11 +299,7 @@
             <a class="case" href="gt35/"><span class="case-id">GT35</span><h3>位置几乎没变就是停留，十分钟没观测就是失联吗？</h3><p>使用调用方显式声明的5米停留半径、120秒最短时长、300秒最大观测间隔和缺口许可，将三个相邻分段分类为停留候选、已观测移动和观测缺口；不允许缺口标记时返回不可核验，不推断失联、异常或连续运动。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt36/"><span class="case-id">GT36</span><h3>两段平均速度变了，就能证明瞬时加速度和连续运动吗？</h3><p>以相邻分段中点为代表时刻，在调用方声明的300秒最大观测间隔内计算平均速度变化率；输出零加速度、正加速度和缺口驱动的不可核验，不推断瞬时或向量加速度、方向变化、未来位置或现实动作。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt37/"><span class="case-id">GT37</span><h3>两段轨迹只差60秒和5米，就能自动认定为同一个对象吗？</h3><p>比较前一轨迹末样本与后一轨迹首样本，在调用方声明的时间、距离和对象类别策略下输出对象同一性候选、不同对象候选或不可核验；不自动归并身份、不改写subject_ref，也不证明现实身份。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt38/"><span class="case-id">GT38</span><h3>两个独立证据都支持同一对象，Core就可以直接归并身份吗？</h3><p>将GT37对象同一性候选与原始字节级绑定的验证请求、可信保证策略、两个独立验证提供方及响应组合为可审计的对象同一性审定；可建议进入归并复核，但不归并对象、不改写subject_ref、不发布或执行身份更新。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt39/"><span class="case-id">GT39</span><h3>证据支持同一对象后，系统可以直接归并身份吗？</h3><p>精确绑定GT38对象同一性审定结果，从两个现有主体中显式选择主对象引用，形成包含拟改写引用、保留别名、审批要求、阻断条件、撤销条件和归并回退方案的对象身份归并提案；不创建新身份、不删除别名、不修改对象关系图或世界状态。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt40/"><span class="case-id">GT40</span><h3>归并提案完成审批后，身份就已经被改写了吗？</h3><p>原始字节级绑定GT39对象身份归并提案，为每个必需审批角色记录批准、拒绝或要求补证据的显式决定；全部批准只使后续受限变更请求具备条件，不执行身份归并、不改写subject_ref、不修改对象关系图或世界状态。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt41/"><span class="case-id">GT41</span><h3>归并提案已获批，是否可以直接改写对象关系图？</h3><p>原始字节级绑定GT39提案和GT40审批记录，由公共核心派生唯一的轨迹subject_ref改写请求、保留别名、七项应用前置条件、五项验收条件和逆向回退操作；变更请求仍不授权或应用变更，不修改对象关系图或世界状态。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt42/"><span class="case-id">GT42</span><h3>对象关系图变更请求通过应用审批后，是否等于变更已经应用？</h3><p>原始字节级绑定GT41对象关系图变更请求，由调用方显式声明应用审批角色并为每个角色记录批准、拒绝或要求补证据的决定；全部批准只使后续受限应用制品具备条件，不授权或应用变更，不改写subject_ref，不修改对象关系图或世界状态。</p><span class="go">进入体验 →</span></a>
+            <article class="case case-series"><span class="case-id">复合案例 · 5阶段</span><h3>巡检无人机短暂失联后被重新编号，如何确认并安全归并身份？</h3><p>虚构巡检无人机UAV-017进入建筑遮挡区后短暂失联，恢复观测时被系统建立为新的临时主体。资产登记证据与人工复核均支持“同一架无人机”，但GeoTask仍将审定、归并提案、提案审批、变更请求和应用审批拆成五个可审计阶段。</p><div class="case-series-links"><a class="case-series-link" href="gt38/">GT38 证据审定</a><a class="case-series-link" href="gt39/">GT39 归并提案</a><a class="case-series-link" href="gt40/">GT40 提案审批</a><a class="case-series-link" href="gt41/">GT41 变更请求</a><a class="case-series-link" href="gt42/">GT42 应用审批</a></div></article>
           </div>
         </div>
       </div>

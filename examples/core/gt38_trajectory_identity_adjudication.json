@@ -1,8 +1,59 @@
 {
   "scenario": {
     "id": "gt38-trajectory-identity-adjudication",
-    "title_zh": "两个独立证据都支持同一对象，Core就可以直接合并身份吗？",
-    "title_en": "When two independent evidence sources support one identity, may Core merge the objects directly?",
+    "title_zh": "巡检无人机失联后出现新轨迹编号，两个证据源足以确认是同一架吗？",
+    "title_en": "After an inspection drone is briefly lost and assigned a new track identity, are two independent evidence sources enough to confirm it is the same drone?",
+    "composite_case": {
+      "id": "gt38-gt42-uav-017-reidentification",
+      "stage": 1,
+      "stage_count": 5,
+      "stage_label_zh": "证据审定",
+      "story_file": "examples/core/uav_017_identity_governance_story_gt38_gt42.json",
+      "asset_label": "巡检无人机UAV-017",
+      "operational_context": "园区电力线路巡检",
+      "timeline": [
+        {
+          "observed_at": "2026-08-05T08:02:00+08:00",
+          "event_zh": "无人机进入建筑遮挡区前留下最后一次观测",
+          "trajectory_ref": "track_alpha",
+          "subject_ref": "provisional_alpha",
+          "display_label_zh": "UAV-017原始主体"
+        },
+        {
+          "observed_at": "2026-08-05T08:03:00+08:00",
+          "event_zh": "恢复观测时，跟踪系统建立了新的轨迹和临时主体",
+          "trajectory_ref": "track_beta",
+          "subject_ref": "provisional_beta",
+          "display_label_zh": "遮挡后临时主体"
+        }
+      ],
+      "independent_evidence": [
+        {
+          "source_zh": "虚构资产登记系统",
+          "finding_zh": "失联前后观测对应相同Remote ID和设备序列号"
+        },
+        {
+          "source_zh": "虚构人工复核",
+          "finding_zh": "任务编号、机型、运营人和时间连续性均一致"
+        }
+      ],
+      "business_risks": {
+        "false_merge": [
+          "可能把另一架无人机的轨迹错误并入UAV-017",
+          "污染任务历史、风险判断和责任追溯"
+        ],
+        "missed_merge": [
+          "同一架无人机被重复计数为两个对象",
+          "连续任务轨迹和风险状态被拆成两段"
+        ]
+      },
+      "machine_to_display_mapping": {
+        "track_alpha": "失联前轨迹",
+        "track_beta": "恢复后轨迹",
+        "provisional_alpha": "UAV-017原始主体",
+        "provisional_beta": "遮挡后临时主体"
+      }
+    },
     "candidate": {
       "source_case": "GT37",
       "state": "same_object_candidate",

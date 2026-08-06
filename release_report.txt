@@ -1,7 +1,7 @@
 GeoTask Core Public Release Report
 ==================================
-Started:  2026-08-06 05:28:32 UTC
-Finished: 2026-08-06 05:28:35 UTC
+Started:  2026-08-06 07:18:34 UTC
+Finished: 2026-08-06 07:18:37 UTC
 Duration: 2.7s
 Stages:   5 passed, 0 failed
-Output:   /home/dev/geotask-public-gt42-final
+Output:   /home/dev/geotask-public-uav-story-final

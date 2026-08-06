@@ -5,6 +5,25 @@ handbook:
   path: docs/README.md
   label_zh: 查看中文文档导航 →
 
+series:
+  - id: uav_017_identity_governance
+    entry_case: GT38
+    case_ids:
+      - GT38
+      - GT39
+      - GT40
+      - GT41
+      - GT42
+    label_zh: 复合案例 · 5阶段
+    title_zh: 巡检无人机短暂失联后被重新编号，如何确认并安全归并身份？
+    summary_zh: 虚构巡检无人机UAV-017进入建筑遮挡区后短暂失联，恢复观测时被系统建立为新的临时主体。资产登记证据与人工复核均支持“同一架无人机”，但GeoTask仍将审定、归并提案、提案审批、变更请求和应用审批拆成五个可审计阶段。
+    stage_labels_zh:
+      - GT38 证据审定
+      - GT39 归并提案
+      - GT40 提案审批
+      - GT41 变更请求
+      - GT42 应用审批
+
 stages:
   - id: spatial_relations
     number: 1
@@ -328,40 +347,40 @@ cases:
   - id: GT38
     slug: gt38
     stage: dynamic_world_objects
-    title_zh: 两个独立证据都支持同一对象，Core就可以直接归并身份吗？
-    summary_zh: 将GT37对象同一性候选与原始字节级绑定的验证请求、可信保证策略、两个独立验证提供方及响应组合为可审计的对象同一性审定；可建议进入归并复核，但不归并对象、不改写subject_ref、不发布或执行身份更新。
+    title_zh: 巡检无人机失联后出现新轨迹编号，两个证据源足以确认是同一架吗？
+    summary_zh: 虚构资产登记系统确认相同Remote ID，人工复核确认同一任务、机型和时间连续；GeoTask形成对象同一性审定，但只建议进入身份归并复核。
     page: site/gt38/index.html
     example: examples/core/gt38_trajectory_identity_adjudication.json
     lastmod: "2026-08-05"
   - id: GT39
     slug: gt39
     stage: dynamic_world_objects
-    title_zh: 证据支持同一对象后，系统可以直接归并身份吗？
-    summary_zh: 精确绑定GT38对象同一性审定结果，从两个现有主体中显式选择主对象引用，形成包含拟改写引用、保留别名、审批要求、阻断条件、撤销条件和归并回退方案的对象身份归并提案；不创建新身份、不删除别名、不修改对象关系图或世界状态。
+    title_zh: 确认是同一架无人机后，哪个主体记录应保留为主身份？
+    summary_zh: 保留UAV-017原始主体作为主对象引用，把遮挡后临时主体作为可追溯别名，形成可撤销的对象身份归并提案，但不直接改写任何记录。
     page: site/gt39/index.html
     example: examples/core/gt39_identity_merge_proposal.json
     lastmod: "2026-08-05"
   - id: GT40
     slug: gt40
     stage: dynamic_world_objects
-    title_zh: 归并提案完成审批后，身份就已经被改写了吗？
-    summary_zh: 原始字节级绑定GT39对象身份归并提案，为每个必需审批角色记录批准、拒绝或要求补证据的显式决定；全部批准只使后续受限变更请求具备条件，不执行身份归并、不改写subject_ref、不修改对象关系图或世界状态。
+    title_zh: 无人机身份归并提案由谁审批，批准后记录已经改变了吗？
+    summary_zh: 身份治理复核人与世界状态维护人分别作出明确决定；全部批准只使后续受限变更请求具备条件，UAV-017及临时主体记录仍保持不变。
     page: site/gt40/index.html
     example: examples/core/gt40_identity_merge_approval_record.json
     lastmod: "2026-08-06"
   - id: GT41
     slug: gt41
     stage: dynamic_world_objects
-    title_zh: 归并提案已获批，是否可以直接改写对象关系图？
-    summary_zh: 原始字节级绑定GT39提案和GT40审批记录，由公共核心派生唯一的轨迹subject_ref改写请求、保留别名、七项应用前置条件、五项验收条件和逆向回退操作；变更请求仍不授权或应用变更，不修改对象关系图或世界状态。
+    title_zh: 提案获批后，系统究竟准备修改UAV-017的哪一条记录？
+    summary_zh: 变更请求只允许把恢复后轨迹track_beta的subject_ref从临时主体改为UAV-017原始主体，并保留别名、前置条件、验收条件和回退操作。
     page: site/gt41/index.html
     example: examples/core/gt41_object_graph_change_request.json
     lastmod: "2026-08-06"
   - id: GT42
     slug: gt42
     stage: dynamic_world_objects
-    title_zh: 对象关系图变更请求通过应用审批后，是否等于变更已经应用？
-    summary_zh: 原始字节级绑定GT41对象关系图变更请求，由调用方显式声明应用审批角色并为每个角色记录批准、拒绝或要求补证据的决定；全部批准只使后续受限应用制品具备条件，不授权或应用变更，不改写subject_ref，不修改对象关系图或世界状态。
+    title_zh: 应用审批通过后，UAV-017的轨迹引用已经改变了吗？
+    summary_zh: 对象关系图变更负责人和世界状态治理复核人均批准后，只使后续受限应用制品具备条件；应用授权、引用改写和世界状态更新仍未发生。
     page: site/gt42/index.html
     example: examples/core/gt42_object_graph_change_application_approval_record.json
     lastmod: "2026-08-06"

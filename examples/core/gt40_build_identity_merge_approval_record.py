@@ -17,6 +17,7 @@ EXAMPLES = ROOT / "examples" / "core"
 PROPOSAL_PATH = EXAMPLES / "identity_merge_proposal_gt39.json"
 APPROVAL_PATH = EXAMPLES / "identity_merge_approval_record_gt40.json"
 SCENARIO_PATH = EXAMPLES / "gt40_identity_merge_approval_record.json"
+STORY_PATH = EXAMPLES / "uav_017_identity_governance_story_gt38_gt42.json"
 
 
 def _json_bytes(payload: dict[str, object]) -> bytes:
@@ -62,9 +63,19 @@ def build() -> dict[str, object]:
         loaded,
         proposal_bytes=proposal_bytes,
     )
+    story = json.loads(STORY_PATH.read_text(encoding="utf-8"))["composite_case"]
     scenario = {
         "case_id": "GT40",
-        "title": "归并提案完成审批后，身份就已经被改写了吗？",
+        "title": "无人机身份归并提案由谁审批，批准后记录已经改变了吗？",
+        "composite_case": {
+            "id": story["id"],
+            "stage": 3,
+            "stage_count": len(story["stages"]),
+            "stage_label_zh": story["stages"][2]["label_zh"],
+            "story_file": STORY_PATH.relative_to(ROOT).as_posix(),
+            "asset_label": story["asset_label"],
+            "machine_to_display_mapping": story["machine_to_display_mapping"],
+        },
         "source_artifact": PROPOSAL_PATH.relative_to(ROOT).as_posix(),
         "approval_artifact": APPROVAL_PATH.relative_to(ROOT).as_posix(),
         "aggregate_decision": loaded.aggregate_decision,

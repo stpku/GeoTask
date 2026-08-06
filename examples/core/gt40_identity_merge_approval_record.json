@@ -1,6 +1,20 @@
 {
   "case_id": "GT40",
-  "title": "归并提案完成审批后，身份就已经被改写了吗？",
+  "title": "无人机身份归并提案由谁审批，批准后记录已经改变了吗？",
+  "composite_case": {
+    "id": "gt38-gt42-uav-017-reidentification",
+    "stage": 3,
+    "stage_count": 5,
+    "stage_label_zh": "提案审批",
+    "story_file": "examples/core/uav_017_identity_governance_story_gt38_gt42.json",
+    "asset_label": "巡检无人机UAV-017",
+    "machine_to_display_mapping": {
+      "track_alpha": "失联前轨迹",
+      "track_beta": "恢复后轨迹",
+      "provisional_alpha": "UAV-017原始主体",
+      "provisional_beta": "遮挡后临时主体"
+    }
+  },
   "source_artifact": "examples/core/identity_merge_proposal_gt39.json",
   "approval_artifact": "examples/core/identity_merge_approval_record_gt40.json",
   "aggregate_decision": "approved",

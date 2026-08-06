@@ -1,6 +1,20 @@
 {
   "case_id": "GT42",
-  "title": "对象关系图变更请求已通过应用审批，是否等于变更已经应用？",
+  "title": "应用审批通过后，UAV-017的轨迹引用已经改变了吗？",
+  "composite_case": {
+    "id": "gt38-gt42-uav-017-reidentification",
+    "stage": 5,
+    "stage_count": 5,
+    "stage_label_zh": "应用审批",
+    "story_file": "examples/core/uav_017_identity_governance_story_gt38_gt42.json",
+    "asset_label": "巡检无人机UAV-017",
+    "machine_to_display_mapping": {
+      "track_alpha": "失联前轨迹",
+      "track_beta": "恢复后轨迹",
+      "provisional_alpha": "UAV-017原始主体",
+      "provisional_beta": "遮挡后临时主体"
+    }
+  },
   "change_request_artifact": "examples/core/object_graph_change_request_gt41.json",
   "application_approval_artifact": "examples/core/object_graph_change_application_approval_record_gt42.json",
   "aggregate_decision": "approved",

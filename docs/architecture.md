@@ -40,7 +40,7 @@ The public Core does not replace a multimodal model, sensor stack, map platform,
 └────────────────────────────────────────────────────────────┘
 ```
 
-GeoTask Core currently implements foundational plane-2 specifications and interface contracts, including moving objects and discrete trajectories, Observation v0.1, World State v0.1, bounded Observation Merge v0.1 with caller-declared semantic-equality consolidation and complete explicit precedence for claims targeting the same path, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, Correction Request v0.1 successor-state correction contracts, Impact Graph v0.1 source-bound impact DAGs, Recompute Derivation Result v0.1 source-bound deterministic value derivation, World State Materialization Result v0.1 bounded successor generation, and Incremental Reevaluation Result v0.1 bounded outcome records. Plane 3 now also contains trajectory identity candidates, exact-bound Trajectory Identity Adjudication, review-only Identity Merge Proposal Artifacts, non-executing Identity Merge Approval Records, and bounded Object Graph Change Requests. The deterministic baseline and Provider assurance remain separate from plane-4 read-only control semantics. Automatic diff computation, object-graph change application and application-result generation after separate approval, general object-graph mutation, resolution of ambiguous claims without a declared policy, expansion of the bounded derivation method registry, and automatic impact discovery and propagation execution remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, approvals, and production actions.
+GeoTask Core currently implements foundational plane-2 specifications and interface contracts, including moving objects and discrete trajectories, Observation v0.1, World State v0.1, bounded Observation Merge v0.1 with caller-declared semantic-equality consolidation and complete explicit precedence for claims targeting the same path, State Transition v0.1 snapshot bindings, Verification Session v0.1 audit snapshots, Discrepancy Report v0.1 bounded-difference records, Correction Request v0.1 successor-state correction contracts, Impact Graph v0.1 source-bound impact DAGs, Recompute Derivation Result v0.1 source-bound deterministic value derivation, World State Materialization Result v0.1 bounded successor generation, and Incremental Reevaluation Result v0.1 bounded outcome records. Plane 3 now also contains trajectory identity candidates, exact-bound Trajectory Identity Adjudication, review-only Identity Merge Proposal Artifacts, non-executing Identity Merge Approval Records, bounded Object Graph Change Requests, and non-applying Object Graph Change Application Approval Records. The deterministic baseline and Provider assurance remain separate from plane-4 read-only control semantics. Automatic diff computation, bounded object-graph change application and application-result generation after approval, general object-graph mutation, resolution of ambiguous claims without a declared policy, expansion of the bounded derivation method registry, and automatic impact discovery and propagation execution remain target abstractions. External Runtimes and Domain Packs provide connectors, industry policy, predictive models, authoritative data, human review, approvals, and production actions.
 
 ## 3. Implemented Architecture
 
@@ -190,7 +190,7 @@ Implemented Artifacts include:
 - Verification Session, Discrepancy Report, Correction Request, and Impact Graph;
 - Recompute Derivation Result, World State Materialization Result, and Incremental Reevaluation Result;
 - Verification Provider Descriptor, Verification Request, Verification Response, and Assurance Profile;
-- Trajectory Identity Adjudication, Identity Merge Proposal, Identity Merge Approval Record, and Object Graph Change Request;
+- Trajectory Identity Adjudication, Identity Merge Proposal, Identity Merge Approval Record, Object Graph Change Request, and Object Graph Change Application Approval Record;
 - Agent preparation, revision, retry, and evidence-recovery reports;
 - Runtime descriptors, requests, and responses;
 - Core benchmark and Artifact validation reports.
@@ -283,21 +283,23 @@ Blocked Result
 → final control evaluation
 ```
 
-### 4.5 Identity governance proposal, approval, and change request
+### 4.5 Identity governance proposal, approval, change request, and application approval
 
 ```text
 Trajectory identity candidate
 → exact-bound Provider evidence adjudication
 → caller selects one existing canonical subject
 → bounded Identity Merge Proposal
-→ explicit decision for every required approval role
+→ explicit decision for every required proposal-approval role
 → Identity Merge Approval Record
 → exact-bound Object Graph Change Request
 → one closed subject_ref rewrite + retained alias + rollback plan
-→ separate application approval and application remain later stages
+→ explicit decision for every caller-declared application-approval role
+→ Object Graph Change Application Approval Record
+→ later bounded application Artifact may become eligible
 ```
 
-These flows are implemented independently. Users currently assemble them through related Artifacts and CLI commands. The identity-governance flow now records proposal approval and derives one bounded change request with preconditions and acceptance criteria, but still stops before application authorization, object-graph mutation, `subject_ref` rewrite, World State update, publication, authorization, or execution.
+These flows are implemented independently. Users currently assemble them through related Artifacts and CLI commands. The identity-governance flow now records proposal approval, derives one bounded change request with preconditions and acceptance criteria, and records application-approval completion. It still stops before Core application authorization, object-graph mutation, `subject_ref` rewrite, World State update, publication, authorization, or execution.
 
 ## 5. Target Evolution: Verifiable World-State Cycle
 

@@ -1,8 +1,8 @@
 # GeoTask轨迹与移动对象Profile v0.1
 
 状态：公共实现已落地  
-参考案例：GT33—GT41
-范围：仅表达离散观测、相邻样本指标、调用方显式分段分类、受限标量加速度估计、边界样本对象同一性候选、原始字节级绑定的对象同一性审定、只读对象身份归并提案、非执行审批记录与受限对象关系图变更请求
+参考案例：GT33—GT42
+范围：仅表达离散观测、相邻样本指标、调用方显式分段分类、受限标量加速度估计、边界样本对象同一性候选、原始字节级绑定的对象同一性审定、只读对象身份归并提案、非执行审批记录、受限对象关系图变更请求与非应用型应用审批记录
 
 ## 目的
 
@@ -85,6 +85,8 @@ GT40新增注册制品`geotask.identity-merge-approval-record`。它原始字节
 
 GT41新增注册制品`geotask.object-graph-change-request`。它原始字节级绑定GT39提案和GT40全部批准记录，由公共核心派生唯一的轨迹`/subject_ref`改写，保留非主主体别名，声明七项应用前置条件、五项待应用验收条件，并携带逆向回退操作。变更请求仍需独立应用审批，不授权或应用变更，不修改`subject_ref`、对象关系图或世界状态，也不发布、授权或执行更新。详见[Object Graph Change Request v0.1](geotask-object-graph-change-request-v0.1.md)。
 
+GT42新增注册制品`geotask.object-graph-change-application-approval-record`。它原始字节级绑定GT41变更请求，并要求对调用方声明的每个应用审批角色分别记录`approved`、`rejected`或`evidence_required`决定。任一拒绝优先；没有拒绝但存在补证据要求时继续阻断；只有全部角色批准，后续受限应用制品才具备条件。即使如此，`application_authorized`、引用改写、对象关系图修改、世界状态更新、发布、授权和执行仍全部为假。详见[Object Graph Change Application Approval Record v0.1](geotask-object-graph-change-application-approval-record-v0.1.md)。
+
 ## 失败关闭
 
 以下情况验证失败：
@@ -102,7 +104,8 @@ GT41新增注册制品`geotask.object-graph-change-request`。它原始字节级
 - GT38无法闭合候选、请求、策略、验证提供方与响应的原始字节级引用，可信保证策略未阻断自动归并和引用改写，证据冲突或不足，响应分组与审定结论不一致，或任一字段声称公共核心已归并身份、改写`subject_ref`、发布、授权或执行更新；
 - GT39选择的主对象引用不属于GT38两个现有主体、扩大受影响轨迹范围、未保留别名、修改封闭的阻断或撤销条件、缺少可逆的反向改写，或声称提案已获批、已应用、已发布、已授权或已执行；
 - GT40遗漏或重复必需审批角色、接受未声明的角色或决定、在`evidence_required`时没有证据引用、聚合决定与角色决定不一致，或声称审批记录已执行归并、改写引用、修改对象关系图或世界状态、发布、授权或执行更新；
-- GT41接收未批准或与GT39提案不匹配的GT40记录、扩大GT39变更范围、修改轨迹`/subject_ref`目标、删除保留别名、改变封闭的前置条件或验收条件集合、提供不完整的逆向回退，或声称变更请求已获应用授权、已应用、已发布或已执行。
+- GT41接收未批准或与GT39提案不匹配的GT40记录、扩大GT39变更范围、修改轨迹`/subject_ref`目标、删除保留别名、改变封闭的前置条件或验收条件集合、提供不完整的逆向回退，或声称变更请求已获应用授权、已应用、已发布或已执行；
+- GT42接收未进入应用复核状态的GT41请求、遗漏或重复调用方声明的应用审批角色、接受未声明的角色或决定、在`evidence_required`时没有证据引用、聚合决定与角色决定不一致，或声称审批记录已授权或应用变更、改写引用、修改对象关系图或世界状态、发布、授权或执行更新。
 
 ## 能力边界
 
@@ -137,6 +140,9 @@ GT41新增注册制品`geotask.object-graph-change-request`。它原始字节级
 - `examples/core/object_graph_change_request_gt41.json`
 - `examples/core/gt41_object_graph_change_request.json`
 - `docs/spec/geotask-object-graph-change-request-v0.1.md`
+- `examples/core/object_graph_change_application_approval_record_gt42.json`
+- `examples/core/gt42_object_graph_change_application_approval_record.json`
+- `docs/spec/geotask-object-graph-change-application-approval-record-v0.1.md`
 - `site/gt33/index.html`
 - `site/gt34/index.html`
 - `site/gt35/index.html`
@@ -146,3 +152,4 @@ GT41新增注册制品`geotask.object-graph-change-request`。它原始字节级
 - `site/gt39/index.html`
 - `site/gt40/index.html`
 - `site/gt41/index.html`
+- `site/gt42/index.html`

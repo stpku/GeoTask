@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stpku.github.io/GeoTask/schemas/geotask-object-graph-change-application-approval-record-v0.1.schema.json",
+  "title": "GeoTask Object Graph Change Application Approval Record v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["object_graph_change_application_approval_record"],
+  "properties": {
+    "object_graph_change_application_approval_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approval_version",
+        "approval_record_id",
+        "created_at",
+        "source_change_request_ref",
+        "record_state",
+        "aggregate_decision",
+        "decision_reason",
+        "canonical_subject_ref",
+        "merge_subject_ref",
+        "affected_trajectory_refs",
+        "required_approval_roles",
+        "approval_decisions",
+        "approved_roles",
+        "rejected_roles",
+        "evidence_required_roles",
+        "change_request_binding_verified",
+        "decision_scope_closed",
+        "required_roles_covered",
+        "application_approval_complete",
+        "change_application_eligible",
+        "application_authorized",
+        "blocked_operations",
+        "next_action",
+        "change_applied",
+        "identity_merge_performed",
+        "subject_refs_mutated",
+        "object_graph_mutated",
+        "world_state_updated",
+        "production_output_released",
+        "action_authorized",
+        "action_executed"
+      ],
+      "properties": {
+        "approval_version": {"const": "0.1"},
+        "approval_record_id": {"$ref": "#/$defs/nonEmptyString"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "source_change_request_ref": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact_id", "change_request_id", "content_sha256"],
+          "properties": {
+            "artifact_id": {"const": "geotask.object-graph-change-request"},
+            "change_request_id": {"$ref": "#/$defs/nonEmptyString"},
+            "content_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "record_state": {"const": "decision_recorded"},
+        "aggregate_decision": {
+          "enum": ["approved", "rejected", "evidence_required"]
+        },
+        "decision_reason": {
+          "enum": [
+            "all_required_application_approval_roles_approved",
+            "one_or_more_application_approval_roles_rejected",
+            "one_or_more_application_approval_roles_requested_evidence"
+          ]
+        },
+        "canonical_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "merge_subject_ref": {"$ref": "#/$defs/nonEmptyString"},
+        "affected_trajectory_refs": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "required_approval_roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "approval_decisions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "approval_role",
+              "reviewer_ref",
+              "decision",
+              "rationale",
+              "decided_at",
+              "evidence_refs"
+            ],
+            "properties": {
+              "approval_role": {"$ref": "#/$defs/nonEmptyString"},
+              "reviewer_ref": {"$ref": "#/$defs/nonEmptyString"},
+              "decision": {
+                "enum": ["approved", "rejected", "evidence_required"]
+              },
+              "rationale": {"$ref": "#/$defs/nonEmptyString"},
+              "decided_at": {"type": "string", "format": "date-time"},
+              "evidence_refs": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {"$ref": "#/$defs/nonEmptyString"}
+              }
+            }
+          }
+        },
+        "approved_roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "rejected_roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "evidence_required_roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonEmptyString"}
+        },
+        "change_request_binding_verified": {"const": true},
+        "decision_scope_closed": {"const": true},
+        "required_roles_covered": {"const": true},
+        "application_approval_complete": {"type": "boolean"},
+        "change_application_eligible": {"type": "boolean"},
+        "application_authorized": {"const": false},
+        "blocked_operations": {
+          "const": [
+            "unapproved_change_application",
+            "undeclared_path_mutation",
+            "alias_deletion",
+            "identity_creation",
+            "world_state_update",
+            "production_output_release",
+            "action_execution"
+          ]
+        },
+        "next_action": {
+          "enum": [
+            "prepare_bounded_object_graph_change_application",
+            "close_object_graph_change_request",
+            "request_object_graph_change_application_evidence"
+          ]
+        },
+        "change_applied": {"const": false},
+        "identity_merge_performed": {"const": false},
+        "subject_refs_mutated": {"const": false},
+        "object_graph_mutated": {"const": false},
+        "world_state_updated": {"const": false},
+        "production_output_released": {"const": false},
+        "action_authorized": {"const": false},
+        "action_executed": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

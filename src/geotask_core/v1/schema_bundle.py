@@ -31,6 +31,7 @@ from geotask_core.v1.artifact_registry import (
     IDENTITY_MERGE_PROPOSAL_SCHEMA_ID,
     IDENTITY_MERGE_APPROVAL_RECORD_SCHEMA_ID,
     OBJECT_GRAPH_CHANGE_REQUEST_SCHEMA_ID,
+    OBJECT_GRAPH_CHANGE_APPLICATION_APPROVAL_RECORD_SCHEMA_ID,
     RUNTIME_DESCRIPTOR_SCHEMA_ID,
     RUNTIME_REQUEST_SCHEMA_ID,
     RUNTIME_RESPONSE_SCHEMA_ID,
@@ -80,6 +81,9 @@ _SCHEMA_FILENAME_BY_ID = {
     ),
     OBJECT_GRAPH_CHANGE_REQUEST_SCHEMA_ID: (
         "geotask-object-graph-change-request-v0.1.schema.json"
+    ),
+    OBJECT_GRAPH_CHANGE_APPLICATION_APPROVAL_RECORD_SCHEMA_ID: (
+        "geotask-object-graph-change-application-approval-record-v0.1.schema.json"
     ),
     GEOTASK_RESULT_SCHEMA_ID: "geotask-result-v1.0.schema.json",
     CONTROL_EVALUATION_SCHEMA_ID: "geotask-control-evaluation-v1.0.schema.json",

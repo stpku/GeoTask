@@ -1,5 +1,7 @@
 # GeoTask Productization Roadmap v0.1
 
+> **Historical baseline.** This 2025-06 roadmap is retained for product/patent traceability, but is **superseded for forward planning** by [`productization_roadmap_v0_2.md`](productization_roadmap_v0_2.md). Its phase order, capability counts, multi-provider, multi-pack, multi-tenant and Marketplace assumptions are not current execution commitments.
+
 ## Overview
 
 This roadmap defines the path from open-source Core to commercial platform across five phases. Each phase has clear deliverables, commercial value, patent actions, and acceptance criteria.

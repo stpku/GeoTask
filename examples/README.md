@@ -3,10 +3,14 @@
 This directory contains public-safe Core examples and separate domain-pack
 examples. Core examples use fictional local coordinates and generic intervals.
 They do not encode domain-specific approval logic, regulatory thresholds, or
-patent-sensitive workflows.
+patent-sensitive workflows. Integration-line validation examples may coexist in
+the source repository, but they are deliberately excluded from the GeoTask Core
+public export and are not Core-owned release artifacts.
 
 ## Public-Safe Core Examples
 
+- `examples/reference_agent/facility_assessment_update/`: the P1 end-to-end Reference Agent. It replays one fictional facility evidence update across bounded World State, evidence freshness/conflict handling, deterministic `distance_2d` recomputation, bounded impact, human/control gating, and five fixed success/failure scenarios while keeping production writes and actions false. This is a Product Track reference workflow, not GT43.
+- `examples/reference_agent/facility_assessment_update/quality_benchmark.py`: the P2 Product Track Verification Quality Benchmark for the same five-scenario workflow. It reports error detection, missed errors, false blocking, bounded correction, impact-scope precision/recall, and side-effect-boundary compliance without claiming automatic dependency discovery or real-world accuracy.
 - `examples/core/minimal_valid.yaml`: minimal point distance example.
 - `examples/core/v1_point_to_line_distance_minimal.en.yaml`: directly runnable English
   example covering a four-meter point-to-line distance and the zero-distance on-line boundary case.

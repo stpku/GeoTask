@@ -42,7 +42,7 @@ python -c "from importlib.metadata import version; print(version('geotask-core')
 
 ## 2. 检查安装结果
 
-`geotask --help`应列出`validate`、`run`、`inspect`、`normalize`和`eval`等命令；`geotask inspect operators`应列出当前公共Core的六个确定性算子。完成这一步后即可创建并运行自己的GeoTask文件。
+`geotask --help`应列出`validate`、`run`、`inspect`、`normalize`和`eval`等命令；`geotask inspect operators`应列出当前公共Core注册的14个确定性算子。完成这一步后即可创建并运行自己的GeoTask文件。
 
 ## 3. 自己创建一个任务
 

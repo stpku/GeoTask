@@ -21,6 +21,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "cases" / "catalog.yaml"
+PRODUCT_ROUTES = ROOT / "site" / "product-routes.yaml"
 PORTAL = ROOT / "site" / "index.html"
 SITEMAP = ROOT / "site" / "sitemap.xml"
 CASE_SLUGS = ROOT / "site" / "cases.txt"
@@ -36,6 +37,10 @@ SCRIPT_TAG = '<script src="../assets/case-navigation.js" defer data-geotask-case
 
 def _catalog() -> dict:
     return yaml.safe_load(CATALOG.read_text(encoding="utf-8"))
+
+
+def _product_routes() -> list[dict]:
+    return yaml.safe_load(PRODUCT_ROUTES.read_text(encoding="utf-8"))["routes"]
 
 
 def _generator_module():
@@ -65,6 +70,26 @@ def test_catalog_has_contiguous_case_ids_and_existing_assets() -> None:
         assert case["summary_zh"].strip()
         assert (ROOT / case["page"]).is_file(), case["page"]
         assert (ROOT / case["example"]).is_file(), case["example"]
+
+
+def test_product_routes_are_separate_from_gt_capability_slugs() -> None:
+    module = _generator_module()
+    data = _catalog()
+    routes = module.load_product_routes()
+    assert routes == _product_routes()
+    assert {route["slug"] for route in routes}.isdisjoint(
+        {case["slug"] for case in data["cases"]}
+    )
+    assert routes == [
+        {
+            "id": "reference_agent_v0_1",
+            "slug": "reference-agent",
+            "page": "site/reference-agent/index.html",
+            "lastmod": "2026-08-07",
+            "changefreq": "weekly",
+            "priority": 0.9,
+        }
+    ]
 
 
 def test_world_state_cycle_titles_are_scenario_first() -> None:
@@ -136,10 +161,13 @@ def test_portal_cards_are_generated_from_catalog() -> None:
 def test_sitemap_and_deployment_slug_list_match_catalog() -> None:
     data = _catalog()
     cases = data["cases"]
+    product_routes = _product_routes()
     namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
     root = ElementTree.parse(SITEMAP).getroot()
     urls = [item.text for item in root.findall("sm:url/sm:loc", namespace)]
     expected_urls = [data["base_url"], f'{data["base_url"]}en/'] + [
+        f'{data["base_url"]}{route["slug"]}/' for route in product_routes
+    ] + [
         f'{data["base_url"]}{case["slug"]}/' for case in cases
     ]
 

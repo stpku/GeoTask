@@ -182,6 +182,7 @@ def test_robots_and_sitemap_cover_portal_and_all_cases() -> None:
     expected = {
         "https://stpku.github.io/GeoTask/",
         "https://stpku.github.io/GeoTask/en/",
+        "https://stpku.github.io/GeoTask/reference-agent/",
     }
     expected.update(
         f"https://stpku.github.io/GeoTask/gt{number:02d}/"

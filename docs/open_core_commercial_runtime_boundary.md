@@ -1,5 +1,7 @@
 # Open Core vs. Commercial Runtime Boundary
 
+> **Historical v0.1 boundary.** Retained for product/patent traceability. Forward planning now follows [`open_core_boundary_v0_2.md`](open_core_boundary_v0_2.md), which reflects the GT42 capability baseline, demand-triggered Enterprise development, and the Contract → Pack → Registry → Partner Validation ecosystem sequence.
+
 ## Principle
 
 **Open Core is not equivalent to open commercial capability. The commercial value resides in runtime orchestration, task planning, governance, domain packs, data integration, and operational workflow.**

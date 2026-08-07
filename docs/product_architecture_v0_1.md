@@ -1,5 +1,7 @@
 # GeoTask Product Architecture v0.1
 
+> **Historical baseline.** This 2025-06 architecture remains preserved for product/patent traceability, but it is **superseded for forward product planning** by [`product_architecture_v0_2.md`](product_architecture_v0_2.md), [`architecture_manifesto_v1.md`](architecture_manifesto_v1.md), and [`productization_roadmap_v0_2.md`](productization_roadmap_v0_2.md). Capability counts and statements such as “Runtime not implemented” below describe the historical baseline, not the GT42 repository state.
+
 ## Product Vision
 
 GeoTask Core provides **lightweight spatial task representation and deterministic verification** for LLMs. GeoTask Runtime provides **commercial orchestration, governance, and model integration**. GeoTask Domain Pack provides **industry-specific object models, rules, and workflow customization**.

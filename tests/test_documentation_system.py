@@ -94,6 +94,17 @@ CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
 CITATION = ROOT / "CITATION.cff"
 PYPROJECT = ROOT / "pyproject.toml"
 ROADMAP = ROOT / "ROADMAP.md"
+ARCHITECTURE_MANIFESTO = ROOT / "docs" / "architecture_manifesto_v1.md"
+REFERENCE_AGENT_SPEC = ROOT / "docs" / "reference" / "reference-agent-v0.1.md"
+LOWA_GT_INTEGRATION_CONTRACT = (
+    ROOT / "docs" / "reference" / "lowa-gt-integration-contract-v0.1.md"
+)
+CROSS_LINE_PROMOTION_GATE = (
+    ROOT / "docs" / "reference" / "cross-line-promotion-gate-v0.1.md"
+)
+PRODUCT_ARCHITECTURE_V02 = ROOT / "docs" / "product_architecture_v0_2.md"
+OPEN_CORE_BOUNDARY_V02 = ROOT / "docs" / "open_core_boundary_v0_2.md"
+PRODUCTIZATION_ROADMAP_V02 = ROOT / "docs" / "productization_roadmap_v0_2.md"
 RELEASE_NOTES_010 = ROOT / "docs" / "release_v0_1_0.md"
 RELEASE_NOTES_011 = ROOT / "docs" / "release_v0_1_1.md"
 RELEASE_NOTES = ROOT / "docs" / "release_v0_3_0.md"
@@ -155,6 +166,13 @@ DOCUMENTS = (
     CONTRIBUTING_ZH,
     CODE_OF_CONDUCT,
     ROADMAP,
+    ARCHITECTURE_MANIFESTO,
+    REFERENCE_AGENT_SPEC,
+    LOWA_GT_INTEGRATION_CONTRACT,
+    CROSS_LINE_PROMOTION_GATE,
+    PRODUCT_ARCHITECTURE_V02,
+    OPEN_CORE_BOUNDARY_V02,
+    PRODUCTIZATION_ROADMAP_V02,
     RELEASE_NOTES_010,
     RELEASE_NOTES_011,
     RELEASE_NOTES,
@@ -267,10 +285,42 @@ def test_chinese_and_english_entrypoints_are_bidirectionally_linked() -> None:
     assert "[简体中文](README.md)" in root_en
     assert "[English](README.en.md)" in docs_zh
     assert "[简体中文](README.md)" in docs_en
-    assert "面向智能体的可验证时空世界模型" in root_zh
-    assert "可验证时空任务协议" in root_zh
-    assert "Explicit and verifiable spatiotemporal world model" in root_en
-    assert "verifiable task protocol" in root_en
+    assert "面向AI智能体的可验证时空任务协议与确定性核心" in root_zh
+    assert "可信世界状态运行时" in root_zh
+    assert "Open verifiable spatiotemporal task protocol and deterministic Core" in root_en
+    assert "trusted world-state runtime" in root_en
+
+
+def test_cross_line_promotion_gate_is_explicit_across_core_strategy_docs() -> None:
+    gate = CROSS_LINE_PROMOTION_GATE.read_text(encoding="utf-8")
+    manifesto = ARCHITECTURE_MANIFESTO.read_text(encoding="utf-8")
+    product_architecture = PRODUCT_ARCHITECTURE_V02.read_text(encoding="utf-8")
+    open_core = OPEN_CORE_BOUNDARY_V02.read_text(encoding="utf-8")
+    integration = LOWA_GT_INTEGRATION_CONTRACT.read_text(encoding="utf-8")
+
+    for fragment in (
+        "GeoTask Core, Lowa Product, and Lowa-GT Integration",
+        "Lowa Product owns business facts",
+        "Lowa-GT Integration validates boundaries and candidates",
+        "GeoTask Core owns generic abstractions",
+        "validation != promotion",
+        "consumption != ownership transfer",
+        "PROMOTE",
+        "KEEP_LOCAL",
+        "DEFER",
+        "REJECT",
+    ):
+        assert fragment in gate
+
+    for text in (manifesto, product_architecture, open_core, integration):
+        assert "Promotion Gate" in text
+        assert "Integration" in text
+        assert "Core" in text
+        assert "Lowa" in text
+
+    assert "second system or industry" in gate
+    assert "live Lowa database" in gate
+    assert "System-of-Record" in gate
 
 
 def test_whitepaper_separates_positioning_implementation_and_roadmap() -> None:

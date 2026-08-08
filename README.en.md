@@ -57,6 +57,7 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
 - [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md)
 - [GT38–GT42 UAV Identity-Governance Composite Case](docs/cookbook/gt38-gt42-uav-identity-governance.md)
+- [v0.4.0 Core Productization and Reference Agent release notes](docs/release_v0_4_0.md)
 - [v0.3.0 Agent Integration release notes](docs/release_v0_3_0.md)
 - [v0.2.0 artifact-contract release notes](docs/release_v0_2_0.md)
 - [Architecture Manifesto v1](docs/architecture_manifesto_v1.md)
@@ -282,7 +283,7 @@ The public repository also includes [`examples/adapters/http_json_runtime_adapte
 
 | Artifact | Current version | Meaning |
 |---|---:|---|
-| GeoTask Core package | `0.3.0` | Python implementation version |
+| GeoTask Core package | `0.4.0` | Python implementation version |
 | GeoTask document schema | `1.0` | YAML/JSON document format |
 | Language specification | `1.0` | Implemented public normative profile |
 | Agent Integration Profile | `0.1` | Model-neutral tool contract, evidence recovery, and recovery-report Artifact |

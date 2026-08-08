@@ -107,7 +107,7 @@ OPEN_CORE_BOUNDARY_V02 = ROOT / "docs" / "open_core_boundary_v0_2.md"
 PRODUCTIZATION_ROADMAP_V02 = ROOT / "docs" / "productization_roadmap_v0_2.md"
 RELEASE_NOTES_010 = ROOT / "docs" / "release_v0_1_0.md"
 RELEASE_NOTES_011 = ROOT / "docs" / "release_v0_1_1.md"
-RELEASE_NOTES = ROOT / "docs" / "release_v0_3_0.md"
+RELEASE_NOTES = ROOT / "docs" / "release_v0_4_0.md"
 CODEOWNERS = ROOT / ".github" / "CODEOWNERS"
 PYPI_WORKFLOW = ROOT / ".github" / "workflows" / "publish-pypi.yml"
 
@@ -1063,7 +1063,7 @@ def test_root_readmes_match_current_capabilities() -> None:
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
     for path in (QUICKSTART_EN, QUICKSTART_ZH):
         text = path.read_text(encoding="utf-8")
-        assert "python -m pip install --no-cache-dir geotask-core==0.3.0" in text
+        assert "python -m pip install --no-cache-dir geotask-core==0.4.0" in text
         assert "from importlib.metadata import version" in text
         assert "geotask --help" in text
         assert "geotask inspect operators" in text
@@ -1246,8 +1246,8 @@ def test_public_preview_release_assets_are_consistent() -> None:
     workflow = yaml.safe_load(PYPI_WORKFLOW.read_text(encoding="utf-8"))
 
     assert citation["cff-version"] == "1.2.0"
-    assert citation["version"] == "0.3.0"
-    assert str(citation["date-released"]) == "2026-07-31"
+    assert citation["version"] == "0.4.0"
+    assert str(citation["date-released"]) == "2026-08-08"
     assert citation["repository-code"] == "https://github.com/stpku/GeoTask"
     assert citation["url"] == "https://stpku.github.io/GeoTask/"
     assert citation["license"] == "MIT"
@@ -1261,8 +1261,8 @@ def test_public_preview_release_assets_are_consistent() -> None:
 
     assert "v0.1：公共预览" in roadmap
     assert "v0.2.0：制品契约" in roadmap
-    assert "v0.3.0：Agent集成（当前稳定）" in roadmap
-    assert "v0.4：Runtime接口、模型适配与对象扩展" in roadmap
+    assert "v0.3.0：Agent集成（上一稳定版）" in roadmap
+    assert "v0.4.0：Core产品化、Reference Agent与Runtime接口（当前稳定）" in roadmap
     assert "v0.5：Verifiable World-State Cycle" in roadmap
     assert "v0.6：验证提供方与生态扩展（进行中）" in roadmap
     assert "Observation v0.1 Artifact" in roadmap
@@ -1271,17 +1271,15 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "Verification Session v0.1 Artifact" in roadmap
     assert "geotask recheck" in roadmap
 
-    assert "GeoTask Core v0.3.0 Agent Integration Release" in release
-    assert "v0.3.0" in release
-    assert "geotask-core==0.3.0" in release
-    assert "geotask.agent-evidence-recovery" in release
-    assert "1149 passed, 1 skipped" in release
-    assert "153 passed" in release
-    assert "272 files" in release
-    assert "eight public Artifacts" in release
-    assert "nine valid Schemas" in release
-    assert "task_reexecuted=true" in release
-    assert "model_guess_used=false" in release
+    assert "GeoTask Core v0.4.0 Core Productization and Reference Agent Release" in release
+    assert "v0.4.0" in release
+    assert "geotask-core==0.4.0" in release
+    assert "Reference Agent v0.1" in release
+    assert "33 Schemas" in release
+    assert "GT42" in release
+    assert "Cross-Line Promotion Gate" in release
+    assert "eligible != authorized != released != sent != executed" in release
+    assert "does not create a release tag" in release
 
     assert "/src/geotask_core/ @stpku" in codeowners
     assert "/.release/ @stpku" in codeowners

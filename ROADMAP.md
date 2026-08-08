@@ -25,7 +25,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 公共Python API——`geotask_core`与`geotask_core.v1`统一导出；
 - 发布身份预检——版本溯源、Git标签、CHANGELOG、README导航与包元数据交叉核对。
 
-### v0.3.0：Agent集成（当前稳定） 🏷️
+### v0.3.0：Agent集成（上一稳定版） 🏷️
 
 - 发布模型无关的Agent Integration Profile，明确Agent、Core与Runtime职责边界；
 - 提供`inspect_artifacts`、`validate_artifact`、`execute_task`和`evaluate_control`四类稳定工具契约；
@@ -35,7 +35,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 保持unknown、blocked和`next_action`的失败关闭语义；
 - 增加Agent生成路径与确定性验证路径的联合测试。
 
-### v0.4：Runtime接口、模型适配与对象扩展（进行中）
+### v0.4.0：Core产品化、Reference Agent与Runtime接口（当前稳定） 🏷️
 
 - 发布Runtime Interface Profile v0.1，定义Descriptor、Request、Response、输入基数、授权、幂等、审计及副作用边界；
 - 提供Runtime Descriptor离线发现、Request无副作用预检和Descriptor/Request/Response三方交换校验；
@@ -144,7 +144,7 @@ GT编号继续作为**Capability Track**，用于证明单项公共能力；它�
 - Public Python API — unified exports from `geotask_core` and `geotask_core.v1`;
 - Release identity preflight — version source, tag, CHANGELOG, README, and metadata cross-check.
 
-### v0.3.0: Agent Integration (current stable) 🏷️
+### v0.3.0: Agent Integration (previous stable) 🏷️
 
 - Publish a model-neutral Agent Integration Profile that separates Agent, Core, and Runtime responsibilities;
 - expose stable contracts for `inspect_artifacts`, `validate_artifact`, `execute_task`, and `evaluate_control`;
@@ -154,7 +154,7 @@ GT编号继续作为**Capability Track**，用于证明单项公共能力；它�
 - preserve fail-closed semantics for unknown, blocked outputs, and `next_action`;
 - add joint tests for Agent generation paths and deterministic verification paths.
 
-### v0.4: Runtime Interfaces, Model Adapters, and Object Extensions (in progress)
+### v0.4.0: Core Productization, Reference Agent, and Runtime Interfaces (current stable) 🏷️
 
 - Publish Runtime Interface Profile v0.1 for Descriptor, Request, Response, input cardinality, authorization, idempotency, audit, and side-effect boundaries;
 - provide offline Runtime Descriptor discovery, side-effect-free Request preflight, and three-way Descriptor/Request/Response exchange validation;

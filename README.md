@@ -57,6 +57,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - [中文术语规范](docs/terminology.zh-CN.md)
 - [GeoTask核心智能体技能](skills/geotask-core/SKILL.md)
 - [VS Code Schema配置示例](.vscode/settings.json)
+- [v0.4.0 Core产品化与Reference Agent发布说明](docs/release_v0_4_0.md)
 - [v0.3.0 Agent集成版发布说明](docs/release_v0_3_0.md)
 - [v0.2.0制品契约版发布说明](docs/release_v0_2_0.md)
 - [架构宣言 v1](docs/architecture_manifesto_v1.md)
@@ -311,7 +312,7 @@ geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json -
 
 | 名称 | 当前版本 | 含义 |
 |---|---:|---|
-| GeoTask Core包 | `0.3.0` | Python实现版本 |
+| GeoTask Core包 | `0.4.0` | Python实现版本 |
 | GeoTask文档Schema | `1.0` | YAML/JSON任务格式版本 |
 | 语言与执行规范 | `1.0` | 当前公共实现规范 |
 | Agent Integration Profile | `0.1` | 模型无关工具契约、补证据恢复与恢复报告Artifact |

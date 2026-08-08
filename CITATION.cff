@@ -6,8 +6,8 @@ authors:
   - family-names: Huang
     given-names: Qian
   - name: GeoTask Contributors
-version: 0.3.0
-date-released: 2026-07-31
+version: 0.4.0
+date-released: 2026-08-08
 repository-code: "https://github.com/stpku/GeoTask"
 url: "https://stpku.github.io/GeoTask/"
 license: MIT

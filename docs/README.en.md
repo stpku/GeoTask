@@ -55,6 +55,7 @@ GeoTask documentation is organized around positioning, implemented contracts, en
 - [GT01–GT20 Cookbook](cookbook/gt01-gt20.md) — progressive examples from distance calculation to evidence governance, object-specific feasibility, emergency dispatch, equipment capability, and high-risk action gating.
 - [GT21–GT28 World-State Cycle Cookbook](cookbook/gt21-gt28.md) — Observation conflict, snapshots, state change, impact, bounded correction, incremental reevaluation, and action eligibility.
 - [GT38–GT42 UAV Identity-Governance Composite Case](cookbook/gt38-gt42-uav-identity-governance.md) — one concrete inspection-drone re-identification story spanning evidence adjudication, merge proposal, proposal approval, change request, and application approval.
+- [v0.4.0 Core Productization and Reference Agent release notes](release_v0_4_0.md)
 - [v0.3.0 Agent Integration release notes](release_v0_3_0.md) — adds generated-task preparation, guarded revision, evidence recovery, four Agent report Artifacts, and unified validation across eight Artifacts and nine Schemas.
 - [v0.2.0 artifact-contract release notes](release_v0_2_0.md) — adds the Artifact Registry, offline Schema Bundle, unified Artifact validation, and validation-report self-validation.
 - [v0.1.1 PyPI hotfix release notes](release_v0_1_1.md) — fixes package/runtime version consistency and records clean-environment installation verification.

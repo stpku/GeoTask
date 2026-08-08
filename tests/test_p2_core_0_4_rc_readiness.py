@@ -40,11 +40,11 @@ def test_current_repository_is_pending_not_failed_for_0_4_rc() -> None:
     checks = {item["name"]: item for item in report["checks"]}
 
     assert report["target_version"] == "0.4.0"
-    assert report["source_version"] == "0.3.0"
+    assert report["source_version"] == "0.4.0"
     assert report["state"] == "pending"
     assert report["ready"] is False
     assert report["failed_count"] == 0
-    assert report["pending_count"] >= 6
+    assert report["pending_count"] >= 5
 
     for name in (
         "release_scope_freeze",
@@ -58,8 +58,8 @@ def test_current_repository_is_pending_not_failed_for_0_4_rc() -> None:
     assert checks["release_candidate_worktree"]["status"] == "pending"
     assert report["worktree_clean"] is False
     assert report["head_commit"] == _head_commit()
-    assert checks["target_version_metadata"]["status"] == "pending"
-    assert checks["release_identity_preflight"]["status"] == "pending"
+    assert checks["target_version_metadata"]["status"] == "passed"
+    assert checks["release_identity_preflight"]["status"] == "passed"
     assert checks["final_wheel_sdist"]["status"] == "pending"
     assert checks["schema_bundle_distribution"]["status"] == "pending"
     assert checks["python_ci_execution_evidence"]["status"] == "pending"
@@ -135,7 +135,7 @@ def test_executed_evidence_is_separate_from_configured_ci(tmp_path: Path) -> Non
     assert report["evidence_commit"] == head_commit
     assert report["state"] == "pending"
     assert report["ready"] is False
-    assert checks["target_version_metadata"]["status"] == "pending"
+    assert checks["target_version_metadata"]["status"] == "passed"
 
 
 def test_mismatched_evidence_commit_is_hard_failure(tmp_path: Path) -> None:

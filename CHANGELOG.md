@@ -4,6 +4,8 @@ All notable public changes to GeoTask Core are documented here.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-08
+
 ### Added
 
 - Add the closed-set Core Baseline staging plan and Core Commit Scope Gate. `.release/core-baseline-manifest.yaml` declares the exact Core/governance pre-RC batch and explicit Integration/internal exclusions; `.release/plan_core_baseline.py` classifies the real dirty workspace, fails on unknown paths, binds every Core path to the current `HEAD` and SHA-256 content, and can emit an exact staging pathspec without touching Git. `.release/verify_core_commit_scope.py --baseline-plan ...` then requires the staged path set, `HEAD`, and every staged blob hash to match that plan exactly while independently rejecting Integration-owned harnesses, Lowa-GT shadow/handoff tests, Integration-specific internal notes and Lowa-GT reports. None of these tools stages, commits, tags, pushes, or publishes.
@@ -220,6 +222,7 @@ All notable public changes to GeoTask Core are documented here.
 - Clean-environment PyPI smoke test passing for installation, CLI help, operator inspection, distribution version `0.1.0`, validation, and minimal deterministic execution.
 - Known issue: the published `0.1.0` artifact reports `geotask_core.__version__ == "0.2.0"`; a patch release is required to align the module attribute with distribution metadata.
 
+[0.4.0]: https://github.com/stpku/GeoTask/releases/tag/v0.4.0
 [0.3.0]: https://github.com/stpku/GeoTask/releases/tag/v0.3.0
 [0.2.0]: https://github.com/stpku/GeoTask/releases/tag/v0.2.0
 [0.1.1]: https://github.com/stpku/GeoTask/releases/tag/v0.1.1

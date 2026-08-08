@@ -69,7 +69,7 @@ def test_current_dirty_non_target_repository_collects_pending_only() -> None:
     assert set(payload["python_ci"].values()) == {"pending"}
     assert payload["public_export"] == {"verification": "pending", "scan": "pending"}
     assert payload["reference_agent_replay"] == "pending"
-    assert payload["collector"]["source_version"] == "0.3.0"
+    assert payload["collector"]["source_version"] == "0.4.0"
     assert payload["collector"]["worktree_clean"] is False
     assert payload["collector"]["release_candidate_eligible"] is False
 

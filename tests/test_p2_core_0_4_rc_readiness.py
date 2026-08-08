@@ -39,6 +39,10 @@ def test_ci_runs_on_release_branches_for_rc_evidence() -> None:
 
     assert 'branches: [main, "release/**"]' in text
     assert "--record-python-ci" in text
+    assert "python .release/scan_public_export.py ." not in text
+    assert "python .release/verify_public_export.py ." not in text
+    assert "release_public.py /tmp/geotask-public-scan --clean --skip-tests" in text
+    assert "release_public.py /tmp/geotask-public-boundary --clean --skip-tests" in text
 
 
 def test_dirty_release_candidate_is_pending_not_failed_for_0_4_rc(monkeypatch) -> None:

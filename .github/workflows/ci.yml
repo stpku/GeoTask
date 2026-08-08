@@ -365,7 +365,8 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install pyyaml
-      - run: python .release/scan_public_export.py .
+      - run: python .release/release_public.py /tmp/geotask-public-scan --clean --skip-tests
+      - run: python .release/scan_public_export.py /tmp/geotask-public-scan
 
   boundary:
     runs-on: ubuntu-latest
@@ -375,4 +376,5 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install pyyaml
-      - run: python .release/verify_public_export.py .
+      - run: python .release/release_public.py /tmp/geotask-public-boundary --clean --skip-tests
+      - run: python .release/verify_public_export.py /tmp/geotask-public-boundary

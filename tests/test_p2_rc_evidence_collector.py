@@ -57,8 +57,14 @@ def _generated_shard(commit: str, *, python_minor: str | None = None) -> dict:
     return {"rc_evidence": payload}
 
 
-def test_current_dirty_non_target_repository_collects_pending_only() -> None:
+def test_dirty_target_repository_collects_pending_only(monkeypatch) -> None:
     collector = _load(COLLECTOR, "collect_rc_evidence")
+    head_commit = _head_commit()
+    monkeypatch.setattr(
+        collector,
+        "_git_state",
+        lambda _root, **_kwargs: (head_commit, False, f"head={head_commit}; dirty_paths=1"),
+    )
 
     payload = collector.collect_evidence(ROOT, target_version="0.4.0")["rc_evidence"]
 

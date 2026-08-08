@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 AUDITOR = ROOT / ".release" / "verify_rc_readiness.py"
 DOC = ROOT / "docs" / "reference" / "core-0.4-rc-readiness-v0.1.md"
 TEMPLATE = ROOT / "docs" / "reference" / "core-0.4-rc-evidence-template.json"
+CI_WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
 
 
 def _load_auditor():
@@ -33,8 +34,21 @@ def _head_commit() -> str:
     ).stdout.strip()
 
 
-def test_current_repository_is_pending_not_failed_for_0_4_rc() -> None:
+def test_ci_runs_on_release_branches_for_rc_evidence() -> None:
+    text = CI_WORKFLOW.read_text(encoding="utf-8")
+
+    assert 'branches: [main, "release/**"]' in text
+    assert "--record-python-ci" in text
+
+
+def test_dirty_release_candidate_is_pending_not_failed_for_0_4_rc(monkeypatch) -> None:
     auditor = _load_auditor()
+    head_commit = _head_commit()
+    monkeypatch.setattr(
+        auditor,
+        "_git_state",
+        lambda _root: (head_commit, False, f"head={head_commit}; dirty_paths=1"),
+    )
 
     report = auditor.verify_rc_readiness(ROOT)["rc_readiness"]
     checks = {item["name"]: item for item in report["checks"]}
@@ -57,7 +71,7 @@ def test_current_repository_is_pending_not_failed_for_0_4_rc() -> None:
 
     assert checks["release_candidate_worktree"]["status"] == "pending"
     assert report["worktree_clean"] is False
-    assert report["head_commit"] == _head_commit()
+    assert report["head_commit"] == head_commit
     assert checks["target_version_metadata"]["status"] == "passed"
     assert checks["release_identity_preflight"]["status"] == "passed"
     assert checks["final_wheel_sdist"]["status"] == "pending"

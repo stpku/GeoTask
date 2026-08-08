@@ -289,10 +289,11 @@ jobs:
           path: /tmp/geotask-core-rc-dist
       - name: Merge exact-commit RC evidence
         run: python .release/collect_rc_evidence.py merge /tmp/geotask-rc-evidence/rc-evidence-3.10.json /tmp/geotask-rc-evidence/rc-evidence-3.11.json /tmp/geotask-rc-evidence/rc-evidence-3.12.json /tmp/geotask-rc-evidence/rc-evidence-3.13.json /tmp/geotask-rc-evidence/rc-evidence-build.json --output /tmp/geotask-rc-evidence/rc-evidence.json
-      - name: Audit merged RC readiness without treating pending as CI failure
+      - name: Audit merged RC readiness
         shell: bash
         run: |
           python - <<'PY'
+          import os
           import pathlib
           import subprocess
           import sys
@@ -311,9 +312,13 @@ jobs:
           ]
           result = subprocess.run(command, text=True, capture_output=True, check=False)
           pathlib.Path("/tmp/geotask-rc-evidence/rc-readiness.json").write_text(result.stdout, encoding="utf-8")
+          if result.stdout:
+              sys.stdout.write(result.stdout)
           if result.stderr:
               sys.stderr.write(result.stderr)
-          if result.returncode not in (0, 2):
+          release_branch = os.environ.get("GITHUB_REF", "").startswith("refs/heads/release/")
+          allowed_exit_codes = (0,) if release_branch else (0, 2)
+          if result.returncode not in allowed_exit_codes:
               raise SystemExit(result.returncode)
           PY
       - name: Upload merged RC evidence and readiness report

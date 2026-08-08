@@ -45,6 +45,9 @@ def test_ci_runs_on_release_branches_for_rc_evidence() -> None:
     assert "release_public.py /tmp/geotask-public-boundary --clean --skip-tests" in text
     assert 'report["checked_count"] == 28' not in text
     assert "len(BUNDLED_SCHEMA_IDS)" in text
+    assert 'startswith("refs/heads/release/")' in text
+    assert "allowed_exit_codes = (0,) if release_branch else (0, 2)" in text
+    assert "sys.stdout.write(result.stdout)" in text
 
 
 def test_dirty_release_candidate_is_pending_not_failed_for_0_4_rc(monkeypatch) -> None:

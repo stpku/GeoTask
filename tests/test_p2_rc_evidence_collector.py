@@ -211,7 +211,9 @@ def test_public_ci_wires_exact_commit_evidence_shards_and_merge() -> None:
         "needs: [test, rc-build-evidence]",
         "collect_rc_evidence.py merge /tmp/geotask-rc-evidence/rc-evidence-3.10.json",
         "verify_rc_readiness.py",
-        "result.returncode not in (0, 2)",
+        'startswith("refs/heads/release/")',
+        "allowed_exit_codes = (0,) if release_branch else (0, 2)",
+        "result.returncode not in allowed_exit_codes",
         "name: geotask-rc-evidence-merged",
     ):
         assert fragment in workflow

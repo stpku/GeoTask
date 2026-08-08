@@ -1,5 +1,6 @@
 """CLI tests for public-safe inspection commands."""
 
+import json
 import os
 import subprocess
 import sys
@@ -53,5 +54,38 @@ def test_cli_inspect_unknown_operator_has_nonzero_clear_error():
     assert result.returncode != 0
     assert "unsupported_operator" in combined
     assert "bogus_operator" in combined
+    assert "Traceback" not in combined
+
+
+def test_cli_inspect_operators_collection_supports_json_registry_output():
+    result = _run_cli("inspect", "operators", "--format", "json")
+
+    assert result.returncode == 0, result.stderr or result.stdout
+    payload = json.loads(result.stdout)
+    operators = payload["operators"]
+    assert len(operators) == 14
+    assert [item["name"] for item in operators][:3] == [
+        "distance_2d",
+        "line_intersects_rect",
+        "multi_polyline_intersects_rect",
+    ]
+    assert all(item["deterministic"] is True for item in operators)
+
+
+def test_cli_inspect_single_operator_supports_json_after_or_before_id():
+    after = _run_cli("inspect", "operators", "distance_2d", "--format", "json")
+    before = _run_cli("inspect", "operators", "--format", "json", "distance_2d")
+
+    assert after.returncode == before.returncode == 0
+    assert json.loads(after.stdout) == json.loads(before.stdout)
+    assert json.loads(after.stdout)["operator"]["name"] == "distance_2d"
+
+
+def test_cli_inspect_operators_rejects_bad_format_without_traceback():
+    result = _run_cli("inspect", "operators", "--format", "xml")
+
+    combined = result.stdout + result.stderr
+    assert result.returncode != 0
+    assert "unsupported_inspect_operators_format" in combined
     assert "Traceback" not in combined
 

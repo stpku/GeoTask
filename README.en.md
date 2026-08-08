@@ -2,9 +2,11 @@
 
 [简体中文](README.md) | **English**
 
-**Explicit and verifiable spatiotemporal world model for AI agents.**
+**Open verifiable spatiotemporal task protocol and deterministic Core for AI agents.**
 
-> Let foundation models understand the world; let GeoTask verify and maintain it.
+> **Current:** turn observations, evidence, world state and action conditions into computable, updatable and traceable machine contracts.  
+> **Near term:** deliver a Reference Agent and developer product toward a trusted world-state runtime.  
+> **Long term:** become a reusable trusted task infrastructure layer for high-consequence physical-world agents.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
@@ -55,8 +57,18 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
 - [GT21–GT28 World-State Cycle Cookbook](docs/cookbook/gt21-gt28.md)
 - [GT38–GT42 UAV Identity-Governance Composite Case](docs/cookbook/gt38-gt42-uav-identity-governance.md)
+- [v0.4.0 Core Productization and Reference Agent release notes](docs/release_v0_4_0.md)
 - [v0.3.0 Agent Integration release notes](docs/release_v0_3_0.md)
 - [v0.2.0 artifact-contract release notes](docs/release_v0_2_0.md)
+- [Architecture Manifesto v1](docs/architecture_manifesto_v1.md)
+- [Reference Agent v0.1 specification](docs/reference/reference-agent-v0.1.md)
+- [Run the Reference Agent: fictional facility assessment update](examples/reference_agent/facility_assessment_update/README.md)
+- [Reference Agent end-to-end tutorial](docs/tutorials/reference-agent.md)
+- [Verification Quality Benchmark v0.1](docs/reference/verification-quality-benchmark-v0.1.md)
+- [GeoTask ↔ Lowa-GT Integration Contract v0.1](docs/reference/lowa-gt-integration-contract-v0.1.md)
+- [Cross-Line Promotion Gate v0.1](docs/reference/cross-line-promotion-gate-v0.1.md)
+- [Core Distribution Boundary v0.1](docs/reference/core-distribution-boundary-v0.1.md)
+- [Productization Roadmap v0.2](docs/productization_roadmap_v0_2.md)
 - [Public roadmap](ROADMAP.md)
 - [Documentation index](docs/README.en.md)
 
@@ -271,7 +283,7 @@ The public repository also includes [`examples/adapters/http_json_runtime_adapte
 
 | Artifact | Current version | Meaning |
 |---|---:|---|
-| GeoTask Core package | `0.3.0` | Python implementation version |
+| GeoTask Core package | `0.4.0` | Python implementation version |
 | GeoTask document schema | `1.0` | YAML/JSON document format |
 | Language specification | `1.0` | Implemented public normative profile |
 | Agent Integration Profile | `0.1` | Model-neutral tool contract, evidence recovery, and recovery-report Artifact |

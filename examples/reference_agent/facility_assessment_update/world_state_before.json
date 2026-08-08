@@ -1,0 +1,130 @@
+{
+  "world_state": {
+    "schema_id": "https://stpku.github.io/GeoTask/schemas/geotask-world-state-v0.1.schema.json",
+    "schema_version": "0.1",
+    "world_state_id": "reference-agent-facility-assessment-state",
+    "revision": 1,
+    "as_of": "2026-08-07T08:00:00+08:00",
+    "materialized_at": "2026-08-07T08:00:05+08:00",
+    "observation_refs": [],
+    "evidence_refs": [
+      "registry:fictional/facility/FAC-001",
+      "map:fictional/obstacle/baseline-v4",
+      "assessment:fictional/FAC-001/v4"
+    ],
+    "objects": [
+      {
+        "id": "facility-FAC-001",
+        "type": "low_altitude_facility",
+        "verification_status": "verified",
+        "observation_refs": [],
+        "evidence_refs": ["registry:fictional/facility/FAC-001"],
+        "attributes": [
+          {
+            "name": "facility_id",
+            "value": "FAC-001",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/facility/FAC-001"]
+          },
+          {
+            "name": "position_xy",
+            "value": {"x": 0, "y": 0, "unit": "meter"},
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["registry:fictional/facility/FAC-001"]
+          },
+          {
+            "name": "min_obstacle_distance_m",
+            "value": 50,
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["assessment:fictional/FAC-001/v4"]
+          }
+        ]
+      },
+      {
+        "id": "mapped-obstacle-01",
+        "type": "mapped_obstacle",
+        "verification_status": "verified",
+        "observation_refs": [],
+        "evidence_refs": ["map:fictional/obstacle/baseline-v4"],
+        "attributes": [
+          {
+            "name": "position_xy",
+            "value": {"x": 80, "y": 0, "unit": "meter"},
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["map:fictional/obstacle/baseline-v4"]
+          }
+        ]
+      },
+      {
+        "id": "assessment-FAC-001",
+        "type": "facility_assessment",
+        "verification_status": "verified",
+        "observation_refs": [],
+        "evidence_refs": ["assessment:fictional/FAC-001/v4"],
+        "attributes": [
+          {
+            "name": "obstacle_distance_m",
+            "value": 80,
+            "basis": "derived",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["assessment:fictional/FAC-001/v4"]
+          },
+          {
+            "name": "obstacle_clearance_pass",
+            "value": true,
+            "basis": "derived",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["assessment:fictional/FAC-001/v4"]
+          },
+          {
+            "name": "accessibility_score",
+            "value": 84,
+            "basis": "derived",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["assessment:fictional/FAC-001/v4"]
+          },
+          {
+            "name": "service_capability_score",
+            "value": 78,
+            "basis": "derived",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["assessment:fictional/FAC-001/v4"]
+          },
+          {
+            "name": "report_version",
+            "value": "report-v4",
+            "basis": "external_assertion",
+            "verification_status": "verified",
+            "observation_refs": [],
+            "evidence_refs": ["assessment:fictional/FAC-001/v4"]
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "id": "facility-has-assessment",
+        "subject_ref": "facility-FAC-001",
+        "predicate": "has_assessment",
+        "object_ref": "assessment-FAC-001",
+        "value": true,
+        "basis": "external_assertion",
+        "verification_status": "verified",
+        "observation_refs": [],
+        "evidence_refs": ["assessment:fictional/FAC-001/v4"]
+      }
+    ]
+  }
+}

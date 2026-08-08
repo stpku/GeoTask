@@ -1,0 +1,20 @@
+{
+  "rc_evidence": {
+    "schema_version": "0.1",
+    "generated_by": "<run .release/collect_rc_evidence.py; do not hand-edit into final evidence>",
+    "evidence_kind": "<collector_shard or collector_merged>",
+    "target_version": "0.4.0",
+    "commit": "<exact-release-candidate-commit-sha>",
+    "python_ci": {
+      "3.10": "pending",
+      "3.11": "pending",
+      "3.12": "pending",
+      "3.13": "pending"
+    },
+    "public_export": {
+      "verification": "pending",
+      "scan": "pending"
+    },
+    "reference_agent_replay": "pending"
+  }
+}

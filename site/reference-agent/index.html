@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GeoTask Reference Agent｜一条新证据如何安全更新设施评估？</title>
+  <meta name="description" content="GeoTask P1 Reference Agent：用虚构低空设施评估更新场景展示新证据、World State、Discrepancy、Correction、Impact、Control与报告发布门禁的完整闭环。">
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:#17212b;background:#f5f7f6;line-height:1.65;--navy:#123047;--teal:#18766e;--line:#d7e0e1;--soft:#edf7f4;--warn:#8b5e12}*{box-sizing:border-box}body{margin:0}.shell{width:min(1120px,calc(100% - 32px));margin:auto}header{background:#fff;border-bottom:1px solid var(--line)}.nav{min-height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:850;color:var(--navy);text-decoration:none}.nav a{color:#334;text-decoration:none;margin-left:18px}.hero{padding:72px 0 52px;background:linear-gradient(145deg,#fff,#edf7f4)}.eyebrow{font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--teal)}h1{font-size:clamp(36px,5.6vw,64px);line-height:1.08;max-width:1000px;margin:12px 0 22px;color:var(--navy)}.lead{font-size:20px;max-width:900px;color:#40515d}.statement{margin-top:28px;padding:20px;border-left:5px solid var(--teal);background:#fff;font-size:20px;font-weight:800}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.button{display:inline-block;padding:11px 17px;border-radius:10px;text-decoration:none;font-weight:800;border:1px solid var(--navy)}.primary{background:var(--navy);color:#fff}.secondary{background:#fff;color:var(--navy)}section{padding:50px 0}.section-title{font-size:32px;margin:0 0 10px;color:var(--navy)}.soft{background:var(--soft)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px}.card strong{display:block;font-size:21px;color:var(--navy)}.state{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-weight:800;color:var(--teal)}.flow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:24px;align-items:stretch}.step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}.step small{display:block;color:var(--teal);font-weight:900}.step b{display:block;margin-top:5px;color:var(--navy)}.scenario{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:20px}.scenario div{background:#fff;padding:13px}.scenario .head{font-weight:850;background:#f4f7f7;color:var(--navy)}pre{overflow:auto;background:#111c24;color:#eaf4f3;border-radius:14px;padding:22px;font-size:14px}.note{padding:20px;border:1px solid #d5b36a;border-radius:14px;background:#fff9e9;color:#5b4718}.footer{background:#0d202c;color:#d7e3e7;padding:38px 0}.footer a{color:#fff}@media(max-width:950px){.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.scenario{grid-template-columns:1fr}.nav nav{display:none}}
+  </style>
+</head>
+<body>
+<header><div class="shell nav"><a class="brand" href="../">GeoTask · Reference Agent</a><nav><a href="../">项目首页</a><a href="https://github.com/stpku/GeoTask">GitHub</a></nav></div></header>
+<main>
+  <section class="hero"><div class="shell">
+    <div class="eyebrow">P1 PRODUCT TRACK · REFERENCE AGENT v0.1</div>
+    <h1>一条新证据到达后，AI到底应该改什么，又不该改什么？</h1>
+    <p class="lead">某虚构低空设施原报告认为最近障碍物距离80米。新地图证据到达后，GeoTask不直接“刷新答案”，而是先更新世界状态、暴露旧评估已经过期的依赖、限定重算范围，再通过Control决定报告是否具备更新条件。</p>
+    <div class="statement">新证据 ≠ 新结论 ≠ 报告已发布。<br><code>eligible ≠ refreshed ≠ executed</code></div>
+    <div class="actions"><a class="button primary" href="https://github.com/stpku/GeoTask/tree/main/examples/reference_agent/facility_assessment_update">查看可运行代码</a><a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/docs/reference/reference-agent-v0.1.md">阅读规格</a></div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">不是GT43，而是第一次把已有能力串成一个产品闭环</h2>
+    <div class="flow">
+      <article class="step"><small>REV 1</small><b>基线状态</b><span>障碍物80m；旧评估有效。</span></article>
+      <article class="step"><small>OBSERVATION</small><b>新证据</b><span>地图给出新的障碍物位置。</span></article>
+      <article class="step"><small>REV 2</small><b>只更新事实</b><span>障碍物位置变化；旧评估故意不跟着改。</span></article>
+      <article class="step"><small>DISCREPANCY</small><b>发现旧结论</b><span>当前仍写80m，但确定性重算已不一致。</span></article>
+      <article class="step"><small>IMPACT</small><b>限定影响</b><span>只影响距离、净空、对应报告章节。</span></article>
+      <article class="step"><small>REV 3</small><b>有限重算</b><span>更新两项评估；其他评分继续复用。</span></article>
+      <article class="step"><small>CONTROL</small><b>行动门禁</b><span>满足条件只表示报告更新eligible。</span></article>
+    </div>
+  </div></section>
+
+  <section class="soft"><div class="shell">
+    <h2 class="section-title">五种情况，同一套失败关闭语义</h2>
+    <div class="scenario">
+      <div class="head">场景</div><div class="head">Evidence</div><div class="head">Verification</div><div class="head">Report</div>
+      <div>Fresh / 70m</div><div class="state">verified</div><div class="state">satisfied</div><div>eligible，未发布</div>
+      <div>Missing</div><div class="state">missing</div><div class="state">unverifiable</div><div>blocked + Evidence Request</div>
+      <div>Conflict / 70m vs 30m</div><div class="state">conflicted</div><div class="state">conflicted</div><div>blocked，不发明优先级</div>
+      <div>Stale</div><div class="state">stale</div><div class="state">unverifiable</div><div>blocked + Evidence Request</div>
+      <div>Fresh / 30m</div><div class="state">verified</div><div class="state">contradicted</div><div>blocked，进入人工处理</div>
+    </div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">真正复用的是现有公共Artifact，而不是另写一套Demo逻辑</h2>
+    <div class="grid">
+      <article class="card"><strong>Observation + World State</strong><p>新证据先进入revision 2，只改变障碍物位置。旧评估继续保留，因此系统可以明确知道“什么事实变了、什么结论还没重算”。</p></article>
+      <article class="card"><strong>Discrepancy + Correction + Impact</strong><p>注册制品以精确字节绑定表达旧80m评估与新确定性距离之间的差异、允许修改的路径以及有向影响链。</p></article>
+      <article class="card"><strong>Control Evaluation</strong><p>证据有效、距离条件满足、人工复核通过后，只把<code>assessment_refresh</code>和<code>report_refresh</code>标记为eligible；现实写入仍由外部系统负责。</p></article>
+    </div>
+  </div></section>
+
+  <section class="soft"><div class="shell">
+    <h2 class="section-title">为什么不能“整站重新算一遍”</h2>
+    <pre>affected:
+  mapped-obstacle-01.position_xy
+  → obstacle_distance_m
+  → obstacle_clearance_pass
+  → report-v4.safety.obstacle_clearance
+
+reused:
+  accessibility_score = 84
+  service_capability_score = 78
+  report-v4.operator_summary
+
+automatic_global_recompute = false</pre>
+    <div class="note"><strong>边界：</strong>Reference Agent没有自动发现全世界的依赖。影响图来自显式、有限、可验证的依赖声明。第三方或行业系统如果拥有更完整的依赖知识，可以提供更丰富的图，但不能绕过验证层自行扩大结论。</div>
+  </div></section>
+
+  <section><div class="shell">
+    <h2 class="section-title">在本地重放</h2>
+    <pre>python3 examples/reference_agent/facility_assessment_update/replay.py \
+  --scenario success \
+  --check-expected
+
+# 其他固定场景
+--scenario missing_evidence
+--scenario conflicting_evidence
+--scenario stale_evidence
+--scenario contradicted</pre>
+    <p>相同固定输入应产生相同结果与<code>replay_fingerprint</code>。示例全部使用虚构数据，不访问Lowa-GT生产库、不发布报告、不执行现实动作。</p>
+  </div></section>
+</main>
+<footer class="footer"><div class="shell">GeoTask Reference Agent v0.1 · P1 Product Track。GT案例证明单项Capability；Reference Agent证明这些Capability能否组成别人真正可以理解、运行和修改的完整闭环。</div></footer>
+</body>
+</html>

@@ -3,7 +3,9 @@
 
 The catalog is the single source of truth for cross-case metadata. This tool
 updates the portal case section, sitemap, deployment slug list, and a compact
-JSON navigation index. Individual case pages remain hand-authored experiences.
+JSON navigation index. Product Track routes are declared separately in
+``site/product-routes.yaml`` so they can enter the sitemap without becoming GT
+cases. Individual case and product pages remain hand-authored experiences.
 """
 
 from __future__ import annotations
@@ -20,6 +22,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "cases" / "catalog.yaml"
+PRODUCT_ROUTES_PATH = ROOT / "site" / "product-routes.yaml"
 PORTAL_PATH = ROOT / "site" / "index.html"
 SITEMAP_PATH = ROOT / "site" / "sitemap.xml"
 SLUGS_PATH = ROOT / "site" / "cases.txt"
@@ -62,6 +65,54 @@ def load_catalog() -> dict[str, Any]:
         raise CatalogError("catalog root must be a mapping")
     validate_catalog(data)
     return data
+
+
+def load_product_routes() -> list[dict[str, Any]]:
+    if not PRODUCT_ROUTES_PATH.is_file():
+        return []
+    data = yaml.safe_load(PRODUCT_ROUTES_PATH.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise CatalogError("product-routes root must be a mapping")
+    routes = data.get("routes")
+    if not isinstance(routes, list):
+        raise CatalogError("product-routes.routes must be a list")
+
+    seen_ids: set[str] = set()
+    seen_slugs: set[str] = set()
+    validated: list[dict[str, Any]] = []
+    for index, raw in enumerate(routes):
+        if not isinstance(raw, dict):
+            raise CatalogError(f"product-routes.routes[{index}] must be a mapping")
+        route = dict(raw)
+        for field in ("id", "slug", "page", "lastmod", "changefreq"):
+            if not isinstance(route.get(field), str) or not route[field].strip():
+                raise CatalogError(
+                    f"product-routes.routes[{index}].{field} must be a non-empty string"
+                )
+        route_id = route["id"]
+        slug = route["slug"]
+        if route_id in seen_ids:
+            raise CatalogError(f"duplicate product route id {route_id!r}")
+        if slug in seen_slugs:
+            raise CatalogError(f"duplicate product route slug {slug!r}")
+        if "/" in slug or slug in {".", "..", "en"}:
+            raise CatalogError(f"invalid product route slug {slug!r}")
+        priority = route.get("priority")
+        if isinstance(priority, bool) or not isinstance(priority, (int, float)):
+            raise CatalogError(
+                f"product-routes.routes[{index}].priority must be a number"
+            )
+        if not 0.0 <= float(priority) <= 1.0:
+            raise CatalogError(
+                f"product-routes.routes[{index}].priority must be between 0 and 1"
+            )
+        page_path = ROOT / route["page"]
+        if not page_path.is_file():
+            raise CatalogError(f"product route page does not exist: {route['page']}")
+        seen_ids.add(route_id)
+        seen_slugs.add(slug)
+        validated.append(route)
+    return validated
 
 
 def validate_catalog(data: dict[str, Any]) -> None:
@@ -259,7 +310,9 @@ def render_portal(data: dict[str, Any], current: str) -> str:
     return updated
 
 
-def render_sitemap(data: dict[str, Any]) -> str:
+def render_sitemap(
+    data: dict[str, Any], product_routes: list[dict[str, Any]]
+) -> str:
     base_url = str(data["base_url"]).rstrip("/") + "/"
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -267,6 +320,10 @@ def render_sitemap(data: dict[str, Any]) -> str:
         f'  <url><loc>{base_url}</loc><lastmod>{data["portal_lastmod"]}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>',
         f'  <url><loc>{base_url}en/</loc><lastmod>{data["portal_lastmod"]}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>',
     ]
+    for route in product_routes:
+        lines.append(
+            f'  <url><loc>{base_url}{route["slug"]}/</loc><lastmod>{route["lastmod"]}</lastmod><changefreq>{route["changefreq"]}</changefreq><priority>{float(route["priority"]):.1f}</priority></url>'
+        )
     for case in data["cases"]:
         lines.append(
             f'  <url><loc>{base_url}{case["slug"]}/</loc><lastmod>{case["lastmod"]}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>'
@@ -332,9 +389,16 @@ def render_case_page(current: str) -> str:
 
 
 def generated_outputs(data: dict[str, Any]) -> dict[Path, str]:
+    product_routes = load_product_routes()
+    case_slugs = {case["slug"] for case in data["cases"]}
+    overlap = case_slugs & {route["slug"] for route in product_routes}
+    if overlap:
+        raise CatalogError(
+            f"product route slugs must not overlap GT case slugs: {sorted(overlap)}"
+        )
     outputs = {
         PORTAL_PATH: render_portal(data, PORTAL_PATH.read_text(encoding="utf-8")),
-        SITEMAP_PATH: render_sitemap(data),
+        SITEMAP_PATH: render_sitemap(data, product_routes),
         SLUGS_PATH: render_slugs(data),
         NAVIGATION_PATH: render_navigation(data),
     }

@@ -1,0 +1,7 @@
+routes:
+  - id: reference_agent_v0_1
+    slug: reference-agent
+    page: site/reference-agent/index.html
+    lastmod: "2026-08-07"
+    changefreq: weekly
+    priority: 0.9

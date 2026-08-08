@@ -1,0 +1,29 @@
+{
+  "scenario": {
+    "id": "contradicted",
+    "evaluation_time": "2026-08-07T09:00:00+08:00",
+    "materialized_at": "2026-08-07T09:00:05+08:00",
+    "min_obstacle_distance_m": 50,
+    "human_review_approved": true,
+    "evidence": [
+      {
+        "observation_id": "obs-map-obstacle-contradicted",
+        "source_reference": "map:fictional/obstacle/update-contradicted-v5",
+        "source_version": "5.0",
+        "producer_id": "fictional-map-provider",
+        "observed_at": "2026-08-07T08:57:00+08:00",
+        "received_at": "2026-08-07T08:57:05+08:00",
+        "valid_until": "2026-08-07T10:00:00+08:00",
+        "coordinates": [30, 0]
+      }
+    ],
+    "expected": {
+      "verification_state": "contradicted",
+      "control_state": "blocked",
+      "distance_m": 30.0,
+      "report_update_eligible": false,
+      "successor_materialized": true,
+      "evidence_request_required": false
+    }
+  }
+}

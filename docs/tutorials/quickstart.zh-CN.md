@@ -27,7 +27,7 @@ Windows PowerShell：
 从PyPI安装固定版本，并检查CLI与算子注册表：
 
 ```bash
-python -m pip install --no-cache-dir geotask-core==0.3.0
+python -m pip install --no-cache-dir geotask-core==0.4.0
 geotask --help
 geotask inspect operators
 ```
@@ -38,11 +38,11 @@ geotask inspect operators
 python -c "from importlib.metadata import version; print(version('geotask-core'))"
 ```
 
-预期输出为`0.3.0`。
+预期输出为`0.4.0`。
 
 ## 2. 检查安装结果
 
-`geotask --help`应列出`validate`、`run`、`inspect`、`normalize`和`eval`等命令；`geotask inspect operators`应列出当前公共Core的六个确定性算子。完成这一步后即可创建并运行自己的GeoTask文件。
+`geotask --help`应列出`validate`、`run`、`inspect`、`normalize`和`eval`等命令；`geotask inspect operators`应列出当前公共Core注册的14个确定性算子。完成这一步后即可创建并运行自己的GeoTask文件。
 
 ## 3. 自己创建一个任务
 

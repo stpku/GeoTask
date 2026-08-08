@@ -1,0 +1,98 @@
+geotask:
+  id: "reference-agent-facility-assessment-update"
+  name: "Reference Agent Facility Assessment Update"
+  description: "Re-evaluate one fictional facility obstacle-clearance dependency without publishing or executing production actions."
+  schema_version: "1.0"
+  language: "en"
+  domain: "low_altitude_reference"
+
+space:
+  crs:
+    type: "local_cartesian"
+    identifier: "fictional_facility_xy_m"
+  axes:
+    x: "east"
+    y: "north"
+  horizontal_unit: "meter"
+  coordinate_order: ["x", "y"]
+  precision:
+    decimal_places: 3
+    tolerance: 0.01
+
+objects:
+  facility_anchor:
+    type: "point"
+    coordinates: [0, 0]
+  mapped_obstacle:
+    type: "point"
+    coordinates: [80, 0]
+
+operator_set:
+  - distance_2d
+
+tasks:
+  - id: "recheck_obstacle_clearance"
+    family: "facility_assessment_update"
+    goal: "Recompute only the obstacle-clearance dependency after accepted evidence changes the mapped obstacle position."
+    assertions:
+      - id: "obstacle_distance_m"
+        operator: "distance_2d"
+        object_refs: ["facility_anchor", "mapped_obstacle"]
+        expected_type: "number"
+        unit: "meter"
+
+execution:
+  mode: "local_only"
+  steps:
+    - id: "recompute_obstacle_distance"
+      executor: "local"
+      assertion_refs: ["obstacle_distance_m"]
+      depends_on: []
+
+output_contract:
+  format: "structured"
+  required_fields: ["obstacle_distance_m"]
+  allow_additional_fields: true
+
+extensions:
+  extension_profile:
+    id: "geotask.control"
+    version: "1.0"
+  application_context:
+    scenario: "fictional_low_altitude_facility_assessment_update"
+    facility_id: "FAC-001"
+    decision_question: "Can the obstacle-clearance assessment and report section be refreshed from the current verified evidence?"
+  evidence_request:
+    id: "verify-facility-obstacle-evidence"
+    trigger: "obstacle_distance_m"
+    trigger_status: "unverifiable"
+    reason: "obstacle_evidence_missing_stale_or_conflicted"
+    required_fields:
+      - "source_reference"
+      - "producer_id"
+      - "observed_at"
+      - "valid_until"
+      - "obstacle_coordinates"
+      - "source_version"
+    blocked_outputs:
+      - "assessment_refresh"
+      - "report_refresh"
+    resume_when: "evidence_verified == true"
+    next_action: "request_or_resolve_obstacle_evidence"
+  task_gate:
+    status: "blocked_pending_verified_evidence_and_review"
+    selected_action: "hold_report_and_reverify"
+    rejected_actions:
+      - "publish_report_from_unverified_evidence"
+      - "infer_missing_evidence_as_safe"
+      - "refresh_unrelated_assessment_sections"
+    blocked_outputs:
+      - "assessment_refresh"
+      - "report_refresh"
+    required_controls:
+      - "verify_obstacle_evidence"
+      - "check_obstacle_clearance_threshold"
+      - "obtain_human_review"
+    resume_when: "obstacle_distance_m >= min_obstacle_distance_m AND evidence_verified == true AND human_review_approved == true"
+    next_action: "request_evidence_or_human_review_and_reverify"
+    expected_status: "verified_hold_until_all_conditions_satisfied"

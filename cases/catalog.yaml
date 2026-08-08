@@ -1,6 +1,6 @@
 catalog_version: "1.0"
 base_url: https://stpku.github.io/GeoTask/
-portal_lastmod: "2026-08-05"
+portal_lastmod: "2026-08-07"
 handbook:
   path: docs/README.md
   label_zh: 查看中文文档导航 →

@@ -2,14 +2,26 @@
 
 **简体中文** | [English](README.en.md)
 
-GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、扩展状态演化”四类组织。第一次接触GeoTask，建议先阅读白皮书理解“显式、可验证时空世界模型”的本体定位，再通过中文快速入门和42个公开可验证示例掌握当前公共核心已经实现的世界模型基础与能力边界。这42个参考例对应38个场景入口，其中GT38—GT42共同构成一个五阶段无人机身份治理复合案例。
+GeoTask文档按照“理解定位、开始使用、查阅规范、构建端到端闭环、扩展状态演化”组织。当前公共事实是：GeoTask是面向AI智能体的可验证时空任务协议与确定性Core；“可信世界状态运行时”是近期产品目标，而不是把尚未完成的生产能力当成现状。42个公开参考例用于证明Capability Track，其中GT38—GT42共同构成五阶段无人机身份治理复合案例；产品成熟度另按P0—P5 Track管理。
 
 ## 从这里开始
 
+- [架构宣言 v1](architecture_manifesto_v1.md)：冻结“当前事实—近期产品目标—长期愿景”三层定位，以及Context、Tool Result、World State、Unknown、Impact和Action Boundary等核心架构原则。
+- [Reference Agent v0.1规格](reference/reference-agent-v0.1.md)：定义首个端到端公共参考Agent——虚构低空设施评估更新闭环及五类正负场景。
+- [GeoTask ↔ Lowa-GT Integration Contract v0.1](reference/lowa-gt-integration-contract-v0.1.md)：定义Lowa-GT作为低空业务System of Record、GeoTask作为Trust Control Plane的只读优先协同边界；S1只读exporter与S2精确传输合同已经对齐。
+- [Cross-Line Promotion Gate v0.1](reference/cross-line-promotion-gate-v0.1.md)：冻结GeoTask Core、Lowa Product、Lowa-GT Integration三线独立原则；Integration负责验证候选能力，Core负责通用抽象，Lowa负责业务事实，任何能力所有权跨线迁移都必须有显式Promotion决定。
+- [Core Distribution Boundary v0.1](reference/core-distribution-boundary-v0.1.md)：进一步把三线独立落实到发行物；同仓库不等于同产品线，Core公共导出保留治理契约和Reference Agent，但不携带Lowa-GT Integration验证实现、研究协议或Integration测试。
+- [产品架构 v0.2](product_architecture_v0_2.md)、[Open Core边界 v0.2](open_core_boundary_v0_2.md)与[产品化路线图 v0.2](productization_roadmap_v0_2.md)：以GT42真实能力基线重建P0—P5 Product Track，并暂停为编号而新增GT。
 - [GeoTask白皮书v0.1](whitepaper/GeoTask_White_Paper_v0.1.md)：为什么智能体需要显式、可验证的时空世界模型，GeoTask与隐式神经世界模型有何区别，以及当前实现和目标状态演化能力的边界。
 - [白皮书英文摘要](whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)：在同一份非规范性白皮书中提供结构一致的英文摘要与核心术语映射。
 - [白皮书构建说明](whitepaper/README.md)：从Markdown生成HTML、DOCX和可选PDF。
 - [中文快速入门](tutorials/quickstart.zh-CN.md)：安装、验证、执行和检查第一个任务。
+- [Reference Agent从零教程](tutorials/reference-agent.zh-CN.md)：不阅读GT01—GT42也可以从新证据开始，完整运行rev1→rev2→Discrepancy/Correction/Impact→rev3→Control，并修改一个自定义场景输入。
+- [P1陌生开发者激活协议](reference/developer-activation-protocol-v0.1.md)：用标准化30分钟任务记录首次运行、自定义输入、三版本状态理解和`eligible != executed`理解情况；外部结果尚未产生前不得宣称P1采用验证完成。
+- [Verification Quality Benchmark v0.1](reference/verification-quality-benchmark-v0.1.md)：以五个固定虚构Reference Agent场景测量验错、漏检、误阻断、有限纠偏、影响范围和副作用边界；100%固定基准结果不得外推为真实低空安全或跨域准确率。
+- [0.4.0发布范围命名冻结](reference/p2-release-contract-freeze-v0.4.md)：用机器快照锁定当前包名、CLI、14个算子、32类Artifact与33份Schema；该文件不代表0.4.0已发布。
+- [0.4.0安装与迁移矩阵](reference/install-migration-matrix-v0.4.md)：分开记录Python声明支持、CI配置覆盖和本轮真实clean-room验证，并列出0.3.x→0.4.0发布前迁移门槛。
+- [Core 0.4.0 RC Readiness Gate v0.1](reference/core-0.4-rc-readiness-v0.1.md)：把版本元数据、最终wheel/sdist、33-Schema Bundle、Python 3.10—3.13真实CI证据、公共导出与Reference Agent重放升级为机器可审计Gate；当前0.3.0状态应明确返回`pending`而非伪装成0.4.0已就绪。
 - [GT01—GT20中文案例手册](cookbook/gt01-gt20.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度、设备能力约束和高风险动作门控。
 - [GT21—GT28世界状态循环案例手册](cookbook/gt21-gt28.zh-CN.md)：从同目标Observation冲突开始，逐步进入快照、变化、影响、纠偏、增量复核和行动资格。
 - [GT38—GT42无人机身份治理复合案例](cookbook/gt38-gt42-uav-identity-governance.zh-CN.md)：用UAV-017短暂失联后被重新编号的连续场景解释对象同一性审定、归并提案、审批、变更请求和应用审批。
@@ -44,6 +56,7 @@ GeoTask文档按照“理解世界模型定位、开始使用、查阅规范、�
 - [Runtime接口Profile v0.1](spec/geotask-runtime-interface-profile-v0.1.md)：定义Core与外部Runtime之间的Descriptor、Request、Response、授权、幂等、审计及副作用边界，并提供公共安全的HTTP Adapter、回环Endpoint、Provider-neutral模型Adapter以及首个OpenAI Responses Provider包。
 - [GeoTask Core Agent Skill](../skills/geotask-core/SKILL.md)：可直接注入Agent的模型无关操作指令与安全约束。
 - [VS Code Schema配置示例](../.vscode/settings.json)：将本地任务文件关联到仓库内JSON Schema。
+- [v0.4.0 Core产品化与Reference Agent发布说明](release_v0_4_0.md)
 - [v0.3.0 Agent集成版发布说明](release_v0_3_0.md)：新增Agent生成任务准备、受约束修订、补证据恢复、四类Agent报告Artifact及8类Artifact/9份Schema统一验证。
 - [v0.2.0制品契约版发布说明](release_v0_2_0.md)：新增Artifact Registry、离线Schema Bundle、统一制品校验和验证报告自验证。
 - [v0.1.1 PyPI修正版发布说明](release_v0_1_1.md)：修正发行元数据与模块版本不一致，并完成PyPI安装验证。

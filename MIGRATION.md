@@ -1,5 +1,7 @@
 # Migrating from STIR to GeoTask
 
+> **0.4.0 release preparation:** the current installation/upgrade evidence matrix is maintained at `docs/reference/install-migration-matrix-v0.4.md`. **0.4.0 has not been released**; that matrix distinguishes declared Python support, CI-configured coverage, and clean-room evidence actually executed during P2 hardening.
+
 STIR was the prototype name. GeoTask is the new project name.
 
 ## Python imports

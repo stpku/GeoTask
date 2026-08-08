@@ -2,9 +2,11 @@
 
 **简体中文** | [English](README.en.md)
 
-> **面向智能体的可验证时空世界模型**
+> **面向AI智能体的可验证时空任务协议与确定性核心**
 >
-> 让大模型理解世界，让GeoTask验证并维护世界。
+> 当前：把观察、证据、世界状态和行动条件转化为可计算、可更新、可追溯的机器契约。  
+> 近期：形成可信世界状态运行时的Reference Agent与开发者产品。  
+> 长期：成为高风险物理世界智能体的可信任务基础设施之一。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
@@ -55,8 +57,18 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - [中文术语规范](docs/terminology.zh-CN.md)
 - [GeoTask核心智能体技能](skills/geotask-core/SKILL.md)
 - [VS Code Schema配置示例](.vscode/settings.json)
+- [v0.4.0 Core产品化与Reference Agent发布说明](docs/release_v0_4_0.md)
 - [v0.3.0 Agent集成版发布说明](docs/release_v0_3_0.md)
 - [v0.2.0制品契约版发布说明](docs/release_v0_2_0.md)
+- [架构宣言 v1](docs/architecture_manifesto_v1.md)
+- [Reference Agent v0.1 规格](docs/reference/reference-agent-v0.1.md)
+- [运行 Reference Agent：虚构低空设施评估更新](examples/reference_agent/facility_assessment_update/README.md)
+- [Reference Agent从零教程](docs/tutorials/reference-agent.zh-CN.md)
+- [Verification Quality Benchmark v0.1](docs/reference/verification-quality-benchmark-v0.1.md)
+- [GeoTask ↔ Lowa-GT Integration Contract v0.1](docs/reference/lowa-gt-integration-contract-v0.1.md)
+- [Cross-Line Promotion Gate v0.1](docs/reference/cross-line-promotion-gate-v0.1.md)
+- [Core Distribution Boundary v0.1](docs/reference/core-distribution-boundary-v0.1.md)
+- [产品化路线图 v0.2](docs/productization_roadmap_v0_2.md)
 - [公共路线图](ROADMAP.md)
 - [中文文档导航](docs/README.md)
 
@@ -300,7 +312,7 @@ geotask recheck examples/core/incremental_reevaluation_result_uav_recheck.json -
 
 | 名称 | 当前版本 | 含义 |
 |---|---:|---|
-| GeoTask Core包 | `0.3.0` | Python实现版本 |
+| GeoTask Core包 | `0.4.0` | Python实现版本 |
 | GeoTask文档Schema | `1.0` | YAML/JSON任务格式版本 |
 | 语言与执行规范 | `1.0` | 当前公共实现规范 |
 | Agent Integration Profile | `0.1` | 模型无关工具契约、补证据恢复与恢复报告Artifact |

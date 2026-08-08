@@ -5,7 +5,7 @@ name: geotask-core
 
 on:
   push:
-    branches: [main]
+    branches: [main, "release/**"]
   pull_request:
     branches: [main]
 
@@ -24,6 +24,15 @@ jobs:
       - run: pip install -e .
       - run: pip install pytest jsonschema
       - run: pytest -q
+      - name: Collect Python RC evidence shard
+        run: python .release/collect_rc_evidence.py collect --target-version 0.4.0 --record-python-ci --output rc-evidence-${{ matrix.python-version }}.json
+      - name: Upload Python RC evidence shard
+        uses: actions/upload-artifact@v7
+        with:
+          name: geotask-rc-evidence-${{ matrix.python-version }}
+          path: rc-evidence-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          retention-days: 14
 
   build:
     runs-on: ubuntu-latest
@@ -185,7 +194,7 @@ jobs:
           .venv-schema-smoke/bin/geotask provider validate examples/core/verification_response_authoritative_weather_gt29.json --request examples/core/verification_request_weather_conflict_gt29.json --descriptor examples/core/verification_provider_descriptor_authoritative_weather_gt29.json --format json > provider-response-binding.json
           .venv-schema-smoke/bin/geotask benchmark core --format json --output core-benchmark.json
           .venv-schema-smoke/bin/geotask artifact validate geotask.core-benchmark-report core-benchmark.json --format json > core-benchmark-validation.json
-          .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("schema-verification.json", encoding="utf-8"))["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 28'
+          .venv-schema-smoke/bin/python -c 'import json; from geotask_core.v1.schema_bundle import BUNDLED_SCHEMA_IDS; report=json.load(open("schema-verification.json", encoding="utf-8"))["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == len(BUNDLED_SCHEMA_IDS)'
           .venv-schema-smoke/bin/python -c 'import json; schema=json.load(open("execution-result.schema.json", encoding="utf-8")); assert schema["$id"].endswith("geotask-result-v1.0.schema.json")'
           .venv-schema-smoke/bin/python -c 'import json; payload=json.load(open("schema-inspection.json", encoding="utf-8")); assert payload["artifact_registry"]["artifact_count"] == 1; report=payload["schema_bundle_verification"]; assert report["valid"] is True and report["checked_count"] == 1'
           .venv-schema-smoke/bin/python -c 'import json; profile=json.load(open("agent-profile.json", encoding="utf-8"))["agent_integration_profile"]; prep=profile["generated_document_preparation"]; artifacts=prep["report_artifacts"]; recovery=profile["evidence_recovery"]; assert profile["id"] == "geotask.agent-integration" and [tool["name"] for tool in profile["tools"]] == ["inspect_artifacts","validate_artifact","execute_task","evaluate_control"] and prep["repair_policy"] == "mechanical_only" and prep["revision_verification"]["requested_paths_only"] is True and prep["revision_verification"]["task_executed_before_acceptance"] is False and [item["artifact_id"] for item in artifacts] == ["geotask.agent-generation-preparation","geotask.agent-revision-verification","geotask.agent-revision-retry"] and prep["artifact_validity_is_distinct_from_business_state"] is True and recovery["artifact_id"] == "geotask.agent-evidence-recovery" and recovery["schema_version"] == "0.1" and recovery["artifact_validity_is_distinct_from_business_state"] is True'
@@ -201,6 +210,126 @@ jobs:
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("rejected-agent-retry-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.agent-revision-retry" and report["valid"] is True and report["summary"]["report_state"] == "rejected"'
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("agent-validation-report-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.artifact-validation-report" and report["valid"] is True and report["summary"]["validated_artifact_id"] == "geotask.agent-revision-retry"'
           .venv-schema-smoke/bin/python -c 'import json; report=json.load(open("recovery-validation-report-validation.json", encoding="utf-8"))["artifact_validation"]; assert report["artifact_id"] == "geotask.artifact-validation-report" and report["valid"] is True and report["summary"]["validated_artifact_id"] == "geotask.agent-evidence-recovery"'
+
+      - name: Upload Core RC distributions
+        uses: actions/upload-artifact@v7
+        with:
+          name: geotask-core-rc-dist
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14
+
+  rc-build-evidence:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install pyyaml
+      - name: Download exact Core distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: geotask-core-rc-dist
+          path: /tmp/geotask-core-rc-dist
+      - name: Install exact wheel for Reference Agent replay
+        shell: bash
+        run: |
+          python -m venv /tmp/geotask-rc-install
+          /tmp/geotask-rc-install/bin/python -m pip install /tmp/geotask-core-rc-dist/*.whl
+      - name: Collect build/public/Reference Agent RC evidence shard
+        run: python .release/collect_rc_evidence.py collect --target-version 0.4.0 --artifacts /tmp/geotask-core-rc-dist --public-export /tmp/geotask-public-rc-evidence --reference-python /tmp/geotask-rc-install/bin/python --output /tmp/rc-evidence-build.json
+      - name: Upload build RC evidence shard
+        uses: actions/upload-artifact@v7
+        with:
+          name: geotask-rc-evidence-build
+          path: /tmp/rc-evidence-build.json
+          if-no-files-found: error
+          retention-days: 14
+
+  rc-evidence-merge:
+    runs-on: ubuntu-latest
+    needs: [test, rc-build-evidence]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install pyyaml
+      - name: Download Python 3.10 evidence
+        uses: actions/download-artifact@v8
+        with:
+          name: geotask-rc-evidence-3.10
+          path: /tmp/geotask-rc-evidence
+      - name: Download Python 3.11 evidence
+        uses: actions/download-artifact@v8
+        with:
+          name: geotask-rc-evidence-3.11
+          path: /tmp/geotask-rc-evidence
+      - name: Download Python 3.12 evidence
+        uses: actions/download-artifact@v8
+        with:
+          name: geotask-rc-evidence-3.12
+          path: /tmp/geotask-rc-evidence
+      - name: Download Python 3.13 evidence
+        uses: actions/download-artifact@v8
+        with:
+          name: geotask-rc-evidence-3.13
+          path: /tmp/geotask-rc-evidence
+      - name: Download build evidence
+        uses: actions/download-artifact@v8
+        with:
+          name: geotask-rc-evidence-build
+          path: /tmp/geotask-rc-evidence
+      - name: Download exact Core distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: geotask-core-rc-dist
+          path: /tmp/geotask-core-rc-dist
+      - name: Merge exact-commit RC evidence
+        run: python .release/collect_rc_evidence.py merge /tmp/geotask-rc-evidence/rc-evidence-3.10.json /tmp/geotask-rc-evidence/rc-evidence-3.11.json /tmp/geotask-rc-evidence/rc-evidence-3.12.json /tmp/geotask-rc-evidence/rc-evidence-3.13.json /tmp/geotask-rc-evidence/rc-evidence-build.json --output /tmp/geotask-rc-evidence/rc-evidence.json
+      - name: Audit merged RC readiness
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import pathlib
+          import subprocess
+          import sys
+
+          command = [
+              sys.executable,
+              ".release/verify_rc_readiness.py",
+              "--target-version",
+              "0.4.0",
+              "--artifacts",
+              "/tmp/geotask-core-rc-dist",
+              "--evidence",
+              "/tmp/geotask-rc-evidence/rc-evidence.json",
+              "--format",
+              "json",
+          ]
+          result = subprocess.run(command, text=True, capture_output=True, check=False)
+          pathlib.Path("/tmp/geotask-rc-evidence/rc-readiness.json").write_text(result.stdout, encoding="utf-8")
+          if result.stdout:
+              sys.stdout.write(result.stdout)
+          if result.stderr:
+              sys.stderr.write(result.stderr)
+          release_branch = os.environ.get("GITHUB_REF", "").startswith("refs/heads/release/")
+          allowed_exit_codes = (0,) if release_branch else (0, 2)
+          if result.returncode not in allowed_exit_codes:
+              raise SystemExit(result.returncode)
+          PY
+      - name: Upload merged RC evidence and readiness report
+        uses: actions/upload-artifact@v7
+        with:
+          name: geotask-rc-evidence-merged
+          path: |
+            /tmp/geotask-rc-evidence/rc-evidence.json
+            /tmp/geotask-rc-evidence/rc-readiness.json
+          if-no-files-found: error
+          retention-days: 14
 
   artifact-roundtrip:
     runs-on: ubuntu-latest
@@ -241,7 +370,8 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install pyyaml
-      - run: python .release/scan_public_export.py .
+      - run: python .release/release_public.py /tmp/geotask-public-scan --clean --skip-tests
+      - run: python .release/scan_public_export.py /tmp/geotask-public-scan
 
   boundary:
     runs-on: ubuntu-latest
@@ -251,4 +381,5 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install pyyaml
-      - run: python .release/verify_public_export.py .
+      - run: python .release/release_public.py /tmp/geotask-public-boundary --clean --skip-tests
+      - run: python .release/verify_public_export.py /tmp/geotask-public-boundary

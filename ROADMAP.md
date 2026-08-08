@@ -25,7 +25,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 公共Python API——`geotask_core`与`geotask_core.v1`统一导出；
 - 发布身份预检——版本溯源、Git标签、CHANGELOG、README导航与包元数据交叉核对。
 
-### v0.3.0：Agent集成（当前稳定） 🏷️
+### v0.3.0：Agent集成（上一稳定版） 🏷️
 
 - 发布模型无关的Agent Integration Profile，明确Agent、Core与Runtime职责边界；
 - 提供`inspect_artifacts`、`validate_artifact`、`execute_task`和`evaluate_control`四类稳定工具契约；
@@ -35,7 +35,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 保持unknown、blocked和`next_action`的失败关闭语义；
 - 增加Agent生成路径与确定性验证路径的联合测试。
 
-### v0.4：Runtime接口、模型适配与对象扩展（进行中）
+### v0.4.0：Core产品化、Reference Agent与Runtime接口（当前稳定） 🏷️
 
 - 发布Runtime Interface Profile v0.1，定义Descriptor、Request、Response、输入基数、授权、幂等、审计及副作用边界；
 - 提供Runtime Descriptor离线发现、Request无副作用预检和Descriptor/Request/Response三方交换校验；
@@ -97,6 +97,25 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - 建立验错率、漏检率、纠偏成功率、增量复核范围和执行时延基准；
 - 支持社区维护的验证提供方、案例、算子和通用扩展目录。
 
+### 产品成熟度 Track（P0—P5）
+
+GT编号继续作为**Capability Track**，用于证明单项公共能力；它不再代表产品成熟度。GT42之后暂停“为编号而编号”，只有Reference Agent或真实行业集成暴露出缺失的通用原语时，才新增后续GT。
+
+当前产品阶段判断：**P0 Architecture Definition 已完成首轮重新基线化；P1 Reference Agent 的代码、固定场景、注册制品链、教程、体验页和隔离公共导出冷启动已完成，外部陌生开发者激活验证仍待完成；P2 的静态工程预发布门槛已闭合：Verification Quality Benchmark v0.1、0.4.0 发布范围命名冻结、Artifact/Schema/Operator Registry 开发者体验、安装/迁移矩阵、wheel/sdist/33-Schema Bundle 以及安装包驱动 Reference Agent 均已验证。0.4.0 仍未发布；新增 RC Readiness Gate 将最终发布保持为 `pending`，直到候选工作区 clean、证据绑定精确 Git HEAD、Python 3.10—3.13 实际 CI、版本/tag/date、最终 0.4.0 wheel/sdist + 33-Schema Bundle、公共导出与 Reference Agent 重放全部闭合。P3 已进入真实 Lowa-GT shadow 阶段，但其结果仍属于 Integration 验证，不构成 Core Promotion；任何跨线能力仍需显式 Promotion Gate。**
+
+| 阶段 | 名称 | 核心验收 |
+|---|---|---|
+| P0 | Architecture Definition | 当前事实、近期目标、长期愿景和Core/行业边界稳定一致 |
+| P1 | Reference Agent | 陌生开发者可运行、修改、失败关闭并重放一个端到端闭环 |
+| P2 | Core Product | 公共命名、Registry、质量基准、安装/迁移和发行体验达到产品级 |
+| P3 | Industry Integration | 首个真实行业系统复用Core且不复制第二套业务事实 |
+| P4 | Ecosystem Validation | 独立团队能构建并复用可验证扩展 |
+| P5 | Commercial Validation | 真实客户拉动私有治理、部署和长期支持能力 |
+
+近期统一主轴为：`新证据 → 世界状态更新 → 冲突/缺口验证 → 有限影响与重算 → 人工复核/审批 → 输出具备条件但不自动发布或执行`。首个公共Reference Agent采用**虚构低空设施评估更新**场景；首个真实行业集成采用Lowa-GT的证据—评估—报告影子闭环，而不是实时起飞授权。
+
+详见[架构宣言](docs/architecture_manifesto_v1.md)、[Reference Agent v0.1规格](docs/reference/reference-agent-v0.1.md)、[Verification Quality Benchmark v0.1](docs/reference/verification-quality-benchmark-v0.1.md)、[GeoTask ↔ Lowa-GT Integration Contract v0.1](docs/reference/lowa-gt-integration-contract-v0.1.md)和[产品化路线图v0.2](docs/productization_roadmap_v0_2.md)。
+
 ## 参与方式
 
 - 在[Issues](https://github.com/stpku/GeoTask/issues)提交Bug、算子建议或案例建议；
@@ -125,7 +144,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - Public Python API — unified exports from `geotask_core` and `geotask_core.v1`;
 - Release identity preflight — version source, tag, CHANGELOG, README, and metadata cross-check.
 
-### v0.3.0: Agent Integration (current stable) 🏷️
+### v0.3.0: Agent Integration (previous stable) 🏷️
 
 - Publish a model-neutral Agent Integration Profile that separates Agent, Core, and Runtime responsibilities;
 - expose stable contracts for `inspect_artifacts`, `validate_artifact`, `execute_task`, and `evaluate_control`;
@@ -135,7 +154,7 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - preserve fail-closed semantics for unknown, blocked outputs, and `next_action`;
 - add joint tests for Agent generation paths and deterministic verification paths.
 
-### v0.4: Runtime Interfaces, Model Adapters, and Object Extensions (in progress)
+### v0.4.0: Core Productization, Reference Agent, and Runtime Interfaces (current stable) 🏷️
 
 - Publish Runtime Interface Profile v0.1 for Descriptor, Request, Response, input cardinality, authorization, idempotency, audit, and side-effect boundaries;
 - provide offline Runtime Descriptor discovery, side-effect-free Request preflight, and three-way Descriptor/Request/Response exchange validation;
@@ -199,3 +218,22 @@ GeoTask follows an open, incremental roadmap. Items below describe public protoc
 - publish reusable extension interfaces and non-sensitive reference implementations;
 - establish benchmarks for error-detection rate, missed errors, correction success, incremental scope, and execution latency;
 - support community-maintained catalogs of Verification Providers, cases, operators, and generic extensions.
+
+### Product maturity track (P0–P5)
+
+GT numbers remain the **Capability Track**. They prove individual public capabilities but no longer represent product maturity. After GT42, additional GT cases are paused unless the Reference Agent or a real industry integration exposes a missing reusable primitive.
+
+Current product state: **P0 Architecture Definition has completed its first re-baseline; P1 Reference Agent code, fixed scenarios, registered artifact chain, tutorials, experience page, and isolated public-export clean-room startup are implemented, with external unfamiliar-developer activation validation still pending; P2 static engineering pre-release gates are closed: Verification Quality Benchmark v0.1, the 0.4.0 release-scope naming freeze, Artifact/Schema/Operator Registry developer experience, installation/migration matrix, wheel/sdist/33-Schema Bundle verification, and installed-package-driven Reference Agent replay have all passed. 0.4.0 is still not released; the RC Readiness Gate keeps publication `pending` until the candidate worktree is clean, evidence is bound to the exact Git HEAD, Python 3.10–3.13 CI has actually executed, final version/tag/date metadata is aligned, the exact 0.4.0 wheel/sdist + 33-Schema Bundle pass verification, and final public-export + Reference Agent replay evidence exists. P3 has entered the real Lowa-GT shadow phase, but those results remain Integration validation and do not constitute Core Promotion; every cross-line capability transfer still requires an explicit Promotion Gate.**
+
+| Stage | Name | Primary gate |
+|---|---|---|
+| P0 | Architecture Definition | current facts, near-term goals, long-term vision, and Core/industry boundaries are consistent |
+| P1 | Reference Agent | a new developer can run, modify, fail closed, and replay one end-to-end workflow |
+| P2 | Core Product | public naming, Registry, quality benchmark, install/migration and release experience are product-grade |
+| P3 | Industry Integration | one real industry system reuses Core without creating a second business truth |
+| P4 | Ecosystem Validation | independent teams can build and reuse validated extensions |
+| P5 | Commercial Validation | real customers pull private governance, deployment and long-term support capabilities |
+
+The near-term common spine is: `new evidence → world-state update → conflict/gap verification → bounded impact and recomputation → human review/approval → output becomes eligible without automatic publication or execution`. The first public Reference Agent uses a **fictional low-altitude facility assessment update**. The first real Lowa-GT integration mirrors the evidence–assessment–report chain in shadow mode rather than real-time flight authorization.
+
+See the [Architecture Manifesto](docs/architecture_manifesto_v1.md), [Reference Agent v0.1 specification](docs/reference/reference-agent-v0.1.md), [Verification Quality Benchmark v0.1](docs/reference/verification-quality-benchmark-v0.1.md), [GeoTask ↔ Lowa-GT Integration Contract v0.1](docs/reference/lowa-gt-integration-contract-v0.1.md), and [Productization Roadmap v0.2](docs/productization_roadmap_v0_2.md).

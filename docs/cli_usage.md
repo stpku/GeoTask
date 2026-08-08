@@ -144,7 +144,9 @@ geometry.
 
 ```bash
 python -m geotask_core.cli inspect operators
+python -m geotask_core.cli inspect operators --format json
 python -m geotask_core.cli inspect operators distance_2d
+python -m geotask_core.cli inspect operators distance_2d --format json
 python -m geotask_core.cli inspect schema
 python -m geotask_core.cli inspect schemas
 python -m geotask_core.cli inspect schemas --format json
@@ -160,7 +162,7 @@ python -m geotask_core.cli schema verify geotask.execution-result --format json
 python -m geotask_core.cli inspect examples
 ```
 
-- `inspect operators` lists public-safe Core operator registry metadata.
+- `inspect operators` lists public-safe Core operator registry metadata. Human-readable output remains the default; `--format json` is supported for both the full collection and a single operator ID so tooling does not need to parse display text.
 - `inspect schema` summarizes the minimal GeoTask document structure.
 - `inspect schemas` lists all thirty-two public Artifacts, covering the GeoTask
   document, execution and control results, Agent and Runtime contracts, world-state

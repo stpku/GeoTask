@@ -1,0 +1,39 @@
+{
+  "scenario": {
+    "id": "conflicting_evidence",
+    "evaluation_time": "2026-08-07T09:00:00+08:00",
+    "materialized_at": "2026-08-07T09:00:05+08:00",
+    "min_obstacle_distance_m": 50,
+    "human_review_approved": null,
+    "evidence": [
+      {
+        "observation_id": "obs-map-obstacle-conflict-a",
+        "source_reference": "map:fictional/obstacle/conflict-a-v5",
+        "source_version": "5.0",
+        "producer_id": "fictional-map-provider-a",
+        "observed_at": "2026-08-07T08:54:00+08:00",
+        "received_at": "2026-08-07T08:54:05+08:00",
+        "valid_until": "2026-08-07T10:00:00+08:00",
+        "coordinates": [70, 0]
+      },
+      {
+        "observation_id": "obs-map-obstacle-conflict-b",
+        "source_reference": "map:fictional/obstacle/conflict-b-v2",
+        "source_version": "2.0",
+        "producer_id": "fictional-map-provider-b",
+        "observed_at": "2026-08-07T08:56:00+08:00",
+        "received_at": "2026-08-07T08:56:05+08:00",
+        "valid_until": "2026-08-07T10:00:00+08:00",
+        "coordinates": [30, 0]
+      }
+    ],
+    "expected": {
+      "verification_state": "conflicted",
+      "control_state": "unknown",
+      "distance_m": 80.0,
+      "report_update_eligible": false,
+      "successor_materialized": false,
+      "evidence_request_required": true
+    }
+  }
+}

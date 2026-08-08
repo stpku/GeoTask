@@ -310,7 +310,8 @@ def test_ci_and_publish_workflows_enforce_distribution_gate() -> None:
         ):
             assert f"artifact validate {artifact_id}" in workflow
         assert "artifact_validation" in workflow
-        assert "checked_count\"] == 28" in workflow
+        assert "checked_count\"] == 28" not in workflow
+        assert "len(BUNDLED_SCHEMA_IDS)" in workflow
         assert "checked_count\"] == 1" in workflow
 
     assert "pip wheel --no-deps --wheel-dir dist-from-sdist" in ci

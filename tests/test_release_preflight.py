@@ -17,7 +17,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT_PATH = ROOT / ".release" / "verify_release_preflight.py"
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 
 
 def _load_preflight():
@@ -88,8 +88,8 @@ def test_release_preflight_accepts_current_source_contract() -> None:
     assert report["valid"] is True
     assert report["version"] == VERSION
     assert report["tag"] == f"v{VERSION}"
-    assert report["release_date"] == "2026-07-31"
-    assert report["release_notes"] == "docs/release_v0_3_0.md"
+    assert report["release_date"] == "2026-08-08"
+    assert report["release_notes"] == "docs/release_v0_4_0.md"
     assert report["artifacts_checked"] is False
     assert report["errors"] == []
     assert all(check["valid"] for check in report["checks"])
@@ -214,10 +214,10 @@ def test_github_actions_major_versions_are_synchronized() -> None:
     assert "actions/upload-artifact@v4" not in combined
     assert "actions/download-artifact@v4" not in combined
 
-    assert ci.count("actions/checkout@v7") == 4
-    assert ci.count("actions/setup-python@v7") == 4
-    assert ci.count("actions/upload-artifact@v7") == 1
-    assert ci.count("actions/download-artifact@v8") == 1
+    assert ci.count("actions/checkout@v7") == 6
+    assert ci.count("actions/setup-python@v7") == 6
+    assert ci.count("actions/upload-artifact@v7") == 5
+    assert ci.count("actions/download-artifact@v8") == 8
 
     ci_workflow = yaml.safe_load(ci)
     roundtrip_steps = ci_workflow["jobs"]["artifact-roundtrip"]["steps"]

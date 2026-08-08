@@ -856,6 +856,53 @@ def _parse_inspect_schemas_args(args: list[str]) -> dict[str, object]:
     return parsed
 
 
+def _print_inspect_operators_usage() -> None:
+    print(
+        "Usage: geotask inspect operators [operator-id] [--format <yaml|json>]"
+    )
+
+
+def _parse_inspect_operators_args(args: list[str]) -> dict[str, object]:
+    """Parse collection- or item-level operator Registry inspection options."""
+    parsed: dict[str, object] = {
+        "operator_id": None,
+        "format": "yaml",
+        "help": False,
+    }
+    seen_format = False
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_inspect_operators_usage()
+            parsed["help"] = True
+            return parsed
+        if arg == "--format":
+            if seen_format:
+                raise ValueError("--format may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError("--format requires a value")
+            seen_format = True
+            parsed["format"] = args[index + 1]
+            index += 2
+            continue
+        if not arg.startswith("--"):
+            if parsed["operator_id"] is not None:
+                raise ValueError("only one operator ID may be provided")
+            parsed["operator_id"] = arg
+            index += 1
+            continue
+        raise ValueError(f"unknown inspect operators option: {arg}")
+
+    output_format = str(parsed["format"])
+    if output_format not in {"yaml", "json"}:
+        raise ValueError(
+            f"unsupported_inspect_operators_format: {output_format}. "
+            "Supported formats: yaml, json"
+        )
+    return parsed
+
+
 def cmd_inspect(args: list[str]):
     """Inspect public-safe Core metadata."""
     if not args or args[0] in ("--help", "-h"):
@@ -868,15 +915,26 @@ def cmd_inspect(args: list[str]):
     subject = args[0]
     if subject == "operators":
         try:
-            if len(args) >= 2:
-                result = {"operator": get_operator_metadata(args[1])}
+            parsed = _parse_inspect_operators_args(args[1:])
+            if parsed.get("help"):
+                return None
+            operator_id = (
+                str(parsed["operator_id"])
+                if parsed["operator_id"] is not None
+                else None
+            )
+            if operator_id is not None:
+                result = {"operator": get_operator_metadata(operator_id)}
             else:
                 result = {"operators": list_operator_metadata()}
-        except KeyError as exc:
-            print(f"Error: {exc}", file=sys.stderr)
+        except (KeyError, ValueError) as exc:
+            print(f"inspect_operators_failed: {exc}", file=sys.stderr)
             sys.exit(1)
 
-        print_result(result)
+        if parsed["format"] == "json":
+            sys.stdout.write(_render_json(result, compact=False))
+        else:
+            print_result(result)
         return result
 
     if subject == "schema":

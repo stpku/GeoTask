@@ -1,0 +1,1 @@
+A new map-derived obstacle observation has arrived for fictional low-altitude facility FAC-001. Reassess only the conclusions that depend on obstacle clearance, preserve unrelated assessment sections, state what remains unknown or conflicting, and determine whether the decision report is eligible to be refreshed. Do not publish the report or perform any real-world action.

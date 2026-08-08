@@ -10,7 +10,11 @@ approval rules, regulatory thresholds, or patent-sensitive workflows.
 ```bash
 python -m geotask_core.cli inspect operators
 python -m geotask_core.cli inspect operators distance_2d
+python -m geotask_core.cli inspect operators --format json
+python -m geotask_core.cli inspect operators distance_2d --format json
 ```
+
+The default output remains human-readable. `--format json` exposes the same collection- or item-level Registry metadata as stable structured JSON for developer tooling.
 
 The CLI prints the same metadata exposed by
 `geotask_core.operator_registry`. That compact metadata is generated from the

@@ -94,9 +94,20 @@ CODE_OF_CONDUCT = ROOT / "CODE_OF_CONDUCT.md"
 CITATION = ROOT / "CITATION.cff"
 PYPROJECT = ROOT / "pyproject.toml"
 ROADMAP = ROOT / "ROADMAP.md"
+ARCHITECTURE_MANIFESTO = ROOT / "docs" / "architecture_manifesto_v1.md"
+REFERENCE_AGENT_SPEC = ROOT / "docs" / "reference" / "reference-agent-v0.1.md"
+LOWA_GT_INTEGRATION_CONTRACT = (
+    ROOT / "docs" / "reference" / "lowa-gt-integration-contract-v0.1.md"
+)
+CROSS_LINE_PROMOTION_GATE = (
+    ROOT / "docs" / "reference" / "cross-line-promotion-gate-v0.1.md"
+)
+PRODUCT_ARCHITECTURE_V02 = ROOT / "docs" / "product_architecture_v0_2.md"
+OPEN_CORE_BOUNDARY_V02 = ROOT / "docs" / "open_core_boundary_v0_2.md"
+PRODUCTIZATION_ROADMAP_V02 = ROOT / "docs" / "productization_roadmap_v0_2.md"
 RELEASE_NOTES_010 = ROOT / "docs" / "release_v0_1_0.md"
 RELEASE_NOTES_011 = ROOT / "docs" / "release_v0_1_1.md"
-RELEASE_NOTES = ROOT / "docs" / "release_v0_3_0.md"
+RELEASE_NOTES = ROOT / "docs" / "release_v0_4_0.md"
 CODEOWNERS = ROOT / ".github" / "CODEOWNERS"
 PYPI_WORKFLOW = ROOT / ".github" / "workflows" / "publish-pypi.yml"
 
@@ -155,6 +166,13 @@ DOCUMENTS = (
     CONTRIBUTING_ZH,
     CODE_OF_CONDUCT,
     ROADMAP,
+    ARCHITECTURE_MANIFESTO,
+    REFERENCE_AGENT_SPEC,
+    LOWA_GT_INTEGRATION_CONTRACT,
+    CROSS_LINE_PROMOTION_GATE,
+    PRODUCT_ARCHITECTURE_V02,
+    OPEN_CORE_BOUNDARY_V02,
+    PRODUCTIZATION_ROADMAP_V02,
     RELEASE_NOTES_010,
     RELEASE_NOTES_011,
     RELEASE_NOTES,
@@ -267,10 +285,42 @@ def test_chinese_and_english_entrypoints_are_bidirectionally_linked() -> None:
     assert "[简体中文](README.md)" in root_en
     assert "[English](README.en.md)" in docs_zh
     assert "[简体中文](README.md)" in docs_en
-    assert "面向智能体的可验证时空世界模型" in root_zh
-    assert "可验证时空任务协议" in root_zh
-    assert "Explicit and verifiable spatiotemporal world model" in root_en
-    assert "verifiable task protocol" in root_en
+    assert "面向AI智能体的可验证时空任务协议与确定性核心" in root_zh
+    assert "可信世界状态运行时" in root_zh
+    assert "Open verifiable spatiotemporal task protocol and deterministic Core" in root_en
+    assert "trusted world-state runtime" in root_en
+
+
+def test_cross_line_promotion_gate_is_explicit_across_core_strategy_docs() -> None:
+    gate = CROSS_LINE_PROMOTION_GATE.read_text(encoding="utf-8")
+    manifesto = ARCHITECTURE_MANIFESTO.read_text(encoding="utf-8")
+    product_architecture = PRODUCT_ARCHITECTURE_V02.read_text(encoding="utf-8")
+    open_core = OPEN_CORE_BOUNDARY_V02.read_text(encoding="utf-8")
+    integration = LOWA_GT_INTEGRATION_CONTRACT.read_text(encoding="utf-8")
+
+    for fragment in (
+        "GeoTask Core, Lowa Product, and Lowa-GT Integration",
+        "Lowa Product owns business facts",
+        "Lowa-GT Integration validates boundaries and candidates",
+        "GeoTask Core owns generic abstractions",
+        "validation != promotion",
+        "consumption != ownership transfer",
+        "PROMOTE",
+        "KEEP_LOCAL",
+        "DEFER",
+        "REJECT",
+    ):
+        assert fragment in gate
+
+    for text in (manifesto, product_architecture, open_core, integration):
+        assert "Promotion Gate" in text
+        assert "Integration" in text
+        assert "Core" in text
+        assert "Lowa" in text
+
+    assert "second system or industry" in gate
+    assert "live Lowa database" in gate
+    assert "System-of-Record" in gate
 
 
 def test_whitepaper_separates_positioning_implementation_and_roadmap() -> None:
@@ -1013,7 +1063,7 @@ def test_root_readmes_match_current_capabilities() -> None:
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
     for path in (QUICKSTART_EN, QUICKSTART_ZH):
         text = path.read_text(encoding="utf-8")
-        assert "python -m pip install --no-cache-dir geotask-core==0.3.0" in text
+        assert "python -m pip install --no-cache-dir geotask-core==0.4.0" in text
         assert "from importlib.metadata import version" in text
         assert "geotask --help" in text
         assert "geotask inspect operators" in text
@@ -1196,8 +1246,8 @@ def test_public_preview_release_assets_are_consistent() -> None:
     workflow = yaml.safe_load(PYPI_WORKFLOW.read_text(encoding="utf-8"))
 
     assert citation["cff-version"] == "1.2.0"
-    assert citation["version"] == "0.3.0"
-    assert str(citation["date-released"]) == "2026-07-31"
+    assert citation["version"] == "0.4.0"
+    assert str(citation["date-released"]) == "2026-08-08"
     assert citation["repository-code"] == "https://github.com/stpku/GeoTask"
     assert citation["url"] == "https://stpku.github.io/GeoTask/"
     assert citation["license"] == "MIT"
@@ -1211,8 +1261,8 @@ def test_public_preview_release_assets_are_consistent() -> None:
 
     assert "v0.1：公共预览" in roadmap
     assert "v0.2.0：制品契约" in roadmap
-    assert "v0.3.0：Agent集成（当前稳定）" in roadmap
-    assert "v0.4：Runtime接口、模型适配与对象扩展" in roadmap
+    assert "v0.3.0：Agent集成（上一稳定版）" in roadmap
+    assert "v0.4.0：Core产品化、Reference Agent与Runtime接口（当前稳定）" in roadmap
     assert "v0.5：Verifiable World-State Cycle" in roadmap
     assert "v0.6：验证提供方与生态扩展（进行中）" in roadmap
     assert "Observation v0.1 Artifact" in roadmap
@@ -1221,17 +1271,15 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "Verification Session v0.1 Artifact" in roadmap
     assert "geotask recheck" in roadmap
 
-    assert "GeoTask Core v0.3.0 Agent Integration Release" in release
-    assert "v0.3.0" in release
-    assert "geotask-core==0.3.0" in release
-    assert "geotask.agent-evidence-recovery" in release
-    assert "1149 passed, 1 skipped" in release
-    assert "153 passed" in release
-    assert "272 files" in release
-    assert "eight public Artifacts" in release
-    assert "nine valid Schemas" in release
-    assert "task_reexecuted=true" in release
-    assert "model_guess_used=false" in release
+    assert "GeoTask Core v0.4.0 Core Productization and Reference Agent Release" in release
+    assert "v0.4.0" in release
+    assert "geotask-core==0.4.0" in release
+    assert "Reference Agent v0.1" in release
+    assert "33 Schemas" in release
+    assert "GT42" in release
+    assert "Cross-Line Promotion Gate" in release
+    assert "eligible != authorized != released != sent != executed" in release
+    assert "does not create a release tag" in release
 
     assert "/src/geotask_core/ @stpku" in codeowners
     assert "/.release/ @stpku" in codeowners

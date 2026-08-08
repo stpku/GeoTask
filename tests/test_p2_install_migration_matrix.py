@@ -57,4 +57,4 @@ def test_install_matrix_does_not_claim_040_is_available() -> None:
 def test_top_level_migration_document_links_the_p2_matrix() -> None:
     text = MIGRATION.read_text(encoding="utf-8")
     assert "docs/reference/install-migration-matrix-v0.4.md" in text
-    assert "0.4.0 has not been released" in text
+    assert "GeoTask Core 0.4.0 was released on 2026-08-08" in text

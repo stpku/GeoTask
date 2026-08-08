@@ -21,7 +21,7 @@ GeoTask文档按照“理解定位、开始使用、查阅规范、构建端到�
 - [Verification Quality Benchmark v0.1](reference/verification-quality-benchmark-v0.1.md)：以五个固定虚构Reference Agent场景测量验错、漏检、误阻断、有限纠偏、影响范围和副作用边界；100%固定基准结果不得外推为真实低空安全或跨域准确率。
 - [0.4.0发布范围命名冻结](reference/p2-release-contract-freeze-v0.4.md)：用机器快照锁定当前包名、CLI、14个算子、32类Artifact与33份Schema；该文件不代表0.4.0已发布。
 - [0.4.0安装与迁移矩阵](reference/install-migration-matrix-v0.4.md)：分开记录Python声明支持、CI配置覆盖和本轮真实clean-room验证，并列出0.3.x→0.4.0发布前迁移门槛。
-- [Core 0.4.0 RC Readiness Gate v0.1](reference/core-0.4-rc-readiness-v0.1.md)：把版本元数据、最终wheel/sdist、33-Schema Bundle、Python 3.10—3.13真实CI证据、公共导出与Reference Agent重放升级为机器可审计Gate；当前0.3.0状态应明确返回`pending`而非伪装成0.4.0已就绪。
+- [Core 0.4.0 RC Readiness Gate v0.1](reference/core-0.4-rc-readiness-v0.1.md)：把版本元数据、最终wheel/sdist、33-Schema Bundle、Python 3.10—3.13真实CI证据、公共导出与Reference Agent重放升级为机器可审计Gate；该Gate已在2026-08-08发布0.4.0前闭合，并继续作为该候选版本的发行证据契约。
 - [GT01—GT20中文案例手册](cookbook/gt01-gt20.zh-CN.md)：从距离计算逐步进入证据治理、对象相关可行性、应急调度、设备能力约束和高风险动作门控。
 - [GT21—GT28世界状态循环案例手册](cookbook/gt21-gt28.zh-CN.md)：从同目标Observation冲突开始，逐步进入快照、变化、影响、纠偏、增量复核和行动资格。
 - [GT38—GT42无人机身份治理复合案例](cookbook/gt38-gt42-uav-identity-governance.zh-CN.md)：用UAV-017短暂失联后被重新编号的连续场景解释对象同一性审定、归并提案、审批、变更请求和应用审批。

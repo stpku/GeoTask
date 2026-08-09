@@ -1,0 +1,37 @@
+schema_version: "0.1"
+candidate_id: "<replace-with-stable-candidate-id>"
+source_line: "<source-line>"
+target_line: "GeoTask Core"
+problem_statement: "<describe-the-concrete-problem>"
+proposed_generic_name: "<industry-neutral-name>"
+
+first_system_evidence:
+  system_id: "<first-system-id>"
+  evidence_refs: []
+
+second_system_evidence:
+  system_id: "<second-system-id>"
+  independent_owner: false
+  real_system_evidence: false
+  evidence_refs: []
+  matched_case_refs: []
+  nonmatching_or_unverifiable_case_refs: []
+  replay_instructions_ref: ""
+  authoritative_state_unchanged: false
+
+core_gate_conditions:
+  industry_neutral_semantics: false
+  deterministic_fail_closed_replayable: false
+  no_system_of_record_capture: false
+  no_hidden_side_effect_expansion: false
+  core_native_public_safe_verification: false
+  compatibility_migration_reviewed: false
+
+proposed_public_surface: ""
+compatibility_notes: ""
+excluded_source_logic: []
+review_notes: ""
+
+# Human architecture review only. Do not set this to PROMOTE before an explicit
+# Promotion Gate decision exists in a reviewable architecture record.
+explicit_gate_decision: "UNDECIDED"

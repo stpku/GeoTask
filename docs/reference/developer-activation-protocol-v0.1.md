@@ -121,7 +121,7 @@ This tests whether the project is modifiable rather than merely demonstrable.
 
 ## 6. Result fields
 
-Use `docs/reference/developer-activation-result-template.yaml` as the participant-record template. Keep participant aliases anonymous and record real timestamps with explicit timezone offsets.
+Use `docs/reference/developer-activation-result-template.yaml` as the participant-record template and `docs/reference/developer-activation-observer-runbook-v0.1.md` as the observer-only procedure. Keep participant aliases anonymous and record real timestamps with explicit timezone offsets.
 
 For each participant record:
 

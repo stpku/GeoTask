@@ -6,7 +6,8 @@ All notable public changes to GeoTask Core are documented here.
 
 ### Added
 
-- Add the P1 external developer activation evidence kit: an intentionally invalid-until-filled anonymized result template plus `tools/summarize_developer_activation.py`, which validates real participant records, derives the 30-minute metric from timestamps, applies the minimum-three and two-thirds gates, keeps automated tests out of the participant count, surfaces repeated friction/defects/documentation gaps, and returns `validated`, `validated_with_followups`, or fail-closed `not_yet_validated` without fabricating external evidence.
+- Add the P1 external developer activation evidence kit: an intentionally invalid-until-filled anonymized result template, observer-only runbook, and `tools/summarize_developer_activation.py`, which validates real participant records, derives the 30-minute metric from timestamps, applies the minimum-three and two-thirds gates, keeps automated tests out of the participant count, surfaces repeated friction/defects/documentation gaps, and returns `validated`, `validated_with_followups`, or fail-closed `not_yet_validated` without fabricating external evidence.
+- Add the Second-System Validation Protocol v0.1 and a fail-closed Core Promotion Candidate pre-review. The first scout candidate is neutral dependency relation state (`matched / changed / not_declared / unverifiable`); `tools/evaluate_core_promotion_candidate.py` requires distinct real second-system evidence plus all Core entry conditions and can only return `defer` or `eligible_for_gate_review`. It never makes a `PROMOTE` decision.
 
 ## [0.4.0] - 2026-08-08
 

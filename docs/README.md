@@ -17,7 +17,8 @@ GeoTask文档按照“理解定位、开始使用、查阅规范、构建端到�
 - [白皮书构建说明](whitepaper/README.md)：从Markdown生成HTML、DOCX和可选PDF。
 - [中文快速入门](tutorials/quickstart.zh-CN.md)：安装、验证、执行和检查第一个任务。
 - [Reference Agent从零教程](tutorials/reference-agent.zh-CN.md)：不阅读GT01—GT42也可以从新证据开始，完整运行rev1→rev2→Discrepancy/Correction/Impact→rev3→Control，并修改一个自定义场景输入。
-- [P1陌生开发者激活协议](reference/developer-activation-protocol-v0.1.md)：用标准化30分钟任务记录首次运行、自定义输入、三版本状态理解和`eligible != executed`理解情况；配套匿名结果模板与`tools/summarize_developer_activation.py`可对前三次真实试验做机器汇总，但在真实外部结果产生前仍不得宣称P1激活验证完成。
+- [P1陌生开发者激活协议](reference/developer-activation-protocol-v0.1.md)：用标准化30分钟任务记录首次运行、自定义输入、三版本状态理解和`eligible != executed`理解情况；配套匿名结果模板、观察员runbook与`tools/summarize_developer_activation.py`可对真实试验做机器汇总，但在真实外部结果产生前仍不得宣称P1激活验证完成。
+- [第二系统验证协议v0.1](reference/second-system-validation-protocol-v0.1.md)：把Core Promotion所需的独立复用证据固化为具体证据包；首个scout候选为中性的dependency relation state，`tools/evaluate_core_promotion_candidate.py`只能返回`defer`或`eligible_for_gate_review`，绝不能自动`PROMOTE`。
 - [Verification Quality Benchmark v0.1](reference/verification-quality-benchmark-v0.1.md)：以五个固定虚构Reference Agent场景测量验错、漏检、误阻断、有限纠偏、影响范围和副作用边界；100%固定基准结果不得外推为真实低空安全或跨域准确率。
 - [0.4.0发布范围命名冻结](reference/p2-release-contract-freeze-v0.4.md)：用机器快照锁定当前包名、CLI、14个算子、32类Artifact与33份Schema；该文件不代表0.4.0已发布。
 - [0.4.0安装与迁移矩阵](reference/install-migration-matrix-v0.4.md)：分开记录Python声明支持、CI配置覆盖和本轮真实clean-room验证，并列出0.3.x→0.4.0发布前迁移门槛。

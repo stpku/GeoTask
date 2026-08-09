@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 55491,
-    "sha256": "b4b3d9586b44233a5990d871f3f518bced365a05cafd3d66a97b0a9b2ec722d5"
+    "size": 55952,
+    "sha256": "a244eda83269607055447985c70d4df6e2353da27a270514d32acf6d20177a31"
   },
   {
     "path": "CITATION.cff",
@@ -228,6 +228,11 @@
     "path": "tests/test_core_examples_v0_2.py",
     "size": 5870,
     "sha256": "5d9a9f5f34452aa7104a576b8e16d897a1a8e361726d152f588ded640329ca9e"
+  },
+  {
+    "path": "tests/test_core_promotion_candidate_pre_review.py",
+    "size": 6270,
+    "sha256": "32c5208569ed7f5b3399ad880f52ebc6a13cb39149423a86a9bf09fe584f0fcc"
   },
   {
     "path": "tests/test_developer_activation_reporting.py",
@@ -2906,13 +2911,13 @@
   },
   {
     "path": "docs/README.en.md",
-    "size": 17347,
-    "sha256": "9f0cf9ff3ea17dcae5e2c6e3d7de6ac73405e549cbf15e81850801193e3288cc"
+    "size": 17732,
+    "sha256": "64aeb4481d40b176b310b007628803ad605033bb7805d1ed79cbc86a39cbf70a"
   },
   {
     "path": "docs/README.md",
-    "size": 15870,
-    "sha256": "f21d7aba8e0d7448d2ba8a0564d65bb7deb7b5b8c8b214ffcb5d6c85fb5820ec"
+    "size": 16219,
+    "sha256": "d23303be10f48caed721d2887e6acb0329b8c55be502bfa6dd98b0a19926d7a9"
   },
   {
     "path": "docs/architecture.md",
@@ -3040,14 +3045,24 @@
     "sha256": "2cf01857fb4d02febea53e4a2e34e4c3bfefda2d3133d07a2006b4afd9507dbc"
   },
   {
+    "path": "docs/reference/core-promotion-candidate-template.yaml",
+    "size": 1136,
+    "sha256": "64e7a58b749fe14d8e36c2af44b94a8b7feaf9c2ae8a3542ec36fe9bbdad1192"
+  },
+  {
     "path": "docs/reference/cross-line-promotion-gate-v0.1.md",
-    "size": 6337,
-    "sha256": "61fd7bd8200074fcc237c7a825d8d800ba594298a2ec2742c5628e1039be8b08"
+    "size": 6611,
+    "sha256": "549d28bd5f8fe03ba783bdb89f49f70b52b249a95ebfe94d77f2476cbefdf137"
+  },
+  {
+    "path": "docs/reference/developer-activation-observer-runbook-v0.1.md",
+    "size": 3591,
+    "sha256": "c34cd168cf5891b9ceaa0d9ed2a9b637f5e4c9ccba2e8a280334ebe80d6d5f14"
   },
   {
     "path": "docs/reference/developer-activation-protocol-v0.1.md",
-    "size": 7797,
-    "sha256": "fdf7a835717424fd5958b0de51366ce456266e728b77b73188216456935f3c84"
+    "size": 7895,
+    "sha256": "b7643cc3b94e4f8a67ee47fecfc3a6adb65c33a48f21b21feda9db0961ae546f"
   },
   {
     "path": "docs/reference/developer-activation-result-template.yaml",
@@ -3083,6 +3098,11 @@
     "path": "docs/reference/reference-agent-v0.1.md",
     "size": 8577,
     "sha256": "df2c4ee3d979e379eb44dd62673570a444dae74bdcfa6aa0591baa337fce1d05"
+  },
+  {
+    "path": "docs/reference/second-system-validation-protocol-v0.1.md",
+    "size": 5205,
+    "sha256": "d222e6d9be47a0deb26aa29b1835f9536ad673d6b14de8ff7c5a3390192ae649"
   },
   {
     "path": "docs/reference/status-model.md",
@@ -3336,8 +3356,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 44872,
-    "sha256": "5e7b05e73ccb93e730b2d4e65fee0a6210feef1b5ffa53f4f0cfe1614dc02803"
+    "size": 45462,
+    "sha256": "eae315db1372880bf8b84e7ab51a12938b6baf94ebf0fc0db4d8556c7ff1d5b8"
   },
   {
     "path": ".release/release_public.py",
@@ -3378,6 +3398,11 @@
     "path": "skills/geotask-core/SKILL.md",
     "size": 11934,
     "sha256": "76b4f775cf742ea3575d984019798e23bd0e864fa6387e85fb07c6c41704f251"
+  },
+  {
+    "path": "tools/evaluate_core_promotion_candidate.py",
+    "size": 7738,
+    "sha256": "78b28366663bd176ce3f761010f243032692d57ae92b042cef8de5e9563597e7"
   },
   {
     "path": "tools/generate_case_catalog.py",

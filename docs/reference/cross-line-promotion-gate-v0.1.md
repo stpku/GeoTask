@@ -60,7 +60,7 @@ A candidate may enter Core only when all of the following are satisfied:
 6. **Core-native verification:** public-safe tests and fixtures demonstrate the abstraction without requiring a live Lowa database, private credentials, or Lowa-only runtime behavior.
 7. **Compatibility is explicit:** public naming, schema/version impact, migration needs, and failure behavior are reviewed before the capability is added to Core.
 
-Passing only the first Lowa-GT Integration is therefore insufficient for Core promotion.
+Passing only the first Lowa-GT Integration is therefore insufficient for Core promotion. `docs/reference/second-system-validation-protocol-v0.1.md` defines the evidence package for the required independent second-system reuse step, and `tools/evaluate_core_promotion_candidate.py` may only mark a candidate `eligible_for_gate_review`; it never decides `PROMOTE`.
 
 ## 6. Gate outcomes
 

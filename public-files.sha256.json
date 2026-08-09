@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 55952,
-    "sha256": "a244eda83269607055447985c70d4df6e2353da27a270514d32acf6d20177a31"
+    "size": 56430,
+    "sha256": "8fc67b4d54b6447a77174d35651b916607adc56fa159898d2bdb2ea6f32b67aa"
   },
   {
     "path": "CITATION.cff",
@@ -723,6 +723,11 @@
     "path": "tests/test_provider_neutral_model_adapter_example.py",
     "size": 13351,
     "sha256": "511869dec1f5c776801c58a31488bfa094aeace382bef291655d362b25524e06"
+  },
+  {
+    "path": "tests/test_public_identity_boundary.py",
+    "size": 2362,
+    "sha256": "6ba09db327b3efe733bf9aacf266ddd3644d61702cd12a960637decc979219e9"
   },
   {
     "path": "tests/test_reference_agent_experience_page.py",
@@ -3326,8 +3331,8 @@
   },
   {
     "path": ".release/README.md",
-    "size": 6438,
-    "sha256": "c7e71f4f9422a092103e04b43fa3fa5771641870139c3331a7e8984fdb09432f"
+    "size": 7092,
+    "sha256": "069fcda5f49f1ffbd94d4d7eebf626448798eba65556ad4c181cdf814ae6e3fe"
   },
   {
     "path": ".release/collect_rc_evidence.py",
@@ -3341,8 +3346,8 @@
   },
   {
     "path": ".release/export_public.py",
-    "size": 6107,
-    "sha256": "a8bb3c8757ec944fe41912a06b5ac45ea4ace907cb8f8c3fc0d32a1e4cd04410"
+    "size": 5180,
+    "sha256": "086000fb0dd0ec277c4cb30d53f9f491dccc1e809706b6eab1d9e9e9fc9e193b"
   },
   {
     "path": ".release/hash_public_export.py",
@@ -3356,18 +3361,23 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 45462,
-    "sha256": "eae315db1372880bf8b84e7ab51a12938b6baf94ebf0fc0db4d8556c7ff1d5b8"
+    "size": 45554,
+    "sha256": "32332a5107ac21e3aaecb677bcfb0993c0ce37b2b93d4171391bddfd3d9193ae"
   },
   {
     "path": ".release/release_public.py",
-    "size": 6716,
-    "sha256": "de5496b58cbd289b050aab4a87b03fe0bf6442ad46b0bbe8ca2f9057c462a85e"
+    "size": 7101,
+    "sha256": "a95d1c2ce1e956848d0a9de96896827e5efc01d22ce0092b7091660b06ea601c"
   },
   {
     "path": ".release/scan_public_export.py",
     "size": 12545,
     "sha256": "60a5fa2675cbc086482134af00a3623f3941cf65f9c4bb19b168f048585a523e"
+  },
+  {
+    "path": ".release/scan_public_identity.py",
+    "size": 3815,
+    "sha256": "f3b6c1aeae4c21fa6ede77ddfc1af5fb94fcd45c15a5f9e89d6c52bbb448e5dd"
   },
   {
     "path": ".release/verify_core_commit_scope.py",

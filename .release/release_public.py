@@ -96,6 +96,7 @@ def main() -> None:
     export_script = str(RELEASE_DIR / "export_public.py")
     verify_script = str(RELEASE_DIR / "verify_public_export.py")
     scan_script = str(RELEASE_DIR / "scan_public_export.py")
+    identity_scan_script = str(RELEASE_DIR / "scan_public_identity.py")
     hash_script = str(RELEASE_DIR / "hash_public_export.py")
 
     started_at = datetime.now(timezone.utc)
@@ -155,7 +156,15 @@ def main() -> None:
             print("\n  [WARN] Scan found issues — review them before release")
             sys.exit(1)
 
-        # Stage 5: Hash Generate
+        # Stage 5: Protected identity scan
+        if run_stage("Protected Identity Scan", [identity_scan_script, str(output_dir)]):
+            stages_passed += 1
+        else:
+            stages_failed += 1
+            print("\nPipeline aborted after protected identity scan failure.")
+            sys.exit(1)
+
+        # Stage 6: Hash Generate
         hash_out = str(output_dir / "public-files.sha256.json")
         if run_stage("Hash Generate", [hash_script, "generate", str(output_dir), hash_out]):
             stages_passed += 1

@@ -48,6 +48,7 @@ include:
   - "tests/test_developer_activation_reporting.py"
   - "tests/test_core_promotion_candidate_pre_review.py"
   - "tests/test_core_distribution_boundary.py"
+  - "tests/test_public_identity_boundary.py"
   - "tests/test_core_baseline_plan.py"
   - "tests/test_core_commit_scope.py"
   - "tests/test_provider_neutral_model_adapter_example.py"
@@ -183,6 +184,7 @@ include:
   - ".release/verify_core_commit_scope.py"
   - ".release/verify_schema_distribution.py"
   - ".release/scan_public_export.py"
+  - ".release/scan_public_identity.py"
   - ".release/hash_public_export.py"
   - ".release/README.md"
   - "src/geotask_build_support.py"
@@ -310,7 +312,6 @@ include:
   - "docs/reference/core-distribution-boundary-v0.1.md"
   - "docs/normalizer_v0_2_design.md"
   - "docs/eval_spec.md"
-  - "docs/architecture_decisions/**"
 
   # Public machine-readable specification
   - "schemas/geotask-agent-generation-preparation-v0.1.schema.json"
@@ -861,6 +862,7 @@ required:
   - "tests/test_developer_activation_reporting.py"
   - "tests/test_core_promotion_candidate_pre_review.py"
   - "tests/test_core_distribution_boundary.py"
+  - "tests/test_public_identity_boundary.py"
   - "tests/test_core_baseline_plan.py"
   - "tests/test_core_commit_scope.py"
   - "tests/test_provider_neutral_model_adapter_example.py"

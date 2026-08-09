@@ -4,8 +4,9 @@
 Usage:
     python .release/export_public.py [--dry-run] [--clean] OUTPUT_DIR
 
-Reads ``.release/public-manifest.yaml``, copies include-matched files to
-OUTPUT_DIR, respects exclude patterns, and checks forbidden paths.
+Reads ``.release/public-manifest.yaml``, considers repository-tracked files only,
+copies include-matched files to OUTPUT_DIR, respects exclude patterns, and checks
+forbidden paths.
 
 Does NOT access network, commit, or push.
 """
@@ -16,14 +17,13 @@ import argparse
 import fnmatch
 import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
-from typing import Optional
 
 import yaml
 
 
-# ── Globals ──────────────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MANIFEST_PATH = PROJECT_ROOT / ".release" / "public-manifest.yaml"
 
@@ -44,53 +44,45 @@ def matches_any(name: str, patterns: list[str]) -> bool:
     return False
 
 
+def _tracked_paths() -> list[str]:
+    """Return Git-tracked repository paths only."""
+    proc = subprocess.run(
+        ["git", "ls-files", "-z"],
+        cwd=str(PROJECT_ROOT),
+        check=True,
+        capture_output=True,
+    )
+    return [raw.decode("utf-8") for raw in proc.stdout.split(b"\0") if raw]
+
+
 def collect_files(manifest: dict) -> list[Path]:
-    """Walk the project and collect files matching include/exclude rules."""
+    """Collect tracked files matching include/exclude rules."""
     includes: list[str] = manifest.get("include", [])
     excludes: list[str] = manifest.get("exclude", [])
     forbidden: list[str] = manifest.get("forbidden_paths", [])
 
-    collected: dict[str, Path] = {}  # relative_path → absolute Path
+    collected: dict[str, Path] = {}
 
-    # Walk entire project
-    for root, dirs, files in os.walk(PROJECT_ROOT):
-        # Skip excluded directories in-place
-        dirs_to_remove = []
-        for d in dirs:
-            rel_dir = os.path.relpath(os.path.join(root, d), PROJECT_ROOT).replace("\\", "/")
-            if matches_any(rel_dir + "/", excludes) or matches_any(rel_dir, excludes):
-                dirs_to_remove.append(d)
-                continue
-            # Also skip forbidden directories during traversal
-            for fp in forbidden:
-                fp_norm = fp.rstrip("/")
-                if rel_dir == fp_norm or rel_dir.startswith(fp_norm + "/"):
-                    dirs_to_remove.append(d)
-                    break
-        for d in dirs_to_remove:
-            dirs.remove(d)
+    for tracked in _tracked_paths():
+        rel_path = tracked.replace("\\", "/")
+        abs_path = PROJECT_ROOT / rel_path
+        if not abs_path.is_file():
+            continue
 
-        for f in files:
-            abs_path = Path(root) / f
-            rel_path = os.path.relpath(abs_path, PROJECT_ROOT).replace("\\", "/")
+        if matches_any(rel_path, excludes):
+            continue
 
-            # Explicit exclude check
-            if matches_any(rel_path, excludes):
-                continue
+        is_forbidden = False
+        for fp in forbidden:
+            fp_norm = fp.rstrip("/")
+            if rel_path == fp_norm or rel_path.startswith(fp_norm + "/"):
+                is_forbidden = True
+                break
+        if is_forbidden:
+            continue
 
-            # Skip forbidden paths silently (they are excluded from export)
-            is_forbidden = False
-            for fp in forbidden:
-                fp_norm = fp.rstrip("/")
-                if rel_path == fp_norm or rel_path.startswith(fp_norm + "/"):
-                    is_forbidden = True
-                    break
-            if is_forbidden:
-                continue
-
-            # Include check
-            if matches_any(rel_path, includes) or matches_any(rel_path + "/", includes):
-                collected[rel_path] = abs_path
+        if matches_any(rel_path, includes) or matches_any(rel_path + "/", includes):
+            collected[rel_path] = abs_path
 
     return list(collected.values())
 
@@ -143,7 +135,7 @@ def _format_size(size_bytes: int) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Export public GeoTask Core files per public-manifest.yaml"
+        description="Export public GeoTask Core tracked files per public-manifest.yaml"
     )
     parser.add_argument(
         "output_dir",
@@ -164,13 +156,12 @@ def main() -> None:
 
     output_dir = Path(args.output_dir).resolve()
 
-    # Safety: refuse to export into the project tree
     try:
         output_dir.relative_to(PROJECT_ROOT)
         print("ERROR: Output directory must be outside the project tree.")
         sys.exit(1)
     except ValueError:
-        pass  # OK — output_dir is outside project root
+        pass
 
     manifest = load_manifest()
     files = collect_files(manifest)

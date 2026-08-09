@@ -4,6 +4,10 @@ All notable public changes to GeoTask Core are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Add the P1 external developer activation evidence kit: an intentionally invalid-until-filled anonymized result template plus `tools/summarize_developer_activation.py`, which validates real participant records, derives the 30-minute metric from timestamps, applies the minimum-three and two-thirds gates, keeps automated tests out of the participant count, surfaces repeated friction/defects/documentation gaps, and returns `validated`, `validated_with_followups`, or fail-closed `not_yet_validated` without fabricating external evidence.
+
 ## [0.4.0] - 2026-08-08
 
 ### Added

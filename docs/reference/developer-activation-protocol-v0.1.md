@@ -121,12 +121,16 @@ This tests whether the project is modifiable rather than merely demonstrable.
 
 ## 6. Result fields
 
+Use `docs/reference/developer-activation-result-template.yaml` as the participant-record template. Keep participant aliases anonymous and record real timestamps with explicit timezone offsets.
+
 For each participant record:
 
 ```yaml
+schema_version: "0.1"
+protocol_version: "0.1"
 participant_alias: tester-01
-started_at: <timestamp>
-completed_at: <timestamp>
+started_at: <timestamp-with-timezone>
+completed_at: <timestamp-with-timezone>
 completed_within_30_minutes: true|false
 
 entrypoint_found_without_help: true|false
@@ -137,6 +141,12 @@ understood_rev1_rev2_rev3: true|false
 understood_unknown_not_false: true|false
 understood_bounded_impact: true|false
 understood_eligible_not_executed: true|false
+
+# Set this only when a failed first replay is attributable to a documented
+# repository/product defect rather than participant or environment error.
+first_replay_failure_repository_defect: true|false
+repository_defects:
+  - "..."
 
 help_events:
   - minute: 0
@@ -153,6 +163,8 @@ participant_summary: "..."
 observer_notes: "..."
 ```
 
+The aggregate tool recomputes the 30-minute result from `started_at` and `completed_at`; a hand-entered `completed_within_30_minutes` value that disagrees with the timestamps is rejected. A failed first replay counts as a documented repository defect only when `first_replay_failure_repository_defect=true` and at least one concrete `repository_defects` entry exists.
+
 ## 7. Aggregate gate
 
 Do not mark P1 external activation as validated merely because one technically experienced participant succeeds.
@@ -164,6 +176,26 @@ A recommended initial gate is:
 - at least 2/3 can modify and run a custom scenario without source-code changes;
 - at least 2/3 correctly explain rev1→rev2→rev3 and `eligible != executed`;
 - any repeated confusion point is converted into a documentation, CLI, packaging, or output-shape issue before P1 is declared validated.
+
+After real participant records exist, aggregate them with:
+
+```bash
+python3 tools/summarize_developer_activation.py \
+  results/tester-01.yaml results/tester-02.yaml results/tester-03.yaml \
+  --format markdown \
+  --output developer-activation-report.md
+```
+
+The tool is intentionally fail-closed:
+
+- fewer than three participant records returns `not_yet_validated`;
+- the two-thirds threshold is computed as `ceil(2 * attempted / 3)`;
+- lifecycle comprehension and `eligible != executed` must both be correct for the same participant to count toward that comprehension threshold;
+- automated tests and implementation agents never increment the participant count;
+- repeated confusion points, repository defects, or documentation gaps yield `validated_with_followups` rather than silently reporting a clean validation;
+- malformed or internally inconsistent participant records are rejected rather than guessed or repaired.
+
+CLI exit codes are `0` for `validated` or `validated_with_followups`, `2` for `not_yet_validated`, and `1` for invalid evidence records.
 
 This is a product-learning gate, not a statistical benchmark.
 

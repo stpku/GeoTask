@@ -1,0 +1,28 @@
+schema_version: "0.1"
+protocol_version: "0.1"
+participant_alias: tester-01
+started_at: "<replace-with-real-ISO-8601-timestamp-with-timezone>"
+completed_at: "<replace-with-real-ISO-8601-timestamp-with-timezone>"
+completed_within_30_minutes: false
+
+entrypoint_found_without_help: false
+first_replay_succeeded: false
+custom_scenario_succeeded: false
+
+understood_rev1_rev2_rev3: false
+understood_unknown_not_false: false
+understood_bounded_impact: false
+understood_eligible_not_executed: false
+
+# Set this true only when first_replay_succeeded=false AND the failure is a
+# repository/product defect rather than participant/environment error. Describe
+# the defect below so the aggregate gate can remain auditable.
+first_replay_failure_repository_defect: false
+repository_defects: []
+
+help_events: []
+confusion_points: []
+documentation_gaps: []
+
+participant_summary: ""
+observer_notes: ""

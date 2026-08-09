@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 54939,
-    "sha256": "83a321693442389527ef9ec19e5c0ee4375b427db2d1669317a19e04fbfb537f"
+    "size": 55491,
+    "sha256": "b4b3d9586b44233a5990d871f3f518bced365a05cafd3d66a97b0a9b2ec722d5"
   },
   {
     "path": "CITATION.cff",
@@ -228,6 +228,11 @@
     "path": "tests/test_core_examples_v0_2.py",
     "size": 5870,
     "sha256": "5d9a9f5f34452aa7104a576b8e16d897a1a8e361726d152f588ded640329ca9e"
+  },
+  {
+    "path": "tests/test_developer_activation_reporting.py",
+    "size": 7385,
+    "sha256": "7d9b2d373fa7366ef2664e72e0b4177fad4a7d07f7bdb4967a3f2ebaac2654e7"
   },
   {
     "path": "tests/test_documentation_system.py",
@@ -2901,13 +2906,13 @@
   },
   {
     "path": "docs/README.en.md",
-    "size": 17193,
-    "sha256": "fd36dff1bdf93cb11dde7c3057b21a54aadc6a37bdd082150b95ba2abbf6f1b0"
+    "size": 17347,
+    "sha256": "9f0cf9ff3ea17dcae5e2c6e3d7de6ac73405e549cbf15e81850801193e3288cc"
   },
   {
     "path": "docs/README.md",
-    "size": 15748,
-    "sha256": "6d436032bb215596191eba85e1ef14c66362d63dc563b7dea6e61728f8fa6622"
+    "size": 15870,
+    "sha256": "f21d7aba8e0d7448d2ba8a0564d65bb7deb7b5b8c8b214ffcb5d6c85fb5820ec"
   },
   {
     "path": "docs/architecture.md",
@@ -3041,8 +3046,13 @@
   },
   {
     "path": "docs/reference/developer-activation-protocol-v0.1.md",
-    "size": 5865,
-    "sha256": "ea66fa40964776e74bd9576a864e3cc813d124bc5b87922eb3bad83431eddb60"
+    "size": 7797,
+    "sha256": "fdf7a835717424fd5958b0de51366ce456266e728b77b73188216456935f3c84"
+  },
+  {
+    "path": "docs/reference/developer-activation-result-template.yaml",
+    "size": 884,
+    "sha256": "579c699819904ae09338de48b98d89fa59efbdbec7a0863cae8aa138e3c9932b"
   },
   {
     "path": "docs/reference/evidence-and-recovery.md",
@@ -3326,8 +3336,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 44493,
-    "sha256": "8a31bd3cbd23d8ea93f9a76fe8f817fab7b9030a4c6328245a8a9c2cd8b5dc44"
+    "size": 44872,
+    "sha256": "5e7b05e73ccb93e730b2d4e65fee0a6210feef1b5ffa53f4f0cfe1614dc02803"
   },
   {
     "path": ".release/release_public.py",
@@ -3378,5 +3388,10 @@
     "path": "tools/scaffold_case.py",
     "size": 21552,
     "sha256": "32dbb19e44643fb446c8e8b3c81854effaa3dce0bea87378f75c3e6f86ea69ea"
+  },
+  {
+    "path": "tools/summarize_developer_activation.py",
+    "size": 17872,
+    "sha256": "1c8eef6e9dc5b573721b805d435b3089d160b91cebb3b03d2aa4df8c0fa6e531"
   }
 ]

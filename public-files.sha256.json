@@ -3376,8 +3376,8 @@
   },
   {
     "path": ".release/scan_public_identity.py",
-    "size": 3815,
-    "sha256": "f3b6c1aeae4c21fa6ede77ddfc1af5fb94fcd45c15a5f9e89d6c52bbb448e5dd"
+    "size": 4391,
+    "sha256": "5aa89a55c7d943e44972aadf4d811609c6c0d1e71788580693b20f062fc44c69"
   },
   {
     "path": ".release/verify_core_commit_scope.py",

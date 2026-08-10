@@ -731,8 +731,8 @@
   },
   {
     "path": "tests/test_reference_agent_activation.py",
-    "size": 5956,
-    "sha256": "ee574b7948d90c03c972e549d9bc9320ebad21259ab28b86325cefd173a11e32"
+    "size": 6067,
+    "sha256": "6b179b8df94e45860c998a4a95a6f78e4983182e99d11d459a27c70fa34acbe6"
   },
   {
     "path": "tests/test_reference_agent_experience_page.py",

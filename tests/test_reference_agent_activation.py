@@ -5,7 +5,6 @@ from pathlib import Path
 
 import pytest
 
-import geotask_build_support
 from geotask_core import cli
 from geotask_core.reference_agent_activation import (
     REFERENCE_AGENT_BUNDLE_MANIFEST,
@@ -158,6 +157,9 @@ def test_cli_agent_demo_existing_target_fails_closed(
 
 
 def test_build_hook_reference_agent_bundle_matches_canonical_source(tmp_path: Path) -> None:
+    pytest.importorskip("setuptools", reason="build-backend dependency is not a Core runtime dependency")
+    import geotask_build_support
+
     geotask_build_support._copy_reference_agent_bundle(ROOT, tmp_path)
     built = tmp_path / "geotask_core" / "reference_agent_demo"
     installed_manifest = json.loads(

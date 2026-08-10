@@ -29,9 +29,18 @@ from typing import Any, Mapping, Sequence
 import yaml
 
 # Make the replay runnable from a source checkout as well as an installed package.
-_REPO_ROOT = Path(__file__).resolve().parents[3]
-_SRC_ROOT = _REPO_ROOT / "src"
-if _SRC_ROOT.is_dir() and str(_SRC_ROOT) not in sys.path:
+# A materialized activation workspace may live at any filesystem depth, so never
+# assume a fixed number of parents. Only inject a source path when a checkout is
+# actually discoverable; otherwise the installed `geotask_core` package is used.
+_SRC_ROOT = next(
+    (
+        parent / "src"
+        for parent in Path(__file__).resolve().parents
+        if (parent / "src" / "geotask_core").is_dir()
+    ),
+    None,
+)
+if _SRC_ROOT is not None and str(_SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(_SRC_ROOT))
 
 from geotask_core.v1.canonicalizer import canonicalize

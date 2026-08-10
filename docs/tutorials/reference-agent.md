@@ -4,24 +4,26 @@
 
 This tutorial is for developers who want to understand the complete GeoTask lifecycle without reading GT01–GT42 first. A fictional low-altitude facility receives new obstacle evidence. The workflow shows how that evidence moves through World State, Discrepancy, Correction, Impact, and Control until the report becomes eligible for refresh—without pretending that the report was actually published.
 
-> **Boundary:** all data is fictional. The tutorial uses the public Core and local reference code only. It does not read a Lowa-GT production database, fetch live regulatory data, write production state, publish a report, or execute a real-world action.
+> **Boundary:** all data is fictional. The tutorial uses the public Core and local reference code only. It does not read an industry production database, fetch live regulatory data, write production state, publish a report, or execute a real-world action.
 
-## 1. Prepare a source checkout
+## 1. Activate the packaged Reference Agent
 
-The fixed scenarios and replay script are public repository examples, so run this tutorial from a source checkout:
+After installing GeoTask Core, materialize a verified copy of the Reference Agent and replay the success path in one command:
 
 ```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
-python -m pip install -e .
+python -m pip install geotask-core
+geotask agent demo --output ./geotask-reference-agent
+cd geotask-reference-agent
 ```
 
-If you are already inside the GeoTask repository, continue directly. `replay.py` also supports an installed `geotask-core` package while keeping the example files in the checkout.
+The command refuses to overwrite an existing target, verifies the bundled SHA-256 manifest, copies the fictional teaching assets into a developer-owned directory, and runs the deterministic success replay. It does not fetch external truth or authorize any action.
+
+From a source checkout, the canonical example remains available at `examples/reference_agent/facility_assessment_update/`; both paths run the same public Reference Agent logic.
 
 ## 2. Replay the success scenario
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario success \
   --check-expected
 ```
@@ -179,14 +181,14 @@ action_authorized = false
 action_executed = false
 ```
 
-GeoTask establishes that an external business workflow may now take the next explicitly authorized step. Lowa-GT or another industry system still owns the real write, approval, publication, and new authoritative business record.
+GeoTask establishes only that an external business workflow may now take a next step **if that external authority explicitly authorizes it**. The authoritative external system still owns the real write, approval, publication, and new System-of-Record entry.
 
 ## 9. Replay the fail-closed scenarios
 
 Missing evidence:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario missing_evidence \
   --check-expected
 ```
@@ -196,7 +198,7 @@ The result remains `unverifiable` and emits an Evidence Request.
 Fresh conflicting evidence:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario conflicting_evidence \
   --check-expected
 ```
@@ -206,7 +208,7 @@ Two fresh independent observations report 70 m and 30 m. No precedence or adjudi
 Stale evidence:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario stale_evidence \
   --check-expected
 ```
@@ -216,7 +218,7 @@ Existing data is not automatically current evidence; the result remains `unverif
 Explicit contradiction:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario contradicted \
   --check-expected
 ```
@@ -228,7 +230,7 @@ The fresh obstacle position produces a deterministic distance of 30 m. That fact
 Copy the success scenario without changing Core code:
 
 ```bash
-cp examples/reference_agent/facility_assessment_update/scenarios/success.json /tmp/geotask-reference-60m.json
+cp scenarios/success.json /tmp/geotask-reference-60m.json
 ```
 
 In the copied file change only:
@@ -243,7 +245,7 @@ You may remove the fixed `expected` block because it belongs to the built-in acc
 Run the custom scenario:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario-file /tmp/geotask-reference-60m.json
 ```
 
@@ -264,8 +266,8 @@ This is a Product Track requirement: a developer can modify an actual input stat
 Running the same fixed input twice should preserve the same `replay_fingerprint`:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py --scenario success
-python3 examples/reference_agent/facility_assessment_update/replay.py --scenario success
+python replay.py --scenario success
+python replay.py --scenario success
 ```
 
 The automated tests enforce this property as well.
@@ -290,16 +292,16 @@ The focused suite covers:
 - `eligible != executed`;
 - the public experience page and project entry point.
 
-## 13. Next: map the pattern into Lowa-GT without copying its database
+## 13. Next: adapt the pattern without copying an external System of Record
 
-The public Reference Agent proves the generic mechanism only. The first real industry validation follows `GeoTask ↔ Lowa-GT Integration Contract v0.1` in read-only/shadow mode:
+The public Reference Agent proves the generic Core mechanism only. When adapting it to a real system, keep the authoritative business state outside GeoTask Core:
 
 ```text
-Lowa-GT authoritative facility/evidence/assessment/report state
-→ bounded Trusted State Snapshot
+external authoritative state
+→ bounded trusted snapshot
 → GeoTask Verification / Impact / Control
 → human-readable recommendation
-→ Lowa-GT decides whether to rescore or refresh
+→ external authority decides whether any write or action is allowed
 ```
 
-GeoTask does not become a second low-altitude System of Record and does not directly write the Lowa-GT production database.
+GeoTask Core must not become a second business System of Record, infer approval from technical eligibility, or directly perform an industry production write merely because a deterministic check passed.

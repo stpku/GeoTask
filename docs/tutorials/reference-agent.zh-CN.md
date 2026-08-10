@@ -4,24 +4,26 @@
 
 本教程面向第一次接触 GeoTask 完整生命周期的开发者。你不需要先阅读 GT01—GT42；目标是在一个虚构的低空设施评估更新场景中，看清一条新证据如何经过 World State、Discrepancy、Correction、Impact 和 Control，最终只得到“报告具备更新条件”，而不是把它误写成“报告已经发布”。
 
-> **边界：** 本教程全部使用虚构数据，只运行公共 Core 和本地参考代码，不访问 Lowa-GT 生产数据库，不调用真实监管数据，不自动写库、发布报告或执行现实动作。
+> **边界：** 本教程全部使用虚构数据，只运行公共 Core 和本地参考代码，不访问任何行业生产数据库，不调用真实监管数据，不自动写库、发布报告或执行现实动作。
 
-## 1. 准备源码环境
+## 1. 激活安装包中的 Reference Agent
 
-Reference Agent 的固定场景、脚本和体验材料属于公共仓库示例，因此本教程从源码仓库运行：
+安装 GeoTask Core 后，用一个命令生成经过 SHA-256 校验的 Reference Agent 工作目录，并立即重放成功场景：
 
 ```bash
-git clone https://github.com/stpku/GeoTask.git
-cd GeoTask
-python -m pip install -e .
+python -m pip install geotask-core
+geotask agent demo --output ./geotask-reference-agent
+cd geotask-reference-agent
 ```
 
-如果你已经处于 GeoTask 源码工作区，也可以直接继续。`replay.py` 同时兼容源码 checkout 和已安装的 `geotask-core` 包。
+该命令不会覆盖已有目录，会先验证内置教材 bundle，再把虚构示例复制到开发者自己的目录并执行确定性重放；不会获取外部真实数据，也不会授权任何动作。
+
+如果使用源码 checkout，规范示例仍位于 `examples/reference_agent/facility_assessment_update/`；两条路径运行的是同一套公共 Reference Agent 逻辑。
 
 ## 2. 先运行成功场景
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario success \
   --check-expected
 ```
@@ -181,14 +183,14 @@ action_authorized = false
 action_executed = false
 ```
 
-GeoTask 只证明外部业务系统**现在具备执行下一步的条件**；真正的 Lowa-GT 或其他行业系统仍必须通过自己的服务边界完成写库、审批和发布，并产生新的权威记录。
+GeoTask 只证明外部业务系统**在技术上具备进入下一步判断的条件**；是否写库、审批、发布或执行动作，仍必须由外部权威系统显式授权并产生新的权威记录。
 
 ## 9. 运行四个失败关闭场景
 
 ### 缺少证据
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario missing_evidence \
   --check-expected
 ```
@@ -198,7 +200,7 @@ python3 examples/reference_agent/facility_assessment_update/replay.py \
 ### 新鲜证据互相冲突
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario conflicting_evidence \
   --check-expected
 ```
@@ -208,7 +210,7 @@ python3 examples/reference_agent/facility_assessment_update/replay.py \
 ### 证据已经过期
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario stale_evidence \
   --check-expected
 ```
@@ -218,7 +220,7 @@ python3 examples/reference_agent/facility_assessment_update/replay.py \
 ### 新证据明确否定安全条件
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario contradicted \
   --check-expected
 ```
@@ -230,7 +232,7 @@ python3 examples/reference_agent/facility_assessment_update/replay.py \
 现在不要改 Core 代码。复制成功场景：
 
 ```bash
-cp examples/reference_agent/facility_assessment_update/scenarios/success.json /tmp/geotask-reference-60m.json
+cp scenarios/success.json /tmp/geotask-reference-60m.json
 ```
 
 编辑 `/tmp/geotask-reference-60m.json`：
@@ -260,7 +262,7 @@ coordinates: [70, 0] → [60, 0]
 运行：
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
+python replay.py \
   --scenario-file /tmp/geotask-reference-60m.json
 ```
 
@@ -281,8 +283,8 @@ production_report_refreshed = false
 同一个固定场景重复运行时，`replay_fingerprint` 应保持一致：
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py --scenario success
-python3 examples/reference_agent/facility_assessment_update/replay.py --scenario success
+python replay.py --scenario success
+python replay.py --scenario success
 ```
 
 测试也会自动验证这一点。
@@ -307,16 +309,16 @@ python3 -m pytest \
 - `eligible != executed`；
 - 公共体验页与项目入口。
 
-## 13. 下一步：映射到 Lowa-GT，而不是复制低空数据库
+## 13. 下一步：适配真实系统，但不要复制外部 System of Record
 
-公开 Reference Agent 只证明通用机制。首个真实行业验证将按照 `GeoTask ↔ Lowa-GT Integration Contract v0.1` 进入只读/影子模式：
+公开 Reference Agent 只证明通用 Core 机制。映射到真实系统时，应始终把权威业务状态留在外部系统：
 
 ```text
-Lowa-GT authoritative facility/evidence/assessment/report state
-→ bounded Trusted State Snapshot
+external authoritative state
+→ bounded trusted snapshot
 → GeoTask Verification / Impact / Control
 → human-readable recommendation
-→ Lowa-GT decides whether to rescore or refresh
+→ external authority decides whether any write or action is allowed
 ```
 
-GeoTask 不成为第二个低空 System of Record，也不会直接替 Lowa-GT 写数据库。
+GeoTask Core 不应成为第二个业务 System of Record，也不能把技术 eligibility 推断成授权，更不能因为确定性检查通过就直接执行行业生产写入。

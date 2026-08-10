@@ -17,7 +17,10 @@
 
 ```bash
 pip install geotask-core
+geotask agent demo --output ./geotask-reference-agent
 ```
+
+`agent demo` 会校验安装包内的 Reference Agent 教材 bundle、生成一个可自由修改的本地工作目录，并立即执行一次确定性成功场景重放；它不会读取外部真实数据、写生产状态或授权现实动作。
 
 GeoTask把多模态模型、传感器、地图、权威数据和人工输入转化为显式的世界对象、时空关系、状态、证据和行动约束，构建可计算、可验证、可更新、可追溯的时空世界状态。它不是把整个世界隐式压进一个神经网络，而是让智能体依赖的现实事实能够被查看、复算、纠偏和持续维护。
 

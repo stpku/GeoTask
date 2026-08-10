@@ -15,6 +15,7 @@ Usage:
     geotask agent prepare <generated.yaml> [--format text|json]
     geotask agent retry <blocked-report.json> <revised.yaml> [--format text|json]
     geotask agent recover <task.yaml> --evidence <state.yaml> [--format text|json]
+    geotask agent demo [--output <dir>] [--scenario <name>] [--format text|json]
     geotask runtime inspect [runtime-descriptor.json] [--profile] [--format text|json]
     geotask runtime check <runtime-descriptor.json> <runtime-request.json> [--format text|json]
     geotask runtime mock <runtime-request.json> [--format text|json]
@@ -83,6 +84,14 @@ from geotask_core.v1.agent_generation import (
     AgentGenerationError,
     prepare_generated_document,
     retry_generated_document,
+)
+from geotask_core.reference_agent_activation import (
+    REFERENCE_AGENT_DEFAULT_OUTPUT,
+    REFERENCE_AGENT_SCENARIOS,
+    ReferenceAgentActivationError,
+    activation_report,
+    materialize_reference_agent,
+    replay_materialized_reference_agent,
 )
 from geotask_core.v1.runtime_interface import (
     FailClosedMockRuntime,
@@ -1459,6 +1468,11 @@ def _print_agent_usage(stream=None) -> None:
         file=out,
     )
     print(
+        "       geotask agent demo [--output <dir>] [--scenario <name>] "
+        "[--format text|json] [--compact]",
+        file=out,
+    )
+    print(
         "The preview Agent profile composes existing Artifact, execution, and "
         "control contracts without calling a model or executing next_action.",
         file=out,
@@ -1664,6 +1678,54 @@ def _parse_agent_recover_args(args: list[str]) -> dict[str, object]:
         raise ValueError("--compact is supported only with --format json")
     if parsed["format"] == "text" and parsed["output_path"] is not None:
         raise ValueError("--output is supported only with --format json")
+    return parsed
+
+
+def _parse_agent_demo_args(args: list[str]) -> dict[str, object]:
+    parsed: dict[str, object] = {
+        "output_dir": REFERENCE_AGENT_DEFAULT_OUTPUT,
+        "scenario": "success",
+        "format": "text",
+        "compact": False,
+    }
+    seen: set[str] = set()
+    index = 0
+    while index < len(args):
+        arg = args[index]
+        if arg in ("--help", "-h"):
+            _print_agent_usage()
+            return {"help": True}
+        if arg == "--compact":
+            if parsed["compact"]:
+                raise ValueError("--compact may be provided only once")
+            parsed["compact"] = True
+            index += 1
+            continue
+        if arg in {"--output", "--scenario", "--format"}:
+            if arg in seen:
+                raise ValueError(f"{arg} may be provided only once")
+            if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                raise ValueError(f"{arg} requires a value")
+            seen.add(arg)
+            target = {
+                "--output": "output_dir",
+                "--scenario": "scenario",
+                "--format": "format",
+            }[arg]
+            parsed[target] = args[index + 1]
+            index += 2
+            continue
+        raise ValueError(f"unknown agent demo option: {arg}")
+
+    if parsed["format"] not in {"text", "json"}:
+        raise ValueError("agent demo --format must be text or json")
+    if parsed["compact"] and parsed["format"] != "json":
+        raise ValueError("--compact is supported only with --format json")
+    if parsed["scenario"] not in REFERENCE_AGENT_SCENARIOS:
+        raise ValueError(
+            "agent demo --scenario must be one of: "
+            + ", ".join(REFERENCE_AGENT_SCENARIOS)
+        )
     return parsed
 
 
@@ -1892,8 +1954,61 @@ def _cmd_agent_recover(args: list[str]):
     return payload
 
 
+def _cmd_agent_demo(args: list[str]):
+    parsed = _parse_agent_demo_args(args)
+    if parsed.get("help"):
+        return None
+
+    target, manifest = materialize_reference_agent(str(parsed["output_dir"]))
+    scenario = str(parsed["scenario"])
+    replay_result = replay_materialized_reference_agent(target, scenario=scenario)
+    report = activation_report(
+        target,
+        manifest,
+        scenario=scenario,
+        replay_result=replay_result,
+    )
+    body = report["reference_agent_activation"]
+    replay = body["replay"]
+
+    if parsed["format"] == "json":
+        sys.stdout.write(_render_json(report, compact=bool(parsed["compact"])))
+    else:
+        print("GeoTask Reference Agent activation complete")
+        print(f"  Workspace: {body['output_dir']}")
+        print(
+            "  Bundle: "
+            f"v{body['bundle_version']} / {body['bundle_file_count']} files / "
+            f"sha256:{body['bundle_content_sha256']}"
+        )
+        print(f"  Scenario: {scenario}")
+        print(f"  Verification: {replay['verification_state']}")
+        print(f"  Control: {replay['control_state']}")
+        print(
+            "  Report update eligible: "
+            f"{str(replay['report_update_eligible']).lower()}"
+        )
+        print(
+            "  Production write performed: "
+            f"{str(replay['production_write_performed']).lower()}"
+        )
+        print(
+            "  Action authorized: "
+            f"{str(replay['action_authorized']).lower()}"
+        )
+        print(
+            "  Action executed: "
+            f"{str(replay['action_executed']).lower()}"
+        )
+        print("  Next: read README.md, edit a scenario copy, then replay with --scenario-file.")
+        print(
+            "  Example: python replay.py --scenario conflicting_evidence --check-expected"
+        )
+    return report
+
+
 def cmd_agent(args: list[str]):
-    """Inspect, prepare, retry guarded revisions, or recover blocked evidence."""
+    """Inspect, prepare, retry, recover evidence, or activate the Reference Agent."""
 
     try:
         if not args or args[0] in ("--help", "-h"):
@@ -1907,9 +2022,11 @@ def cmd_agent(args: list[str]):
             return _cmd_agent_retry(args[1:])
         if args[0] == "recover":
             return _cmd_agent_recover(args[1:])
+        if args[0] == "demo":
+            return _cmd_agent_demo(args[1:])
         raise ValueError(
             f"unknown agent command {args[0]!r}; "
-            "available commands: inspect, prepare, retry, recover"
+            "available commands: inspect, prepare, retry, recover, demo"
         )
     except SystemExit:
         raise
@@ -2792,6 +2909,7 @@ def main():
             "--result execution-result.json --state control-state.yaml"
         )
         print(f"  {cmd_name} agent inspect --format json")
+        print(f"  {cmd_name} agent demo --output ./geotask-reference-agent")
         print(
             f"  {cmd_name} agent prepare examples/core/agent_generated_distance_draft.yaml "
             "--repaired-output prepared.yaml"

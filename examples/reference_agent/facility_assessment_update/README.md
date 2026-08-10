@@ -19,7 +19,16 @@ All data in this directory is fictional.
 
 ## Replay
 
-From a source checkout:
+After installing GeoTask Core, the shortest activation path is:
+
+```bash
+geotask agent demo --output ./geotask-reference-agent
+cd geotask-reference-agent
+```
+
+This verifies the packaged Reference Agent bundle, materializes a developer-owned copy, and replays `success` without fetching external truth or authorizing an action.
+
+From a source checkout, the canonical example remains directly runnable:
 
 ```bash
 python3 examples/reference_agent/facility_assessment_update/replay.py --scenario success --check-expected
@@ -107,4 +116,4 @@ action_authorized
 action_executed
 ```
 
-Even the success scenario means only that the **external Lowa-GT or other industry workflow may perform an explicitly approved write later**. The Reference Agent itself does not perform that write.
+Even the success scenario means only that an **external industry workflow may perform a later write if its own authority explicitly approves it**. The Reference Agent itself does not perform that write.

@@ -12,6 +12,7 @@ prune build
 prune dist
 prune docs
 prune examples
+recursive-include examples/reference_agent/facility_assessment_update *.py *.md *.txt *.yaml *.json
 prune patent_evidence
 prune site
 prune tests

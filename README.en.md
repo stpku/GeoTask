@@ -17,7 +17,10 @@
 
 ```bash
 pip install geotask-core
+geotask agent demo --output ./geotask-reference-agent
 ```
+
+`agent demo` verifies the packaged Reference Agent teaching bundle, materializes an editable local workspace, and immediately replays the deterministic success scenario. It does not fetch external truth, write production state, or authorize a real-world action.
 
 GeoTask turns multimodal models, sensors, maps, authoritative data, and human input into explicit world objects, spatiotemporal relations, state, evidence, and action constraints. It builds a world state that is computable, verifiable, updatable, and traceable. Rather than hiding the whole world inside a neural representation, GeoTask makes the facts an agent depends on inspectable, recomputable, correctable, and maintainable.
 

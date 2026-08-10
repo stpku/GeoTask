@@ -28,23 +28,24 @@ The time box is an evaluation target, not a promise that every new user must fin
 
 Give the participant only:
 
-1. the public GeoTask repository URL or a clean source checkout;
+1. either the public `geotask-core` install instruction or the public GeoTask repository URL;
 2. `README.md` or `README.en.md`;
 3. permission to use the linked documentation normally.
 
-Do not tell them which source files implement the Reference Agent unless they find the links themselves.
+Do not tell them which source files implement the Reference Agent unless they find the links themselves. A pip-installed participant should not need a source checkout merely to discover and start the exercise.
 
 ## 5. Tasks
 
 ### Task A — Find and run the Reference Agent
 
-The participant should find the Product Track Reference Agent and successfully run:
+The participant should find the Product Track Reference Agent and successfully activate it from an installed package:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
-  --scenario success \
-  --check-expected
+geotask agent demo --output ./geotask-reference-agent
+cd geotask-reference-agent
 ```
+
+A source-checkout participant may run the canonical `replay.py` directly instead. In either path, the first successful replay must be the same deterministic `success` scenario.
 
 Record:
 
@@ -100,11 +101,10 @@ Ask them to explain why the system did not simply return the most convenient Boo
 
 ### Task E — Modify one input
 
-The participant should copy the success fixture, change the scenario ID and obstacle coordinates from `[70, 0]` to `[60, 0]`, then run:
+The participant should copy `scenarios/success.json`, change the scenario ID and obstacle coordinates from `[70, 0]` to `[60, 0]`, remove the fixed `expected` block, then run from the materialized workspace:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/replay.py \
-  --scenario-file <their-file>.json
+python replay.py --scenario-file <their-file>.json
 ```
 
 They should identify that:

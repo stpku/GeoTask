@@ -2,7 +2,7 @@
 
 **Status:** P2 Product Track benchmark  
 **Date:** 2026-08-07  
-**Executable:** `examples/reference_agent/facility_assessment_update/quality_benchmark.py`  
+**Executable:** `geotask benchmark quality` (installed Core); source/teaching wrapper: `examples/reference_agent/facility_assessment_update/quality_benchmark.py`
 **Scope:** fixed fictional Reference Agent v0.1 scenarios only
 
 ## 1. Purpose
@@ -102,28 +102,36 @@ action_executed = false
 
 ## 4. Run
 
-Human-readable summary:
+The installed Core exposes the benchmark as a first-class Product-Track CLI:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/quality_benchmark.py
+geotask benchmark quality --format text
 ```
 
 Machine-readable report:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/quality_benchmark.py \
-  --format json
+geotask benchmark quality --format json
 ```
 
 Write a report file:
 
 ```bash
-python3 examples/reference_agent/facility_assessment_update/quality_benchmark.py \
+geotask benchmark quality \
   --format json \
   --output /tmp/geotask-verification-quality.json
 ```
 
-The benchmark returns a non-zero exit status if its fixed acceptance metrics fail.
+The Reference Agent teaching bundle retains a standalone wrapper for source-checkout
+and materialized-workspace use:
+
+```bash
+python3 examples/reference_agent/facility_assessment_update/quality_benchmark.py
+```
+
+Both entrypoints execute the same installed `geotask_core` benchmark implementation;
+the example no longer maintains a second metric implementation. The benchmark
+returns a non-zero exit status if its fixed acceptance metrics fail.
 
 ## 5. v0.1 acceptance values
 

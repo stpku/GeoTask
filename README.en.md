@@ -67,7 +67,8 @@ GeoTask turns multimodal models, sensors, maps, authoritative data, and human in
 - [Reference Agent v0.1 specification](docs/reference/reference-agent-v0.1.md)
 - [Run the Reference Agent: fictional facility assessment update](examples/reference_agent/facility_assessment_update/README.md)
 - [Reference Agent end-to-end tutorial](docs/tutorials/reference-agent.md)
-- [Verification Quality Benchmark v0.1](docs/reference/verification-quality-benchmark-v0.1.md)
+- [Verification Quality Benchmark v0.1](docs/reference/verification-quality-benchmark-v0.1.md) — run from an installed package with `geotask benchmark quality`
+- [Verification Quality Benchmark v0.2](docs/reference/verification-quality-benchmark-v0.2.md) — run 34 deterministic synthetic perturbations with `geotask benchmark quality --suite perturbation`; no real-world accuracy or cross-domain claim
 - [GeoTask ↔ Lowa-GT Integration Contract v0.1](docs/reference/lowa-gt-integration-contract-v0.1.md)
 - [Cross-Line Promotion Gate v0.1](docs/reference/cross-line-promotion-gate-v0.1.md)
 - [Core Distribution Boundary v0.1](docs/reference/core-distribution-boundary-v0.1.md)

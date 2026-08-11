@@ -32,6 +32,7 @@ def test_reference_agent_source_bundle_is_deterministic_and_complete() -> None:
         "README.md",
         "replay.py",
         "quality_benchmark.py",
+        "quality_benchmark_v0_2.py",
         "request.txt",
         "task.yaml",
         "world_state_before.json",
@@ -88,6 +89,40 @@ def test_materialized_success_is_eligible_but_never_authorized_or_executed(
     assert decision["production_report_refreshed"] is False
     assert decision["action_authorized"] is False
     assert decision["action_executed"] is False
+
+
+def test_materialized_custom_scenario_file_replays_without_invented_expected_result(
+    tmp_path: Path,
+) -> None:
+    target, _ = materialize_reference_agent(tmp_path / "demo")
+    payload = json.loads((target / "scenarios" / "success.json").read_text(encoding="utf-8"))
+    scenario = payload["scenario"]
+    scenario["id"] = "developer-60m"
+    scenario["evidence"][0]["coordinates"] = [60, 0]
+    scenario.pop("expected", None)
+    custom = tmp_path / "developer-60m.json"
+    custom.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+    body = replay_materialized_reference_agent(
+        target,
+        scenario_path=custom,
+    )["reference_agent"]
+    decision = body["decision_assurance"]
+
+    assert body["scenario"] == "developer-60m"
+    assert body["verification"]["distance_m"] == 60.0
+    assert body["world_state_update"]["observation_state_revision"] == 2
+    assert body["world_state_update"]["successor_revision"] == 3
+    assert decision["report_update_eligible"] is True
+    assert decision["production_report_refreshed"] is False
+    assert decision["action_authorized"] is False
+    assert decision["action_executed"] is False
+
+    with pytest.raises(ReferenceAgentActivationError, match="scenario file not found"):
+        replay_materialized_reference_agent(
+            target,
+            scenario_path=tmp_path / "missing.json",
+        )
 
 
 def test_materialized_conflict_remains_fail_closed(tmp_path: Path) -> None:

@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""Standalone entrypoint for the GeoTask Verification Quality Benchmark v0.1.
+"""Standalone entrypoint for GeoTask Verification Quality Benchmark v0.2.
 
-The canonical benchmark implementation lives in the installed ``geotask_core``
-package so the same product-quality gate is available through both this teaching
-workspace and ``geotask benchmark quality``. The benchmark remains fixed to the
-fictional Reference Agent v0.1 scenarios and performs no network, model, industry,
-or production action.
+The canonical perturbation benchmark implementation lives in the installed
+``geotask_core`` package. This wrapper keeps the Reference Agent teaching
+workspace self-contained while preserving one implementation of the benchmark.
 """
 
 from __future__ import annotations
@@ -14,7 +12,6 @@ import sys
 from pathlib import Path
 
 
-# Make the example runnable from a source checkout as well as an installed package.
 _SRC_ROOT = next(
     (
         parent / "src"
@@ -32,8 +29,7 @@ from geotask_core.verification_quality_benchmark import (  # noqa: E402
 
 
 def main() -> int:
-    args = list(sys.argv[1:])
-    # Preserve the historical standalone-script default: human-readable text.
+    args = ["--suite", "perturbation", *sys.argv[1:]]
     if "--format" not in args:
         args = ["--format", "text", *args]
     _, exit_code = run_verification_quality_benchmark_command(args)

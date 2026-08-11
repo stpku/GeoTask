@@ -68,7 +68,8 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - [Reference Agent v0.1 规格](docs/reference/reference-agent-v0.1.md)
 - [运行 Reference Agent：虚构低空设施评估更新](examples/reference_agent/facility_assessment_update/README.md)
 - [Reference Agent从零教程](docs/tutorials/reference-agent.zh-CN.md)
-- [Verification Quality Benchmark v0.1](docs/reference/verification-quality-benchmark-v0.1.md)
+- [Verification Quality Benchmark v0.1](docs/reference/verification-quality-benchmark-v0.1.md) —— 安装包可直接运行 `geotask benchmark quality`
+- [Verification Quality Benchmark v0.2](docs/reference/verification-quality-benchmark-v0.2.md) —— `geotask benchmark quality --suite perturbation` 运行34个确定性合成扰动案例，不外推为现实准确率或跨域泛化
 - [GeoTask ↔ Lowa-GT Integration Contract v0.1](docs/reference/lowa-gt-integration-contract-v0.1.md)
 - [Cross-Line Promotion Gate v0.1](docs/reference/cross-line-promotion-gate-v0.1.md)
 - [Core Distribution Boundary v0.1](docs/reference/core-distribution-boundary-v0.1.md)

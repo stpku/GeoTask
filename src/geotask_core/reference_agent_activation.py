@@ -190,9 +190,16 @@ def replay_materialized_reference_agent(
     target: str | Path,
     *,
     scenario: str = "success",
+    scenario_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Replay one fixed scenario from a freshly materialized activation directory."""
-    if scenario not in REFERENCE_AGENT_SCENARIOS:
+    """Replay a fixed or developer-supplied scenario from a verified activation bundle.
+
+    Fixed named scenarios retain their shipped ``expected`` assertions. A custom
+    ``scenario_path`` is intentionally replayed without inventing an expected result;
+    callers may evaluate the returned deterministic state against their own declared
+    oracle or acceptance criteria.
+    """
+    if scenario_path is None and scenario not in REFERENCE_AGENT_SCENARIOS:
         raise ReferenceAgentActivationError(
             f"unsupported Reference Agent scenario {scenario!r}; "
             f"supported: {', '.join(REFERENCE_AGENT_SCENARIOS)}"
@@ -203,8 +210,16 @@ def replay_materialized_reference_agent(
 
     verify_reference_agent_bundle(target_path)
     module = _load_materialized_replay_module(target_path)
-    result = module.replay_scenario(scenario)
-    module._assert_expected(scenario, result)
+    if scenario_path is None:
+        result = module.replay_scenario(scenario)
+        module._assert_expected(scenario, result)
+    else:
+        custom_path = Path(scenario_path).expanduser().resolve()
+        if not custom_path.is_file():
+            raise ReferenceAgentActivationError(
+                f"Reference Agent scenario file not found: {custom_path}"
+            )
+        result = module.replay_scenario(scenario_path=custom_path)
     if not isinstance(result, dict):
         raise ReferenceAgentActivationError("Reference Agent replay did not return an object")
     return result

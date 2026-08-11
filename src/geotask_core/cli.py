@@ -25,6 +25,7 @@ Usage:
     geotask verify <verification-session.json> --state <world-state.json> --observation <observation.json> --bind <ref-id>=<file>
     geotask recheck <incremental-reevaluation-result.json> --bind <ref-id>=<file>
     geotask benchmark core [--iterations N] [--enforce-performance]
+    geotask benchmark quality [--format json|text] [--output <file>|-]
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
     python -m geotask_core.cli normalize <file.txt> [--geotask <file.yaml>]
@@ -61,6 +62,11 @@ from geotask_core.v1.control_evaluation import (
 )
 from geotask_core.v1.core_benchmark_cli import run_core_benchmark_command
 from geotask_core.v1.core_benchmark_contract import CoreBenchmarkFormatError
+from geotask_core.verification_quality_benchmark import (
+    VerificationQualityBenchmarkError,
+    print_verification_quality_usage,
+    run_verification_quality_benchmark_command,
+)
 from geotask_core.v1.result import GeotaskResult, ResultFormatError
 from geotask_core.v1.serialized_validation import (
     CONTROL_EVALUATION_VALIDATION_CONTRACT,
@@ -2833,20 +2839,34 @@ def cmd_recheck(args: list[str]):
 
 
 def cmd_benchmark(args: list[str]):
-    """Run public offline Core conformance and local performance checks."""
+    """Run public offline Core or Product-Track benchmark checks."""
     try:
         if not args or args[0] in {"--help", "-h"}:
-            command_args = ["--help"]
-        elif args[0] == "core":
-            command_args = args[1:]
+            print("Usage: geotask benchmark <command> [options]")
+            print("Commands:")
+            print("  core     Core conformance and local performance regression")
+            print("  quality  Reference Agent verification-quality product gate")
+            print()
+            run_core_benchmark_command(["--help"])
+            print_verification_quality_usage()
+            return None
+        if args[0] == "core":
+            report, exit_code = run_core_benchmark_command(args[1:])
+        elif args[0] == "quality":
+            report, exit_code = run_verification_quality_benchmark_command(args[1:])
         else:
             raise ValueError(
-                f"unknown benchmark command {args[0]!r}; available commands: core"
+                f"unknown benchmark command {args[0]!r}; available commands: core, quality"
             )
-        report, exit_code = run_core_benchmark_command(command_args)
     except SystemExit:
         raise
-    except (CoreBenchmarkFormatError, OSError, TypeError, ValueError) as exc:
+    except (
+        CoreBenchmarkFormatError,
+        VerificationQualityBenchmarkError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
         print(f"benchmark_failed: {exc}", file=sys.stderr)
         sys.exit(1)
     if exit_code:

@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 57495,
-    "sha256": "7dc4372425edc7a47cc8906771a95f350d96f8fb61675f9823d43a8aacdec0d7"
+    "size": 58079,
+    "sha256": "76d1598f81015c25d7c4da9a988132738059a91fb24e43b9ebd55ece2048076e"
   },
   {
     "path": "CITATION.cff",
@@ -51,13 +51,13 @@
   },
   {
     "path": "README.en.md",
-    "size": 31268,
-    "sha256": "6aacfde7759d4f0aea3d62e57c6db728439356c662e1f823f4100c26bcddb13c"
+    "size": 31579,
+    "sha256": "4c8f413dcfae946738541ffb451774c2781951dd0716f97adf526fd753c15c48"
   },
   {
     "path": "README.md",
-    "size": 28660,
-    "sha256": "b336a3c85919d942685703156a2531e8666045b1874676e2ad4c67327f73e3c7"
+    "size": 28955,
+    "sha256": "36dc2108a7ff1eef583e10a2428ce724a864a8659e2f5031a63f045c1cd41a40"
   },
   {
     "path": "ROADMAP.md",
@@ -121,8 +121,8 @@
   },
   {
     "path": ".github/workflows/ci.yml",
-    "size": 31188,
-    "sha256": "c7fc987dc3a2312fb505dbea4d05c6950f55c00e1fbbb42147dfd21087ec46f4"
+    "size": 32692,
+    "sha256": "048e3d7f6c08a0da24d6ad5a273fab2c8ba9adc4c6358872be088643ee855bab"
   },
   {
     "path": ".github/workflows/pages.yml",
@@ -731,8 +731,8 @@
   },
   {
     "path": "tests/test_reference_agent_activation.py",
-    "size": 6067,
-    "sha256": "6b179b8df94e45860c998a4a95a6f78e4983182e99d11d459a27c70fa34acbe6"
+    "size": 7493,
+    "sha256": "75b7252056aa78e1c9b0efd6a317708eefd19c19e730965c6d6948ef9137f776"
   },
   {
     "path": "tests/test_reference_agent_experience_page.py",
@@ -746,8 +746,8 @@
   },
   {
     "path": "tests/test_reference_agent_quality_benchmark.py",
-    "size": 4309,
-    "sha256": "03fde7fe19059346c35081a3bc46b1a3c8d95df3af552dcc58dabfc10fcaa769"
+    "size": 10036,
+    "sha256": "7db5041543e37e1ffd6e1bea614822815061db087dfa0d0d3b92776d5b39f43f"
   },
   {
     "path": "tests/test_reference_runtime_http_endpoint_example.py",
@@ -2236,8 +2236,13 @@
   },
   {
     "path": "examples/reference_agent/facility_assessment_update/quality_benchmark.py",
-    "size": 12808,
-    "sha256": "b8730f8dd706f8f6706181d4c8dc2e61747b2992ca1a6ed90c872ec8622475cd"
+    "size": 1358,
+    "sha256": "1b411622dbaa9364e9cdd4630259779a2d6c3f75fb9e9bf315405a0a9c9aea2c"
+  },
+  {
+    "path": "examples/reference_agent/facility_assessment_update/quality_benchmark_v0_2.py",
+    "size": 1099,
+    "sha256": "509e2b983d15a176615789f6ae0e257ff718fb35fad295e3ab92021c28a678aa"
   },
   {
     "path": "examples/reference_agent/facility_assessment_update/replay.py",
@@ -2621,8 +2626,8 @@
   },
   {
     "path": "src/geotask_core/cli.py",
-    "size": 111062,
-    "sha256": "ef5be7a18030d570099f218c6d6e8bca8acf42e98bf6e4d22d69cf63c3162419"
+    "size": 111849,
+    "sha256": "f426cafd3b4785ae27bac5bcda206ac507d7f870363f3bec2e5b8e932beeacef"
   },
   {
     "path": "src/geotask_core/evaluator.py",
@@ -2656,8 +2661,8 @@
   },
   {
     "path": "src/geotask_core/reference_agent_activation.py",
-    "size": 9296,
-    "sha256": "e7d28324de03f9d65b02942aa87fd18d6336a291348eba8e00f0afc78256b19c"
+    "size": 10020,
+    "sha256": "3c0ef5f2ba968a00c5c60cac6005e94bca5807da114f04dcd74b5d4ee6b9d124"
   },
   {
     "path": "src/geotask_core/result_schema.py",
@@ -2668,6 +2673,16 @@
     "path": "src/geotask_core/runner.py",
     "size": 12844,
     "sha256": "05c49bc3cd18aca164b289ca93e94f9d0ee9c5139db0070204a3e742c19086ac"
+  },
+  {
+    "path": "src/geotask_core/verification_quality_benchmark.py",
+    "size": 18492,
+    "sha256": "cdd08c16985327ba329ed3569523862166def1dc7818038c587ab0e07a3e6514"
+  },
+  {
+    "path": "src/geotask_core/verification_quality_perturbation_benchmark.py",
+    "size": 21254,
+    "sha256": "dea449f141db215400aeb1891c9b02bae18e416318541d37a4a37c1230825790"
   },
   {
     "path": "src/geotask_core/verifier.py",
@@ -2926,13 +2941,13 @@
   },
   {
     "path": "docs/README.en.md",
-    "size": 17732,
-    "sha256": "64aeb4481d40b176b310b007628803ad605033bb7805d1ed79cbc86a39cbf70a"
+    "size": 18109,
+    "sha256": "cc056c739035bdabe389fb88a624b8c0dbe37bce5dba116a66bee9c9da9e08bc"
   },
   {
     "path": "docs/README.md",
-    "size": 16547,
-    "sha256": "7ddf1f39b2922fd07768a79fe79d2bfc811ab2aa1e7235030c591d7acd06a4e5"
+    "size": 16885,
+    "sha256": "cd8d163fd3d8730c04ece3695cde8f29acc4e2567a72b02a3ddd02416158e8d0"
   },
   {
     "path": "docs/architecture.md",
@@ -2946,8 +2961,8 @@
   },
   {
     "path": "docs/cli_usage.md",
-    "size": 25248,
-    "sha256": "87828f1ab5e5641697e332592c24050ccfc4c93159fdec9f4337eb915c88a759"
+    "size": 26419,
+    "sha256": "f53f63984712415a961560c46fe0cc038d12d1033197ac7c1dbf9e001793e9dc"
   },
   {
     "path": "docs/design_principles.md",
@@ -2996,8 +3011,8 @@
   },
   {
     "path": "docs/productization_roadmap_v0_2.md",
-    "size": 9013,
-    "sha256": "6ded4252f61cbb9d4a54316b7f9a87c80d2be46f3a535801c5ec42fc40297fc6"
+    "size": 9177,
+    "sha256": "97a7b4f4473b5c61d7aab69c41feb183cd8eb67f7bb5ebf1467a746f10e2a8ce"
   },
   {
     "path": "docs/release_v0_1_0.md",
@@ -3161,8 +3176,13 @@
   },
   {
     "path": "docs/reference/verification-quality-benchmark-v0.1.md",
-    "size": 5860,
-    "sha256": "bdeafe951e4e8a789496d0a9b31189aea5a7c8abb21fc1fc5eb08235d9a6e1e1"
+    "size": 6188,
+    "sha256": "8c662e717f1c7de85eacf4efa87c0ac46ce8f8781d3245dad51716cb2e19dff5"
+  },
+  {
+    "path": "docs/reference/verification-quality-benchmark-v0.2.md",
+    "size": 6156,
+    "sha256": "01bd7915b771ba8bb40a467a2867e3ebbb31f8a3fe88ee521e51ce853c44d40f"
   },
   {
     "path": "docs/cookbook/gt01-gt20.md",
@@ -3406,8 +3426,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 46786,
-    "sha256": "115b5967addca3718f081f1d575b3f6a0e9a443e43af2a94e1ae9503b62e211b"
+    "size": 46846,
+    "sha256": "0465b4edab4303f3a63e37c74ccd11d9cf6946e1ea1503b9a2bc1f7c4777a77c"
   },
   {
     "path": ".release/release_public.py",

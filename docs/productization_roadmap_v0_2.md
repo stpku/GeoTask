@@ -53,7 +53,7 @@ What is still unproven:
 
 - external unfamiliar-developer activation in a bounded time;
 - a real Lowa-GT read-only exporter and shadow run against authoritative business state;
-- quantified verification quality beyond functional correctness/performance;
+- real/shadow verification quality beyond the deterministic fixed + synthetic perturbation benchmark coverage;
 - measured human-review benefit on the planned real-site shadow sample;
 - real commercial pull for private governance/runtime capabilities.
 
@@ -114,7 +114,7 @@ A developer unfamiliar with GT01–GT42 can install GeoTask, replay the chain, c
 
 - public object/Artifact/Schema/CLI naming freeze for the release scope;
 - Artifact/Capability Registry developer experience;
-- Verification Quality Benchmark covering error detection, missed error, false blocking, correction success and bounded impact scope;
+- Verification Quality Benchmark with a stable five-scenario fixture plus deterministic synthetic perturbation coverage for error detection, missed error, false blocking, control gating, correction success, bounded impact scope, replay and side-effect boundaries;
 - installation and migration matrix;
 - clean wheel/sdist/schema-bundle verification;
 - Reference Agent runs from an installed package;

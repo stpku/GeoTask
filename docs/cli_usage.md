@@ -442,6 +442,29 @@ geotask artifact validate \
   --format json
 ```
 
+## Verification Quality Benchmark
+
+Run the fixed fictional Reference Agent Product-Track quality gate directly from
+an installed Core package:
+
+```bash
+geotask benchmark quality --format text
+geotask benchmark quality --suite fixed --format json --output verification-quality.json
+geotask benchmark quality --suite perturbation --compact
+```
+
+The backward-compatible `fixed` suite reports error detection, missed errors, false
+blocking, correction success, bounded impact-scope precision/recall, and
+side-effect-boundary preservation over the five fixed Reference Agent scenarios.
+The `perturbation` suite expands this to 34 deterministic synthetic cases covering
+threshold boundaries, evidence freshness, conflict/consistent multi-source evidence,
+human-control gating, bounded correction/impact, deterministic replay, and
+side-effect boundaries. Neither suite claims real-world accuracy, automatic
+dependency discovery, cross-domain generalization, external truth, production
+authorization, or Core Promotion. The report is intentionally not a new registered
+Artifact; this command productizes an existing Product-Track metric rather than
+adding a new Core primitive.
+
 ## Runtime Interface
 
 Inspect the public fail-closed reference Runtime or the machine-readable interface

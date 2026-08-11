@@ -95,6 +95,18 @@ CITATION = ROOT / "CITATION.cff"
 PYPROJECT = ROOT / "pyproject.toml"
 ROADMAP = ROOT / "ROADMAP.md"
 ARCHITECTURE_MANIFESTO = ROOT / "docs" / "architecture_manifesto_v1.md"
+ARCHITECTURE_SERIES = tuple(
+    ROOT / "docs" / "articles" / "architecture-series" / name
+    for name in (
+        "README.zh-CN.md",
+        "01-why-agents-need-trusted-world-state.zh-CN.md",
+        "02-geotask-is-not-an-agent-framework.zh-CN.md",
+        "03-context-tool-result-world-state.zh-CN.md",
+        "04-unknown-evidence-and-recovery.zh-CN.md",
+        "05-from-trusted-conclusion-to-trusted-action.zh-CN.md",
+        "06-reference-agent-end-to-end.zh-CN.md",
+    )
+)
 REFERENCE_AGENT_SPEC = ROOT / "docs" / "reference" / "reference-agent-v0.1.md"
 LOWA_GT_INTEGRATION_CONTRACT = (
     ROOT / "docs" / "reference" / "lowa-gt-integration-contract-v0.1.md"
@@ -167,6 +179,7 @@ DOCUMENTS = (
     CODE_OF_CONDUCT,
     ROADMAP,
     ARCHITECTURE_MANIFESTO,
+    *ARCHITECTURE_SERIES,
     REFERENCE_AGENT_SPEC,
     LOWA_GT_INTEGRATION_CONTRACT,
     CROSS_LINE_PROMOTION_GATE,
@@ -256,6 +269,32 @@ def test_documentation_system_files_exist_and_are_substantive() -> None:
     for path in DOCUMENTS:
         assert path.is_file(), path
         assert path.stat().st_size > 1000, path
+
+
+def test_architecture_series_is_public_and_keeps_product_boundaries_explicit() -> None:
+    manifest = _manifest()
+    included = set(manifest["include"])
+    required = set(manifest["required"])
+    relative_paths = {
+        path.relative_to(ROOT).as_posix()
+        for path in ARCHITECTURE_SERIES
+    }
+
+    assert relative_paths <= included
+    assert relative_paths <= required
+
+    landing = ARCHITECTURE_SERIES[0].read_text(encoding="utf-8")
+    reference_agent = ARCHITECTURE_SERIES[-1].read_text(encoding="utf-8")
+    root_zh = ROOT_README_ZH.read_text(encoding="utf-8")
+    docs_zh = DOC_INDEX_ZH.read_text(encoding="utf-8")
+
+    assert "当前公共 GeoTask 是面向 AI 智能体的可验证时空任务协议与确定性 Core" in landing
+    assert "可信世界状态运行时" in landing
+    assert "不把规划能力写成既成事实" in landing
+    assert "geotask agent demo --output ./geotask-reference-agent" in landing
+    assert "eligible / authorized / executed explicitly separated" in reference_agent
+    assert "GeoTask Architecture Series v0.1" in root_zh
+    assert "GeoTask Architecture Series v0.1" in docs_zh
 
 
 def test_json_schema_is_valid_draft_2020_12() -> None:

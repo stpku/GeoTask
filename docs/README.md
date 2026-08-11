@@ -7,6 +7,7 @@ GeoTask文档按照“理解定位、开始使用、查阅规范、构建端到�
 ## 从这里开始
 
 - [架构宣言 v1](architecture_manifesto_v1.md)：冻结“当前事实—近期产品目标—长期愿景”三层定位，以及Context、Tool Result、World State、Unknown、Impact和Action Boundary等核心架构原则。
+- [GeoTask Architecture Series v0.1](articles/architecture-series/README.zh-CN.md)：不按GT编号堆案例，而是用六篇连续文章从“为什么Agent需要可信世界状态”讲到“从头到尾做一个可运行Reference Agent”，并始终区分当前公共Core事实与Trusted World-State Runtime产品目标。
 - [Reference Agent v0.1规格](reference/reference-agent-v0.1.md)：定义首个端到端公共参考Agent——虚构低空设施评估更新闭环及五类正负场景。
 - [GeoTask ↔ Lowa-GT Integration Contract v0.1](reference/lowa-gt-integration-contract-v0.1.md)：定义Lowa-GT作为低空业务System of Record、GeoTask作为Trust Control Plane的只读优先协同边界；S1只读exporter与S2精确传输合同已经对齐。
 - [Cross-Line Promotion Gate v0.1](reference/cross-line-promotion-gate-v0.1.md)：冻结GeoTask Core、Lowa Product、Lowa-GT Integration三线独立原则；Integration负责验证候选能力，Core负责通用抽象，Lowa负责业务事实，任何能力所有权跨线迁移都必须有显式Promotion决定。

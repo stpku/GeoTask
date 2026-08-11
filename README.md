@@ -64,6 +64,7 @@ GeoTask把多模态模型、传感器、地图、权威数据和人工输入转�
 - [v0.3.0 Agent集成版发布说明](docs/release_v0_3_0.md)
 - [v0.2.0制品契约版发布说明](docs/release_v0_2_0.md)
 - [架构宣言 v1](docs/architecture_manifesto_v1.md)
+- [GeoTask Architecture Series v0.1](docs/articles/architecture-series/README.zh-CN.md)
 - [Reference Agent v0.1 规格](docs/reference/reference-agent-v0.1.md)
 - [运行 Reference Agent：虚构低空设施评估更新](examples/reference_agent/facility_assessment_update/README.md)
 - [Reference Agent从零教程](docs/tutorials/reference-agent.zh-CN.md)

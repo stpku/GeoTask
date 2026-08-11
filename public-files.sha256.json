@@ -11,8 +11,8 @@
   },
   {
     "path": "CHANGELOG.md",
-    "size": 56898,
-    "sha256": "ffbd65189ea82a9891b4c1db00714678d37d19abd94fcfc94f7cbff63c315087"
+    "size": 57495,
+    "sha256": "7dc4372425edc7a47cc8906771a95f350d96f8fb61675f9823d43a8aacdec0d7"
   },
   {
     "path": "CITATION.cff",
@@ -56,8 +56,8 @@
   },
   {
     "path": "README.md",
-    "size": 28572,
-    "sha256": "98927d415e2e71209a69b00eb89906aaba23d1f3ac10150f1201fb2dae4e1a74"
+    "size": 28660,
+    "sha256": "b336a3c85919d942685703156a2531e8666045b1874676e2ad4c67327f73e3c7"
   },
   {
     "path": "ROADMAP.md",
@@ -241,8 +241,8 @@
   },
   {
     "path": "tests/test_documentation_system.py",
-    "size": 57587,
-    "sha256": "133c95ad65aaba0d2f6d85a8880349c86354b8c7cc9dbdb5b42eeae74a1fd388"
+    "size": 59241,
+    "sha256": "83ba8563d6f3a8c81db1eff5574cbb77ab4f0aecaf458f5796c4d9a13161b660"
   },
   {
     "path": "tests/test_evaluator.py",
@@ -2931,8 +2931,8 @@
   },
   {
     "path": "docs/README.md",
-    "size": 16219,
-    "sha256": "d23303be10f48caed721d2887e6acb0329b8c55be502bfa6dd98b0a19926d7a9"
+    "size": 16547,
+    "sha256": "7ddf1f39b2922fd07768a79fe79d2bfc811ab2aa1e7235030c591d7acd06a4e5"
   },
   {
     "path": "docs/architecture.md",
@@ -3033,6 +3033,41 @@
     "path": "docs/terminology.zh-CN.md",
     "size": 8408,
     "sha256": "e3b02bdc7c3d8dd8e3e834abb3496cdd68ca4101a88fe35b1b811770f147190b"
+  },
+  {
+    "path": "docs/articles/architecture-series/01-why-agents-need-trusted-world-state.zh-CN.md",
+    "size": 4442,
+    "sha256": "0741275c6fa6b18f9c56e49618b871b33dd15e447c0d225b6d07be47028c5055"
+  },
+  {
+    "path": "docs/articles/architecture-series/02-geotask-is-not-an-agent-framework.zh-CN.md",
+    "size": 4616,
+    "sha256": "dd6d077be1a3b9d8c9092a0ea1287d2218d96caa0e5fb4b8bca841f5c3bdbef7"
+  },
+  {
+    "path": "docs/articles/architecture-series/03-context-tool-result-world-state.zh-CN.md",
+    "size": 3947,
+    "sha256": "28de64378953f8f6a8b27adfe8cb837638a8f51e39e8f3f100a52d8178034fdb"
+  },
+  {
+    "path": "docs/articles/architecture-series/04-unknown-evidence-and-recovery.zh-CN.md",
+    "size": 3977,
+    "sha256": "836ac6cffe98ff9e69bd3380995eac1924800c247dfab40ff55a471391767f01"
+  },
+  {
+    "path": "docs/articles/architecture-series/05-from-trusted-conclusion-to-trusted-action.zh-CN.md",
+    "size": 4083,
+    "sha256": "a87cd2d2da8957ffd7a0190c7d67b2f1e00c439293f0819901e4d3a683a77dd7"
+  },
+  {
+    "path": "docs/articles/architecture-series/06-reference-agent-end-to-end.zh-CN.md",
+    "size": 6756,
+    "sha256": "adb6951158475702561e25978151eb8916cc81785a39bd0b5e9756a9f4910fb4"
+  },
+  {
+    "path": "docs/articles/architecture-series/README.zh-CN.md",
+    "size": 2756,
+    "sha256": "d782ff0ffbbac210a6e636703a0a247a3eaeddb48da7afc7de8bd4f992a59395"
   },
   {
     "path": "docs/whitepaper/GeoTask_White_Paper_v0.1.md",
@@ -3371,8 +3406,8 @@
   },
   {
     "path": ".release/public-manifest.yaml",
-    "size": 45648,
-    "sha256": "a80badab504f6333240624b2aa8095566b9e89a44c56703de70b247c25f9f4f1"
+    "size": 46786,
+    "sha256": "115b5967addca3718f081f1d575b3f6a0e9a443e43af2a94e1ae9503b62e211b"
   },
   {
     "path": ".release/release_public.py",

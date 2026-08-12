@@ -1,6 +1,6 @@
 schema_version: "0.1"
-baseline_id: "core-pre-rc-2026-08-07"
-target_release: "0.4.0"
+baseline_id: "core-0.4.1-release-prep-2026-08-12"
+target_release: "0.4.1"
 status: "pre_rc_not_released"
 
 ownership_invariant: >-
@@ -19,6 +19,7 @@ core_exact_paths:
   - ".release/verify_core_commit_scope.py"
   - ".release/verify_rc_readiness.py"
   - "CHANGELOG.md"
+  - "CITATION.cff"
   - "MIGRATION.md"
   - "README.en.md"
   - "README.md"
@@ -28,6 +29,7 @@ core_exact_paths:
   - "docs/README.md"
   - "docs/architecture_manifesto_v1.md"
   - "docs/cli_usage.md"
+  - "docs/release_v0_4_1.md"
   - "docs/release_v0_4_0.md"
   - "docs/open_core_boundary_v0_2.md"
   - "docs/open_core_commercial_runtime_boundary.md"
@@ -47,6 +49,7 @@ core_exact_paths:
   - "docs/reference/p2-release-contract-freeze-v0.4.md"
   - "docs/reference/reference-agent-v0.1.md"
   - "docs/reference/verification-quality-benchmark-v0.1.md"
+  - "docs/tutorials/quickstart.md"
   - "docs/tutorials/quickstart.zh-CN.md"
   - "docs/tutorials/reference-agent.md"
   - "docs/tutorials/reference-agent.zh-CN.md"
@@ -69,6 +72,7 @@ core_exact_paths:
   - "src/geotask_core/capability_registry.py"
   - "src/geotask_core/cli.py"
   - "src/geotask_core/doctor.py"
+  - "src/geotask_core/_version.py"
   - "tests/test_capability_registry.py"
   - "tests/test_case_catalog.py"
   - "tests/test_doctor.py"
@@ -86,6 +90,8 @@ core_exact_paths:
   - "tests/test_reference_agent_facility_assessment_update.py"
   - "tests/test_reference_agent_quality_benchmark.py"
   - "tests/test_release_preflight.py"
+  - "tests/test_version_consistency.py"
+  - "tests/v1/test_cli.py"
   - "tools/generate_case_catalog.py"
 
 excluded_patterns:

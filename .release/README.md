@@ -52,18 +52,18 @@ python .release/plan_core_baseline.py --output /tmp/geotask-core-baseline-plan.j
 # paths, HEAD and every staged blob SHA-256 must match exactly; the verifier never changes the index itself.
 python .release/verify_core_commit_scope.py --baseline-plan /tmp/geotask-core-baseline-plan.json --format json
 
-# Audit 0.4.0 RC readiness. Before the version bump/final evidence this intentionally exits 2 (pending).
-python .release/verify_rc_readiness.py --target-version 0.4.0 --format json
+# Audit 0.4.1 RC readiness. Before the version bump/final evidence this intentionally exits 2 (pending).
+python .release/verify_rc_readiness.py --target-version 0.4.1 --format json
 
 # Generate one evidence shard from the exact clean RC. --record-python-ci only
 # marks the current Python minor passed when CI=true and the full pytest suite reruns successfully.
-python .release/collect_rc_evidence.py collect --target-version 0.4.0 --artifacts dist --public-export /tmp/geotask-public-rc --reference-python /path/to/installed/python --record-python-ci --output rc-evidence-3.13.json
+python .release/collect_rc_evidence.py collect --target-version 0.4.1 --artifacts dist --public-export /tmp/geotask-public-rc --reference-python /path/to/installed/python --record-python-ci --output rc-evidence-3.13.json
 
 # Merge generated shards from 3.10/3.11/3.12/3.13. Versions, commit and artifact hashes must match.
 python .release/collect_rc_evidence.py merge rc-evidence-3.10.json rc-evidence-3.11.json rc-evidence-3.12.json rc-evidence-3.13.json --output rc-evidence.json
 
 # Final RC audit after exact artifacts and machine-generated executed evidence exist.
-python .release/verify_rc_readiness.py --target-version 0.4.0 --artifacts dist --evidence /path/to/rc-evidence.json --format json
+python .release/verify_rc_readiness.py --target-version 0.4.1 --artifacts dist --evidence /path/to/rc-evidence.json --format json
 
 # PyPI workflow dispatch: select the default branch (main) and enter version 0.2.0.
 # The workflow checks out tag v0.2.0 and verifies HEAD before package build/upload.

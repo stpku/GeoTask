@@ -25,7 +25,7 @@ Or on Windows PowerShell:
 Install the exact Public Preview release from PyPI and check the CLI:
 
 ```bash
-python -m pip install --no-cache-dir geotask-core==0.4.0
+python -m pip install --no-cache-dir geotask-core==0.4.1
 geotask --help
 geotask inspect operators
 ```

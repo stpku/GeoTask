@@ -1,19 +1,19 @@
-# GeoTask Core 0.4.0 RC Readiness Gate v0.1
+# GeoTask Core 0.4.1 RC Readiness Gate v0.1
 
-**Status:** P2 release-candidate gate; 0.4.0 is not released  
+**Status:** P2 release-candidate gate; 0.4.1 is not released
 **Date:** 2026-08-07
 
 ## 1. Purpose
 
-This gate converts the remaining 0.4.0 release checklist into a machine-auditable readiness report. It does **not** bump the package version, create a Git tag, publish an artifact, push a remote branch, or authorize any cross-line capability promotion.
+This gate converts the remaining 0.4.1 release checklist into a machine-auditable readiness report. It does **not** bump the package version, create a Git tag, publish an artifact, push a remote branch, or authorize any cross-line capability promotion.
 
 Run:
 
 ```bash
-python .release/verify_rc_readiness.py --target-version 0.4.0 --format json
+python .release/verify_rc_readiness.py --target-version 0.4.1 --format json
 ```
 
-The current local RC worktree is expected to return exit code `2` (`pending`) until the exact committed candidate has a clean worktree, final 0.4.0 wheel/sdist evidence, executed multi-Python CI evidence, and same-commit public-export/Reference-Agent evidence. The source package identity may already be `0.4.0`; that alone is not release readiness.
+The current local RC worktree is expected to return exit code `2` (`pending`) until the exact committed candidate has a clean worktree, final 0.4.1 wheel/sdist evidence, executed multi-Python CI evidence, and same-commit public-export/Reference-Agent evidence. The source package identity may already be `0.4.1`; that alone is not release readiness.
 
 Exit codes:
 
@@ -27,7 +27,7 @@ The auditor separates configuration from executed evidence. A configured CI matr
 
 ### Static/Core governance checks
 
-1. the 0.4.0 release-scope freeze targets `0.4.0` and remains explicitly “not released”;
+1. the 0.4.1 release-scope freeze targets `0.4.1` and remains explicitly “not released”;
 2. the Cross-Line Promotion Gate exists and preserves the three-line ownership invariants;
 3. the Core Distribution Boundary keeps Integration implementations out of the Core public export while retaining public governance contracts and the Reference Agent;
 4. `pyproject.toml` declares Python `>=3.10` and classifiers for 3.10–3.13;
@@ -35,9 +35,9 @@ The auditor separates configuration from executed evidence. A configured CI matr
 
 ### Final release-identity checks
 
-6. `src/geotask_core/_version.py` has been deliberately advanced to `0.4.0`;
-7. the existing release identity preflight passes for `0.4.0`, including CITATION, CHANGELOG, release notes, Quickstarts and README release identity;
-8. exactly one final wheel and one final sdist are supplied and bound to the same 0.4.0 identity;
+6. `src/geotask_core/_version.py` has been deliberately advanced to `0.4.1`;
+7. the existing release identity preflight passes for `0.4.1`, including CITATION, CHANGELOG, release notes, Quickstarts and README release identity;
+8. exactly one final wheel and one final sdist are supplied and bound to the same 0.4.1 identity;
 9. the exact final distributions contain the verified 33-Schema Bundle.
 
 ### Executed evidence checks
@@ -62,7 +62,7 @@ Do **not** turn that template into final evidence by hand. Final evidence must b
 
 ```bash
 python .release/collect_rc_evidence.py collect \
-  --target-version 0.4.0 \
+  --target-version 0.4.1 \
   --artifacts dist \
   --public-export /tmp/geotask-public-rc \
   --reference-python /path/to/installed/python \
@@ -81,7 +81,7 @@ python .release/collect_rc_evidence.py merge \
 
 The merger rejects target-version mismatch, commit mismatch, conflicting artifact hashes, and any shard that records an executed check as `failed`. The RC auditor rejects a hand-authored evidence file even if somebody manually writes every status as `passed`.
 
-The public CI workflow is wired to produce these artifacts automatically: each Python 3.10–3.13 matrix job emits one Python shard; the build job publishes the exact wheel/sdist; a clean follow-up job installs that wheel, performs public-export verification and installed-package Reference Agent replay, and emits the build shard; the merge job combines all five shards and runs the RC auditor. A normal pre-0.4 commit remains `pending`; only an exact clean 0.4.0 candidate can become `ready`.
+The public CI workflow is wired to produce these artifacts automatically: each Python 3.10–3.13 matrix job emits one Python shard; the build job publishes the exact wheel/sdist; a clean follow-up job installs that wheel, performs public-export verification and installed-package Reference Agent replay, and emits the build shard; the merge job combines all five shards and runs the RC auditor. A normal pre-0.4 commit remains `pending`; only an exact clean 0.4.1 candidate can become `ready`.
 
 The generated evidence records:
 
@@ -95,7 +95,7 @@ Example final audit:
 
 ```bash
 python .release/verify_rc_readiness.py \
-  --target-version 0.4.0 \
+  --target-version 0.4.1 \
   --artifacts dist \
   --evidence /path/to/rc-evidence.json \
   --format json
@@ -111,17 +111,17 @@ cross-line Promotion Gate             passed
 Core distribution boundary            passed
 Python support declaration            passed
 CI Python matrix configuration        passed
-target 0.4.0 source metadata          passed
-0.4.0 release identity preflight      passed
+target 0.4.1 source metadata          passed
+0.4.1 release identity preflight      passed
 release-candidate clean worktree      pending
-final 0.4.0 wheel/sdist               pending
+final 0.4.1 wheel/sdist               pending
 final 33-Schema Bundle distribution   pending
 exact-HEAD executed evidence          pending
 executed Python 3.10–3.13 CI          pending
 final public export + Reference Agent pending
 ```
 
-This is intentionally **not** represented as failure. A locally passing test suite, installed-package smoke, or `0.4.0` source identity does not make a dirty or incompletely evidenced candidate release-ready.
+This is intentionally **not** represented as failure. A locally passing test suite, installed-package smoke, or `0.4.1` source identity does not make a dirty or incompletely evidenced candidate release-ready.
 
 ## 5. Three-line boundary
 

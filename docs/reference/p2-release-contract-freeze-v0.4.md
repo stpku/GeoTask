@@ -1,12 +1,12 @@
-# GeoTask 0.4.0 Release-Scope Contract Freeze
+# GeoTask 0.4.1 Release-Scope Contract Freeze
 
-**Status:** P2 release-scope freeze; 0.4.0 is not released  
+**Status:** P2 release-scope freeze; 0.4.1 is not released
 **Date:** 2026-08-07  
 **Machine snapshot:** `docs/reference/p2-release-contract-freeze-v0.4.json`
 
 ## Purpose
 
-This document freezes the **public names expected to survive into the 0.4.0 release scope** so product hardening can proceed without accidental renaming. It is not a claim that every future 0.4.0 behavior is finalized and it does not change the currently published package version.
+This document freezes the **public names expected to survive into the 0.4.1 release scope** so product hardening can proceed without accidental renaming. It is not a claim that every future 0.4.1 behavior is finalized and it does not change the currently published package version.
 
 The machine-readable snapshot is tested against the live registries and CLI. A public rename that makes the test fail is treated as an intentional compatibility event and must be accompanied by migration documentation rather than silently updating the snapshot.
 
@@ -58,7 +58,7 @@ The exact IDs live in the JSON snapshot and are mechanically checked against:
 - Lowa-GT integration payload details beyond its separate versioned contract;
 - automatic dependency discovery, which is not currently claimed;
 - the future existence of additional backward-compatible Artifacts, provided the release-scope snapshot is explicitly updated and reviewed;
-- the 0.4.0 publication date.
+- the 0.4.1 publication date.
 
 ## Compatibility rule
 

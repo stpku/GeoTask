@@ -1,4 +1,4 @@
-"""P2 machine-readable public naming freeze for the 0.4.0 release scope."""
+"""P2 machine-readable public naming freeze for the 0.4.1 release scope."""
 
 from __future__ import annotations
 
@@ -65,9 +65,9 @@ def test_release_scope_freeze_matches_package_and_python_support_metadata() -> N
 
 def test_release_scope_freeze_does_not_claim_040_is_released() -> None:
     snapshot = _snapshot()
-    assert snapshot["target_release"] == "0.4.0"
+    assert snapshot["target_release"] == "0.4.1"
     assert snapshot["status"] == "release_scope_frozen_not_released"
     assert snapshot["boundaries"]["this_file_announces_release"] is False
     text = DOC.read_text(encoding="utf-8")
-    assert "0.4.0 is not released" in text
+    assert "0.4.1 is not released" in text
     assert "testable release gate" in text

@@ -38,7 +38,7 @@ def _generated_shard(commit: str, *, python_minor: str | None = None) -> dict:
         "schema_version": "0.1",
         "generated_by": ".release/collect_rc_evidence.py",
         "evidence_kind": "collector_shard",
-        "target_version": "0.4.0",
+        "target_version": "0.4.1",
         "commit": commit,
         "python_ci": {minor: "pending" for minor in ("3.10", "3.11", "3.12", "3.13")},
         "public_export": {"verification": "pending", "scan": "pending"},
@@ -46,8 +46,8 @@ def _generated_shard(commit: str, *, python_minor: str | None = None) -> dict:
         "collector": {
             "artifacts": {
                 "files": {
-                    "geotask_core-0.4.0-py3-none-any.whl": "a" * 64,
-                    "geotask_core-0.4.0.tar.gz": "b" * 64,
+                    "geotask_core-0.4.1-py3-none-any.whl": "a" * 64,
+                    "geotask_core-0.4.1.tar.gz": "b" * 64,
                 }
             }
         },
@@ -66,16 +66,16 @@ def test_dirty_target_repository_collects_pending_only(monkeypatch) -> None:
         lambda _root, **_kwargs: (head_commit, False, f"head={head_commit}; dirty_paths=1"),
     )
 
-    payload = collector.collect_evidence(ROOT, target_version="0.4.0")["rc_evidence"]
+    payload = collector.collect_evidence(ROOT, target_version="0.4.1")["rc_evidence"]
 
     assert payload["generated_by"] == ".release/collect_rc_evidence.py"
     assert payload["evidence_kind"] == "collector_shard"
-    assert payload["target_version"] == "0.4.0"
+    assert payload["target_version"] == "0.4.1"
     assert payload["commit"] == _head_commit()
     assert set(payload["python_ci"].values()) == {"pending"}
     assert payload["public_export"] == {"verification": "pending", "scan": "pending"}
     assert payload["reference_agent_replay"] == "pending"
-    assert payload["collector"]["source_version"] == "0.4.0"
+    assert payload["collector"]["source_version"] == "0.4.1"
     assert payload["collector"]["worktree_clean"] is False
     assert payload["collector"]["release_candidate_eligible"] is False
 
@@ -120,7 +120,7 @@ def test_merge_rejects_artifact_hash_mismatch(tmp_path: Path) -> None:
     first_payload = _generated_shard(commit, python_minor="3.10")
     second_payload = _generated_shard(commit, python_minor="3.11")
     second_payload["rc_evidence"]["collector"]["artifacts"]["files"][
-        "geotask_core-0.4.0-py3-none-any.whl"
+        "geotask_core-0.4.1-py3-none-any.whl"
     ] = "c" * 64
     first = tmp_path / "first.json"
     second = tmp_path / "second.json"
@@ -139,7 +139,7 @@ def test_auditor_rejects_hand_authored_passed_evidence(tmp_path: Path) -> None:
             {
                 "rc_evidence": {
                     "schema_version": "0.1",
-                    "target_version": "0.4.0",
+                    "target_version": "0.4.1",
                     "commit": _head_commit(),
                     "python_ci": {minor: "passed" for minor in ("3.10", "3.11", "3.12", "3.13")},
                     "public_export": {"verification": "passed", "scan": "passed"},
@@ -202,7 +202,7 @@ def test_public_ci_wires_exact_commit_evidence_shards_and_merge() -> None:
 
     for fragment in (
         "python-version: [\"3.10\", \"3.11\", \"3.12\", \"3.13\"]",
-        "collect_rc_evidence.py collect --target-version 0.4.0 --record-python-ci",
+        "collect_rc_evidence.py collect --target-version 0.4.1 --record-python-ci",
         "geotask-rc-evidence-${{ matrix.python-version }}",
         "name: geotask-core-rc-dist",
         "rc-build-evidence:",

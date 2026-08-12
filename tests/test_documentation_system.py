@@ -119,7 +119,7 @@ OPEN_CORE_BOUNDARY_V02 = ROOT / "docs" / "open_core_boundary_v0_2.md"
 PRODUCTIZATION_ROADMAP_V02 = ROOT / "docs" / "productization_roadmap_v0_2.md"
 RELEASE_NOTES_010 = ROOT / "docs" / "release_v0_1_0.md"
 RELEASE_NOTES_011 = ROOT / "docs" / "release_v0_1_1.md"
-RELEASE_NOTES = ROOT / "docs" / "release_v0_4_0.md"
+RELEASE_NOTES = ROOT / "docs" / "release_v0_4_1.md"
 CODEOWNERS = ROOT / ".github" / "CODEOWNERS"
 PYPI_WORKFLOW = ROOT / ".github" / "workflows" / "publish-pypi.yml"
 
@@ -1102,7 +1102,7 @@ def test_root_readmes_match_current_capabilities() -> None:
 def test_quickstarts_use_pypi_first_and_keep_source_install_for_contributors() -> None:
     for path in (QUICKSTART_EN, QUICKSTART_ZH):
         text = path.read_text(encoding="utf-8")
-        assert "python -m pip install --no-cache-dir geotask-core==0.4.0" in text
+        assert "python -m pip install --no-cache-dir geotask-core==0.4.1" in text
         assert "from importlib.metadata import version" in text
         assert "geotask --help" in text
         assert "geotask inspect operators" in text
@@ -1285,8 +1285,8 @@ def test_public_preview_release_assets_are_consistent() -> None:
     workflow = yaml.safe_load(PYPI_WORKFLOW.read_text(encoding="utf-8"))
 
     assert citation["cff-version"] == "1.2.0"
-    assert citation["version"] == "0.4.0"
-    assert str(citation["date-released"]) == "2026-08-08"
+    assert citation["version"] == "0.4.1"
+    assert str(citation["date-released"]) == "2026-08-12"
     assert citation["repository-code"] == "https://github.com/stpku/GeoTask"
     assert citation["url"] == "https://stpku.github.io/GeoTask/"
     assert citation["license"] == "MIT"
@@ -1310,15 +1310,15 @@ def test_public_preview_release_assets_are_consistent() -> None:
     assert "Verification Session v0.1 Artifact" in roadmap
     assert "geotask recheck" in roadmap
 
-    assert "GeoTask Core v0.4.0 Core Productization and Reference Agent Release" in release
-    assert "v0.4.0" in release
-    assert "geotask-core==0.4.0" in release
-    assert "Reference Agent v0.1" in release
+    assert "GeoTask Core v0.4.1 Capability Discovery and Release-Hardening Maintenance Release" in release
+    assert "v0.4.1" in release
+    assert "geotask-core==0.4.1" in release
+    assert "Reference Agent Activation Pack" in release
     assert "33 Schemas" in release
     assert "GT42" in release
-    assert "Cross-Line Promotion Gate" in release
+    assert "second-system promotion pre-review" in release
     assert "eligible != authorized != released != sent != executed" in release
-    assert "does not create a release tag" in release
+    assert "No production write, publication authority, real-world authorization, or external action is granted" in release
 
     assert "/src/geotask_core/ @stpku" in codeowners
     assert "/.release/ @stpku" in codeowners

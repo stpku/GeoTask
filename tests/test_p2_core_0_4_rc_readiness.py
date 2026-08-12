@@ -1,4 +1,4 @@
-"""P2 Core 0.4.0 release-candidate readiness gate tests."""
+"""P2 Core 0.4.1 release-candidate readiness gate tests."""
 
 from __future__ import annotations
 
@@ -62,8 +62,8 @@ def test_dirty_release_candidate_is_pending_not_failed_for_0_4_rc(monkeypatch) -
     report = auditor.verify_rc_readiness(ROOT)["rc_readiness"]
     checks = {item["name"]: item for item in report["checks"]}
 
-    assert report["target_version"] == "0.4.0"
-    assert report["source_version"] == "0.4.0"
+    assert report["target_version"] == "0.4.1"
+    assert report["source_version"] == "0.4.1"
     assert report["state"] == "pending"
     assert report["ready"] is False
     assert report["failed_count"] == 0
@@ -110,7 +110,7 @@ def test_rc_readiness_cli_uses_pending_exit_code_without_traceback() -> None:
 def test_rc_evidence_template_cannot_claim_execution_by_default() -> None:
     payload = json.loads(TEMPLATE.read_text(encoding="utf-8"))["rc_evidence"]
 
-    assert payload["target_version"] == "0.4.0"
+    assert payload["target_version"] == "0.4.1"
     assert payload["generated_by"].startswith("<run .release/collect_rc_evidence.py")
     assert payload["evidence_kind"].startswith("<collector_shard")
     assert payload["commit"].startswith("<")
@@ -137,7 +137,7 @@ def test_executed_evidence_is_separate_from_configured_ci(tmp_path: Path) -> Non
                     "schema_version": "0.1",
                     "generated_by": ".release/collect_rc_evidence.py",
                     "evidence_kind": "collector_merged",
-                    "target_version": "0.4.0",
+                    "target_version": "0.4.1",
                     "commit": head_commit,
                     "python_ci": {version: "passed" for version in ("3.10", "3.11", "3.12", "3.13")},
                     "public_export": {"verification": "passed", "scan": "passed"},
@@ -168,7 +168,7 @@ def test_mismatched_evidence_commit_is_hard_failure(tmp_path: Path) -> None:
             {
                 "rc_evidence": {
                     "schema_version": "0.1",
-                    "target_version": "0.4.0",
+                    "target_version": "0.4.1",
                     "commit": "0123456789abcdef",
                     "python_ci": {version: "passed" for version in ("3.10", "3.11", "3.12", "3.13")},
                     "public_export": {"verification": "passed", "scan": "passed"},
@@ -219,7 +219,7 @@ def test_rc_gate_document_preserves_core_only_and_promotion_boundaries() -> None
     text = DOC.read_text(encoding="utf-8")
 
     for fragment in (
-        "0.4.0 is not released",
+        "0.4.1 is not released",
         "configured CI matrix is never treated as proof",
         "Integration validation != Core promotion",
         "Core release readiness != Lowa production readiness",

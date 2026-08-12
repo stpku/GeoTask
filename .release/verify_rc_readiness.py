@@ -25,7 +25,7 @@ from typing import Any
 import yaml
 
 EXPECTED_PYTHON_MINORS = ("3.10", "3.11", "3.12", "3.13")
-DEFAULT_TARGET_VERSION = "0.4.0"
+DEFAULT_TARGET_VERSION = "0.4.1"
 
 
 def _load_module(path: Path, name: str):
@@ -431,14 +431,14 @@ def verify_rc_readiness(
             _check(
                 "final_wheel_sdist",
                 "pending",
-                "final 0.4.0 artifact directory not supplied",
+                f"final {target_version} artifact directory not supplied",
             )
         )
         checks.append(
             _check(
                 "schema_bundle_distribution",
                 "pending",
-                "final 0.4.0 artifacts not supplied",
+                f"final {target_version} artifacts not supplied",
             )
         )
     elif source_version != target_version:

@@ -1,7 +1,7 @@
 {
   "release_contract_freeze": {
     "schema_version": "0.1",
-    "target_release": "0.4.0",
+    "target_release": "0.4.1",
     "status": "release_scope_frozen_not_released",
     "package": {
       "pypi_name": "geotask-core",

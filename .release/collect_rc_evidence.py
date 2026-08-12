@@ -7,7 +7,7 @@ Git worktree whose source version already equals the requested target release.
 
 Examples:
     python .release/collect_rc_evidence.py collect \
-        --target-version 0.4.0 \
+        --target-version 0.4.1 \
         --artifacts dist \
         --public-export /tmp/geotask-public-rc \
         --reference-python /tmp/geotask-rc-install/bin/python \
@@ -39,7 +39,7 @@ from typing import Any, Callable, Sequence
 EXPECTED_PYTHON_MINORS = ("3.10", "3.11", "3.12", "3.13")
 GENERATOR_ID = ".release/collect_rc_evidence.py"
 SCHEMA_VERSION = "0.1"
-DEFAULT_TARGET_VERSION = "0.4.0"
+DEFAULT_TARGET_VERSION = "0.4.1"
 
 Runner = Callable[..., subprocess.CompletedProcess[str]]
 

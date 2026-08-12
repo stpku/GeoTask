@@ -59,6 +59,7 @@ GeoTask文档按照“理解定位、开始使用、查阅规范、构建端到�
 - [Runtime接口Profile v0.1](spec/geotask-runtime-interface-profile-v0.1.md)：定义Core与外部Runtime之间的Descriptor、Request、Response、授权、幂等、审计及副作用边界，并提供公共安全的HTTP Adapter、回环Endpoint、Provider-neutral模型Adapter以及首个OpenAI Responses Provider包。
 - [GeoTask Core Agent Skill](../skills/geotask-core/SKILL.md)：可直接注入Agent的模型无关操作指令与安全约束。
 - [VS Code Schema配置示例](../.vscode/settings.json)：将本地任务文件关联到仓库内JSON Schema。
+- [v0.4.1 能力发现与发布加固维护版说明](release_v0_4_1.md)
 - [v0.4.0 Core产品化与Reference Agent发布说明](release_v0_4_0.md)
 - [v0.3.0 Agent集成版发布说明](release_v0_3_0.md)：新增Agent生成任务准备、受约束修订、补证据恢复、四类Agent报告Artifact及8类Artifact/9份Schema统一验证。
 - [v0.2.0制品契约版发布说明](release_v0_2_0.md)：新增Artifact Registry、离线Schema Bundle、统一制品校验和验证报告自验证。

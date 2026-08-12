@@ -48,9 +48,9 @@ def test_install_matrix_records_real_p2_artifact_and_reference_agent_gates() -> 
 
 def test_install_matrix_does_not_claim_040_is_available() -> None:
     text = MATRIX.read_text(encoding="utf-8")
-    assert "0.4.0 is not released" in text
-    assert "Do not run a pinned `geotask-core==0.4.0` installation command until the release exists" in text
-    assert "not evidence that 0.4.0 is currently available" in text
+    assert "0.4.1 is not released" in text
+    assert "Do not run a pinned `geotask-core==0.4.1` installation command until the release exists" in text
+    assert "not evidence that 0.4.1 is currently available" in text
     assert "full CI evidence on Python 3.10, 3.11, 3.12 and 3.13" in text
 
 

@@ -25,7 +25,7 @@ jobs:
       - run: pip install pytest jsonschema
       - run: pytest -q
       - name: Collect Python RC evidence shard
-        run: python .release/collect_rc_evidence.py collect --target-version 0.4.0 --record-python-ci --output rc-evidence-${{ matrix.python-version }}.json
+        run: python .release/collect_rc_evidence.py collect --target-version 0.4.1 --record-python-ci --output rc-evidence-${{ matrix.python-version }}.json
       - name: Upload Python RC evidence shard
         uses: actions/upload-artifact@v7
         with:
@@ -247,7 +247,7 @@ jobs:
           python -m venv /tmp/geotask-rc-install
           /tmp/geotask-rc-install/bin/python -m pip install /tmp/geotask-core-rc-dist/*.whl
       - name: Collect build/public/Reference Agent RC evidence shard
-        run: python .release/collect_rc_evidence.py collect --target-version 0.4.0 --artifacts /tmp/geotask-core-rc-dist --public-export /tmp/geotask-public-rc-evidence --reference-python /tmp/geotask-rc-install/bin/python --output /tmp/rc-evidence-build.json
+        run: python .release/collect_rc_evidence.py collect --target-version 0.4.1 --artifacts /tmp/geotask-core-rc-dist --public-export /tmp/geotask-public-rc-evidence --reference-python /tmp/geotask-rc-install/bin/python --output /tmp/rc-evidence-build.json
       - name: Upload build RC evidence shard
         uses: actions/upload-artifact@v7
         with:
@@ -310,7 +310,7 @@ jobs:
               sys.executable,
               ".release/verify_rc_readiness.py",
               "--target-version",
-              "0.4.0",
+              "0.4.1",
               "--artifacts",
               "/tmp/geotask-core-rc-dist",
               "--evidence",

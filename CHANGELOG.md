@@ -4,7 +4,12 @@ All notable public changes to GeoTask Core are documented here.
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-08-12
+
 ### Added
+
+- Add installed Core Capability Registry discovery through `geotask inspect capabilities [capability-id]`, exposing nine public capability surfaces as a deterministic projection over existing package/registry/reference-agent/benchmark/diagnostic assets. The registry adds no Schema, Operator, GT capability, provider instance, runtime instance, external discovery, network access, real-world truth claim, authorization, or action execution.
+- Add fail-closed installed self-diagnostic inspection through `geotask inspect health`, covering package identity, supported Python, the 33-Schema Bundle, 32 public Artifacts, 14 deterministic Operators, nine installed Core capability surfaces, the packaged Reference Agent bundle/replay, Core conformance benchmark, and Verification Quality Benchmark without production access, model calls, external truth fetching, authorization, or action execution.
 
 - Add Verification Quality Benchmark v0.2 as an installed deterministic synthetic perturbation suite. `geotask benchmark quality --suite perturbation` replays 34 contract-valid fictional cases across threshold boundaries, evidence freshness, source conflict/consistency, human-control gating, bounded correction/impact, deterministic replay, and side-effect boundaries. The suite keeps v0.1 as the backward-compatible default, adds no Schema/Operator/GT capability, and explicitly makes no real-world accuracy, cross-domain generalization, production-action, or Core Promotion claim.
 - Add GeoTask Architecture Series v0.1: six public Chinese architecture articles plus a landing page now explain why agents need trusted world state, why GeoTask is not an Agent Framework, how Context/Tool Result/World State differ, how Unknown/Evidence recovery works, why eligibility/authority/execution must remain separate, and how the packaged Reference Agent closes the loop end to end. The series explicitly separates current public Core facts from the Trusted World-State Runtime product direction and adds no new Schema, Operator, GT case, runtime authority, or industry ownership claim.
@@ -231,6 +236,7 @@ All notable public changes to GeoTask Core are documented here.
 - Clean-environment PyPI smoke test passing for installation, CLI help, operator inspection, distribution version `0.1.0`, validation, and minimal deterministic execution.
 - Known issue: the published `0.1.0` artifact reports `geotask_core.__version__ == "0.2.0"`; a patch release is required to align the module attribute with distribution metadata.
 
+[0.4.1]: https://github.com/stpku/GeoTask/releases/tag/v0.4.1
 [0.4.0]: https://github.com/stpku/GeoTask/releases/tag/v0.4.0
 [0.3.0]: https://github.com/stpku/GeoTask/releases/tag/v0.3.0
 [0.2.0]: https://github.com/stpku/GeoTask/releases/tag/v0.2.0

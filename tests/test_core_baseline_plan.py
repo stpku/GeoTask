@@ -26,8 +26,8 @@ def test_manifest_is_closed_set_and_self_describing() -> None:
     payload = yaml.safe_load(MANIFEST.read_text(encoding="utf-8"))
     core_paths = payload["core_exact_paths"]
 
-    assert payload["baseline_id"] == "core-pre-rc-2026-08-07"
-    assert payload["target_release"] == "0.4.0"
+    assert payload["baseline_id"] == "core-0.4.1-release-prep-2026-08-12"
+    assert payload["target_release"] == "0.4.1"
     assert payload["status"] == "pre_rc_not_released"
     assert payload["unknown_dirty_path_policy"] == "fail"
     assert len(core_paths) == len(set(core_paths))
@@ -35,6 +35,7 @@ def test_manifest_is_closed_set_and_self_describing() -> None:
         ".release/core-baseline-manifest.yaml",
         ".release/plan_core_baseline.py",
         ".release/verify_core_commit_scope.py",
+        "docs/release_v0_4_1.md",
         "docs/release_v0_4_0.md",
         "src/geotask_core/capability_registry.py",
         "src/geotask_core/doctor.py",

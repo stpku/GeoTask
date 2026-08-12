@@ -13,7 +13,7 @@ Run:
 python .release/verify_rc_readiness.py --target-version 0.4.0 --format json
 ```
 
-The current pre-RC repository is expected to return exit code `2` (`pending`) because the source package is still 0.3.0 and final 0.4.0 artifacts/executed multi-Python CI evidence do not yet exist.
+The current local RC worktree is expected to return exit code `2` (`pending`) until the exact committed candidate has a clean worktree, final 0.4.0 wheel/sdist evidence, executed multi-Python CI evidence, and same-commit public-export/Reference-Agent evidence. The source package identity may already be `0.4.0`; that alone is not release readiness.
 
 Exit codes:
 
@@ -101,9 +101,9 @@ python .release/verify_rc_readiness.py \
   --format json
 ```
 
-## 4. Current expected state before the version bump
+## 4. Current expected local RC state
 
-At the present P2 hardening point:
+At the present P2 hardening point, the source identity and release preflight may already be complete while executed release evidence remains pending:
 
 ```text
 release-scope freeze                  passed
@@ -111,17 +111,17 @@ cross-line Promotion Gate             passed
 Core distribution boundary            passed
 Python support declaration            passed
 CI Python matrix configuration        passed
+target 0.4.0 source metadata          passed
+0.4.0 release identity preflight      passed
 release-candidate clean worktree      pending
-target 0.4.0 source metadata          pending
-0.4.0 release identity preflight      pending
 final 0.4.0 wheel/sdist               pending
 final 33-Schema Bundle distribution   pending
-exact-HEAD evidence binding           pending
+exact-HEAD executed evidence          pending
 executed Python 3.10–3.13 CI          pending
 final public export + Reference Agent pending
 ```
 
-This is intentionally **not** represented as failure. The repository is in release preparation, not in a broken 0.4.0 release state.
+This is intentionally **not** represented as failure. A locally passing test suite, installed-package smoke, or `0.4.0` source identity does not make a dirty or incompletely evidenced candidate release-ready.
 
 ## 5. Three-line boundary
 

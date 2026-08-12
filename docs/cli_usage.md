@@ -465,6 +465,65 @@ authorization, or Core Promotion. The report is intentionally not a new register
 Artifact; this command productizes an existing Product-Track metric rather than
 adding a new Core primitive.
 
+## Installed Capability Discovery
+
+Inspect the public Core capability surfaces shipped by the installed package:
+
+```bash
+geotask inspect capabilities
+geotask inspect capabilities --format json
+geotask inspect capabilities geotask.runtime-interface --format json
+```
+
+`inspect capabilities` is a deterministic discovery projection over existing Core
+sources of truth. It indexes the installed Operator Registry, Artifact Registry,
+Schema Bundle, Runtime and Verification Provider interface contracts, Reference
+Agent, Core/Verification Quality benchmarks, and self-diagnostic entrypoint. Counts
+for operators, artifacts, and schemas are read from their live registries rather
+than copied into a second registry implementation.
+
+The `capability_registry/0.1` payload is not a registered GeoTask Artifact and does
+not introduce a Schema, Operator, Provider, Runtime implementation, or GT primitive.
+Its scope is deliberately `installed_public_core`: it does not scan external plugins,
+discover real Runtime/Provider instances, enumerate domain packs, fetch external
+truth, claim real-world validation, grant authorization, or execute actions. Use
+Runtime/Provider inspection for an explicit external descriptor and normal GeoTask
+verification/control semantics for any task-specific trust decision.
+
+## Developer Self-Diagnostic
+
+Run the installed Core health check before starting an Agent integration or when
+an installation behaves unexpectedly:
+
+```bash
+geotask inspect health
+geotask inspect health --format json --compact
+geotask inspect health --format json --output geotask-doctor.json
+```
+
+`inspect health` verifies the package version and Python support state, the complete
+installed Schema Bundle, Artifact, Operator, and Capability registries, the Reference
+Agent SHA-256 bundle manifest, the fixed `success` replay, the Core conformance
+benchmark, and the fixed Verification Quality Benchmark. The Core benchmark is
+run with one iteration, no warmup, and performance enforcement disabled, so a
+machine-specific timing result cannot turn installation health into a hardware
+ranking or production-SLA claim.
+
+The command is offline and read-only except for an explicitly requested output
+file. It does not call a model, fetch external truth, access a production system,
+authorize an action, or execute an action. A failed required check makes the
+report fail closed and returns exit code `2`; invalid command arguments or output
+errors return exit code `1`. A supported Python version outside the current
+3.10-3.13 CI matrix is reported as a warning rather than being silently described
+as CI-tested.
+
+The `geotask_core_doctor/0.1` payload is a developer diagnostic only. It is **not**
+a registered GeoTask Artifact, has no new Schema, and does not add an Operator or
+Core primitive. A passing doctor report proves only that the local installed Core
+components and shipped fictional fixtures passed these checks; it does not prove
+real-world correctness, external evidence quality, cross-domain generalization,
+or production authorization.
+
 ## Runtime Interface
 
 Inspect the public fail-closed reference Runtime or the machine-readable interface

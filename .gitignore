@@ -27,4 +27,9 @@ Thumbs.db
 
 # Virtual env
 .venv/
+.venv-*/
 venv/
+
+# Local build / smoke / worktree scratch
+.dist-*/
+.worktrees/

@@ -26,6 +26,8 @@ Usage:
     geotask recheck <incremental-reevaluation-result.json> --bind <ref-id>=<file>
     geotask benchmark core [--iterations N] [--enforce-performance]
     geotask benchmark quality [--format json|text] [--output <file>|-]
+    geotask inspect capabilities [capability-id] [--format yaml|json]
+    geotask inspect health [--format text|json] [--output <file>|-]
     python -m geotask_core.cli validate <file.yaml>
     python -m geotask_core.cli run <file.yaml>
     python -m geotask_core.cli normalize <file.txt> [--geotask <file.yaml>]
@@ -34,71 +36,59 @@ Usage:
 The old `stir` CLI command is deprecated but still works as an alias.
 """
 
-import sys
 import json
+import sys
 from collections.abc import Mapping
 from pathlib import Path
 
 import yaml
 
 from geotask_core._version import __version__
+from geotask_core.capability_registry import (
+    CapabilityRegistryError,
+    capability_registry_payload,
+)
+from geotask_core.doctor import DoctorError, run_doctor_command
+from geotask_core.evaluator import evaluate_model_output
+from geotask_core.normalizer import normalize_model_output
+from geotask_core.operator_registry import (
+    get_operator_metadata,
+    list_operator_metadata,
+)
 from geotask_core.parser import (
     _UniqueKeyLoader,
     load_geotask,
     validate_document,
 )
-from geotask_core.runner import run_geotask
-from geotask_core.normalizer import normalize_model_output
-from geotask_core.evaluator import evaluate_model_output
-from geotask_core.operator_registry import (
-    get_operator_metadata,
-    list_operator_metadata,
+from geotask_core.reference_agent_activation import (
+    REFERENCE_AGENT_DEFAULT_OUTPUT,
+    REFERENCE_AGENT_SCENARIOS,
+    activation_report,
+    materialize_reference_agent,
+    replay_materialized_reference_agent,
 )
+from geotask_core.runner import run_geotask
+from geotask_core.v1.agent_generation import (
+    AgentGenerationError,
+    prepare_generated_document,
+    retry_generated_document,
+)
+from geotask_core.v1.agent_integration import (
+    AgentIntegrationError,
+    agent_integration_profile_payload,
+    recover_evidence_request,
+)
+from geotask_core.v1.artifact_registry import artifact_registry_payload
+from geotask_core.v1.artifact_validation import validate_artifact_file
 from geotask_core.v1.canonicalizer import canonicalize
-from geotask_core.v1.executor import execute_canonical
 from geotask_core.v1.control_evaluation import (
     ControlContextError,
     evaluate_control_profile,
 )
 from geotask_core.v1.core_benchmark_cli import run_core_benchmark_command
 from geotask_core.v1.core_benchmark_contract import CoreBenchmarkFormatError
-from geotask_core.verification_quality_benchmark import (
-    VerificationQualityBenchmarkError,
-    print_verification_quality_usage,
-    run_verification_quality_benchmark_command,
-)
+from geotask_core.v1.executor import execute_canonical
 from geotask_core.v1.result import GeotaskResult, ResultFormatError
-from geotask_core.v1.serialized_validation import (
-    CONTROL_EVALUATION_VALIDATION_CONTRACT,
-    EXECUTION_RESULT_VALIDATION_CONTRACT,
-    VersionedPayloadContract,
-    invalid_versioned_payload_report,
-    validate_versioned_payload,
-)
-from geotask_core.v1.artifact_registry import artifact_registry_payload
-from geotask_core.v1.schema_bundle import (
-    load_artifact_schema,
-    verify_schema_bundle,
-)
-from geotask_core.v1.artifact_validation import validate_artifact_file
-from geotask_core.v1.agent_integration import (
-    AgentIntegrationError,
-    agent_integration_profile_payload,
-    recover_evidence_request,
-)
-from geotask_core.v1.agent_generation import (
-    AgentGenerationError,
-    prepare_generated_document,
-    retry_generated_document,
-)
-from geotask_core.reference_agent_activation import (
-    REFERENCE_AGENT_DEFAULT_OUTPUT,
-    REFERENCE_AGENT_SCENARIOS,
-    ReferenceAgentActivationError,
-    activation_report,
-    materialize_reference_agent,
-    replay_materialized_reference_agent,
-)
 from geotask_core.v1.runtime_interface import (
     FailClosedMockRuntime,
     RuntimeInterfaceFormatError,
@@ -108,6 +98,17 @@ from geotask_core.v1.runtime_interface import (
     runtime_interface_profile_payload,
     submit_runtime_request,
     validate_runtime_request_contract,
+)
+from geotask_core.v1.schema_bundle import (
+    load_artifact_schema,
+    verify_schema_bundle,
+)
+from geotask_core.v1.serialized_validation import (
+    CONTROL_EVALUATION_VALIDATION_CONTRACT,
+    EXECUTION_RESULT_VALIDATION_CONTRACT,
+    VersionedPayloadContract,
+    invalid_versioned_payload_report,
+    validate_versioned_payload,
 )
 from geotask_core.v1.verification_provider import (
     VerificationProviderFormatError,
@@ -122,6 +123,11 @@ from geotask_core.v1.world_state_cycle_cli import (
     WorldStateCycleCommandError,
     verify_incremental_recheck_bundle,
     verify_session_bundle,
+)
+from geotask_core.verification_quality_benchmark import (
+    VerificationQualityBenchmarkError,
+    print_verification_quality_usage,
+    run_verification_quality_benchmark_command,
 )
 
 
@@ -923,7 +929,7 @@ def cmd_inspect(args: list[str]):
     if not args or args[0] in ("--help", "-h"):
         print(
             "Usage: geotask inspect "
-            "<operators|schema|schemas|examples> [options]"
+            "<operators|schema|schemas|examples|capabilities|health> [options]"
         )
         return None
 
@@ -987,6 +993,59 @@ def cmd_inspect(args: list[str]):
             sys.exit(1)
         return result
 
+    if subject == "capabilities":
+        capability_id: str | None = None
+        output_format = "yaml"
+        seen_format = False
+        index = 1
+        try:
+            while index < len(args):
+                argument = args[index]
+                if argument in {"--help", "-h"}:
+                    print(
+                        "Usage: geotask inspect capabilities "
+                        "[capability-id] [--format yaml|json]"
+                    )
+                    return None
+                if argument == "--format":
+                    if seen_format:
+                        raise CapabilityRegistryError("--format may be provided only once")
+                    if index + 1 >= len(args) or args[index + 1].startswith("--"):
+                        raise CapabilityRegistryError("--format requires a value")
+                    seen_format = True
+                    output_format = args[index + 1]
+                    index += 2
+                    continue
+                if not argument.startswith("--"):
+                    if capability_id is not None:
+                        raise CapabilityRegistryError(
+                            "only one capability ID may be provided"
+                        )
+                    capability_id = argument
+                    index += 1
+                    continue
+                raise CapabilityRegistryError(
+                    f"unknown inspect capabilities option: {argument}"
+                )
+            if output_format not in {"yaml", "json"}:
+                raise CapabilityRegistryError(
+                    "unsupported_inspect_capabilities_format: "
+                    f"{output_format}. Supported formats: yaml, json"
+                )
+            result = capability_registry_payload(capability_id)
+        except CapabilityRegistryError as exc:
+            print(f"inspect_capabilities_failed: {exc}", file=sys.stderr)
+            sys.exit(1)
+
+        if output_format == "json":
+            sys.stdout.write(_render_json(result, compact=False))
+        else:
+            print_result(result)
+        return result
+
+    if subject == "health":
+        return cmd_doctor(args[1:])
+
     if subject == "examples":
         result = _example_index()
         print_result(result)
@@ -994,7 +1053,8 @@ def cmd_inspect(args: list[str]):
 
     print(f"Unknown inspect target: {subject}", file=sys.stderr)
     print(
-        "Available inspect targets: operators, schema, schemas, examples",
+        "Available inspect targets: operators, schema, schemas, examples, "
+        "capabilities, health",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -2874,6 +2934,20 @@ def cmd_benchmark(args: list[str]):
     return report
 
 
+def cmd_doctor(args: list[str]):
+    """Run the installed Core self-diagnostic without external side effects."""
+    try:
+        report, exit_code = run_doctor_command(args)
+    except SystemExit:
+        raise
+    except (DoctorError, OSError, TypeError, ValueError) as exc:
+        print(f"doctor_failed: {exc}", file=sys.stderr)
+        sys.exit(1)
+    if exit_code:
+        sys.exit(exit_code)
+    return report
+
+
 def print_result(result: dict):
     """Print a result dict as YAML."""
     import yaml
@@ -2949,6 +3023,8 @@ def main():
             "examples/core/runtime_validate_artifact_request.json"
         )
         print(f"  {cmd_name} provider inspect --profile --format json")
+        print(f"  {cmd_name} inspect capabilities --format json")
+        print(f"  {cmd_name} inspect health")
         print()
         print(f"  python -m geotask_core.cli validate examples/geotask_core_lite.yaml")
         print(f"  python -m geotask_core.cli run examples/geotask_core_lite.yaml")

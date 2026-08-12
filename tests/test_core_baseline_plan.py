@@ -35,7 +35,12 @@ def test_manifest_is_closed_set_and_self_describing() -> None:
         ".release/core-baseline-manifest.yaml",
         ".release/plan_core_baseline.py",
         ".release/verify_core_commit_scope.py",
+        "docs/release_v0_4_0.md",
+        "src/geotask_core/capability_registry.py",
+        "src/geotask_core/doctor.py",
+        "tests/test_capability_registry.py",
         "tests/test_core_baseline_plan.py",
+        "tests/test_doctor.py",
         "docs/reference/lowa-gt-integration-contract-v0.1.md",
         "docs/reference/cross-line-promotion-gate-v0.1.md",
     ):
@@ -46,6 +51,9 @@ def test_manifest_is_closed_set_and_self_describing() -> None:
     assert "tests/test_lowa_gt_*.py" in integration_patterns
     assert "docs/internal/lowa-gt-*" in integration_patterns
     assert "docs/reports/lowa_gt_*" in integration_patterns
+
+    parallel_patterns = payload["excluded_patterns"]["parallel_governance_work"]
+    assert "docs/architecture_decisions/ADR-005-independent-world-model-evolution.md" in parallel_patterns
 
 
 def test_plan_accepts_declared_core_and_excludes_integration(monkeypatch) -> None:

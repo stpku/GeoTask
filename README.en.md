@@ -17,10 +17,12 @@
 
 ```bash
 pip install geotask-core
+geotask inspect capabilities
+geotask inspect health
 geotask agent demo --output ./geotask-reference-agent
 ```
 
-`agent demo` verifies the packaged Reference Agent teaching bundle, materializes an editable local workspace, and immediately replays the deterministic success scenario. It does not fetch external truth, write production state, or authorize a real-world action.
+`inspect capabilities` projects an installed public Core index from the existing Operator, Artifact, Schema, Runtime/Provider interface, Reference Agent, and benchmark metadata. It does not discover external plugins, real Runtime/Provider instances, or domain packs, and it does not add an Artifact, Schema, or Operator. `inspect health` then checks those installed capabilities together with the Schema/Artifact/Operator registries, packaged Reference Agent, and fixed offline benchmarks without network, model, or production access. Its diagnostic payload is not a registered GeoTask Artifact and does not claim real-world correctness. `agent demo` then verifies the packaged Reference Agent teaching bundle, materializes an editable local workspace, and immediately replays the deterministic success scenario. It does not fetch external truth, write production state, or authorize a real-world action.
 
 GeoTask turns multimodal models, sensors, maps, authoritative data, and human input into explicit world objects, spatiotemporal relations, state, evidence, and action constraints. It builds a world state that is computable, verifiable, updatable, and traceable. Rather than hiding the whole world inside a neural representation, GeoTask makes the facts an agent depends on inspectable, recomputable, correctable, and maintainable.
 

@@ -38,7 +38,7 @@ The v0.4 release candidate preserves the current public capability baseline rath
 - GT capability baseline remains through GT42;
 - public deterministic Operator Registry remains 14 operators;
 - public Schema Bundle contains 33 Schemas;
-- release-contract freeze, install/migration matrix, structured operator inspection, and public artifact discovery are machine checked.
+- release-contract freeze, install/migration matrix, structured operator inspection, public artifact discovery, and installed Core capability discovery are machine checked.
 
 `eligible != authorized != released != sent != executed` remains a hard control invariant.
 

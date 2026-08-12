@@ -17,10 +17,12 @@
 
 ```bash
 pip install geotask-core
+geotask inspect capabilities
+geotask inspect health
 geotask agent demo --output ./geotask-reference-agent
 ```
 
-`agent demo` 会校验安装包内的 Reference Agent 教材 bundle、生成一个可自由修改的本地工作目录，并立即执行一次确定性成功场景重放；它不会读取外部真实数据、写生产状态或授权现实动作。
+`inspect capabilities` 从已安装包现有的 Operator、Artifact、Schema、Runtime/Provider 接口、Reference Agent 与 Benchmark 元数据中生成公共 Core 能力索引，不扫描外部插件、真实 Runtime/Provider 或行业 Pack，也不新增任何 Artifact/Schema/Operator。`inspect health` 会继续检查这些安装能力及 Schema/Artifact/Operator 注册表、Reference Agent bundle 与固定离线 benchmark；它不访问网络、不调用模型、不接触生产系统，其诊断结果也不是注册 GeoTask Artifact，不代表现实正确性。随后，`agent demo` 会校验安装包内的 Reference Agent 教材 bundle、生成一个可自由修改的本地工作目录，并立即执行一次确定性成功场景重放；它不会读取外部真实数据、写生产状态或授权现实动作。
 
 GeoTask把多模态模型、传感器、地图、权威数据和人工输入转化为显式的世界对象、时空关系、状态、证据和行动约束，构建可计算、可验证、可更新、可追溯的时空世界状态。它不是把整个世界隐式压进一个神经网络，而是让智能体依赖的现实事实能够被查看、复算、纠偏和持续维护。
 

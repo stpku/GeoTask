@@ -71,7 +71,7 @@ def test_v02_template_is_safe_unfilled_evidence() -> None:
     assert data["understood_eligible_not_executed"] is False
 
     module = _module()
-    with pytest.raises(module.ActivationRecordError, match="ISO-8601 timestamp"):
+    with pytest.raises(module.ActivationRecordError, match="participant_alias must not be empty"):
         module._load_record(TEMPLATE_V02)
 
 

@@ -298,6 +298,8 @@ verified / contradicted / need_review
 
 完成上面的最小任务或 15 分钟体验后，再按需要深入：
 
+- [P1 陌生开发者激活协议 v0.2](../reference/developer-activation-protocol-v0.2.md) —— **当前简化盲测协议**；首次激活硬门槛聚焦“固定场景可运行、自定义输入可修改、bounded impact 与 `eligible != executed` 可理解”，15 分钟完成情况和 `rev1 → rev2 → rev3` 作为度量继续记录，但不单独阻断首次 Product Activation。
+- [P1 陌生开发者激活协议 v0.1](../reference/developer-activation-protocol-v0.1.md) —— **历史证据基线**；仅用于解释既有 v0.1 参与者记录，v0.2 不回写或重新解释这些历史证据。
 - [Reference Agent 从头到尾教程](reference-agent.zh-CN.md) —— 学习 Observation、World State、Discrepancy、Correction、Impact、Reevaluation 和 revision 生命周期；
 - [GeoTask 白皮书](../whitepaper/GeoTask_White_Paper_v0.1.md) —— 理解整体思想与长期方向；
 - [当前实现语言与执行规范](../spec/geotask-language-spec-v1.0.md) —— 编写正式 GeoTask 文件；

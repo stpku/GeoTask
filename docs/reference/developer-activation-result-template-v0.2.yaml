@@ -1,0 +1,51 @@
+schema_version: "0.2"
+protocol_version: "0.2"
+
+# Public evidence must remain anonymized. Do not place names, email addresses,
+# employer identities, customer identities, or private system identifiers here.
+participant_alias: ""
+
+# ISO-8601 timestamps with explicit timezone offset.
+started_at: ""
+product_activation_completed_at: ""
+completed_at: ""
+
+# These flags are derived from timestamps and are validated by the aggregator.
+# Keep false in the unfilled template so this file can never be mistaken for
+# passing external evidence.
+product_activation_completed_within_15_minutes: false
+completed_within_30_minutes: false
+
+# Discovery / execution evidence.
+entrypoint_found_without_help: false
+first_replay_succeeded: false
+custom_scenario_succeeded: false
+
+# v0.2 Product Activation comprehension gate.
+understood_bounded_impact: false
+understood_eligible_not_executed: false
+
+# Advanced / quality metrics retained for longitudinal comparison.
+understood_rev1_rev2_rev3: false
+understood_unknown_not_false: false
+
+# A reproducible repository defect may explain a failed fixed replay, but it
+# does not erase the defect and does not automatically satisfy any other gate.
+first_replay_failure_repository_defect: false
+repository_defects: []
+
+# Observer intervention must be explicit and auditable.
+help_events: []
+# Example:
+# help_events:
+#   - minute: 12
+#     issue: "Participant could not locate the custom scenario input."
+#     intervention: "Observer pointed to the Quickstart section only."
+
+# Friction evidence. Repeated confusion across two or more participants creates
+# a follow-up even when the quantitative activation gate passes.
+confusion_points: []
+documentation_gaps: []
+
+participant_summary: ""
+observer_notes: ""

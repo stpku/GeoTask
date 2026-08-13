@@ -134,6 +134,22 @@ geotask inspect schemas --format json
 schemas/geotask-v1.0.schema.json
 ```
 
+仓库同时提供可直接复用的本地 IDE Schema 配置 `.vscode/settings.json`。核心映射是：
+
+```json
+{
+  "yaml.schemas": {
+    "./schemas/geotask-v1.0.schema.json": [
+      "**/*.geotask.yaml",
+      "**/*.geotask.yml",
+      "examples/core/v1_*.yaml"
+    ]
+  }
+}
+```
+
+该配置只引用仓库内的本地 Schema，不依赖远程 Schema 服务。
+
 文档中的示例用于帮助理解，不应代替 Registry 充当静态能力清单。这样可以避免版本升级后，教程里的数量或名称与实际安装包漂移。
 
 如果你只想看看一个算子的输入、输出和边界语义，可以从 `geotask inspect operators` 的结果开始，而不必先阅读全部语言规范。

@@ -132,7 +132,7 @@ Observe → State → Verify → Act
 
 本 Simplification Gate 的工程闭环需要证明：
 
-- 首次体验页能够从 README/Quickstart 自然发现；
+- 首次体验路径能够从公开 Quickstart 自然发现，并直接在该公开文档内完成，不依赖额外未导出的教程文件；
 - 首次体验不要求先理解 GT01—GT42；
 - 15 分钟路径只依赖公开安装包和 materialized Reference Agent；
 - 文档中的版本、命令和预期输出与当前发布版一致；

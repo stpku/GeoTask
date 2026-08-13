@@ -128,6 +128,12 @@ geotask inspect capabilities
 geotask inspect schemas --format json
 ```
 
+公共 v1 GeoTask 文档的 JSON Schema 文件位于：
+
+```text
+schemas/geotask-v1.0.schema.json
+```
+
 文档中的示例用于帮助理解，不应代替 Registry 充当静态能力清单。这样可以避免版本升级后，教程里的数量或名称与实际安装包漂移。
 
 如果你只想看看一个算子的输入、输出和边界语义，可以从 `geotask inspect operators` 的结果开始，而不必先阅读全部语言规范。

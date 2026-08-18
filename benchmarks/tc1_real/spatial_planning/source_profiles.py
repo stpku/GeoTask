@@ -10,6 +10,15 @@ from __future__ import annotations
 from benchmarks.tc1_real.source_profiles import PublicSourceProfile
 
 
+# Experiment source identities are explicit rather than scattered magic numbers.
+# They remain benchmark/provider metadata, not GeoTask Core semantics.
+PHX_GROWTH_BASE_LAYER_ID = 4
+PHX_GROWTH_POPULATION_TABLE_ID = 13
+PHX_GROWTH_JOINED_DIAGNOSTIC_LAYER_ID = 2
+PHX_LAND_USE_LAYER_ID = 14
+PHX_LIBRARIES_LAYER_ID = 0
+
+
 PHX_GROWTH_PROJECTIONS = PublicSourceProfile(
     source_id="phx-growth-projections",
     source_family="City of Phoenix Growth Projections",

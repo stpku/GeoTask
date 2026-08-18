@@ -1,6 +1,6 @@
 """Task-first GeoTask context demo.
 
-The example is fictional and offline.  It does not fetch live weather,
+The example is fictional and offline. It does not fetch live weather,
 airspace, maps, or authorize a real flight.
 """
 
@@ -20,6 +20,7 @@ task = TaskFrame(
     temporal_scope="2026-08-19T15:00/16:00",
     outputs=("route_risk_input",),
     context_budget=12.0,
+    context_budget_unit="credits",
 )
 
 requirements = [
@@ -30,6 +31,7 @@ requirements = [
         spatial_scope="corridor-a-b",
         temporal_scope="2026-08-19T15:00/16:00",
         max_spatial_resolution=1000.0,
+        spatial_resolution_unit="meter",
         max_temporal_resolution_seconds=1800.0,
     ),
     ContextRequirement(
@@ -45,6 +47,7 @@ requirements = [
         reason="local clearance checking requires finer spatial detail",
         spatial_scope="corridor-a-b",
         max_spatial_resolution=10.0,
+        spatial_resolution_unit="meter",
     ),
     ContextRequirement(
         requirement_id="poi_labels",
@@ -63,8 +66,10 @@ selected_context = [
         spatial_scope="corridor-a-b",
         temporal_scope="2026-08-19T15:00/16:00",
         spatial_resolution=500.0,
+        spatial_resolution_unit="meter",
         temporal_resolution_seconds=900.0,
         acquisition_cost=2.0,
+        cost_unit="credits",
     ),
     ContextCandidate(
         candidate_id="airspace-notice",
@@ -73,6 +78,7 @@ selected_context = [
         spatial_scope="corridor-a-b",
         temporal_scope="2026-08-19T15:00/16:00",
         acquisition_cost=1.0,
+        cost_unit="credits",
     ),
     ContextCandidate(
         candidate_id="regional-obstacle-grid-100m",
@@ -80,7 +86,9 @@ selected_context = [
         requirement_ids=("obstacles",),
         spatial_scope="corridor-a-b",
         spatial_resolution=100.0,
+        spatial_resolution_unit="meter",
         acquisition_cost=1.0,
+        cost_unit="credits",
     ),
 ]
 
@@ -93,7 +101,7 @@ print(
     "refinement_needed="
     f"{','.join(result.refinement_requirement_ids) or '-'}"
 )
-print(f"context_cost={result.total_acquisition_cost}")
+print(f"context_cost={result.total_acquisition_cost} {result.cost_unit or ''}".rstrip())
 print(f"budget_exceeded={str(result.budget_exceeded).lower()}")
 
 # Expected interpretation:

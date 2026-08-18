@@ -1,0 +1,71 @@
+name: resolution-real-score-refresh-once
+
+on:
+  push:
+    branches:
+      - feat/task-context-resolution-stress-v0.1
+    paths:
+      - .github/workflows/resolution-real-score-refresh-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Regenerate every frozen real resolution case
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          from benchmarks.resolution_stress.real_runner import (
+              run_real_resolution_stress,
+              summary_to_jsonable,
+          )
+
+          fixture_root = Path(
+              "benchmarks/resolution_stress/fixtures/"
+              "usgs_3dep_south_mountain_20260818"
+          )
+          summary = run_real_resolution_stress(fixture_root)
+          (fixture_root / "real-result.json").write_text(
+              json.dumps(summary_to_jsonable(summary), indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(
+              json.dumps(
+                  {
+                      "total_cases": summary.total_cases,
+                      "coarse_stop_case_count": summary.coarse_stop_case_count,
+                      "refinement_case_count": summary.refinement_case_count,
+                      "unsafe_stop_count": summary.unsafe_stop_count,
+                      "unnecessary_refinement_count": summary.unnecessary_refinement_count,
+                      "final_resolution_counts": summary.final_resolution_counts,
+                      "adaptive_context_cells_carried": summary.adaptive_context_cells_carried,
+                      "always_finest_context_cells_carried": summary.always_finest_context_cells_carried,
+                      "context_cell_reduction_ratio": summary.context_cell_reduction_ratio,
+                      "adaptive_context_payload_bytes": summary.adaptive_context_payload_bytes,
+                      "always_finest_context_payload_bytes": summary.always_finest_context_payload_bytes,
+                      "context_payload_reduction_ratio": summary.context_payload_reduction_ratio,
+                      "pyramid_build_reference_cell_reads": summary.pyramid_build_reference_cell_reads,
+                      "promotion_stress_gate_pass": summary.promotion_stress_gate_pass,
+                  },
+                  sort_keys=True,
+              )
+          )
+          PY
+      - name: Commit refreshed result and remove one-shot workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/resolution-real-score-refresh-once.yml
+          git add benchmarks/resolution_stress/fixtures/usgs_3dep_south_mountain_20260818/real-result.json
+          git commit -m "data: split resolution context and derivation costs"
+          git push

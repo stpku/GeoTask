@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sys
 
@@ -22,10 +23,15 @@ finally:
     sys.path.remove(_ROOT)
 
 
+BASE_TIME = datetime(2026, 8, 18, tzinfo=timezone.utc)
+
+
 def _period(index: int, *, wind: float = 12.0, pop: float = 20.0) -> dict[str, object]:
+    start = BASE_TIME + timedelta(hours=index)
+    end = start + timedelta(hours=1)
     return {
-        "startTime": f"2026-08-18T{index:02d}:00:00+00:00",
-        "endTime": f"2026-08-18T{index + 1:02d}:00:00+00:00",
+        "startTime": start.isoformat(),
+        "endTime": end.isoformat(),
         "windSpeed": {"unitCode": WIND_UNIT_CODE, "value": wind},
         "probabilityOfPrecipitation": {"unitCode": PRECIP_UNIT_CODE, "value": pop},
     }
@@ -57,6 +63,7 @@ def test_hourly_periods_require_contiguous_quantitative_values() -> None:
     assert len(result) == 24
     assert result[0].wind_kmh == 12.0
     assert result[0].precip_probability_percent == 20.0
+    assert result[-1].end_time.startswith("2026-08-19T00:00:00")
 
 
 def test_hourly_periods_fail_closed_on_null_or_wrong_units() -> None:

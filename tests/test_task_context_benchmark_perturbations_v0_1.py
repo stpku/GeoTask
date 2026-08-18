@@ -1,14 +1,23 @@
 from dataclasses import replace
+from pathlib import Path
+import sys
 
 import pytest
 
-from benchmarks.task_context_cases_v0_1 import COST_UNIT, low_altitude_mission_case
-from benchmarks.task_context_v0_1 import (
-    POLICY_DECLARED_MIN_COST,
-    POLICY_FULL_CONTEXT,
-    run_case,
-)
 from geotask_core.task_context import ContextCandidate
+
+# ``benchmarks`` remains repository-local rather than part of geotask-core.
+_ROOT = str(Path(__file__).resolve().parents[1])
+sys.path.insert(0, _ROOT)
+try:
+    from benchmarks.task_context_cases_v0_1 import COST_UNIT, low_altitude_mission_case
+    from benchmarks.task_context_v0_1 import (
+        POLICY_DECLARED_MIN_COST,
+        POLICY_FULL_CONTEXT,
+        run_case,
+    )
+finally:
+    sys.path.remove(_ROOT)
 
 
 def _by_policy(case):
@@ -45,7 +54,7 @@ def test_irrelevant_context_expansion_does_not_change_g0_selection_or_cost():
     assert expanded_g0.context_reduction_ratio_items > base_g0.context_reduction_ratio_items
 
 
-def test_missing_fine_obstacle_context_exposes_critical_refinement_gap():
+def test_missing_fine_obstacle_context_exposes_critical_gap():
     base = low_altitude_mission_case()
     reduced = replace(
         base,

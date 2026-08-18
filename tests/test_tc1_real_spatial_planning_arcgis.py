@@ -10,6 +10,10 @@ from benchmarks.tc1_real.spatial_planning.arcgis_acquisition import (
     build_table_query_url,
     normalize_bbox,
 )
+from benchmarks.tc1_real.spatial_planning.source_profiles import (
+    PHX_LAND_USE_ZONES,
+    PHX_LIBRARIES,
+)
 
 
 def test_spatial_query_is_bounded_and_explicit() -> None:
@@ -29,6 +33,20 @@ def test_spatial_query_is_bounded_and_explicit() -> None:
     assert params["outSR"] == ["4326"]
     assert params["outFields"] == ["objectid,newluau"]
     assert params["f"] == ["geojson"]
+
+
+def test_json_only_provider_can_use_same_bounded_scope_contract() -> None:
+    url = build_spatial_query_url(
+        layer_endpoint="https://example.test/FeatureServer/14",
+        bbox=(-112.075, 33.425, -112.050, 33.450),
+        out_fields=("*",),
+        output_format="json",
+    )
+    params = parse_qs(urlparse(url).query)
+    assert params["geometry"] == ["-112.075,33.425,-112.05,33.45"]
+    assert params["f"] == ["json"]
+    assert PHX_LAND_USE_ZONES.query_formats == ("json",)
+    assert "geojson" in PHX_LIBRARIES.query_formats
 
 
 def test_numeric_in_where_is_sorted_deduplicated_and_injection_safe() -> None:

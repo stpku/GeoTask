@@ -73,7 +73,8 @@ measurement/provenance artifacts are retained.
 
 ```text
 P1 projected_population_context
-   Need growth-projection records for planning units intersecting the task area.
+   Need 2030 household-population projection context for every base planning
+   unit intersecting the selected scope.
 
 P2 existing_library_locations
    Need current source records for library locations intersecting the task area.
@@ -85,20 +86,41 @@ P3 hotspot_land_use_detail
 No requirement says that full task-area or broad-region land-use detail is
 necessary. Carrying it is therefore measurable irrelevant-context admission.
 
-The population table may contain multiple years/variables. The first complete
-live acquisition records the observed years/`popvar` values for the frozen task
-units. A specific planning year/variable must then be frozen in the benchmark
-before R0/R1/RG headline comparison. RG is not allowed to choose a favorable
-year after seeing burden results.
+### Frozen population semantics
+
+Before any R0/R1/RG headline score was calculated, a distinct dictionary query
+against table 13 recorded 252 `popvar / vardesc / year` combinations. The source
+exposes `HHPop` with the source description `Houshold Population` and includes
+2030.
+
+The benchmark therefore freezes:
+
+```text
+popvar    HHPop
+year      2030
+meaning   source-declared "Houshold Population"
+```
+
+The source spelling is preserved intentionally. The 2030 horizon is an
+**experiment input**, not a claim that 2030 is the uniquely correct horizon for
+a real Phoenix library-planning decision. Its role here is to prevent the
+benchmark from selecting a cheaper or more favorable variable/year after seeing
+R0/R1/RG burden results.
+
+Every scored P1 context must cover every spatially selected base planning unit
+with the frozen `HHPop @ 2030` semantics. Missing units remain a critical gap;
+they cannot be hidden by aggregate population values or model-generated
+imputation.
 
 ## 5. Compared preparation policies
 
 ### R0 — broad-regional upper bound
 
 ```text
-growth geometry/table   broad-region planning units
-libraries               broad region
-land-use detail         broad region
+base planning units          broad region
+HHPop @ 2030                 broad-region units
+libraries                    broad region
+land-use detail              broad region
 ```
 
 R0 is an engineering upper bound, not an expert workflow.
@@ -106,9 +128,10 @@ R0 is an engineering upper bound, not an expert workflow.
 ### R1 — fixed task-area preprocessing
 
 ```text
-growth geometry/table   task area
-libraries               task area
-land-use detail         task area
+base planning units          task area
+HHPop @ 2030                 task-area units
+libraries                    task area
+land-use detail              task area
 ```
 
 R1 is a reproducible fixed spatial preprocessing workflow.
@@ -116,9 +139,10 @@ R1 is a reproducible fixed spatial preprocessing workflow.
 ### RG — task-adaptive multi-scale context
 
 ```text
-growth geometry/table   task area
-libraries               task area
-land-use detail         hotspot only
+base planning units          task area
+HHPop @ 2030                 task-area units
+libraries                    task area
+land-use detail              hotspot only
 ```
 
 RG differs from R1 only in the scale at which the explicitly local requirement
@@ -141,6 +165,7 @@ Counter-metrics / hard guards:
 
 - provider completeness must be proven before reduction is scored;
 - every headline policy must cover P1/P2/P3;
+- P1 must cover every selected base planning unit with `HHPop @ 2030`;
 - any reduction achieved by dropping a critical requirement is a failure;
 - a smaller land-use payload does not imply a better planning decision;
 - no Task Outcome Regret claim is made until an independently defined downstream
@@ -153,10 +178,11 @@ This scenario passes TC1 cross-domain proof only if:
 1. the same public Task Context contracts can represent the planning case;
 2. scored provider responses are proven complete rather than silently capped;
 3. all policies are evaluated against the same frozen P1-P3 requirements;
-4. RG reduces at least one real context-burden / irrelevant-admission dimension
+4. the population variable/year is fixed before headline comparison;
+5. RG reduces at least one real context-burden / irrelevant-admission dimension
    relative to a stronger fixed R1;
-5. the reduction is not achieved by increasing critical-context misses;
-6. no new planning-specific concept has to be added to GeoTask Core.
+6. the reduction is not achieved by increasing critical-context misses;
+7. no new planning-specific concept has to be added to GeoTask Core.
 
 If the experiment needs a new general spatial applicability primitive, that is a
 TC2 Promotion Candidate, not an automatic Core change.

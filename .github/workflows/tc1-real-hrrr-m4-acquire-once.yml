@@ -1,0 +1,105 @@
+name: tc1-real-hrrr-m4-acquire-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-hrrr-m4-20260818
+    paths:
+      - .github/workflows/tc1-real-hrrr-m4-acquire-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Acquire same-scope semantically broader HRRR subset
+        run: |
+          mkdir -p tc1-real-hrrr-m4-acquisition
+          python -m benchmarks.tc1_real.hrrr_acquisition \
+            --date 20260818 \
+            --cycle 6 \
+            --forecast-hour 4 \
+            --bbox=-112.1,33.4,-112.0,33.5 \
+            --variable UGRD \
+            --variable VGRD \
+            --variable VIS \
+            --variable GUST \
+            --variable TMP \
+            --variable DPT \
+            --variable RH \
+            --level 10_m_above_ground \
+            --level surface \
+            --level 2_m_above_ground \
+            --output tc1-real-hrrr-m4-acquisition/hrrr-m4-broad-weather.grib2 \
+            --record tc1-real-hrrr-m4-acquisition/hrrr-m4-broad-weather.record.json
+      - name: Validate exact M4 semantic-breadth fixture
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("tc1-real-hrrr-m4-acquisition")
+          payload_path = root / "hrrr-m4-broad-weather.grib2"
+          record_path = root / "hrrr-m4-broad-weather.record.json"
+          payload = payload_path.read_bytes()
+          record = json.loads(record_path.read_text(encoding="utf-8"))
+          provenance = record["provenance"]
+          params = provenance["request_parameters"]
+          if not payload.startswith(b"GRIB") or payload[7] != 2:
+              raise SystemExit("M4 HRRR payload is not GRIB2")
+          if provenance["source_effective_at"] != "2026-08-18T06:00:00Z":
+              raise SystemExit("M4 HRRR run time changed")
+          if provenance["valid_from"] != "2026-08-18T10:00:00Z":
+              raise SystemExit("M4 HRRR valid time changed")
+          if params["bbox"] != [-112.1, 33.4, -112.0, 33.5]:
+              raise SystemExit("M4 HRRR bbox changed")
+          required_vars = {"UGRD", "VGRD", "VIS"}
+          required_levels = {"10_m_above_ground", "surface"}
+          actual_vars = set(params["variables"])
+          actual_levels = set(params["levels"])
+          if not required_vars < actual_vars:
+              raise SystemExit("M4 broad request must strictly contain required variables")
+          if not required_levels < actual_levels:
+              raise SystemExit("M4 broad request must strictly contain required levels")
+          digest = hashlib.sha256(payload).hexdigest()
+          if provenance["content_sha256"] != digest:
+              raise SystemExit("M4 HRRR record SHA does not match exact bytes")
+          summary = {
+              "date": params["date"],
+              "cycle_utc": params["cycle_utc"],
+              "forecast_hour": params["forecast_hour"],
+              "run_time": provenance["source_effective_at"],
+              "valid_time": provenance["valid_from"],
+              "bbox": params["bbox"],
+              "variables": params["variables"],
+              "levels": params["levels"],
+              "required_variables": ["UGRD", "VGRD", "VIS"],
+              "required_levels": ["10_m_above_ground", "surface"],
+              "extra_variables": sorted(actual_vars - required_vars),
+              "extra_levels": sorted(actual_levels - required_levels),
+              "payload_bytes": len(payload),
+              "sha256": digest,
+              "request_count": record["measurement"]["request_count"],
+              "wall_clock_seconds": record["measurement"]["wall_clock_seconds"],
+          }
+          (root / "summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(summary, sort_keys=True))
+          PY
+      - name: Commit real M4 HRRR evidence to temporary branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-hrrr-m4-acquisition/
+          git commit -m "data: record real HRRR semantic-breadth fixture"
+          git push

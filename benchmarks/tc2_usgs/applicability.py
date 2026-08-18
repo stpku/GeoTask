@@ -85,9 +85,10 @@ class TemporalWindow:
 class ApplicabilityDecision:
     """Preview decision shape; not a frozen Core API.
 
-    Relationship strings are explicit and directional.  TC2 deliberately does
-    not freeze a universal relation enum before the promotion gate has enough
-    cross-domain evidence.
+    Relationship strings are explicit and directional.  Resolution is per
+    axis: a spatial relation may be safely normalized even when the temporal
+    relation makes the overall candidate inapplicable, and vice versa.  A
+    failed/unknown axis can never carry a normalized task scope.
     """
 
     status: str
@@ -103,16 +104,28 @@ class ApplicabilityDecision:
     def __post_init__(self) -> None:
         if self.status not in {"applicable", "inapplicable", "unknown"}:
             raise ValueError("unsupported applicability status")
-        if self.status == "applicable":
-            if self.normalized_spatial_scope is None:
-                raise ValueError("applicable decision requires normalized spatial scope")
-            if self.normalized_temporal_scope is None:
-                raise ValueError("applicable decision requires normalized temporal scope")
-        elif (
-            self.normalized_spatial_scope is not None
-            or self.normalized_temporal_scope is not None
-        ):
-            raise ValueError("non-applicable decision must not normalize task scopes")
+
+        spatial_satisfied = self.spatial_relation == "candidate_within_task"
+        temporal_satisfied = self.temporal_relation == "candidate_in_task_window"
+
+        if spatial_satisfied != (self.normalized_spatial_scope is not None):
+            raise ValueError(
+                "normalized spatial scope must exist exactly when spatial relation is satisfied"
+            )
+        if temporal_satisfied != (self.normalized_temporal_scope is not None):
+            raise ValueError(
+                "normalized temporal scope must exist exactly when temporal relation is satisfied"
+            )
+
+        expected_status = (
+            "unknown"
+            if self.spatial_relation == "unknown" or self.temporal_relation == "unknown"
+            else "applicable"
+            if spatial_satisfied and temporal_satisfied
+            else "inapplicable"
+        )
+        if self.status != expected_status:
+            raise ValueError("overall applicability status disagrees with per-axis relations")
 
 
 @dataclass(frozen=True)
@@ -230,10 +243,14 @@ def resolve_event_applicability(
         method_version=TC2_METHOD_VERSION,
         evidence_ref=evidence_ref,
         normalized_spatial_scope=(
-            normalized_spatial_scope if status == "applicable" else None
+            normalized_spatial_scope
+            if spatial_relation == "candidate_within_task"
+            else None
         ),
         normalized_temporal_scope=(
-            normalized_temporal_scope if status == "applicable" else None
+            normalized_temporal_scope
+            if temporal_relation == "candidate_in_task_window"
+            else None
         ),
     )
 
@@ -305,12 +322,12 @@ def candidate_from_event(
 
     spatial_scope = (
         decision.normalized_spatial_scope
-        if decision.status == "applicable"
+        if decision.normalized_spatial_scope is not None
         else f"tc2-unresolved-spatial:{event_id}"
     )
     temporal_scope = (
         decision.normalized_temporal_scope
-        if decision.status == "applicable"
+        if decision.normalized_temporal_scope is not None
         else f"tc2-unresolved-temporal:{event_id}"
     )
 

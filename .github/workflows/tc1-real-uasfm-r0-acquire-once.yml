@@ -1,0 +1,84 @@
+name: tc1-real-uasfm-r0-acquire-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-uasfm-r0-20260818
+    paths:
+      - .github/workflows/tc1-real-uasfm-r0-acquire-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: acquire/tc1-real-uasfm-r0-20260818
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Acquire broad regional UASFM R0 fixture
+        run: |
+          rm -rf tc1-real-r0-acquisition
+          mkdir -p tc1-real-r0-acquisition
+          python -m benchmarks.tc1_real.uasfm_acquisition \
+            --bbox=-112.20,33.30,-111.90,33.60 \
+            --output tc1-real-r0-acquisition/uasfm-phx-regional.geojson \
+            --record tc1-real-r0-acquisition/uasfm-phx-regional.record.json \
+            --monetary-cost 0
+      - name: Validate and summarize R0 fixture
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("tc1-real-r0-acquisition")
+          payload_path = root / "uasfm-phx-regional.geojson"
+          record_path = root / "uasfm-phx-regional.record.json"
+          payload = payload_path.read_bytes()
+          document = json.loads(payload.decode("utf-8"))
+          features = document.get("features")
+          if not isinstance(features, list) or not features:
+              raise SystemExit("R0 UASFM fixture contains no features")
+
+          record = json.loads(record_path.read_text(encoding="utf-8"))
+          digest = hashlib.sha256(payload).hexdigest()
+          if record["provenance"]["content_sha256"] != digest:
+              raise SystemExit("R0 recorded SHA-256 does not match exact bytes")
+          if record["measurement"]["bytes_transferred"] != len(payload):
+              raise SystemExit("R0 recorded byte count does not match exact bytes")
+
+          summary = {
+              "baseline": "R0/broad-regional-uasfm",
+              "bbox": [-112.20, 33.30, -111.90, 33.60],
+              "feature_count": len(features),
+              "payload_bytes": len(payload),
+              "sha256": digest,
+              "source_url": record["provenance"]["source_url"],
+              "retrieval_timestamp": record["provenance"]["retrieval_timestamp"],
+              "wall_clock_seconds": record["measurement"]["wall_clock_seconds"],
+          }
+          (root / "summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(summary, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tc1-real-uasfm-r0-regional-20260818
+          path: tc1-real-r0-acquisition/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Persist exact R0 acquisition on temporary branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-r0-acquisition/
+          git commit -m "data: record broad regional UASFM R0 acquisition [skip ci]"
+          git push origin HEAD:acquire/tc1-real-uasfm-r0-20260818

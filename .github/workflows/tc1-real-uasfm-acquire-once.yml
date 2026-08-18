@@ -1,0 +1,76 @@
+name: tc1-real-uasfm-acquire-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-uasfm-20260818
+    paths:
+      - .github/workflows/tc1-real-uasfm-acquire-once.yml
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Acquire bounded UASFM fixture
+        run: |
+          mkdir -p tc1-real-acquisition
+          python -m benchmarks.tc1_real.uasfm_acquisition \
+            --bbox=-112.10,33.40,-112.00,33.50 \
+            --output tc1-real-acquisition/uasfm-phx.geojson \
+            --record tc1-real-acquisition/uasfm-phx.record.json \
+            --monetary-cost 0
+      - name: Validate recorded fixture
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("tc1-real-acquisition")
+          payload_path = root / "uasfm-phx.geojson"
+          record_path = root / "uasfm-phx.record.json"
+          payload = payload_path.read_bytes()
+          document = json.loads(payload.decode("utf-8"))
+          features = document.get("features")
+          if not isinstance(features, list):
+              raise SystemExit("UASFM fixture has no GeoJSON features list")
+          if not features:
+              raise SystemExit("M1 activation failed: bounded UASFM fixture contains zero features")
+
+          record = json.loads(record_path.read_text(encoding="utf-8"))
+          digest = hashlib.sha256(payload).hexdigest()
+          recorded = record["provenance"]["content_sha256"]
+          if recorded != digest:
+              raise SystemExit("recorded SHA-256 does not match exact UASFM bytes")
+          if record["measurement"]["bytes_transferred"] != len(payload):
+              raise SystemExit("recorded byte count does not match exact UASFM bytes")
+
+          summary = {
+              "bbox": [-112.10, 33.40, -112.00, 33.50],
+              "feature_count": len(features),
+              "payload_bytes": len(payload),
+              "sha256": digest,
+              "source_url": record["provenance"]["source_url"],
+              "retrieval_timestamp": record["provenance"]["retrieval_timestamp"],
+              "wall_clock_seconds": record["measurement"]["wall_clock_seconds"],
+          }
+          (root / "summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(summary, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tc1-real-uasfm-phx-20260818
+          path: tc1-real-acquisition/
+          if-no-files-found: error
+          retention-days: 14

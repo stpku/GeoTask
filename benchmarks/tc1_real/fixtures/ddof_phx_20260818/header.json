@@ -1,0 +1,25 @@
+{
+  "csv_member": "DOF.CSV",
+  "encoding": "cp1252",
+  "fields": [
+    "OAS",
+    "VERIFIED STATUS",
+    "COUNTRY",
+    "STATE",
+    "CITY",
+    "LATDEC",
+    "LONDEC",
+    "DMSLAT",
+    "DMSLON",
+    "TYPE",
+    "QUANTITY",
+    "AGL",
+    "AMSL",
+    "LIGHTING",
+    "ACCURACY",
+    "MARKING",
+    "FAA STUDY",
+    "ACTION",
+    "JDATE"
+  ]
+}

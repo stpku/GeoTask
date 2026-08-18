@@ -1,6 +1,6 @@
 # Task Context External Refinement Consumer Proof Plan v0.1
 
-**Status:** Frozen test plan before implementation  
+**Status:** Implementation Complete / Combined CI Pending  
 **Date:** 2026-08-18
 
 ## Problem
@@ -51,7 +51,7 @@ Initial expected state:
 
 ```text
 status                         insufficient
-gap_requirement_ids            (obstacles)
+gap_requirement_ids            (obstacles, poi_labels)
 refinement_requirement_ids     (obstacles)
 ```
 
@@ -68,6 +68,82 @@ optional poi_labels gap        remains
 
 The proof concerns context closure only; it does not authorize or assess a real flight.
 
+## Implemented carrier
+
+The reference consumer lives outside Core at:
+
+```text
+examples/task_context/refinement_consumer.py
+```
+
+It defines only:
+
+```text
+RefinementProvider
+RefinementCycle
+run_refinement_cycle(...)
+```
+
+It does not add a provider registry, scheduler, Agent loop, Harness dependency, or second context-selection algorithm.
+
+The consumer resolves emitted requirement ids against the caller's original structured `ContextRequirement[]`; it never parses `what` / `reason` prose and never reads hidden Core state.
+
+## Implemented proof cases
+
+### 1. Successful critical-gap closure
+
+The provider returns a 5 m obstacle candidate.
+
+Expected evidence:
+
+```text
+provider call count                 1
+provider call requirement           obstacles
+false acquisition count             0
+critical obstacle gap closed        yes
+optional poi_labels gap preserved   yes
+final refinement ids                none
+final acquisition cost              6 credits
+```
+
+The original 100 m obstacle acquisition remains in the total cost. Refinement does not erase sunk context-preparation cost.
+
+### 2. Too-coarse refinement remains unresolved
+
+The provider returns 50 m while the requirement needs <=10 m.
+
+Expected:
+
+```text
+final status                  insufficient
+obstacles gap                 preserved
+obstacles refinement signal   preserved
+```
+
+### 3. Missing non-refinement critical gap does not trigger provider
+
+Remove the airspace candidate while preserving the refinable obstacle gap.
+
+Expected:
+
+```text
+initial gaps                  airspace, obstacles, poi_labels
+refinement ids                obstacles
+provider calls                obstacles only
+false airspace acquisition    0
+final status                  insufficient
+```
+
+### 4. No refinement signal means no provider call
+
+When a 5 m obstacle candidate is already present:
+
+```text
+refinement ids        none
+provider calls        0
+final == initial      yes
+```
+
 ## Measures
 
 Primary:
@@ -81,6 +157,7 @@ Counter-metrics:
 - **Reassessment Parity** — consumer final result must equal direct Core assessment over the same final candidate set.
 - **Schema Delta** — target is zero new Core public objects / fields.
 - **Provider Call Count** — exactly one call for exactly one refinable requirement in the reference success case.
+- **Sunk Cost Preservation** — previously acquired coarse context remains in the declared total acquisition cost.
 
 ## Promotion rule
 
@@ -92,8 +169,36 @@ If the proof cannot be implemented without parsing free text, guessing provider 
 
 > record the missing information precisely and use that failure as evidence for the smallest possible new contract.
 
+## Applicability boundary
+
+This proof is intentionally narrower than a generic asynchronous job protocol.
+
+It proves only the boundary where the external consumer retains:
+
+```text
+TaskFrame
+ContextRequirement[]
+TaskContext
+```
+
+through the refinement cycle.
+
+It does **not** prove that a bare persisted `TaskContext` artifact containing only requirement ids is sufficient for a later asynchronous worker that no longer has the original `ContextRequirement[]`.
+
+That future boundary should be tested only when a real Harness / AgentReality / Lowa consumer requires it. If the original requirement objects cannot be preserved or re-resolved there, that failure may justify a structured `ContextGap` / `RefinementRequest` contract.
+
 ## Ownership boundary
 
 This reference consumer is Harness-neutral and lives outside Core.
 
 Actual DeepSeek Harness / AgentReality integration belongs in the AgentReality adapter/extension layer, not in GeoTask Core.
+
+## Current implementation verdict before CI
+
+```text
+Core code changes             0
+Core public schema changes    0
+external consumer             implemented
+success/counterexample tests  implemented
+combined exact-head CI        pending
+```

@@ -27,17 +27,20 @@ def test_low_altitude_tc1_cost_miss_tradeoff():
     assert full.critical_context_miss_rate == 0.0
     assert full.context_preparation_cost == 19.0
     assert full.context_reduction_ratio_items == 0.0
+    assert full.gap_requirement_ids == ()
 
     assert manual.context_status == "insufficient"
     assert manual.critical_context_miss_rate == pytest.approx(1 / 3)
     assert manual.context_preparation_cost == 6.0
     assert manual.context_reduction_ratio_items == pytest.approx(2 / 6)
+    assert manual.gap_requirement_ids == ("obstacles",)
     assert manual.refinement_requirement_ids == ("obstacles",)
 
     assert geotask.context_status == "sufficient"
     assert geotask.critical_context_miss_rate == 0.0
     assert geotask.context_preparation_cost == 8.0
     assert geotask.context_reduction_ratio_items == pytest.approx(3 / 6)
+    assert geotask.gap_requirement_ids == ("poi_labels",)
     assert geotask.selected_candidate_ids == (
         "airspace-notice",
         "obstacles-10m",
@@ -56,16 +59,21 @@ def test_spatial_planning_tc1_uses_coarse_district_and_local_refinement():
     assert full.context_status == "over_budget"
     assert full.critical_context_miss_rate == 0.0
     assert full.context_preparation_cost == 38.0
+    assert full.gap_requirement_ids == ()
 
     assert manual.context_status == "insufficient"
     assert manual.critical_context_miss_rate == pytest.approx(1 / 3)
     assert manual.context_preparation_cost == 6.0
-    assert "hotspot_building_demand" in manual.refinement_requirement_ids or manual.refinement_requirement_ids == ()
+    assert manual.gap_requirement_ids == ("hotspot_building_demand",)
+    # No hotspot candidate was selected by the fixed template, so this is a
+    # missing-context gap rather than a selected-but-too-coarse refinement.
+    assert manual.refinement_requirement_ids == ()
 
     assert geotask.context_status == "sufficient"
     assert geotask.critical_context_miss_rate == 0.0
     assert geotask.context_preparation_cost == 8.0
     assert geotask.context_reduction_ratio_items == pytest.approx(4 / 7)
+    assert geotask.gap_requirement_ids == ("poi_labels",)
     assert geotask.selected_candidate_ids == (
         "capacity-1km",
         "demand-1km",

@@ -1,0 +1,365 @@
+{
+  "candidates": {
+    "boulder_foothills": {
+      "bbox": [
+        -105.32,
+        39.98,
+        -105.22,
+        40.08
+      ],
+      "product_count": 13,
+      "products": [
+        {
+          "boundingBox": {
+            "maxX": -105.23406322399995,
+            "maxY": 40.019969985000046,
+            "minX": -105.35155443499997,
+            "minY": 39.92957701500006
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_ArapahoRooseveltPikeNF_D23/TIFF/USGS_1M_13_x47y443_CO_ArapahoRooseveltPikeNF_D23.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2026-03-23T22:16:51.185-06:00",
+          "publicationDate": "2026-03-20",
+          "sizeInBytes": 10425274,
+          "sourceId": "69c20ed7b66b01d6ebf33c9a",
+          "title": "USGS 1 Meter 13 x47y443 CO_ArapahoRooseveltPikeNF_D23"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.23406322399995,
+            "maxY": 40.019969985000046,
+            "minX": -105.35155443499997,
+            "minY": 39.92957701500006
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_DRCOG_2020_B20/TIFF/USGS_1M_13_x47y443_CO_DRCOG_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2022-02-16T23:03:46.820-07:00",
+          "publicationDate": "2022-02-10",
+          "sizeInBytes": 284525886,
+          "sourceId": "620de541d34e6c7e83baa08a",
+          "title": "USGS 1 Meter 13 x47y443 CO_DRCOG_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.23437077999995,
+            "maxY": 40.11006624400005,
+            "minX": -105.35201784199995,
+            "minY": 40.019673742000066
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_ArapahoRooseveltPikeNF_D23/TIFF/USGS_1M_13_x47y444_CO_ArapahoRooseveltPikeNF_D23.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2026-03-23T22:16:47.899-06:00",
+          "publicationDate": "2026-03-20",
+          "sizeInBytes": 25810463,
+          "sourceId": "69c20ed6b66b01d6ebf33c98",
+          "title": "USGS 1 Meter 13 x47y444 CO_ArapahoRooseveltPikeNF_D23"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.23437077999995,
+            "maxY": 40.11006624400005,
+            "minX": -105.35201784199995,
+            "minY": 40.019673742000066
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_DRCOG_2020_B20/TIFF/USGS_1M_13_x47y444_CO_DRCOG_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2022-02-16T23:03:45.875-07:00",
+          "publicationDate": "2022-02-10",
+          "sizeInBytes": 277314332,
+          "sourceId": "620de53fd34e6c7e83baa088",
+          "title": "USGS 1 Meter 13 x47y444 CO_DRCOG_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.11703195699994,
+            "maxY": 40.020147733000044,
+            "minX": -105.23437077999995,
+            "minY": 39.929872319000026
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_DRCOG_2020_B20/TIFF/USGS_1M_13_x48y443_CO_DRCOG_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2022-02-16T23:03:32.817-07:00",
+          "publicationDate": "2022-02-10",
+          "sizeInBytes": 246751525,
+          "sourceId": "620de533d34e6c7e83baa074",
+          "title": "USGS 1 Meter 13 x48y443 CO_DRCOG_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.11718573699994,
+            "maxY": 40.110244557000044,
+            "minX": -105.23467972399999,
+            "minY": 40.019969985000046
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_DRCOG_2020_B20/TIFF/USGS_1M_13_x48y444_CO_DRCOG_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2022-02-16T23:03:31.797-07:00",
+          "publicationDate": "2022-02-10",
+          "sizeInBytes": 233732106,
+          "sourceId": "620de531d34e6c7e83baa072",
+          "title": "USGS 1 Meter 13 x48y444 CO_DRCOG_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.233992821708,
+            "maxY": 40.0200241857665,
+            "minX": -105.351625021905,
+            "minY": 39.9295227439002
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_SoPlatteRiver_Lot5_2013/TIFF/USGS_one_meter_x47y443_CO_SoPlatteRiver_Lot5_2013.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2020-11-17T11:14:28.659-07:00",
+          "publicationDate": "2020-03-30",
+          "sizeInBytes": 448685670,
+          "sourceId": "5eaa4d5e82cefae35a220359",
+          "title": "USGS one meter x47y443 CO SoPlatteRiver-Lot5 2013"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.234300284356,
+            "maxY": 40.1101204442494,
+            "minX": -105.352088522809,
+            "minY": 40.0196194714728
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_SoPlatteRiver_Lot2a_2013/TIFF/USGS_one_meter_x47y444_CO_SoPlatteRiver_Lot2a_2013.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2020-11-17T11:12:32.591-07:00",
+          "publicationDate": "2020-03-30",
+          "sizeInBytes": 295488717,
+          "sourceId": "5eaa4d5e82cefae35a22035f",
+          "title": "USGS one meter x47y444 CO SoPlatteRiver-Lot2a 2013"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.234300284356,
+            "maxY": 40.1101204442494,
+            "minX": -105.352088522809,
+            "minY": 40.0196194714728
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_SoPlatteRiver_Lot2b_2013/TIFF/USGS_one_meter_x47y444_CO_SoPlatteRiver_Lot2b_2013.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2020-11-17T11:13:47.577-07:00",
+          "publicationDate": "2020-03-30",
+          "sizeInBytes": 40579891,
+          "sourceId": "5eaa4d5f82cefae35a220361",
+          "title": "USGS one meter x47y444 CO SoPlatteRiver-Lot2b 2013"
+        },
+        {
+          "boundingBox": {
+            "maxX": -105.234300284356,
+            "maxY": 40.1101204442494,
+            "minX": -105.352088522809,
+            "minY": 40.0196194714728
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CO_SoPlatteRiver_Lot5_2013/TIFF/USGS_one_meter_x47y444_CO_SoPlatteRiver_Lot5_2013.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2020-11-17T20:56:41.314-07:00",
+          "publicationDate": "2020-03-30",
+          "sizeInBytes": 113592238,
+          "sourceId": "5fb49b78d34eb413d5e13120",
+          "title": "USGS one meter x47y444 CO SoPlatteRiver-Lot5 2013"
+        }
+      ],
+      "response_bytes": 49536,
+      "response_sha256": "b8ca8247a158d236906d9383c172d60c6ceda0a3fd90dcab23d798b7b25b85b1",
+      "wall_clock_seconds": 0.39943348999999984
+    },
+    "jackson_wy": {
+      "bbox": [
+        -110.95,
+        43.17,
+        -110.88,
+        43.22
+      ],
+      "product_count": 2,
+      "products": [
+        {
+          "boundingBox": {
+            "maxX": -110.87696806599996,
+            "maxY": 43.17276188400007,
+            "minX": -111.0,
+            "minY": 43.08264705300007
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/WY_Southwest_2020_D20/TIFF/USGS_1M_12_x50y478_WY_Southwest_2020_D20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-05-31T23:16:43.640-06:00",
+          "publicationDate": "2023-05-27",
+          "sizeInBytes": 253112314,
+          "sourceId": "6478295ad34eac007b50d86a",
+          "title": "USGS 1 Meter 12 x50y478 WY_Southwest_2020_D20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -110.87678689099994,
+            "maxY": 43.262809350000055,
+            "minX": -111.0,
+            "minY": 43.17269573500005
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/WY_Southwest_2020_D20/TIFF/USGS_1M_12_x50y479_WY_Southwest_2020_D20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-05-31T23:16:40.949-06:00",
+          "publicationDate": "2023-05-27",
+          "sizeInBytes": 257557617,
+          "sourceId": "64782959d34eac007b50d867",
+          "title": "USGS 1 Meter 12 x50y479 WY_Southwest_2020_D20"
+        }
+      ],
+      "response_bytes": 8254,
+      "response_sha256": "fcaa2c8eb0e378d2cababaa67d4c34549f5d8d2ebe17c2c82249b467bcf21fa0",
+      "wall_clock_seconds": 0.22484725799999694
+    },
+    "phoenix_camelback": {
+      "bbox": [
+        -112.0,
+        33.49,
+        -111.93,
+        33.55
+      ],
+      "product_count": 4,
+      "products": [
+        {
+          "boundingBox": {
+            "maxX": -111.96820175999994,
+            "maxY": 33.52579911300006,
+            "minX": -112.07687937099996,
+            "minY": 33.434728826000025
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/AZ_MaricopaPinal_2020_B20/TIFF/USGS_1M_12_x40y371_AZ_MaricopaPinal_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-03-16T23:10:10.608-06:00",
+          "publicationDate": "2023-01-14",
+          "sizeInBytes": 285020861,
+          "sourceId": "6413f4c8d34eb496d1cea1e2",
+          "title": "USGS 1 Meter 12 x40y371 AZ_MaricopaPinal_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -111.96920561899998,
+            "maxY": 33.61598163900004,
+            "minX": -112.07799967999995,
+            "minY": 33.52490967400007
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/AZ_MaricopaPinal_2020_B20/TIFF/USGS_1M_12_x40y372_AZ_MaricopaPinal_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-03-16T23:09:56.271-06:00",
+          "publicationDate": "2023-01-14",
+          "sizeInBytes": 317538515,
+          "sourceId": "6413f4c7d34eb496d1cea1e0",
+          "title": "USGS 1 Meter 12 x40y372 AZ_MaricopaPinal_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -111.86063502099995,
+            "maxY": 33.526594963000036,
+            "minX": -111.96920561899998,
+            "minY": 33.435615245000065
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/AZ_MaricopaPinal_2020_B20/TIFF/USGS_1M_12_x41y371_AZ_MaricopaPinal_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-03-16T23:09:13.290-06:00",
+          "publicationDate": "2023-01-14",
+          "sizeInBytes": 288850391,
+          "sourceId": "6413f4aed34eb496d1cea1c7",
+          "title": "USGS 1 Meter 12 x41y371 AZ_MaricopaPinal_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -111.86152738799996,
+            "maxY": 33.61678019800007,
+            "minX": -111.97021395699994,
+            "minY": 33.52579911300006
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/AZ_MaricopaPinal_2020_B20/TIFF/USGS_1M_12_x41y372_AZ_MaricopaPinal_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-03-16T23:09:13.113-06:00",
+          "publicationDate": "2023-01-14",
+          "sizeInBytes": 292247605,
+          "sourceId": "6413f4abd34eb496d1cea1c5",
+          "title": "USGS 1 Meter 12 x41y372 AZ_MaricopaPinal_2020_B20"
+        }
+      ],
+      "response_bytes": 15947,
+      "response_sha256": "33f28cd7eaec796f7c53171d14d11d5f13e3db032c9b38ba4ecc3adda194964f",
+      "wall_clock_seconds": 0.22915581300000198
+    },
+    "phoenix_south_mountain": {
+      "bbox": [
+        -112.1,
+        33.32,
+        -112.02,
+        33.38
+      ],
+      "product_count": 4,
+      "products": [
+        {
+          "boundingBox": {
+            "maxX": -112.07354821699994,
+            "maxY": 33.34454663200006,
+            "minX": -112.18210002699999,
+            "minY": 33.25339007400004
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/AZ_MaricopaPinal_2020_B20/TIFF/USGS_1M_12_x39y369_AZ_MaricopaPinal_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-03-16T23:10:50.850-06:00",
+          "publicationDate": "2023-01-14",
+          "sizeInBytes": 313206158,
+          "sourceId": "6413f4dcd34eb496d1cea201",
+          "title": "USGS 1 Meter 12 x39y369 AZ_MaricopaPinal_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -112.07465366099996,
+            "maxY": 33.434728826000025,
+            "minX": -112.18332136199996,
+            "minY": 33.34357028800002
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/AZ_MaricopaPinal_2020_B20/TIFF/USGS_1M_12_x39y370_AZ_MaricopaPinal_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-03-16T23:10:50.901-06:00",
+          "publicationDate": "2023-01-14",
+          "sizeInBytes": 291763805,
+          "sourceId": "6413f4dbd34eb496d1cea1ff",
+          "title": "USGS 1 Meter 12 x39y370 AZ_MaricopaPinal_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -111.96620740299994,
+            "maxY": 33.34543003700003,
+            "minX": -112.07465366099996,
+            "minY": 33.25436309400004
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/AZ_MaricopaPinal_2020_B20/TIFF/USGS_1M_12_x40y369_AZ_MaricopaPinal_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-03-16T23:10:00.196-06:00",
+          "publicationDate": "2023-01-14",
+          "sizeInBytes": 304368456,
+          "sourceId": "6413f4ccd34eb496d1cea1e6",
+          "title": "USGS 1 Meter 12 x40y369 AZ_MaricopaPinal_2020_B20"
+        },
+        {
+          "boundingBox": {
+            "maxX": -111.96720236099998,
+            "maxY": 33.435615245000065,
+            "minX": -112.07576403899998,
+            "minY": 33.34454663200006
+          },
+          "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/AZ_MaricopaPinal_2020_B20/TIFF/USGS_1M_12_x40y370_AZ_MaricopaPinal_2020_B20.tif",
+          "format": "GeoTIFF",
+          "lastUpdated": "2023-03-16T23:09:58.188-06:00",
+          "publicationDate": "2023-01-14",
+          "sizeInBytes": 300848021,
+          "sourceId": "6413f4cad34eb496d1cea1e4",
+          "title": "USGS 1 Meter 12 x40y370 AZ_MaricopaPinal_2020_B20"
+        }
+      ],
+      "response_bytes": 15946,
+      "response_sha256": "29605b4cfa30e904e73fff4df8017ba3af46dff1889195adc7d68f0a370980b6",
+      "wall_clock_seconds": 0.3776265169999995
+    }
+  },
+  "dataset": "Digital Elevation Model (DEM) 1 meter",
+  "scoring": false,
+  "selection_rule": "choose a candidate with non-empty 1-meter product coverage; do not inspect any resolution benchmark metric during discovery",
+  "source_api": "https://tnmaccess.nationalmap.gov/api/v1/products",
+  "stage": "SOURCE_DISCOVERY_COMPLETE"
+}

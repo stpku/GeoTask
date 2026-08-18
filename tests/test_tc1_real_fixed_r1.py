@@ -42,10 +42,6 @@ def test_rg_carried_context_is_smaller_than_strong_r1_without_missing_context():
     assert comparison.r1_context.total_acquisition_cost == 328_898
     assert comparison.rg_context.total_acquisition_cost == 115_524
     assert comparison.reduction_ratio == pytest.approx(0.6487543250491034)
-    assert comparison.r1_context.coverage == tuple(
-        # Candidate ids differ between policies, so compare requirement keys below.
-        comparison.r1_context.coverage
-    )
     assert {
         item.requirement_id for item in comparison.r1_context.coverage if item.candidate_ids
     } == {

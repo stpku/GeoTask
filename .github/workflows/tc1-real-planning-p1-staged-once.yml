@@ -19,16 +19,18 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -e .
-      - name: Record started stage
+      - name: Record remeasure stage
         run: |
           mkdir -p tc1-real-planning-p1-staged
-          printf '%s\n' '{"stage":"STARTED","raw_source_records_committed":false}' > tc1-real-planning-p1-staged/stage.json
+          printf '%s\n' '{"stage":"REMEASURE_STARTED","raw_source_records_committed":false}' > tc1-real-planning-p1-staged/stage.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add tc1-real-planning-p1-staged/stage.json
-          git commit -m "data: start frozen planning population measurement"
-          git push
-      - name: Measure frozen population context
+          if ! git diff --cached --quiet; then
+            git commit -m "data: restart frozen planning population measurement"
+            git push
+          fi
+      - name: Measure frozen population context without hiding coverage gaps
         run: |
           python - <<'PY'
           from __future__ import annotations
@@ -63,6 +65,9 @@ jobs:
           )
 
           root = Path("tc1-real-planning-p1-staged")
+          failure_path = root / "failure.json"
+          if failure_path.exists():
+              failure_path.unlink()
 
           def digest(payload: bytes) -> str:
               return hashlib.sha256(payload).hexdigest()
@@ -95,7 +100,7 @@ jobs:
                   + f"/{PHX_GROWTH_POPULATION_TABLE_ID}"
               )
               summary: dict[str, object] = {
-                  "stage": "POPULATION_COMPLETE",
+                  "stage": "MEASURED",
                   "raw_source_records_committed": False,
                   "population": {},
                   "relations": {},
@@ -194,17 +199,14 @@ jobs:
 
                   if retrieved_pop_oids != set(pop_oids):
                       raise RuntimeError(f"{scope_name}: population OID completeness mismatch")
+
                   missing_units = units - covered_units
                   extra_units = covered_units - units
-                  if missing_units or extra_units:
-                      raise RuntimeError(
-                          f"{scope_name}: P1 coverage mismatch "
-                          f"missing={len(missing_units)} extra={len(extra_units)}"
-                      )
-                  if len(pop_oids) != len(units):
-                      raise RuntimeError(
-                          f"{scope_name}: expected one frozen population row per base unit"
-                      )
+                  unit_coverage_complete = (
+                      not missing_units
+                      and not extra_units
+                      and len(pop_oids) == len(units)
+                  )
 
                   unit_sets[scope_name] = units
                   population_entry = {
@@ -214,9 +216,10 @@ jobs:
                       "year": FROZEN_POPULATION_YEAR,
                       "id_count": len(pop_oids),
                       "covered_unit_count": len(covered_units),
-                      "unit_coverage_complete": True,
-                      "missing_unit_count": 0,
-                      "extra_unit_count": 0,
+                      "unit_coverage_complete": unit_coverage_complete,
+                      "missing_unit_count": len(missing_units),
+                      "extra_unit_count": len(extra_units),
+                      "unit_count": len(units),
                       "unit_set_sha256": set_digest(units),
                       "population_id_set_sha256": set_digest(set(pop_oids)),
                       "network_bytes": len(pop_ids_payload) + pop_page_bytes,
@@ -237,6 +240,19 @@ jobs:
               relations = summary["relations"]
               assert isinstance(relations, dict)
               relations["task_units_subset_broad"] = True
+
+              population_map = summary["population"]
+              assert isinstance(population_map, dict)
+              broad_entry = population_map["broad"]
+              task_entry = population_map["task"]
+              assert isinstance(broad_entry, dict) and isinstance(task_entry, dict)
+              summary["headline_ready"] = bool(
+                  broad_entry["unit_coverage_complete"]
+                  and task_entry["unit_coverage_complete"]
+              )
+              summary["r1_rg_population_ready"] = bool(
+                  task_entry["unit_coverage_complete"]
+              )
 
               (root / "summary.json").write_text(
                   json.dumps(summary, indent=2, sort_keys=True) + "\n",
@@ -265,8 +281,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase
-          git add tc1-real-planning-p1-staged/
+          git add -A tc1-real-planning-p1-staged/
           if ! git diff --cached --quiet; then
-            git commit -m "data: record frozen planning P1 staged evidence"
+            git commit -m "data: record both planning P1 scope results"
             git push
           fi

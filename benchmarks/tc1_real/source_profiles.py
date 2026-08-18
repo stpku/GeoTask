@@ -58,13 +58,18 @@ FAA_DDOF = PublicSourceProfile(
     observed_machine_endpoint=(
         "https://aeronav.faa.gov/Obst_Data/DAILY_DOF_CSV.ZIP"
     ),
-    spatial_reference=None,
+    spatial_reference="WGS84",
     query_formats=("zip-csv",),
     can_authorize_real_action=False,
     notes=(
         "FAA states the Daily DOF CSV contains the same obstacle data as DDOF "
         "with decimal-degree latitude/longitude added for GIS use. The source "
-        "is a broad file download rather than a bounded query service."
+        "is a broad file download rather than a bounded query service. FAA's "
+        "May 21, 2026 DDOF README cautions that the file contains only man-made "
+        "obstructions affecting domestic aeronautical charting and does not "
+        "purport to contain every obstruction. It also contains both verified "
+        "('O') and unverified ('U') records; unverified position and height have "
+        "not been verified by the FAA Obstacle Data Team."
     ),
 )
 

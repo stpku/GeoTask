@@ -1,0 +1,143 @@
+name: tc2-usgs-history-acquire-once
+
+on:
+  push:
+    branches:
+      - acquire/tc2-usgs-history-201907
+    paths:
+      - .github/workflows/tc2-usgs-history-acquire-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Acquire exact historical USGS GeoJSON
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          from urllib.parse import urlencode
+          from urllib.request import Request, urlopen
+
+          params = {
+              "format": "geojson",
+              "starttime": "2019-07-04T00:00:00Z",
+              "endtime": "2019-07-08T00:00:00Z",
+              "minlatitude": 33.0,
+              "maxlatitude": 37.0,
+              "minlongitude": -120.0,
+              "maxlongitude": -115.0,
+              "minmagnitude": 4.5,
+              "orderby": "time-asc",
+          }
+          endpoint = "https://earthquake.usgs.gov/fdsnws/event/1/query"
+          url = endpoint + "?" + urlencode(params)
+          request = Request(
+              url,
+              headers={"User-Agent": "GeoTask-TC2-Research/0.1"},
+              method="GET",
+          )
+          with urlopen(request, timeout=30) as response:
+              payload = response.read()
+              status = getattr(response, "status", 200)
+              content_type = response.headers.get("Content-Type")
+          if status != 200:
+              raise SystemExit(f"USGS query returned HTTP {status}")
+
+          document = json.loads(payload.decode("utf-8"))
+          if document.get("type") != "FeatureCollection":
+              raise SystemExit("USGS response is not a GeoJSON FeatureCollection")
+          features = document.get("features")
+          if not isinstance(features, list) or not features:
+              raise SystemExit("USGS historical query returned no events")
+
+          rows = []
+          for feature in features:
+              geometry = feature.get("geometry") or {}
+              coordinates = geometry.get("coordinates") or []
+              properties = feature.get("properties") or {}
+              if geometry.get("type") != "Point" or len(coordinates) < 3:
+                  raise SystemExit("USGS event is missing Point geometry")
+              rows.append({
+                  "id": feature.get("id"),
+                  "longitude": coordinates[0],
+                  "latitude": coordinates[1],
+                  "depth_km": coordinates[2],
+                  "magnitude": properties.get("mag"),
+                  "place": properties.get("place"),
+                  "time_ms": properties.get("time"),
+                  "updated_ms": properties.get("updated"),
+                  "event_type": properties.get("type"),
+                  "status": properties.get("status"),
+                  "detail": properties.get("detail"),
+              })
+
+          by_magnitude = sorted(
+              rows,
+              key=lambda row: (
+                  -(row["magnitude"] if isinstance(row["magnitude"], (int, float)) else -999),
+                  row["time_ms"] if isinstance(row["time_ms"], int) else 0,
+              ),
+          )
+          digest = hashlib.sha256(payload).hexdigest()
+          root = Path("tc2-usgs-history-acquisition")
+          root.mkdir(parents=True, exist_ok=True)
+          (root / "events.geojson").write_bytes(payload)
+          summary = {
+              "provider": "USGS FDSN Event Web Service",
+              "endpoint": endpoint,
+              "query_parameters": params,
+              "source_url": url,
+              "content_type": content_type,
+              "payload_bytes": len(payload),
+              "sha256": digest,
+              "event_count": len(rows),
+              "events_by_magnitude": by_magnitude,
+              "note": (
+                  "Historical earthquake-event context only; the presence of an event "
+                  "does not imply infrastructure damage, inspection priority, or action authorization."
+              ),
+          }
+          (root / "summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps({
+              "event_count": len(rows),
+              "payload_bytes": len(payload),
+              "sha256": digest,
+              "top_events": by_magnitude[:10],
+          }, sort_keys=True))
+          PY
+      - name: Validate exact source binding
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("tc2-usgs-history-acquisition")
+          payload = (root / "events.geojson").read_bytes()
+          summary = json.loads((root / "summary.json").read_text(encoding="utf-8"))
+          if hashlib.sha256(payload).hexdigest() != summary["sha256"]:
+              raise SystemExit("USGS raw fixture SHA mismatch")
+          if len(payload) != summary["payload_bytes"]:
+              raise SystemExit("USGS raw fixture byte count mismatch")
+          if summary["event_count"] < 2:
+              raise SystemExit("TC2 broad query needs at least two real events for relation testing")
+          PY
+      - name: Commit recorded USGS fixture to temporary branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc2-usgs-history-acquisition/
+          git commit -m "data: record historical USGS TC2 event fixture"
+          git push

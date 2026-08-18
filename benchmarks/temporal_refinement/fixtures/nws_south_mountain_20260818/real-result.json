@@ -1179,8 +1179,10 @@
   },
   "mandatory_refine_control_present": true,
   "mandatory_stop_control_present": true,
+  "payload_overhead_case_count": 4,
   "refinement_case_count": 8,
   "total_cases": 32,
   "unnecessary_refinement_count": 0,
-  "unsafe_stop_count": 0
+  "unsafe_stop_count": 0,
+  "worst_case_payload_ratio": 1.1666666666666667
 }

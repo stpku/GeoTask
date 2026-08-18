@@ -5,6 +5,9 @@
   "hourly_content_type": "application/geo+json",
   "hourly_response_bytes": 184355,
   "hourly_response_sha256": "c597febbf7bfd196a00bc8a5341801440f4bad163f59594b1cafd4b3bbcb4436",
+  "normalized_source_documents_committed": true,
+  "original_http_response_bytes_committed": false,
+  "original_http_response_hashes_recorded": true,
   "period_count": 24,
   "periods": [
     {
@@ -156,6 +159,5 @@
   "points_request_url": "https://api.weather.gov/points/33.35,-112.06",
   "points_response_bytes": 3909,
   "points_response_sha256": "3d6b63d54a00726bddc2dde3405e8c3c4f0d38e53bf4c7daa0d3b4839f929b9a",
-  "raw_source_records_committed": true,
   "stage": "HOURLY_REFERENCE_ACQUIRED"
 }

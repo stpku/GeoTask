@@ -95,7 +95,7 @@ def test_tc2_real_control_is_applicable_and_normalized():
     assert assessment.context.gap_requirement_ids == ()
 
 
-def test_tc2_real_spatial_mismatch_isolated_from_time():
+def test_tc2_real_spatial_mismatch_preserves_valid_temporal_axis():
     events = _fixture_events()
     assessment = assess_recorded_event(events[TC2_SPATIAL_MISMATCH_EVENT_ID])
 
@@ -104,13 +104,13 @@ def test_tc2_real_spatial_mismatch_isolated_from_time():
     assert assessment.decision.temporal_relation == "candidate_in_task_window"
     assert assessment.decision.reasons == ("event_point_outside_task_region",)
     assert assessment.decision.normalized_spatial_scope is None
-    assert assessment.decision.normalized_temporal_scope is None
+    assert assessment.decision.normalized_temporal_scope == tc2_task().temporal_scope
     assert assessment.context.status == "insufficient"
     assert assessment.context.gap_requirement_ids == ("seismic_event_context",)
-    assert assessment.context.assessments[0].reasons == ("spatial_scope_mismatch", "temporal_scope_mismatch")
+    assert assessment.context.assessments[0].reasons == ("spatial_scope_mismatch",)
 
 
-def test_tc2_real_temporal_mismatch_isolated_from_space():
+def test_tc2_real_temporal_mismatch_preserves_valid_spatial_axis():
     events = _fixture_events()
     assessment = assess_recorded_event(events[TC2_TEMPORAL_MISMATCH_EVENT_ID])
 
@@ -118,13 +118,14 @@ def test_tc2_real_temporal_mismatch_isolated_from_space():
     assert assessment.decision.spatial_relation == "candidate_within_task"
     assert assessment.decision.temporal_relation == "candidate_before_task_window"
     assert assessment.decision.reasons == ("event_time_before_task_window",)
-    assert assessment.decision.normalized_spatial_scope is None
+    assert assessment.decision.normalized_spatial_scope == tc2_task().spatial_scope
     assert assessment.decision.normalized_temporal_scope is None
     assert assessment.context.status == "insufficient"
     assert assessment.context.gap_requirement_ids == ("seismic_event_context",)
+    assert assessment.context.assessments[0].reasons == ("temporal_scope_mismatch",)
 
 
-def test_tc2_unknown_is_not_false_and_never_normalizes():
+def test_tc2_unknown_is_not_false_and_never_normalizes_unknown_axes():
     events = _fixture_events()
     malformed = deepcopy(events[TC2_CONTROL_EVENT_ID])
     malformed["geometry"] = None
@@ -150,8 +151,8 @@ def test_tc2_unknown_is_not_false_and_never_normalizes():
     assert context.gap_requirement_ids == ("seismic_event_context",)
 
 
-def test_tc2_nonapplicable_decision_cannot_smuggle_normalized_scope():
-    with pytest.raises(ValueError, match="must not normalize"):
+def test_tc2_failed_axis_cannot_smuggle_normalized_scope():
+    with pytest.raises(ValueError, match="normalized spatial scope"):
         ApplicabilityDecision(
             status="inapplicable",
             spatial_relation="candidate_outside_task",
@@ -161,6 +162,22 @@ def test_tc2_nonapplicable_decision_cannot_smuggle_normalized_scope():
             method_version="0.1",
             evidence_ref="usgs-event:test",
             normalized_spatial_scope="forbidden-normalized-scope",
+            normalized_temporal_scope=tc2_task().temporal_scope,
+        )
+
+
+def test_tc2_overall_status_must_agree_with_axis_relations():
+    with pytest.raises(ValueError, match="overall applicability status"):
+        ApplicabilityDecision(
+            status="applicable",
+            spatial_relation="candidate_within_task",
+            temporal_relation="candidate_before_task_window",
+            reasons=("event_time_before_task_window",),
+            method_id="point-event-task-applicability",
+            method_version="0.1",
+            evidence_ref="usgs-event:test",
+            normalized_spatial_scope=tc2_task().spatial_scope,
+            normalized_temporal_scope=None,
         )
 
 

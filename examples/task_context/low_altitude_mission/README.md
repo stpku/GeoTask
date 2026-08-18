@@ -20,6 +20,8 @@ The selected candidate context contains:
 - a 100 m obstacle grid, which is relevant and spatially applicable but too coarse;
 - no POI labels.
 
+Spatial resolution units are explicit. The demo also uses a fictional `credits` unit for context-acquisition cost so that cost is never silently compared across incompatible units.
+
 Running:
 
 ```bash
@@ -33,7 +35,7 @@ task_id=delivery-a-b-1500
 status=insufficient
 gaps=obstacles,poi_labels
 refinement_needed=obstacles
-context_cost=4.0
+context_cost=4.0 credits
 budget_exceeded=false
 ```
 
@@ -55,6 +57,7 @@ TaskFrame
   → ContextCandidate
   → explicit relevance binding
   → explicit scope applicability
+  → explicit resolution-unit compatibility
   → declared resolution check
   → sufficiency / gap result
 ```

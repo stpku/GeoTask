@@ -1,6 +1,6 @@
 # TC1-Real Spatial Planning Diagnostic v0.1
 
-**Status:** NON-SCORING / TRUNCATED + WRONG-REPRESENTATION diagnostic  
+**Status:** NON-SCORING / TRUNCATED + WRONG-REPRESENTATION + COVERAGE-GAP diagnostic  
 **Date:** 2026-08-18  
 **Scenario:** Phoenix public-library service-coverage context preparation
 
@@ -8,7 +8,7 @@
 
 The first live bounded acquisition produced apparently attractive task-vs-broad
 byte reductions. Those numbers are deliberately **not** admitted into the TC1
-headline benchmark because two independent problems were discovered before
+headline benchmark because three independent problems were discovered before
 scoring:
 
 1. ordinary feature/table queries hit the provider's 2,000-record transfer
@@ -16,22 +16,28 @@ scoring:
 2. the first growth geometry source was layer 2 (`FinalLUAUs_PopEmp`), a joined
    Pop/Emp representation that repeats base planning-unit geometry across
    related records rather than the minimal base-unit representation required by
-   the task.
+   the task;
+3. after population semantics were frozen to `HHPop @ 2030`, the first staged
+   completeness measurement found that the broad set of 471 base planning units
+   contains 2 units with no matching frozen population row.
 
 These are useful negative results:
 
 > a smaller bounded response is not evidence of better Task Context when source
 > completeness has not been established;
 
+> context cost can be dominated by choosing the wrong physical-world
+> representation before spatial scope reduction is even considered;
+
 and:
 
-> context cost can be dominated by choosing the wrong physical-world
-> representation before spatial scope reduction is even considered.
+> source acquisition can be complete while the source still does not cover every
+> task-required entity under the frozen semantic requirement.
 
 TC1 must not optimize Context Reduction Ratio by silently accepting provider
-truncation or by comparing against an unnecessarily duplicated representation.
-Either behavior could make the benchmark look better while increasing Critical
-Context Miss or artificial context burden.
+truncation, by comparing against an unnecessarily duplicated representation, or
+by treating a missing population row as zero/false. Any of those choices could
+make the benchmark look better while hiding Critical Context Miss.
 
 ## Frozen scopes used
 
@@ -61,8 +67,16 @@ bounding boxes. This is treated as a truncation warning, not as a source
 semantics conclusion.
 
 The population diagnostic observed multiple variables and years. No variable or
-planning year is selected after seeing burden results. A named `popvar` / `year`
-pair will be frozen only before the complete R0/R1/RG headline comparison.
+planning year was selected after seeing burden results. The benchmark later
+froze:
+
+```text
+population variable  HHPop
+source description   Houshold Population   # exact source spelling
+planning year        2030
+```
+
+before R0/R1/RG headline scoring.
 
 ## Second diagnostic — completeness exposed the wrong representation
 
@@ -102,9 +116,33 @@ Layer 2 is excluded from scoring. The benchmark must not manufacture a large
 "context reduction" by comparing task context against duplicated joined
 geometry that the task never needed in the first place.
 
+## Third diagnostic — complete source access still exposed a semantic coverage gap
+
+With base layer 4 and the frozen `HHPop @ 2030` population requirement, the
+first staged population measurement proved the broad base-unit set but failed
+the P1 coverage guard:
+
+```text
+broad base units                 471
+matching HHPop@2030 units        469
+missing required units             2
+extra units                        0
+P1 broad coverage               FAIL
+```
+
+This is not treated as provider truncation. The source queries completed and the
+missing rows are therefore preserved as an explicit **coverage gap / unknown**,
+not silently converted to zero population and not repaired by changing the
+population variable or year after seeing the result.
+
+The benchmark is now remeasuring both broad and task scopes without fail-fast
+behavior. That remeasurement must determine whether the frozen 125-unit task
+scope itself is complete. Until that result exists, no R0/R1/RG headline claim
+is admitted.
+
 ## Method corrections
 
-Two corrections are now frozen in the benchmark layer:
+Three corrections are now frozen in the benchmark layer:
 
 ### A. Completeness before reduction
 
@@ -126,8 +164,18 @@ Task requirement
   -> then compare broad/task/hotspot scope burden
 ```
 
-Neither correction is automatically promoted into GeoTask Core. They are TC1
-method evidence and possible inputs to a later Promotion Gate.
+### C. Coverage is not the same as acquisition completeness
+
+```text
+complete provider response
+  -> compare required entity set with covered entity set
+  -> preserve missing entities as gaps / unknown
+  -> do not coerce missing to zero
+  -> do not change frozen semantics after observing the gap
+```
+
+None of these corrections is automatically promoted into GeoTask Core. They are
+TC1 method evidence and possible inputs to a later Promotion Gate.
 
 ## Source redistribution boundary
 
@@ -143,13 +191,18 @@ GeoTask into a copy of the provider's dataset.
 The planning scenario remains NON-SCORING until:
 
 1. base layer 4 geometry is complete for task and broad scopes;
-2. table 13 population rows are complete for the selected planning units;
-3. task planning units are proven to be contained by broad-region units under
+2. table 13 population acquisition is complete for the selected planning units;
+3. population **coverage** under frozen `HHPop @ 2030` is explicitly measured
+   for both broad and task scopes;
+4. task planning units are proven to be contained by broad-region units under
    the same recorded source;
-4. library and land-use counts are source-complete;
-5. a specific population variable/year is frozen before headline comparison;
-6. R0/R1/RG all cover the same P1/P2/P3 critical requirements;
+5. library and land-use counts are source-complete;
+6. R0/R1/RG coverage status is evaluated against the same P1/P2/P3 critical
+   requirements without changing the frozen population semantics;
 7. all scored measurements are pinned by explicit request/provenance/hash
    evidence.
 
-Only a later layer-4 IDs-first measurement may become benchmark input.
+If the task scope is complete but the broad scope is not, R0 must remain a
+non-scoring source-gap diagnostic unless the experiment specification is
+explicitly revised with that limitation. If the task scope is also incomplete,
+the current TC1 planning headline gate does not pass.

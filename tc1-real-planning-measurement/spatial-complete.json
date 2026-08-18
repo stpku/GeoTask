@@ -1,0 +1,88 @@
+{
+  "land_broad_irrelevant_to_hotspot_count": 42,
+  "land_hotspot_count": 3,
+  "land_hotspot_subset_task": true,
+  "land_task_irrelevant_to_hotspot_count": 14,
+  "land_task_subset_broad": true,
+  "land_use": {
+    "broad": {
+      "complete": true,
+      "id_count": 45,
+      "id_set_sha256": "24b63b878adbb3bad6174aaad78ce7bf3acb29a4faf22d77b7e86d590be64a80",
+      "ids_bytes": 167,
+      "ids_sha256": "73516b4890525ec3e38a2dc75e3b7b0a4ad9a723a415b4bf7bdbb3eb9072ef7d",
+      "network_bytes": 383445,
+      "page_bytes": 383278,
+      "page_count": 1,
+      "page_hashes": [
+        "bf90cf3b5ea0a9cd6697b169ec40fc1b2084d489ab5809aeb0e27f4ab1475cfa"
+      ],
+      "request_count": 2,
+      "wall_clock_seconds": 0.1920306279999977
+    },
+    "hotspot": {
+      "complete": true,
+      "id_count": 3,
+      "id_set_sha256": "1a770b893e7e31dcdc50a557c2b825f00e33d811452c83fb8e652d511ede8287",
+      "ids_bytes": 50,
+      "ids_sha256": "1f731f03c1cc5bf2a73664ab8212f922253bff29756cc24001b9612f31eb3980",
+      "network_bytes": 26147,
+      "page_bytes": 26097,
+      "page_count": 1,
+      "page_hashes": [
+        "39bea4bd444938901b177a41cc563c6e8ff930819c640ae3416851c50871b33f"
+      ],
+      "request_count": 2,
+      "wall_clock_seconds": 0.1275531459999968
+    },
+    "task": {
+      "complete": true,
+      "id_count": 17,
+      "id_set_sha256": "2d75445f3c783c1219f2e752599a69e908f544c3bc60b16b8c31b8a4eb4dc21f",
+      "ids_bytes": 90,
+      "ids_sha256": "9be4988d7b8c29df54567d1cf2db502ca9b82b415e44902373148837d82a9a09",
+      "network_bytes": 145870,
+      "page_bytes": 145780,
+      "page_count": 1,
+      "page_hashes": [
+        "120caba17c7bd86be184694e186cc06a674253bb6d2ad81ff82e0ed0654b43f1"
+      ],
+      "request_count": 2,
+      "wall_clock_seconds": 0.11832806200000334
+    }
+  },
+  "libraries": {
+    "broad": {
+      "complete": true,
+      "id_count": 12,
+      "id_set_sha256": "3a9a739750472dab46e4ddbe1235f739f3b4387a3c0d7370381a14d37a108183",
+      "ids_bytes": 76,
+      "ids_sha256": "cd4966070d554b14f699f79525ad99dd4d10490e28f4e5a7fe56e0496d3ed441",
+      "network_bytes": 6245,
+      "page_bytes": 6169,
+      "page_count": 1,
+      "page_hashes": [
+        "cd1d86f7c9225e835be6bbec34de7af53caf03f817b5559ae91dac38ae0d68d3"
+      ],
+      "request_count": 2,
+      "wall_clock_seconds": 13.693288961999997
+    },
+    "task": {
+      "complete": true,
+      "id_count": 2,
+      "id_set_sha256": "0b104dde4ce6b67ca02d1bfebd61a5195c45fe6616a54b47c3e518f008d51ca6",
+      "ids_bytes": 50,
+      "ids_sha256": "761946f47a1f29c2e3d1ad71dc76a0474dc8de76488963edcc9771c723dc9702",
+      "network_bytes": 1103,
+      "page_bytes": 1053,
+      "page_count": 1,
+      "page_hashes": [
+        "0508833a60aacf291c32005fbe52019d4fc6f5e4e802064480102846b516e269"
+      ],
+      "request_count": 2,
+      "wall_clock_seconds": 0.2749967909999924
+    }
+  },
+  "library_task_subset_broad": true,
+  "stage": "OTHER_SPATIAL_COMPLETE"
+}

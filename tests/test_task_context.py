@@ -65,6 +65,8 @@ def test_complete_context_is_sufficient():
 
     assert result.status == "sufficient"
     assert result.sufficient is True
+    assert result.within_budget is True
+    assert result.ready is True
     assert result.gap_requirement_ids == ()
     assert result.refinement_requirement_ids == ()
     assert result.total_acquisition_cost == 3.0
@@ -96,6 +98,7 @@ def test_missing_critical_requirement_is_insufficient():
 
     assert result.status == "insufficient"
     assert result.sufficient is False
+    assert result.ready is False
     assert result.gap_requirement_ids == ("airspace",)
 
 
@@ -175,6 +178,7 @@ def test_noncritical_gap_keeps_context_usable():
 
     assert result.status == "sufficient_with_gaps"
     assert result.sufficient is True
+    assert result.ready is True
     assert result.gap_requirement_ids == ("poi_labels",)
 
 
@@ -194,7 +198,9 @@ def test_budget_is_separate_from_information_sufficiency():
     result = assess_task_context(_task(budget=5.0), [requirement], [candidate])
 
     assert result.status == "over_budget"
-    assert result.sufficient is False
+    assert result.sufficient is True
+    assert result.within_budget is False
+    assert result.ready is False
     assert result.gap_requirement_ids == ()
     assert result.budget_exceeded is True
 

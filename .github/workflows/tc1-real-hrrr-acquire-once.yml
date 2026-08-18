@@ -1,0 +1,129 @@
+name: tc1-real-hrrr-acquire-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-hrrr-20260818
+    paths:
+      - .github/workflows/tc1-real-hrrr-acquire-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: acquire/tc1-real-hrrr-20260818
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Acquire task and broad R0 HRRR subsets from the same run
+        run: |
+          rm -rf tc1-real-hrrr-evidence
+          mkdir -p tc1-real-hrrr-evidence
+          python - <<'PY'
+          from pathlib import Path
+          from benchmarks.tc1_real.hrrr_acquisition import acquire_hrrr_subset
+
+          root = Path("tc1-real-hrrr-evidence")
+          common = dict(
+              date="20260818",
+              cycle=6,
+              forecast_hour=4,
+              variables=("UGRD", "VGRD", "VIS"),
+              levels=("10_m_above_ground", "surface"),
+          )
+
+          acquire_hrrr_subset(
+              **common,
+              bbox=(-112.10, 33.40, -112.00, 33.50),
+              output_path=root / "hrrr-task.grib2",
+              record_path=root / "hrrr-task.record.json",
+          )
+          acquire_hrrr_subset(
+              **common,
+              bbox=(-112.20, 33.30, -111.90, 33.60),
+              output_path=root / "hrrr-r0-regional.grib2",
+              record_path=root / "hrrr-r0-regional.record.json",
+          )
+          PY
+      - name: Validate same-run comparability and summarize
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("tc1-real-hrrr-evidence")
+          task_payload = (root / "hrrr-task.grib2").read_bytes()
+          r0_payload = (root / "hrrr-r0-regional.grib2").read_bytes()
+          task_record = json.loads((root / "hrrr-task.record.json").read_text(encoding="utf-8"))
+          r0_record = json.loads((root / "hrrr-r0-regional.record.json").read_text(encoding="utf-8"))
+
+          for payload, record, label in (
+              (task_payload, task_record, "task"),
+              (r0_payload, r0_record, "r0"),
+          ):
+              digest = hashlib.sha256(payload).hexdigest()
+              if record["provenance"]["content_sha256"] != digest:
+                  raise SystemExit(f"{label} HRRR SHA mismatch")
+              if record["measurement"]["bytes_transferred"] != len(payload):
+                  raise SystemExit(f"{label} HRRR byte-count mismatch")
+              if payload[:4] != b"GRIB" or payload[7] != 2:
+                  raise SystemExit(f"{label} payload is not GRIB2")
+
+          task_params = task_record["provenance"]["request_parameters"]
+          r0_params = r0_record["provenance"]["request_parameters"]
+          for key in ("date", "cycle_utc", "forecast_hour", "variables", "levels"):
+              if task_params[key] != r0_params[key]:
+                  raise SystemExit(f"HRRR task/R0 mismatch in {key}")
+          if task_record["provenance"]["source_effective_at"] != r0_record["provenance"]["source_effective_at"]:
+              raise SystemExit("HRRR task/R0 run time mismatch")
+          if task_record["provenance"]["valid_from"] != r0_record["provenance"]["valid_from"]:
+              raise SystemExit("HRRR task/R0 valid time mismatch")
+
+          summary = {
+              "date": task_params["date"],
+              "cycle_utc": task_params["cycle_utc"],
+              "forecast_hour": task_params["forecast_hour"],
+              "run_time": task_record["provenance"]["source_effective_at"],
+              "valid_time": task_record["provenance"]["valid_from"],
+              "variables": task_params["variables"],
+              "levels": task_params["levels"],
+              "task_bbox": task_params["bbox"],
+              "r0_bbox": r0_params["bbox"],
+              "task_bytes": len(task_payload),
+              "r0_bytes": len(r0_payload),
+              "task_sha256": hashlib.sha256(task_payload).hexdigest(),
+              "r0_sha256": hashlib.sha256(r0_payload).hexdigest(),
+              "task_wall_clock_seconds": task_record["measurement"]["wall_clock_seconds"],
+              "r0_wall_clock_seconds": r0_record["measurement"]["wall_clock_seconds"],
+              "task_request_count": task_record["measurement"]["request_count"],
+              "r0_request_count": r0_record["measurement"]["request_count"],
+              "task_monetary_cost": task_record["measurement"]["monetary_cost"],
+              "r0_monetary_cost": r0_record["measurement"]["monetary_cost"],
+              "byte_reduction_ratio": 1 - (len(task_payload) / len(r0_payload)),
+          }
+          (root / "summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(summary, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tc1-real-hrrr-paired-20260818
+          path: tc1-real-hrrr-evidence/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Persist exact paired evidence on temporary branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-hrrr-evidence/
+          git commit -m "data: record paired HRRR task and R0 subsets [skip ci]"
+          git push origin HEAD:acquire/tc1-real-hrrr-20260818

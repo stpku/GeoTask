@@ -1,0 +1,101 @@
+name: tc1-real-ddof-acquire-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-ddof-20260818
+    paths:
+      - .github/workflows/tc1-real-ddof-acquire-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Acquire exact DDOF ZIP and inspect CSV header
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          from benchmarks.tc1_real.ddof_processing import (
+              acquire_ddof_zip,
+              extract_single_csv_from_zip,
+              inspect_csv_fields,
+          )
+          from benchmarks.tc1_real.measurement import sha256_bytes
+
+          root = Path("tc1-real-ddof-acquisition")
+          root.mkdir(parents=True, exist_ok=True)
+          zip_path = root / "daily-ddof.zip"
+          record_path = root / "daily-ddof.record.json"
+
+          record = acquire_ddof_zip(
+              output_path=zip_path,
+              record_path=record_path,
+              monetary_cost=0.0,
+          )
+          zip_payload = zip_path.read_bytes()
+          member, csv_payload = extract_single_csv_from_zip(zip_payload)
+          fields = inspect_csv_fields(csv_payload)
+
+          max_repo_bytes = 90 * 1024 * 1024
+          raw_zip_committed = len(zip_payload) <= max_repo_bytes
+          summary = {
+              "source_id": "faa-ddof",
+              "zip_bytes": len(zip_payload),
+              "zip_sha256": sha256_bytes(zip_payload),
+              "csv_member": member,
+              "csv_bytes": len(csv_payload),
+              "csv_sha256": sha256_bytes(csv_payload),
+              "csv_fields": list(fields),
+              "raw_zip_committed": raw_zip_committed,
+              "retrieval_timestamp": record.provenance.retrieval_timestamp,
+              "source_url": record.provenance.source_url,
+              "request_count": record.measurement.request_count,
+              "wall_clock_seconds": record.measurement.wall_clock_seconds,
+              "monetary_cost": record.measurement.monetary_cost,
+          }
+          (root / "summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          if not raw_zip_committed:
+              zip_path.unlink()
+          print(json.dumps(summary, sort_keys=True))
+          PY
+      - name: Validate acquisition record binding
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("tc1-real-ddof-acquisition")
+          summary = json.loads((root / "summary.json").read_text(encoding="utf-8"))
+          record = json.loads((root / "daily-ddof.record.json").read_text(encoding="utf-8"))
+          if record["provenance"]["content_sha256"] != summary["zip_sha256"]:
+              raise SystemExit("DDOF acquisition record SHA does not match summary")
+          if record["measurement"]["bytes_transferred"] != summary["zip_bytes"]:
+              raise SystemExit("DDOF acquisition byte count does not match summary")
+          if not summary["csv_fields"]:
+              raise SystemExit("DDOF CSV header inspection returned no fields")
+          if summary["raw_zip_committed"]:
+              payload = (root / "daily-ddof.zip").read_bytes()
+              if hashlib.sha256(payload).hexdigest() != summary["zip_sha256"]:
+                  raise SystemExit("committed DDOF ZIP bytes do not match recorded SHA")
+          PY
+      - name: Commit acquisition evidence to temporary branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-ddof-acquisition/
+          git commit -m "data: record exact DDOF acquisition header evidence"
+          git push

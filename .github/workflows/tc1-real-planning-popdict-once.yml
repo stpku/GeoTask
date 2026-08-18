@@ -1,0 +1,106 @@
+name: tc1-real-planning-popdict-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-planning-phx-popdict-20260818
+    paths:
+      - .github/workflows/tc1-real-planning-popdict-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Read distinct population variable/year dictionary
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          import hashlib
+          import json
+          from pathlib import Path
+          from urllib.parse import urlencode
+          from urllib.request import Request, urlopen
+
+          endpoint = (
+              "https://mapportal.phoenix.gov/pds/rest/services/Hosted/"
+              "GrowthProjections_MapViewer_0524_WFL1/FeatureServer/13/query"
+          )
+          params = {
+              "where": "1=1",
+              "outFields": "popvar,vardesc,year",
+              "returnGeometry": "false",
+              "returnDistinctValues": "true",
+              "orderByFields": "popvar,year",
+              "f": "json",
+          }
+          url = endpoint + "?" + urlencode(params)
+          request = Request(
+              url,
+              headers={"User-Agent": "GeoTask-TC1-Real/0.1 (+https://github.com/stpku/GeoTask)"},
+              method="GET",
+          )
+          with urlopen(request, timeout=60) as response:
+              payload = response.read()
+          document = json.loads(payload.decode("utf-8"))
+          if not isinstance(document, dict) or "error" in document:
+              raise SystemExit(f"ArcGIS error response: {document!r}")
+          features = document.get("features")
+          if not isinstance(features, list):
+              raise SystemExit("population dictionary response has no features")
+          if document.get("exceededTransferLimit"):
+              raise SystemExit("population dictionary response is truncated")
+
+          dictionary = {}
+          years = set()
+          rows = 0
+          for feature in features:
+              attrs = feature.get("attributes") if isinstance(feature, dict) else None
+              if not isinstance(attrs, dict):
+                  continue
+              rows += 1
+              popvar = str(attrs.get("popvar"))
+              vardesc = str(attrs.get("vardesc"))
+              year = int(attrs["year"])
+              years.add(year)
+              entry = dictionary.setdefault(popvar, {"vardesc": vardesc, "years": []})
+              if entry["vardesc"] != vardesc:
+                  raise SystemExit(f"popvar {popvar} has inconsistent vardesc values")
+              entry["years"].append(year)
+
+          for entry in dictionary.values():
+              entry["years"] = sorted(set(entry["years"]))
+
+          result = {
+              "stage": "POPULATION_DICTIONARY_COMPLETE",
+              "retrieval_timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+              "source_endpoint": endpoint,
+              "request_parameters": params,
+              "response_bytes": len(payload),
+              "response_sha256": hashlib.sha256(payload).hexdigest(),
+              "distinct_row_count": rows,
+              "available_years": sorted(years),
+              "variables": dict(sorted(dictionary.items())),
+              "raw_source_records_committed": False,
+          }
+          root = Path("tc1-real-planning-popdict")
+          root.mkdir(parents=True, exist_ok=True)
+          (root / "summary.json").write_text(
+              json.dumps(result, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(result, sort_keys=True))
+          PY
+      - name: Commit compact dictionary evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-planning-popdict/summary.json
+          git commit -m "data: record planning population variable dictionary"
+          git push

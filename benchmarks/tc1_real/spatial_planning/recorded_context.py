@@ -6,6 +6,12 @@ it does not add spatial-containment semantics or planning rules to Core.
 
 A broader provider scope is normalized to a narrower requirement scope only
 when the compact measurement explicitly proves the required subset relation.
+
+The real Phoenix experiment discovered that the frozen broad R0 population
+context has a source coverage gap. R0 is therefore retained as a diagnostic
+upper bound rather than forced into the headline comparison. The scored
+headline comparison is R1 vs RG, because both use the same task-area P1/P2
+requirements and differ only in the predeclared P3 refinement scope.
 """
 
 from __future__ import annotations
@@ -44,10 +50,43 @@ class PlanningPolicyResult:
 
 @dataclass(frozen=True)
 class PlanningComparison:
+    """Three-policy comparison for fixtures where R0 itself is complete.
+
+    This remains useful for synthetic/controlled fixtures. The recorded Phoenix
+    headline result must use :class:`TaskScopedPlanningComparison` because the
+    frozen broad R0 population requirement has a measured coverage gap.
+    """
+
     r0: PlanningPolicyResult
     r1: PlanningPolicyResult
     rg: PlanningPolicyResult
     rg_vs_r1_network_reduction_ratio: float
+
+
+@dataclass(frozen=True)
+class TaskScopedPlanningComparison:
+    """Headline comparison for the real planning proof.
+
+    R1 and RG cover the same frozen critical requirements. They differ only in
+    P3 land-use refinement scope: task area for R1 versus the predeclared
+    hotspot for RG.
+    """
+
+    r1: PlanningPolicyResult
+    rg: PlanningPolicyResult
+    rg_vs_r1_network_reduction_ratio: float
+
+
+@dataclass(frozen=True)
+class BroadPopulationDiagnostic:
+    """Explicit status of frozen R0 P1 coverage; never coerced to zero."""
+
+    complete_acquisition: bool
+    unit_coverage_complete: bool
+    unit_count: int
+    covered_unit_count: int
+    missing_unit_count: int
+
 
 
 def _mapping(value: object, label: str) -> Mapping[str, object]:
@@ -66,7 +105,7 @@ def _scope_entry(
     return entry
 
 
-def _positive_int(entry: Mapping[str, object], field: str, label: str) -> int:
+def _nonnegative_int(entry: Mapping[str, object], field: str, label: str) -> int:
     value = entry.get(field)
     if isinstance(value, bool) or not isinstance(value, int) or value < 0:
         raise ValueError(f"{label}.{field} must be a non-negative integer")
@@ -94,6 +133,24 @@ def _population_entry(
     if missing != 0:
         raise ValueError(f"population.{scope} has missing selected base units")
     return entry
+
+
+def broad_population_diagnostic(
+    measurement: Mapping[str, object],
+) -> BroadPopulationDiagnostic:
+    population = _mapping(measurement.get("population"), "population")
+    entry = _mapping(population.get("broad"), "population.broad")
+    return BroadPopulationDiagnostic(
+        complete_acquisition=entry.get("complete") is True,
+        unit_coverage_complete=entry.get("unit_coverage_complete") is True,
+        unit_count=_nonnegative_int(entry, "unit_count", "population.broad"),
+        covered_unit_count=_nonnegative_int(
+            entry, "covered_unit_count", "population.broad"
+        ),
+        missing_unit_count=_nonnegative_int(
+            entry, "missing_unit_count", "population.broad"
+        ),
+    )
 
 
 def _task(policy: str) -> TaskFrame:
@@ -160,7 +217,7 @@ def _population_candidate(
     population = _population_entry(measurement, scope)
     if scope == "broad":
         _relation(measurement, "task_units_subset_broad")
-    network = _positive_int(growth, "network_bytes", f"growth.{scope}") + _positive_int(
+    network = _nonnegative_int(growth, "network_bytes", f"growth.{scope}") + _nonnegative_int(
         population, "network_bytes", f"population.{scope}"
     )
     return _candidate(
@@ -191,7 +248,7 @@ def _libraries_candidate(
         source="phx-libraries",
         requirement_id=EXISTING_LIBRARIES_REQUIREMENT_ID,
         spatial_scope=TASK_SCOPE,
-        network_bytes=_positive_int(entry, "network_bytes", f"libraries.{scope}"),
+        network_bytes=_nonnegative_int(entry, "network_bytes", f"libraries.{scope}"),
         metadata={
             "provider_scope": scope,
             "normalized_requirement_scope": TASK_SCOPE,
@@ -215,7 +272,7 @@ def _land_use_candidate(
         source="phx-land-use-zones",
         requirement_id=HOTSPOT_LAND_USE_REQUIREMENT_ID,
         spatial_scope=HOTSPOT_SCOPE,
-        network_bytes=_positive_int(entry, "network_bytes", f"land_use.{scope}"),
+        network_bytes=_nonnegative_int(entry, "network_bytes", f"land_use.{scope}"),
         metadata={
             "provider_scope": scope,
             "normalized_requirement_scope": HOTSPOT_SCOPE,
@@ -228,8 +285,8 @@ def _irrelevant_land_use_rate(
 ) -> float:
     entry = _scope_entry(measurement, "land_use", scope)
     hotspot = _scope_entry(measurement, "land_use", "hotspot")
-    admitted = _positive_int(entry, "id_count", f"land_use.{scope}")
-    required = _positive_int(hotspot, "id_count", "land_use.hotspot")
+    admitted = _nonnegative_int(entry, "id_count", f"land_use.{scope}")
+    required = _nonnegative_int(hotspot, "id_count", "land_use.hotspot")
     if admitted == 0:
         raise ValueError("land-use admitted count must be > 0")
     if required > admitted:
@@ -269,19 +326,42 @@ def assess_policy(
     )
 
 
-def compare_policies(measurement: Mapping[str, object]) -> PlanningComparison:
-    r0 = assess_policy(measurement, "R0")
+def _headline_pair(
+    measurement: Mapping[str, object],
+) -> tuple[PlanningPolicyResult, PlanningPolicyResult, float]:
     r1 = assess_policy(measurement, "R1")
     rg = assess_policy(measurement, "RG")
-    if not (r0.context.sufficient and r1.context.sufficient and rg.context.sufficient):
-        raise ValueError("R0/R1/RG must all cover the frozen critical requirements")
+    if not (r1.context.sufficient and rg.context.sufficient):
+        raise ValueError("R1/RG must both cover the frozen critical requirements")
     if r1.context.total_acquisition_cost <= 0:
         raise ValueError("R1 network burden must be > 0")
+    reduction = 1.0 - rg.context.total_acquisition_cost / r1.context.total_acquisition_cost
+    return r1, rg, reduction
+
+
+def compare_task_scoped_policies(
+    measurement: Mapping[str, object],
+) -> TaskScopedPlanningComparison:
+    """Compare the two real headline policies without repairing broad R0 gaps."""
+
+    r1, rg, reduction = _headline_pair(measurement)
+    return TaskScopedPlanningComparison(
+        r1=r1,
+        rg=rg,
+        rg_vs_r1_network_reduction_ratio=reduction,
+    )
+
+
+def compare_policies(measurement: Mapping[str, object]) -> PlanningComparison:
+    """Compare R0/R1/RG only when the supplied fixture proves R0 complete."""
+
+    r0 = assess_policy(measurement, "R0")
+    r1, rg, reduction = _headline_pair(measurement)
+    if not r0.context.sufficient:
+        raise ValueError("R0 must cover the frozen critical requirements")
     return PlanningComparison(
         r0=r0,
         r1=r1,
         rg=rg,
-        rg_vs_r1_network_reduction_ratio=(
-            1.0 - rg.context.total_acquisition_cost / r1.context.total_acquisition_cost
-        ),
+        rg_vs_r1_network_reduction_ratio=reduction,
     )

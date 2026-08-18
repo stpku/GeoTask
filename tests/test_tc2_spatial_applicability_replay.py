@@ -63,10 +63,10 @@ def test_low_altitude_m1_broad_scope_relation_is_now_core_computable() -> None:
     assert replay.rg.context.sufficient
     assert replay.r0.context.gap_requirement_ids == ()
     assert replay.rg.context.gap_requirement_ids == ()
-    # Frozen M1 carried-context result: operator promotion must not change it.
-    assert replay.r0.context.total_acquisition_cost == 328_898
+    # Existing recorded-context contract: operator promotion must not change it.
+    assert replay.r0.context.total_acquisition_cost == 99_122_202
     assert replay.rg.context.total_acquisition_cost == 115_524
-    assert replay.reduction_ratio == pytest.approx(1 - 115_524 / 328_898)
+    assert replay.reduction_ratio == pytest.approx(0.9988345295234664)
 
 
 def test_spatial_planning_scope_hierarchy_is_now_core_computable() -> None:

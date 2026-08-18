@@ -1,0 +1,85 @@
+name: tc1-real-hrrr-m3-acquire-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-hrrr-m3-20260818
+    paths:
+      - .github/workflows/tc1-real-hrrr-m3-acquire-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Acquire same-run wrong-valid-time HRRR subset
+        run: |
+          mkdir -p tc1-real-hrrr-m3-acquisition
+          python -m benchmarks.tc1_real.hrrr_acquisition \
+            --date 20260818 \
+            --cycle 6 \
+            --forecast-hour 2 \
+            --bbox=-112.1,33.4,-112.0,33.5 \
+            --variable UGRD \
+            --variable VGRD \
+            --variable VIS \
+            --level 10_m_above_ground \
+            --level surface \
+            --output tc1-real-hrrr-m3-acquisition/hrrr-m3-wrong-time.grib2 \
+            --record tc1-real-hrrr-m3-acquisition/hrrr-m3-wrong-time.record.json
+      - name: Validate exact M3 temporal mismatch fixture
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          root = Path("tc1-real-hrrr-m3-acquisition")
+          payload_path = root / "hrrr-m3-wrong-time.grib2"
+          record_path = root / "hrrr-m3-wrong-time.record.json"
+          payload = payload_path.read_bytes()
+          record = json.loads(record_path.read_text(encoding="utf-8"))
+          provenance = record["provenance"]
+          if not payload.startswith(b"GRIB"):
+              raise SystemExit("M3 HRRR payload is not GRIB2")
+          if provenance["source_effective_at"] != "2026-08-18T06:00:00Z":
+              raise SystemExit("M3 HRRR run time is not the intended 06Z run")
+          if provenance["valid_from"] != "2026-08-18T08:00:00Z":
+              raise SystemExit("M3 HRRR valid time is not the intended 08Z mismatch")
+          digest = hashlib.sha256(payload).hexdigest()
+          if provenance["content_sha256"] != digest:
+              raise SystemExit("M3 HRRR record SHA does not match exact bytes")
+          summary = {
+              "date": "20260818",
+              "cycle_utc": 6,
+              "forecast_hour": 2,
+              "run_time": provenance["source_effective_at"],
+              "valid_time": provenance["valid_from"],
+              "bbox": [-112.1, 33.4, -112.0, 33.5],
+              "variables": ["UGRD", "VGRD", "VIS"],
+              "levels": ["10_m_above_ground", "surface"],
+              "payload_bytes": len(payload),
+              "sha256": digest,
+              "request_count": record["measurement"]["request_count"],
+              "wall_clock_seconds": record["measurement"]["wall_clock_seconds"],
+          }
+          (root / "summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(summary, sort_keys=True))
+          PY
+      - name: Commit real M3 HRRR evidence to temporary branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-hrrr-m3-acquisition/
+          git commit -m "data: record real HRRR temporal mismatch fixture"
+          git push

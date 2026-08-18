@@ -1,0 +1,46 @@
+{
+  "fixture_path": "tc1-real-hrrr-evidence/hrrr-r0-regional.grib2",
+  "measurement": {
+    "bytes_transferred": 912,
+    "human_preparation_seconds": null,
+    "monetary_cost": null,
+    "processing_cpu_seconds": null,
+    "request_count": 1,
+    "storage_bytes": 912,
+    "wall_clock_seconds": 0.7032487130000007
+  },
+  "notes": "Read-only bounded NOMADS HRRR GRIB2 subset. Exact variable/level interpretation remains part of downstream task context semantics.",
+  "provenance": {
+    "content_sha256": "5780d52a6ab74f10a5a46e983bb78f61d96e5a482028e4c547d6045528e1f7f3",
+    "request_parameters": {
+      "bbox": [
+        -112.2,
+        33.3,
+        -111.9,
+        33.6
+      ],
+      "cycle_utc": 6,
+      "date": "20260818",
+      "forecast_hour": 4,
+      "levels": [
+        "10_m_above_ground",
+        "surface"
+      ],
+      "variables": [
+        "UGRD",
+        "VGRD",
+        "VIS"
+      ]
+    },
+    "retrieval_timestamp": "2026-08-18T10:54:51.678592Z",
+    "source_crs": null,
+    "source_effective_at": "2026-08-18T06:00:00Z",
+    "source_family": "NOAA/NCEP High-Resolution Rapid Refresh",
+    "source_id": "noaa-hrrr",
+    "source_resolution": "3 km nominal HRRR grid",
+    "source_units": {},
+    "source_url": "https://nomads.ncep.noaa.gov/cgi-bin/filter_hrrr_2d.pl?file=hrrr.t06z.wrfsfcf04.grib2&lev_10_m_above_ground=on&lev_surface=on&var_UGRD=on&var_VGRD=on&var_VIS=on&subregion=&leftlon=-112.2&rightlon=-111.9&toplat=33.6&bottomlat=33.3&dir=%2Fhrrr.20260818%2Fconus",
+    "valid_from": "2026-08-18T10:00:00Z",
+    "valid_until": "2026-08-18T10:00:00Z"
+  }
+}

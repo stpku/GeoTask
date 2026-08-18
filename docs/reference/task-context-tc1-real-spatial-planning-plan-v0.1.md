@@ -38,13 +38,21 @@ claim automatic hotspot discovery.
 
 ## 3. Public source families
 
-The experiment uses read-only City of Phoenix public GIS services:
+The experiment uses read-only public GIS services. Source-use terms remain part
+of provider provenance; upstream raw data is not automatically republished as a
+GeoTask fixture.
 
 1. **Growth projections**
-   - geometry layer: `GrowthProjections_MapViewer_0524_WFL1/FeatureServer/2`
-   - related population table: `.../FeatureServer/13`
-   - the spatial layer exposes planning units keyed by `newluau`;
+   - base planning-unit geometry: `GrowthProjections_MapViewer_0524_WFL1/FeatureServer/4` (`FinalLUAUs`);
+   - related population table: `.../FeatureServer/13` (`New_Pop_Emp_Data`);
+   - the public service explicitly relates layer 4 to table 13;
+   - planning units are keyed by `newluau`;
    - the table exposes `newluau`, `popvar`, `vardesc`, `year`, `popcount`.
+
+   An initial diagnostic used layer 2 (`FinalLUAUs_PopEmp`). Complete ID
+   measurement showed that representation repeats planning-unit geometry across
+   joined population/employment records. It is retained only as negative
+   provider-selection evidence and is excluded from scoring.
 
 2. **Phoenix libraries**
    - `Public/Libraries/MapServer/0`
@@ -52,11 +60,14 @@ The experiment uses read-only City of Phoenix public GIS services:
 
 3. **Land Use Area Zones**
    - `Hosted/Land_Use_Area_Zones/FeatureServer/14`
+   - current service query contract is JSON-only;
    - used only as fine-grained local planning context;
    - land-use geometry is not converted into a recommendation score.
 
-Each acquisition records exact bytes, request parameters, retrieval time and
-SHA-256 before deterministic offline comparison.
+Scoring evidence records request shape, response byte/count measurements,
+retrieval time and hashes. Where upstream use terms discourage redistribution,
+raw source records remain outside the long-lived public fixture and only compact
+measurement/provenance artifacts are retained.
 
 ## 4. Frozen critical requirements
 
@@ -74,11 +85,11 @@ P3 hotspot_land_use_detail
 No requirement says that full task-area or broad-region land-use detail is
 necessary. Carrying it is therefore measurable irrelevant-context admission.
 
-The population table may contain multiple years/variables. The first live
-acquisition is diagnostic: it records the observed years/`popvar` values for the
-frozen task units. A specific planning year/variable must then be frozen in the
-benchmark before R0/R1/RG headline comparison. RG is not allowed to choose a
-favorable year after seeing burden results.
+The population table may contain multiple years/variables. The first complete
+live acquisition records the observed years/`popvar` values for the frozen task
+units. A specific planning year/variable must then be frozen in the benchmark
+before R0/R1/RG headline comparison. RG is not allowed to choose a favorable
+year after seeing burden results.
 
 ## 5. Compared preparation policies
 
@@ -128,6 +139,7 @@ Primary measurements:
 
 Counter-metrics / hard guards:
 
+- provider completeness must be proven before reduction is scored;
 - every headline policy must cover P1/P2/P3;
 - any reduction achieved by dropping a critical requirement is a failure;
 - a smaller land-use payload does not imply a better planning decision;
@@ -139,11 +151,12 @@ Counter-metrics / hard guards:
 This scenario passes TC1 cross-domain proof only if:
 
 1. the same public Task Context contracts can represent the planning case;
-2. all policies are evaluated against the same frozen P1-P3 requirements;
-3. RG reduces at least one real context-burden / irrelevant-admission dimension
+2. scored provider responses are proven complete rather than silently capped;
+3. all policies are evaluated against the same frozen P1-P3 requirements;
+4. RG reduces at least one real context-burden / irrelevant-admission dimension
    relative to a stronger fixed R1;
-4. the reduction is not achieved by increasing critical-context misses;
-5. no new planning-specific concept has to be added to GeoTask Core.
+5. the reduction is not achieved by increasing critical-context misses;
+6. no new planning-specific concept has to be added to GeoTask Core.
 
 If the experiment needs a new general spatial applicability primitive, that is a
 TC2 Promotion Candidate, not an automatic Core change.

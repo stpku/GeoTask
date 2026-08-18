@@ -28,6 +28,34 @@ GeoTask must not report all three as the same kind of "context saving".
 
 Each live experiment must capture the exact endpoint/request/time/hash actually used. `source_profiles.py` contains observed source metadata for experiment setup, not an eternal authority registry.
 
+## First recorded real fixture
+
+A one-time read-only acquisition run recorded the first bounded UASFM fixture under:
+
+```text
+benchmarks/tc1_real/fixtures/uasfm_phx_20260818/
+  uasfm-phx.geojson
+  uasfm-phx.record.json
+  summary.json
+```
+
+Recorded evidence:
+
+```text
+bbox                  -112.1,33.4,-112.0,33.5
+retrieval_timestamp   2026-08-18T10:33:14.973330Z
+feature_count         124
+payload_bytes         67529
+request_count         1
+monetary_cost         0.0  # explicitly supplied for this recorded request
+wall_clock_seconds    0.3136501239999987
+sha256                e9cf9402fb7c2fd583d04de5700e0bf7ac67bdda4a8d17a486105ea02470df05
+```
+
+The raw GeoJSON is stored byte-for-byte from the acquisition run and the offline test suite verifies its exact size/hash, source record binding, feature count, EPSG:4326 declaration, and the M1 non-empty-intersection activation condition.
+
+The fixture contains source `CEILING` values, airport/airspace attributes, and geometry. Those are recorded source data only; neither the fixture nor its tests translate a ceiling value into real flight authorization.
+
 ## Real cost is multi-dimensional
 
 `AcquisitionMeasurement` keeps these dimensions separate:
@@ -118,24 +146,23 @@ The critical-context requirements are part of the experiment specification, not 
 
 ## Network/CI boundary
 
-Live network access is **not** part of CI. CI tests request construction, measurement semantics, source limitations, offline byte/provenance binding, DDOF local filtering, HRRR run/valid-time binding, and frozen experiment requirements.
+Live network access is **not** part of normal CI. CI tests request construction, measurement semantics, source limitations, recorded fixture integrity, offline byte/provenance binding, DDOF local filtering, HRRR run/valid-time binding, and frozen experiment requirements.
 
-A live acquisition environment should perform:
+Live acquisition is separated from deterministic replay:
 
 ```text
-acquire exact public bytes
-  -> record provenance + raw measurement
-  -> preserve bounded offline fixture/hash
-  -> run deterministic comparison without network dependency
+one-time/live acquisition
+  -> exact public bytes + provenance + raw measurement
+  -> bounded recorded fixture
+  -> normal offline CI/replay
 ```
 
 ## Next slices
 
-1. record one real bounded UASFM fixture with exact provenance in a network-enabled environment;
-2. record one real DDOF broad acquisition and local-selection measurement;
-3. record one exact HRRR run/valid-time subset;
-4. normalize those recorded artifacts into ContextCandidates without collapsing the real cost vector into one scalar;
-5. run R0 broad preparation, R1 fixed documented checklist/script, and RG GeoTask against the same frozen M1–M4 requirements;
-6. record cases where GeoTask adds overhead without context-quality benefit.
+1. record one real DDOF broad acquisition and local-selection measurement;
+2. record one exact HRRR run/valid-time subset;
+3. normalize the recorded UASFM/DDOF/HRRR artifacts into ContextCandidates without collapsing the real cost vector into one scalar;
+4. run R0 broad preparation, R1 fixed documented checklist/script, and RG GeoTask against the same frozen M1–M4 requirements;
+5. record cases where GeoTask adds overhead without context-quality benefit.
 
 Do not promote new Core semantics until the real experiment exposes a reusable need that current contracts cannot express.

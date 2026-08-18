@@ -1,0 +1,52 @@
+{
+  "fixture_path": "tc1-real-acquisition/uasfm-phx.geojson",
+  "measurement": {
+    "bytes_transferred": 67529,
+    "human_preparation_seconds": null,
+    "monetary_cost": 0.0,
+    "processing_cpu_seconds": null,
+    "request_count": 1,
+    "storage_bytes": 67529,
+    "wall_clock_seconds": 0.3136501239999987
+  },
+  "notes": "Read-only UASFM context acquisition. This record does not represent FAA flight authorization.",
+  "provenance": {
+    "content_sha256": "e9cf9402fb7c2fd583d04de5700e0bf7ac67bdda4a8d17a486105ea02470df05",
+    "request_parameters": {
+      "bbox": [
+        -112.1,
+        33.4,
+        -112.0,
+        33.5
+      ],
+      "format": "geojson",
+      "out_fields": [
+        "OBJECTID",
+        "CEILING",
+        "UNIT",
+        "MAP_EFF",
+        "LAST_EDIT",
+        "LATITUDE",
+        "LONGITUDE",
+        "APT1_FAAID",
+        "APT1_ICAO",
+        "APT1_NAME",
+        "APT1_LAANC",
+        "AIRSPACE_1",
+        "REGION"
+      ]
+    },
+    "retrieval_timestamp": "2026-08-18T10:33:14.973330Z",
+    "source_crs": "EPSG:4326",
+    "source_effective_at": null,
+    "source_family": "FAA UAS Facility Maps",
+    "source_id": "faa-uasfm",
+    "source_resolution": null,
+    "source_units": {
+      "CEILING": "source_declared_UNIT"
+    },
+    "source_url": "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/ArcGIS/rest/services/FAA_UAS_FacilityMap_Data/FeatureServer/0/query?where=1%3D1&geometry=-112.1%2C33.4%2C-112%2C33.5&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CCEILING%2CUNIT%2CMAP_EFF%2CLAST_EDIT%2CLATITUDE%2CLONGITUDE%2CAPT1_FAAID%2CAPT1_ICAO%2CAPT1_NAME%2CAPT1_LAANC%2CAIRSPACE_1%2CREGION&returnGeometry=true&outSR=4326&f=geojson",
+    "valid_from": null,
+    "valid_until": null
+  }
+}

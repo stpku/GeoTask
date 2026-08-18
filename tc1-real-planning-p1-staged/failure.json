@@ -1,0 +1,6 @@
+{
+  "error": "broad: P1 coverage mismatch missing=2 extra=0",
+  "error_type": "RuntimeError",
+  "raw_source_records_committed": false,
+  "stage": "FAILED"
+}

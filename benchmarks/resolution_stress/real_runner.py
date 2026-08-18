@@ -4,6 +4,18 @@ The runner uses only the pinned normalized 1 m grid committed by the one-shot
 USGS acquisition. All coarse contexts are derived locally and deterministically.
 It evaluates every frozen corridor/threshold pair; no case is selected after
 observing the fine reference.
+
+Cost accounting deliberately separates two layers:
+
+- task-context carriage: how many multiresolution context cells are actually
+  admitted/evaluated by the frozen task cases;
+- pyramid derivation: the benchmark-local cost of constructing min/max levels
+  from the pinned 1 m reference.
+
+The latter is a shared reference cost and is NOT hidden inside a claimed context
+saving. A production GeoTask integration should normally select provider-native
+or cached multiresolution representations rather than rebuild the pyramid for
+every task.
 """
 
 from __future__ import annotations
@@ -34,6 +46,10 @@ from benchmarks.resolution_stress.experiment_spec import (
 )
 
 
+FLOAT32_BYTES = 4
+ENVELOPE_FLOATS_PER_CELL = 2
+
+
 @dataclass(frozen=True)
 class RealResolutionCaseResult:
     corridor_id: str
@@ -44,8 +60,8 @@ class RealResolutionCaseResult:
     final_resolution_meters: int
     refined: bool
     unsafe_stop: bool
-    cells_evaluated: int
-    always_finest_cells: int
+    context_cells_carried: int
+    always_finest_cells_carried: int
     steps: tuple[ResolutionAssessment, ...]
 
 
@@ -57,9 +73,16 @@ class RealResolutionSummary:
     unsafe_stop_count: int
     unnecessary_refinement_count: int
     final_resolution_counts: Mapping[str, int]
-    adaptive_cells_evaluated: int
-    always_finest_cells_evaluated: int
-    cell_evaluation_reduction_ratio: float
+    adaptive_context_cells_carried: int
+    always_finest_context_cells_carried: int
+    context_cell_reduction_ratio: float
+    adaptive_context_payload_bytes: int
+    always_finest_context_payload_bytes: int
+    context_payload_reduction_ratio: float
+    fine_reference_cell_count: int
+    pyramid_build_reference_cell_reads: int
+    pyramid_build_is_shared_reference_cost: bool
+    context_reduction_excludes_pyramid_build_cost: bool
     mandatory_stop_control_present: bool
     mandatory_refine_control_present: bool
     promotion_stress_gate_pass: bool
@@ -87,7 +110,7 @@ def load_pinned_fine_grid(
 
     with gzip.open(grid_path, "rb") as handle:
         payload = handle.read()
-    expected_bytes = FINE_GRID_WIDTH * FINE_GRID_HEIGHT * 4
+    expected_bytes = FINE_GRID_WIDTH * FINE_GRID_HEIGHT * FLOAT32_BYTES
     if len(payload) != expected_bytes:
         raise ValueError("fine grid byte length differs from frozen float32 shape")
     if _sha256(payload) != record.get("grid_sha256"):
@@ -149,8 +172,8 @@ def _evaluate_case(
         final_resolution_meters=final.resolution_meters,
         refined=len(steps) > 1,
         unsafe_stop=unsafe_stop,
-        cells_evaluated=sum(step.intersecting_cell_count for step in steps),
-        always_finest_cells=fine_assessment.intersecting_cell_count,
+        context_cells_carried=sum(step.intersecting_cell_count for step in steps),
+        always_finest_cells_carried=fine_assessment.intersecting_cell_count,
         steps=tuple(steps),
     )
 
@@ -184,9 +207,30 @@ def run_real_resolution_stress(fixture_root: Path) -> RealResolutionSummary:
     # structurally impossible; retain it as a countermetric rather than assuming.
     unnecessary = sum(case.refined and case.first_action != REFINE for case in cases)
     final_counts = Counter(str(case.final_resolution_meters) for case in cases)
-    adaptive_cells = sum(case.cells_evaluated for case in cases)
-    finest_cells = sum(case.always_finest_cells for case in cases)
-    reduction = 0.0 if finest_cells == 0 else 1.0 - adaptive_cells / finest_cells
+
+    adaptive_cells = sum(case.context_cells_carried for case in cases)
+    finest_cells = sum(case.always_finest_cells_carried for case in cases)
+    cell_reduction = 0.0 if finest_cells == 0 else 1.0 - adaptive_cells / finest_cells
+
+    # Adaptive cells are min/max envelopes (two float32 values); the always-fine
+    # comparison needs one float32 elevation per fine cell. This remains a
+    # representation-level payload estimate and excludes metadata/serialization
+    # syntax overhead equally.
+    adaptive_payload_bytes = adaptive_cells * ENVELOPE_FLOATS_PER_CELL * FLOAT32_BYTES
+    finest_payload_bytes = finest_cells * FLOAT32_BYTES
+    payload_reduction = (
+        0.0
+        if finest_payload_bytes == 0
+        else 1.0 - adaptive_payload_bytes / finest_payload_bytes
+    )
+
+    fine_reference_cells = FINE_GRID_WIDTH * FINE_GRID_HEIGHT
+    # The current benchmark implementation builds every level independently from
+    # the 1 m reference, so each level scans the full fine grid once. This is a
+    # deliberately explicit shared derivation cost, not a task-context saving.
+    pyramid_build_reference_cell_reads = fine_reference_cells * len(
+        RESOLUTION_LADDER_METERS
+    )
 
     stop_present = coarse_stop > 0
     refine_present = refined > 0
@@ -196,13 +240,24 @@ def run_real_resolution_stress(fixture_root: Path) -> RealResolutionSummary:
         refinement_case_count=refined,
         unsafe_stop_count=unsafe,
         unnecessary_refinement_count=unnecessary,
-        final_resolution_counts=dict(sorted(final_counts.items(), key=lambda item: int(item[0]), reverse=True)),
-        adaptive_cells_evaluated=adaptive_cells,
-        always_finest_cells_evaluated=finest_cells,
-        cell_evaluation_reduction_ratio=reduction,
+        final_resolution_counts=dict(
+            sorted(final_counts.items(), key=lambda item: int(item[0]), reverse=True)
+        ),
+        adaptive_context_cells_carried=adaptive_cells,
+        always_finest_context_cells_carried=finest_cells,
+        context_cell_reduction_ratio=cell_reduction,
+        adaptive_context_payload_bytes=adaptive_payload_bytes,
+        always_finest_context_payload_bytes=finest_payload_bytes,
+        context_payload_reduction_ratio=payload_reduction,
+        fine_reference_cell_count=fine_reference_cells,
+        pyramid_build_reference_cell_reads=pyramid_build_reference_cell_reads,
+        pyramid_build_is_shared_reference_cost=True,
+        context_reduction_excludes_pyramid_build_cost=True,
         mandatory_stop_control_present=stop_present,
         mandatory_refine_control_present=refine_present,
-        promotion_stress_gate_pass=(stop_present and refine_present and unsafe == 0 and unnecessary == 0),
+        promotion_stress_gate_pass=(
+            stop_present and refine_present and unsafe == 0 and unnecessary == 0
+        ),
         cases=cases,
     )
 

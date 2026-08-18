@@ -1,0 +1,120 @@
+{
+  "land_use": {
+    "broad": {
+      "bbox": [
+        -112.2,
+        33.3,
+        -111.9,
+        33.6
+      ],
+      "complete": true,
+      "id_count": 45,
+      "id_set_sha256": "24b63b878adbb3bad6174aaad78ce7bf3acb29a4faf22d77b7e86d590be64a80",
+      "ids_response_bytes": 167,
+      "ids_response_sha256": "73516b4890525ec3e38a2dc75e3b7b0a4ad9a723a415b4bf7bdbb3eb9072ef7d",
+      "network_bytes": 383445,
+      "page_count": 1,
+      "page_hashes": [
+        "bf90cf3b5ea0a9cd6697b169ec40fc1b2084d489ab5809aeb0e27f4ab1475cfa"
+      ],
+      "page_response_bytes": 383278,
+      "request_count": 2,
+      "wall_clock_seconds": 1.0106996429999953
+    },
+    "hotspot": {
+      "bbox": [
+        -112.075,
+        33.425,
+        -112.05,
+        33.45
+      ],
+      "complete": true,
+      "id_count": 3,
+      "id_set_sha256": "1a770b893e7e31dcdc50a557c2b825f00e33d811452c83fb8e652d511ede8287",
+      "ids_response_bytes": 50,
+      "ids_response_sha256": "1f731f03c1cc5bf2a73664ab8212f922253bff29756cc24001b9612f31eb3980",
+      "network_bytes": 26147,
+      "page_count": 1,
+      "page_hashes": [
+        "39bea4bd444938901b177a41cc563c6e8ff930819c640ae3416851c50871b33f"
+      ],
+      "page_response_bytes": 26097,
+      "request_count": 2,
+      "wall_clock_seconds": 0.5712138670000115
+    },
+    "task": {
+      "bbox": [
+        -112.1,
+        33.4,
+        -112.0,
+        33.5
+      ],
+      "complete": true,
+      "id_count": 17,
+      "id_set_sha256": "2d75445f3c783c1219f2e752599a69e908f544c3bc60b16b8c31b8a4eb4dc21f",
+      "ids_response_bytes": 90,
+      "ids_response_sha256": "9be4988d7b8c29df54567d1cf2db502ca9b82b415e44902373148837d82a9a09",
+      "network_bytes": 145870,
+      "page_count": 1,
+      "page_hashes": [
+        "120caba17c7bd86be184694e186cc06a674253bb6d2ad81ff82e0ed0654b43f1"
+      ],
+      "page_response_bytes": 145780,
+      "request_count": 2,
+      "wall_clock_seconds": 0.6950091060000005
+    }
+  },
+  "libraries": {
+    "broad": {
+      "bbox": [
+        -112.2,
+        33.3,
+        -111.9,
+        33.6
+      ],
+      "complete": true,
+      "id_count": 12,
+      "id_set_sha256": "3a9a739750472dab46e4ddbe1235f739f3b4387a3c0d7370381a14d37a108183",
+      "ids_response_bytes": 76,
+      "ids_response_sha256": "cd4966070d554b14f699f79525ad99dd4d10490e28f4e5a7fe56e0496d3ed441",
+      "network_bytes": 2527,
+      "page_count": 1,
+      "page_hashes": [
+        "6a594d0a5e068bad2f2ea30468ed3520656282e26c907e2bdbea550cccd1b801"
+      ],
+      "page_response_bytes": 2451,
+      "request_count": 2,
+      "wall_clock_seconds": 8.30603121899999
+    },
+    "task": {
+      "bbox": [
+        -112.1,
+        33.4,
+        -112.0,
+        33.5
+      ],
+      "complete": true,
+      "id_count": 2,
+      "id_set_sha256": "0b104dde4ce6b67ca02d1bfebd61a5195c45fe6616a54b47c3e518f008d51ca6",
+      "ids_response_bytes": 50,
+      "ids_response_sha256": "761946f47a1f29c2e3d1ad71dc76a0474dc8de76488963edcc9771c723dc9702",
+      "network_bytes": 488,
+      "page_count": 1,
+      "page_hashes": [
+        "cb05ced6043d6f0ff248f48dec151d560a5550d3ed75767b7eb0a5cf09287e9f"
+      ],
+      "page_response_bytes": 438,
+      "request_count": 2,
+      "wall_clock_seconds": 3.713923965999996
+    }
+  },
+  "relations": {
+    "land_broad_irrelevant_to_hotspot_count": 42,
+    "land_hotspot_count": 3,
+    "land_hotspot_subset_task": true,
+    "land_task_irrelevant_to_hotspot_count": 14,
+    "land_task_subset_broad": true,
+    "library_task_subset_broad": true
+  },
+  "stage": "OTHER_SPATIAL_COMPLETE"
+}

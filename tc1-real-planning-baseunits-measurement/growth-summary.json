@@ -1,0 +1,54 @@
+{
+  "base_layer_id": 4,
+  "growth": {
+    "broad": {
+      "bbox": [
+        -112.2,
+        33.3,
+        -111.9,
+        33.6
+      ],
+      "complete": true,
+      "id_count": 471,
+      "id_set_sha256": "77d4f4d9b7ef572051b40c608eab36bfde3f7de9eecd3637054cc135f0101b77",
+      "ids_response_bytes": 1858,
+      "ids_response_sha256": "b9fb674d969657b89c499905ba7ccc99606963add53822c62918d5787cc7ae22",
+      "network_bytes": 24237,
+      "newluau_count": 471,
+      "newluau_set_sha256": "68eeec98778dd020eaae151b161d56794d1d2abbcd44769bf6d37245fc7ca2a0",
+      "page_count": 1,
+      "page_hashes": [
+        "d24f14711c7a93124c003dca3a922426d354871186e89ba587c40e8f9cb91c40"
+      ],
+      "page_response_bytes": 22379,
+      "request_count": 2,
+      "wall_clock_seconds": 0.9892921740000062
+    },
+    "task": {
+      "bbox": [
+        -112.1,
+        33.4,
+        -112.0,
+        33.5
+      ],
+      "complete": true,
+      "id_count": 125,
+      "id_set_sha256": "4228b1650fa1ba165cf103110324dcde5c9c950849dfe526d0d73c2ba4bc6936",
+      "ids_response_bytes": 510,
+      "ids_response_sha256": "0f0c9a41a49c1b2564a2795315d1ad57aa5cc25c8f8a5824b657e94794f1555e",
+      "network_bytes": 6663,
+      "newluau_count": 125,
+      "newluau_set_sha256": "4b30f9c5d49dc84dd708fe46181ece91442e0bc942a586986ad63387a011ddcd",
+      "page_count": 1,
+      "page_hashes": [
+        "4416788122f9f69d6813ae73092b3afbe094c38a602be86d08d03d4837f1e1d9"
+      ],
+      "page_response_bytes": 6153,
+      "request_count": 2,
+      "wall_clock_seconds": 0.5525429729999942
+    }
+  },
+  "stage": "BASE_UNITS_COMPLETE",
+  "task_ids_subset_broad": true,
+  "task_units_subset_broad": true
+}

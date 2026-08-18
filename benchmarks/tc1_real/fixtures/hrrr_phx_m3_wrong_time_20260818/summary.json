@@ -1,0 +1,26 @@
+{
+  "bbox": [
+    -112.1,
+    33.4,
+    -112.0,
+    33.5
+  ],
+  "cycle_utc": 6,
+  "date": "20260818",
+  "forecast_hour": 2,
+  "levels": [
+    "10_m_above_ground",
+    "surface"
+  ],
+  "payload_bytes": 596,
+  "request_count": 1,
+  "run_time": "2026-08-18T06:00:00Z",
+  "sha256": "f1da0c670a6998f945d06d7de6e55e1a292b1e3b33f042f1707b479b674591c2",
+  "valid_time": "2026-08-18T08:00:00Z",
+  "variables": [
+    "UGRD",
+    "VGRD",
+    "VIS"
+  ],
+  "wall_clock_seconds": 0.753026650999999
+}

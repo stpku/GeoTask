@@ -18,11 +18,13 @@ from pathlib import Path
 from typing import Mapping
 
 from geotask_core.task_context import (
+    CandidateContextAssessment,
     ContextCandidate,
     ContextRequirement,
     TaskContext,
     TaskFrame,
     assess_task_context,
+    evaluate_context_candidate,
 )
 
 
@@ -133,6 +135,7 @@ class EventContextAssessment:
     event_id: str
     decision: ApplicabilityDecision
     candidate: ContextCandidate
+    core_assessment: CandidateContextAssessment
     context: TaskContext
 
 
@@ -366,15 +369,15 @@ def assess_recorded_event(
     window = window or TemporalWindow(TC2_WINDOW_START, TC2_WINDOW_END)
     decision = resolve_event_applicability(feature, bbox=bbox, window=window)
     candidate = candidate_from_event(feature, decision)
-    context = assess_task_context(
-        tc2_task(),
-        (tc2_requirement(),),
-        (candidate,),
-    )
+    task = tc2_task()
+    requirement = tc2_requirement()
+    core_assessment = evaluate_context_candidate(task, requirement, candidate)
+    context = assess_task_context(task, (requirement,), (candidate,))
     return EventContextAssessment(
         event_id=_event_id(feature) or "unknown-event",
         decision=decision,
         candidate=candidate,
+        core_assessment=core_assessment,
         context=context,
     )
 

@@ -1,0 +1,239 @@
+name: tc1-real-planning-p1-taskonly-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-planning-phx-p1-taskonly-20260818
+    paths:
+      - .github/workflows/tc1-real-planning-p1-taskonly-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Measure task-only frozen population coverage
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import json
+          from pathlib import Path
+          import time
+          from urllib.request import Request, urlopen
+
+          from benchmarks.tc1_real.spatial_planning.arcgis_acquisition import (
+              build_object_ids_query_url,
+              build_spatial_ids_query_url,
+              build_table_ids_query_url,
+              chunk_object_ids,
+              extract_object_ids,
+          )
+          from benchmarks.tc1_real.spatial_planning.experiment_spec import (
+              FROZEN_POPULATION_VARIABLE,
+              FROZEN_POPULATION_VARIABLE_SOURCE_DESCRIPTION,
+              FROZEN_POPULATION_YEAR,
+              TASK_BBOX,
+          )
+          from benchmarks.tc1_real.spatial_planning.population_selection import (
+              build_frozen_population_where,
+          )
+          from benchmarks.tc1_real.spatial_planning.source_profiles import (
+              PHX_GROWTH_BASE_LAYER_ID,
+              PHX_GROWTH_POPULATION_TABLE_ID,
+              PHX_GROWTH_PROJECTIONS,
+          )
+
+          root = Path("tc1-real-planning-p1-taskonly")
+          root.mkdir(parents=True, exist_ok=True)
+
+          def digest(payload: bytes) -> str:
+              return hashlib.sha256(payload).hexdigest()
+
+          def set_digest(values: set[int]) -> str:
+              return digest(",".join(str(value) for value in sorted(values)).encode())
+
+          def fetch(url: str) -> tuple[bytes, dict[str, object], float]:
+              request = Request(
+                  url,
+                  headers={"User-Agent": "GeoTask-TC1-Real/0.1 (+https://github.com/stpku/GeoTask)"},
+                  method="GET",
+              )
+              started = time.perf_counter()
+              with urlopen(request, timeout=60) as response:
+                  payload = response.read()
+              elapsed = time.perf_counter() - started
+              document = json.loads(payload.decode("utf-8"))
+              if not isinstance(document, dict) or "error" in document:
+                  raise RuntimeError(f"ArcGIS error response: {document!r}")
+              return payload, document, elapsed
+
+          try:
+              base_endpoint = (
+                  PHX_GROWTH_PROJECTIONS.observed_machine_endpoint
+                  + f"/{PHX_GROWTH_BASE_LAYER_ID}"
+              )
+              table_endpoint = (
+                  PHX_GROWTH_PROJECTIONS.observed_machine_endpoint
+                  + f"/{PHX_GROWTH_POPULATION_TABLE_ID}"
+              )
+
+              unit_ids_payload, _, unit_ids_time = fetch(
+                  build_spatial_ids_query_url(
+                      layer_endpoint=base_endpoint,
+                      bbox=TASK_BBOX,
+                  )
+              )
+              unit_oids = extract_object_ids(unit_ids_payload)
+              units: set[int] = set()
+              retrieved_unit_oids: set[int] = set()
+              unit_page_bytes = 0
+              unit_page_time = 0.0
+              for chunk in chunk_object_ids(unit_oids, chunk_size=1000):
+                  payload, document, elapsed = fetch(
+                      build_object_ids_query_url(
+                          layer_endpoint=base_endpoint,
+                          object_ids=chunk,
+                          out_fields=("objectid", "newluau"),
+                          return_geometry=False,
+                          output_format="json",
+                      )
+                  )
+                  unit_page_bytes += len(payload)
+                  unit_page_time += elapsed
+                  features = document.get("features")
+                  if not isinstance(features, list):
+                      raise RuntimeError("task base-unit page has no features")
+                  for feature in features:
+                      attrs = feature.get("attributes") if isinstance(feature, dict) else None
+                      if not isinstance(attrs, dict):
+                          continue
+                      retrieved_unit_oids.add(int(attrs["objectid"]))
+                      units.add(int(attrs["newluau"]))
+
+              if retrieved_unit_oids != set(unit_oids):
+                  raise RuntimeError("task base-unit OID completeness mismatch")
+              if len(units) != len(unit_oids):
+                  raise RuntimeError("task base-unit/newluau cardinality mismatch")
+
+              where = build_frozen_population_where(units)
+              pop_ids_payload, _, pop_ids_time = fetch(
+                  build_table_ids_query_url(
+                      table_endpoint=table_endpoint,
+                      where=where,
+                  )
+              )
+              pop_oids = extract_object_ids(pop_ids_payload)
+              covered_units: set[int] = set()
+              retrieved_pop_oids: set[int] = set()
+              pop_page_bytes = 0
+              pop_page_time = 0.0
+              pop_page_hashes: list[str] = []
+              for chunk in chunk_object_ids(pop_oids, chunk_size=1000):
+                  payload, document, elapsed = fetch(
+                      build_object_ids_query_url(
+                          layer_endpoint=table_endpoint,
+                          object_ids=chunk,
+                          out_fields=(
+                              "objectid",
+                              "newluau",
+                              "popvar",
+                              "vardesc",
+                              "year",
+                              "popcount",
+                          ),
+                          return_geometry=False,
+                          output_format="json",
+                      )
+                  )
+                  pop_page_bytes += len(payload)
+                  pop_page_time += elapsed
+                  pop_page_hashes.append(digest(payload))
+                  features = document.get("features")
+                  if not isinstance(features, list):
+                      raise RuntimeError("task population page has no features")
+                  for feature in features:
+                      attrs = feature.get("attributes") if isinstance(feature, dict) else None
+                      if not isinstance(attrs, dict):
+                          continue
+                      retrieved_pop_oids.add(int(attrs["objectid"]))
+                      if str(attrs.get("popvar")) != FROZEN_POPULATION_VARIABLE:
+                          raise RuntimeError("task population variable mismatch")
+                      if int(attrs["year"]) != FROZEN_POPULATION_YEAR:
+                          raise RuntimeError("task population year mismatch")
+                      if str(attrs.get("vardesc")) != FROZEN_POPULATION_VARIABLE_SOURCE_DESCRIPTION:
+                          raise RuntimeError("task population description mismatch")
+                      covered_units.add(int(attrs["newluau"]))
+
+              if retrieved_pop_oids != set(pop_oids):
+                  raise RuntimeError("task population OID completeness mismatch")
+
+              missing_units = units - covered_units
+              extra_units = covered_units - units
+              coverage_complete = (
+                  not missing_units
+                  and not extra_units
+                  and len(pop_oids) == len(units)
+              )
+              summary = {
+                  "stage": "TASK_POPULATION_MEASURED",
+                  "raw_source_records_committed": False,
+                  "complete": True,
+                  "variable": FROZEN_POPULATION_VARIABLE,
+                  "source_description": FROZEN_POPULATION_VARIABLE_SOURCE_DESCRIPTION,
+                  "year": FROZEN_POPULATION_YEAR,
+                  "unit_count": len(units),
+                  "unit_set_sha256": set_digest(units),
+                  "population_row_count": len(pop_oids),
+                  "covered_unit_count": len(covered_units),
+                  "unit_coverage_complete": coverage_complete,
+                  "missing_unit_count": len(missing_units),
+                  "extra_unit_count": len(extra_units),
+                  "population_network_bytes": len(pop_ids_payload) + pop_page_bytes,
+                  "population_carried_bytes": pop_page_bytes,
+                  "population_request_count": 1 + len(chunk_object_ids(pop_oids, chunk_size=1000)),
+                  "population_wall_clock_seconds": pop_ids_time + pop_page_time,
+                  "population_ids_sha256": digest(pop_ids_payload),
+                  "population_page_hashes": pop_page_hashes,
+                  "base_unit_lookup_network_bytes": len(unit_ids_payload) + unit_page_bytes,
+                  "base_unit_lookup_wall_clock_seconds": unit_ids_time + unit_page_time,
+              }
+              (root / "summary.json").write_text(
+                  json.dumps(summary, indent=2, sort_keys=True) + "\n",
+                  encoding="utf-8",
+              )
+          except Exception as exc:
+              (root / "failure.json").write_text(
+                  json.dumps(
+                      {
+                          "stage": "FAILED",
+                          "error_type": type(exc).__name__,
+                          "error": str(exc),
+                          "raw_source_records_committed": False,
+                      },
+                      indent=2,
+                      sort_keys=True,
+                  )
+                  + "\n",
+                  encoding="utf-8",
+              )
+              raise
+          PY
+      - name: Commit compact task-only evidence
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-planning-p1-taskonly/
+          if ! git diff --cached --quiet; then
+            git commit -m "data: record frozen task population coverage"
+            git push
+          fi

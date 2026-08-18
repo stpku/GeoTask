@@ -10,6 +10,12 @@ from geotask_core.task_context import (
 
 
 def _task(*, budget=10.0):
+    kwargs = {}
+    if budget is not None:
+        kwargs = {
+            "context_budget": budget,
+            "context_budget_unit": "credits",
+        }
     return TaskFrame(
         task_id="mission-001",
         goal="Prepare a bounded low-altitude mission context",
@@ -17,7 +23,7 @@ def _task(*, budget=10.0):
         spatial_scope="corridor-a-b",
         temporal_scope="window-1500-1600",
         outputs=("mission_context",),
-        context_budget=budget,
+        **kwargs,
     )
 
 
@@ -30,6 +36,7 @@ def test_complete_context_is_sufficient():
             spatial_scope="corridor-a-b",
             temporal_scope="window-1500-1600",
             max_spatial_resolution=1000.0,
+            spatial_resolution_unit="meter",
             max_temporal_resolution_seconds=1800.0,
         ),
         ContextRequirement(
@@ -48,8 +55,10 @@ def test_complete_context_is_sufficient():
             spatial_scope="corridor-a-b",
             temporal_scope="window-1500-1600",
             spatial_resolution=500.0,
+            spatial_resolution_unit="meter",
             temporal_resolution_seconds=900.0,
             acquisition_cost=2.0,
+            cost_unit="credits",
         ),
         ContextCandidate(
             candidate_id="airspace-notice",
@@ -58,6 +67,7 @@ def test_complete_context_is_sufficient():
             spatial_scope="corridor-a-b",
             temporal_scope="window-1500-1600",
             acquisition_cost=1.0,
+            cost_unit="credits",
         ),
     ]
 
@@ -70,6 +80,7 @@ def test_complete_context_is_sufficient():
     assert result.gap_requirement_ids == ()
     assert result.refinement_requirement_ids == ()
     assert result.total_acquisition_cost == 3.0
+    assert result.cost_unit == "credits"
     assert result.budget_exceeded is False
 
 
@@ -109,6 +120,7 @@ def test_too_coarse_candidate_requests_refinement():
         reason="corridor clearance requires local detail",
         spatial_scope="corridor-a-b",
         max_spatial_resolution=10.0,
+        spatial_resolution_unit="meter",
     )
     candidate = ContextCandidate(
         candidate_id="coarse-obstacles",
@@ -116,6 +128,7 @@ def test_too_coarse_candidate_requests_refinement():
         requirement_ids=("obstacles",),
         spatial_scope="corridor-a-b",
         spatial_resolution=100.0,
+        spatial_resolution_unit="meter",
     )
 
     assessment = evaluate_context_candidate(_task(), requirement, candidate)
@@ -128,6 +141,32 @@ def test_too_coarse_candidate_requests_refinement():
     assert "spatial_resolution_too_coarse" in assessment.reasons
     assert result.status == "insufficient"
     assert result.refinement_requirement_ids == ("obstacles",)
+
+
+def test_resolution_unit_mismatch_fails_closed():
+    requirement = ContextRequirement(
+        requirement_id="obstacles",
+        what="obstacle context",
+        reason="corridor clearance requires local detail",
+        spatial_scope="corridor-a-b",
+        max_spatial_resolution=10.0,
+        spatial_resolution_unit="meter",
+    )
+    candidate = ContextCandidate(
+        candidate_id="degree-grid",
+        source="regional-map",
+        requirement_ids=("obstacles",),
+        spatial_scope="corridor-a-b",
+        spatial_resolution=0.001,
+        spatial_resolution_unit="degree",
+    )
+
+    assessment = evaluate_context_candidate(_task(), requirement, candidate)
+
+    assert assessment.applicable is True
+    assert assessment.resolution_sufficient is False
+    assert assessment.usable is False
+    assert "spatial_resolution_unit_mismatch" in assessment.reasons
 
 
 def test_scope_mismatch_is_not_silently_inferred():
@@ -193,6 +232,7 @@ def test_budget_is_separate_from_information_sufficiency():
         source="weather-provider",
         requirement_ids=("weather",),
         acquisition_cost=8.0,
+        cost_unit="credits",
     )
 
     result = assess_task_context(_task(budget=5.0), [requirement], [candidate])
@@ -202,7 +242,27 @@ def test_budget_is_separate_from_information_sufficiency():
     assert result.within_budget is False
     assert result.ready is False
     assert result.gap_requirement_ids == ()
+    assert result.total_acquisition_cost == 8.0
+    assert result.cost_unit == "credits"
     assert result.budget_exceeded is True
+
+
+def test_incompatible_cost_units_fail_closed():
+    requirement = ContextRequirement(
+        requirement_id="weather",
+        what="weather",
+        reason="critical mission context",
+    )
+    candidate = ContextCandidate(
+        candidate_id="premium-weather",
+        source="weather-provider",
+        requirement_ids=("weather",),
+        acquisition_cost=8.0,
+        cost_unit="usd",
+    )
+
+    with pytest.raises(ValueError, match="budget unit"):
+        assess_task_context(_task(budget=10.0), [requirement], [candidate])
 
 
 def test_unknown_requirement_reference_fails_closed():

@@ -19,9 +19,11 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -e .
-      - name: Select exact task bbox from recorded DDOF source
+      - name: Strictly select task bbox or preserve failure diagnostics
         run: |
           python - <<'PY'
+          import csv
+          import io
           import json
           from collections import Counter
           from pathlib import Path
@@ -45,45 +47,99 @@ jobs:
               raise SystemExit("recorded DDOF CSV SHA mismatch")
 
           bbox = (-112.1, 33.4, -112.0, 33.5)
-          result = select_ddof_csv_context(
-              csv_payload,
-              bbox=bbox,
-              latitude_field="LATDEC",
-              longitude_field="LONDEC",
-          )
-          result_path = root / "phx-task-selection.json"
-          result_path.write_text(
-              json.dumps(result.to_json_dict(), indent=2, sort_keys=True) + "\n",
-              encoding="utf-8",
-          )
+          try:
+              result = select_ddof_csv_context(
+                  csv_payload,
+                  bbox=bbox,
+                  latitude_field="LATDEC",
+                  longitude_field="LONDEC",
+              )
+          except Exception as exc:
+              reader = csv.DictReader(io.StringIO(csv_payload.decode("cp1252")))
+              total_rows = 0
+              invalid_coordinate_rows = 0
+              diagnostic_valid_rows_in_bbox = 0
+              first_invalid_rows = []
+              status_counts_in_bbox = Counter()
+              min_lon, min_lat, max_lon, max_lat = bbox
+              for row in reader:
+                  total_rows += 1
+                  lat_raw = row.get("LATDEC")
+                  lon_raw = row.get("LONDEC")
+                  try:
+                      lat = float(lat_raw)
+                      lon = float(lon_raw)
+                  except (TypeError, ValueError):
+                      invalid_coordinate_rows += 1
+                      if len(first_invalid_rows) < 20:
+                          first_invalid_rows.append({
+                              "row_number": total_rows,
+                              "OAS": row.get("OAS"),
+                              "VERIFIED STATUS": row.get("VERIFIED STATUS"),
+                              "LATDEC": lat_raw,
+                              "LONDEC": lon_raw,
+                          })
+                      continue
+                  if min_lat <= lat <= max_lat and min_lon <= lon <= max_lon:
+                      diagnostic_valid_rows_in_bbox += 1
+                      status_counts_in_bbox[str(row.get("VERIFIED STATUS", ""))] += 1
 
-          status_counts = Counter(
-              str(row.get("VERIFIED STATUS", "")) for row in result.selected_rows
-          )
-          summary = {
-              "bbox": list(bbox),
-              "latitude_field": "LATDEC",
-              "longitude_field": "LONDEC",
-              "verification_field_observed": "VERIFIED STATUS",
-              "verification_filter_applied": False,
-              "status_counts": dict(sorted(status_counts.items())),
-              "source_zip_sha256": source_summary["zip_sha256"],
-              "source_csv_sha256": source_summary["csv_sha256"],
-              "input_csv_bytes": result.measurement.input_csv_bytes,
-              "input_row_count": result.measurement.input_row_count,
-              "selected_row_count": result.measurement.selected_row_count,
-              "selected_serialized_bytes": result.measurement.selected_serialized_bytes,
-              "row_reduction_ratio": result.measurement.row_reduction_ratio,
-              "byte_reduction_ratio": result.measurement.byte_reduction_ratio,
-              "selection_wall_clock_seconds": result.measurement.wall_clock_seconds,
-          }
-          (root / "phx-task-selection-summary.json").write_text(
-              json.dumps(summary, indent=2, sort_keys=True) + "\n",
-              encoding="utf-8",
-          )
-          print(json.dumps(summary, sort_keys=True))
+              diagnostic = {
+                  "strict_selection_status": "FAILED",
+                  "error_type": type(exc).__name__,
+                  "error_message": str(exc),
+                  "bbox": list(bbox),
+                  "source_zip_sha256": source_summary["zip_sha256"],
+                  "source_csv_sha256": source_summary["csv_sha256"],
+                  "input_csv_bytes": len(csv_payload),
+                  "input_row_count": total_rows,
+                  "invalid_coordinate_row_count": invalid_coordinate_rows,
+                  "diagnostic_valid_rows_in_bbox": diagnostic_valid_rows_in_bbox,
+                  "diagnostic_status_counts_in_bbox": dict(sorted(status_counts_in_bbox.items())),
+                  "first_invalid_rows": first_invalid_rows,
+                  "note": (
+                      "diagnostic_valid_rows_in_bbox is not a benchmark selection result; "
+                      "it is recorded only to explain why strict fail-closed selection failed"
+                  ),
+              }
+              (root / "phx-task-selection-diagnostic.json").write_text(
+                  json.dumps(diagnostic, indent=2, sort_keys=True) + "\n",
+                  encoding="utf-8",
+              )
+              print(json.dumps(diagnostic, sort_keys=True))
+          else:
+              (root / "phx-task-selection.json").write_text(
+                  json.dumps(result.to_json_dict(), indent=2, sort_keys=True) + "\n",
+                  encoding="utf-8",
+              )
+              status_counts = Counter(
+                  str(row.get("VERIFIED STATUS", "")) for row in result.selected_rows
+              )
+              summary = {
+                  "strict_selection_status": "PASS",
+                  "bbox": list(bbox),
+                  "latitude_field": "LATDEC",
+                  "longitude_field": "LONDEC",
+                  "verification_field_observed": "VERIFIED STATUS",
+                  "verification_filter_applied": False,
+                  "status_counts": dict(sorted(status_counts.items())),
+                  "source_zip_sha256": source_summary["zip_sha256"],
+                  "source_csv_sha256": source_summary["csv_sha256"],
+                  "input_csv_bytes": result.measurement.input_csv_bytes,
+                  "input_row_count": result.measurement.input_row_count,
+                  "selected_row_count": result.measurement.selected_row_count,
+                  "selected_serialized_bytes": result.measurement.selected_serialized_bytes,
+                  "row_reduction_ratio": result.measurement.row_reduction_ratio,
+                  "byte_reduction_ratio": result.measurement.byte_reduction_ratio,
+                  "selection_wall_clock_seconds": result.measurement.wall_clock_seconds,
+              }
+              (root / "phx-task-selection-summary.json").write_text(
+                  json.dumps(summary, indent=2, sort_keys=True) + "\n",
+                  encoding="utf-8",
+              )
+              print(json.dumps(summary, sort_keys=True))
           PY
-      - name: Validate selection is source-bound and non-authoritative
+      - name: Validate evidence is source-bound
         run: |
           python - <<'PY'
           import json
@@ -91,18 +147,29 @@ jobs:
 
           root = Path("tc1-real-ddof-acquisition")
           source = json.loads((root / "summary.json").read_text(encoding="utf-8"))
-          selection = json.loads((root / "phx-task-selection-summary.json").read_text(encoding="utf-8"))
-          if selection["source_csv_sha256"] != source["csv_sha256"]:
-              raise SystemExit("selection not bound to exact recorded DDOF CSV")
-          if selection["verification_filter_applied"]:
-              raise SystemExit("first spatial selection must preserve both verified and unverified rows")
-          if selection["selected_row_count"] <= 0:
-              raise SystemExit("DDOF task bbox returned no rows; M2 fixture not activated")
+          summary_path = root / "phx-task-selection-summary.json"
+          diagnostic_path = root / "phx-task-selection-diagnostic.json"
+          if summary_path.exists():
+              selection = json.loads(summary_path.read_text(encoding="utf-8"))
+              if selection["source_csv_sha256"] != source["csv_sha256"]:
+                  raise SystemExit("selection not bound to exact recorded DDOF CSV")
+              if selection["verification_filter_applied"]:
+                  raise SystemExit("first spatial selection must preserve both verified and unverified rows")
+              if selection["selected_row_count"] <= 0:
+                  raise SystemExit("DDOF task bbox returned no rows; M2 fixture not activated")
+          elif diagnostic_path.exists():
+              diagnostic = json.loads(diagnostic_path.read_text(encoding="utf-8"))
+              if diagnostic["source_csv_sha256"] != source["csv_sha256"]:
+                  raise SystemExit("diagnostic not bound to exact recorded DDOF CSV")
+              if diagnostic["strict_selection_status"] != "FAILED":
+                  raise SystemExit("diagnostic must explicitly record strict selection failure")
+          else:
+              raise SystemExit("neither DDOF selection nor diagnostic evidence was produced")
           PY
-      - name: Commit DDOF selection evidence to temporary branch
+      - name: Commit DDOF selection or diagnostic evidence
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tc1-real-ddof-acquisition/phx-task-selection.json tc1-real-ddof-acquisition/phx-task-selection-summary.json
-          git commit -m "data: record task-bounded DDOF selection evidence"
+          git add tc1-real-ddof-acquisition/phx-task-selection*.json
+          git commit -m "data: record DDOF strict-selection evidence"
           git push

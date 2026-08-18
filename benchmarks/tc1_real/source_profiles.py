@@ -76,18 +76,22 @@ FAA_DDOF = PublicSourceProfile(
 
 NOAA_HRRR = PublicSourceProfile(
     source_id="noaa-hrrr",
-    source_family="NOAA High-Resolution Rapid Refresh",
+    source_family="NOAA/NCEP High-Resolution Rapid Refresh",
     role="time-varying atmospheric context",
     official_landing_url="https://rapidrefresh.noaa.gov/hrrr/",
-    observed_machine_endpoint=None,
+    observed_machine_endpoint=(
+        "https://nomads.ncep.noaa.gov/cgi-bin/filter_hrrr_2d.pl"
+    ),
     spatial_reference=None,
     spatial_resolution_meters=3000.0,
     temporal_update_seconds=3600,
+    query_formats=("grib2-subset",),
     can_authorize_real_action=False,
     notes=(
         "NOAA describes HRRR as a real-time 3-km, hourly updated atmospheric "
-        "model. A TC1-Real acquisition must record the exact run, valid time, "
-        "variables, and distribution endpoint used."
+        "model. NCEP NOMADS Grib Filter supports variable, level, and geographic "
+        "subregion selection. A TC1-Real acquisition must record the exact run, "
+        "forecast hour/valid time, variables, levels, region, and endpoint used."
     ),
 )
 

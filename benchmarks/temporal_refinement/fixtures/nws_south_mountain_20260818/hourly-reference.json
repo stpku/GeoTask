@@ -1,0 +1,163 @@
+{
+  "acquired_at": "2026-08-18T15:41:15.372101+00:00",
+  "forecast_hourly_endpoint": "https://api.weather.gov/gridpoints/PSR/159,53/forecast/hourly",
+  "forecast_hourly_request_url": "https://api.weather.gov/gridpoints/PSR/159,53/forecast/hourly?units=si",
+  "hourly_content_type": "application/geo+json",
+  "hourly_response_bytes": 184355,
+  "hourly_response_sha256": "c597febbf7bfd196a00bc8a5341801440f4bad163f59594b1cafd4b3bbcb4436",
+  "normalized_source_documents_committed": true,
+  "original_http_response_bytes_committed": false,
+  "original_http_response_hashes_recorded": true,
+  "period_count": 24,
+  "periods": [
+    {
+      "end_time": "2026-08-18T09:00:00-07:00",
+      "precip_probability_percent": 0.0,
+      "start_time": "2026-08-18T08:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T10:00:00-07:00",
+      "precip_probability_percent": 0.0,
+      "start_time": "2026-08-18T09:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T11:00:00-07:00",
+      "precip_probability_percent": 0.0,
+      "start_time": "2026-08-18T10:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T12:00:00-07:00",
+      "precip_probability_percent": 0.0,
+      "start_time": "2026-08-18T11:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T13:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T12:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T14:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T13:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T15:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T14:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T16:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T15:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T17:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T16:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T18:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T17:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T19:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T18:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T20:00:00-07:00",
+      "precip_probability_percent": 2.0,
+      "start_time": "2026-08-18T19:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T21:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T20:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T22:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-18T21:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-18T23:00:00-07:00",
+      "precip_probability_percent": 3.0,
+      "start_time": "2026-08-18T22:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-19T00:00:00-07:00",
+      "precip_probability_percent": 3.0,
+      "start_time": "2026-08-18T23:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-19T01:00:00-07:00",
+      "precip_probability_percent": 3.0,
+      "start_time": "2026-08-19T00:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-19T02:00:00-07:00",
+      "precip_probability_percent": 2.0,
+      "start_time": "2026-08-19T01:00:00-07:00",
+      "wind_kmh": 16.09344
+    },
+    {
+      "end_time": "2026-08-19T03:00:00-07:00",
+      "precip_probability_percent": 3.0,
+      "start_time": "2026-08-19T02:00:00-07:00",
+      "wind_kmh": 16.09344
+    },
+    {
+      "end_time": "2026-08-19T04:00:00-07:00",
+      "precip_probability_percent": 3.0,
+      "start_time": "2026-08-19T03:00:00-07:00",
+      "wind_kmh": 24.14016
+    },
+    {
+      "end_time": "2026-08-19T05:00:00-07:00",
+      "precip_probability_percent": 1.0,
+      "start_time": "2026-08-19T04:00:00-07:00",
+      "wind_kmh": 24.14016
+    },
+    {
+      "end_time": "2026-08-19T06:00:00-07:00",
+      "precip_probability_percent": 0.0,
+      "start_time": "2026-08-19T05:00:00-07:00",
+      "wind_kmh": 16.09344
+    },
+    {
+      "end_time": "2026-08-19T07:00:00-07:00",
+      "precip_probability_percent": 0.0,
+      "start_time": "2026-08-19T06:00:00-07:00",
+      "wind_kmh": 8.04672
+    },
+    {
+      "end_time": "2026-08-19T08:00:00-07:00",
+      "precip_probability_percent": 0.0,
+      "start_time": "2026-08-19T07:00:00-07:00",
+      "wind_kmh": 8.04672
+    }
+  ],
+  "points_content_type": "application/geo+json",
+  "points_request_url": "https://api.weather.gov/points/33.35,-112.06",
+  "points_response_bytes": 3909,
+  "points_response_sha256": "3d6b63d54a00726bddc2dde3405e8c3c4f0d38e53bf4c7daa0d3b4839f929b9a",
+  "stage": "HOURLY_REFERENCE_ACQUIRED"
+}

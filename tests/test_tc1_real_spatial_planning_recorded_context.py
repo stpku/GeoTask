@@ -117,8 +117,12 @@ def test_real_headline_does_not_require_or_repair_broad_population() -> None:
     measurement = _recorded_task_measurement()
     measurement["population"]["broad"] = {
         "complete": True,
+        "network_bytes": 0,
+        "id_count": 469,
         "unit_count": 471,
         "covered_unit_count": 469,
+        "variable": "HHPop",
+        "year": 2030,
         "unit_coverage_complete": False,
         "missing_unit_count": 2,
     }

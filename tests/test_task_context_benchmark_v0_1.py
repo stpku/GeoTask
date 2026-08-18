@@ -1,15 +1,26 @@
+from pathlib import Path
+import sys
+
 import pytest
 
-from benchmarks.task_context_cases_v0_1 import (
-    low_altitude_mission_case,
-    spatial_planning_case,
-)
-from benchmarks.task_context_v0_1 import (
-    POLICY_DECLARED_MIN_COST,
-    POLICY_FULL_CONTEXT,
-    POLICY_MANUAL_TEMPLATE,
-    run_case,
-)
+# ``benchmarks`` is intentionally repository-local and not part of the
+# geotask-core distribution. Import it only for this test module without
+# widening the global pytest pythonpath.
+_ROOT = str(Path(__file__).resolve().parents[1])
+sys.path.insert(0, _ROOT)
+try:
+    from benchmarks.task_context_cases_v0_1 import (
+        low_altitude_mission_case,
+        spatial_planning_case,
+    )
+    from benchmarks.task_context_v0_1 import (
+        POLICY_DECLARED_MIN_COST,
+        POLICY_FULL_CONTEXT,
+        POLICY_MANUAL_TEMPLATE,
+        run_case,
+    )
+finally:
+    sys.path.remove(_ROOT)
 
 
 def _by_policy(case):

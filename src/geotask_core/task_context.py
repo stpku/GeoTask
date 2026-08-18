@@ -47,6 +47,10 @@ class TaskFrame:
     references. Core v0.1 does not infer containment or overlap between scope
     identifiers. Domain packs may bind these references to richer geometry or
     temporal objects.
+
+    ``context_budget`` is optional. When supplied, ``context_budget_unit`` is
+    mandatory and selected candidates with non-zero acquisition cost must use
+    the same unit. Core never converts cost units.
     """
 
     task_id: str
@@ -56,6 +60,7 @@ class TaskFrame:
     temporal_scope: str | None = None
     outputs: tuple[str, ...] = ()
     context_budget: float | None = None
+    context_budget_unit: str | None = None
 
     def __post_init__(self) -> None:
         _require_nonempty(self.task_id, "task_id")
@@ -63,15 +68,25 @@ class TaskFrame:
         _require_unique(self.subject_refs, "subject_refs")
         _require_unique(self.outputs, "outputs")
         _require_nonnegative(self.context_budget, "context_budget")
+        if self.context_budget is not None:
+            if self.context_budget_unit is None:
+                raise ValueError(
+                    "context_budget_unit is required when context_budget is provided"
+                )
+            _require_nonempty(self.context_budget_unit, "context_budget_unit")
+        elif self.context_budget_unit is not None:
+            raise ValueError(
+                "context_budget_unit must be omitted when context_budget is not provided"
+            )
 
 
 @dataclass(frozen=True)
 class ContextRequirement:
     """One explicit piece of context required by a task.
 
-    Resolution values use a "smaller is finer" convention. Their physical
-    meaning and units must be declared by the surrounding domain/profile; Core
-    only performs numeric ordering.
+    Spatial resolution values use a "smaller is finer" convention and must
+    carry an explicit unit. Temporal resolution is expressed in seconds.
+    Core performs no unit conversion.
     """
 
     requirement_id: str
@@ -81,6 +96,7 @@ class ContextRequirement:
     spatial_scope: str | None = None
     temporal_scope: str | None = None
     max_spatial_resolution: float | None = None
+    spatial_resolution_unit: str | None = None
     max_temporal_resolution_seconds: float | None = None
     tolerance: float | None = None
     metadata: Mapping[str, object] = field(default_factory=dict)
@@ -97,6 +113,20 @@ class ContextRequirement:
             "max_temporal_resolution_seconds",
         )
         _require_nonnegative(self.tolerance, "tolerance")
+        if self.max_spatial_resolution is not None:
+            if self.spatial_resolution_unit is None:
+                raise ValueError(
+                    "spatial_resolution_unit is required when "
+                    "max_spatial_resolution is provided"
+                )
+            _require_nonempty(
+                self.spatial_resolution_unit, "spatial_resolution_unit"
+            )
+        elif self.spatial_resolution_unit is not None:
+            raise ValueError(
+                "spatial_resolution_unit must be omitted when "
+                "max_spatial_resolution is not provided"
+            )
 
 
 @dataclass(frozen=True)
@@ -106,6 +136,9 @@ class ContextCandidate:
     ``requirement_ids`` is an explicit relevance binding supplied by the
     caller/provider. GeoTask Core does not infer relevance from text or source
     names in this first slice.
+
+    Spatial resolution and acquisition cost must carry explicit units whenever
+    they are non-null/non-zero. Core does not silently convert units.
     """
 
     candidate_id: str
@@ -114,8 +147,10 @@ class ContextCandidate:
     spatial_scope: str | None = None
     temporal_scope: str | None = None
     spatial_resolution: float | None = None
+    spatial_resolution_unit: str | None = None
     temporal_resolution_seconds: float | None = None
     acquisition_cost: float = 0.0
+    cost_unit: str | None = None
     metadata: Mapping[str, object] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -129,6 +164,30 @@ class ContextCandidate:
             self.temporal_resolution_seconds, "temporal_resolution_seconds"
         )
         _require_nonnegative(self.acquisition_cost, "acquisition_cost")
+
+        if self.spatial_resolution is not None:
+            if self.spatial_resolution_unit is None:
+                raise ValueError(
+                    "spatial_resolution_unit is required when spatial_resolution "
+                    "is provided"
+                )
+            _require_nonempty(
+                self.spatial_resolution_unit, "spatial_resolution_unit"
+            )
+        elif self.spatial_resolution_unit is not None:
+            raise ValueError(
+                "spatial_resolution_unit must be omitted when spatial_resolution "
+                "is not provided"
+            )
+
+        if self.acquisition_cost > 0:
+            if self.cost_unit is None:
+                raise ValueError(
+                    "cost_unit is required when acquisition_cost is greater than 0"
+                )
+            _require_nonempty(self.cost_unit, "cost_unit")
+        elif self.cost_unit is not None:
+            _require_nonempty(self.cost_unit, "cost_unit")
 
 
 @dataclass(frozen=True)
@@ -163,6 +222,7 @@ class TaskContext:
     gap_requirement_ids: tuple[str, ...]
     refinement_requirement_ids: tuple[str, ...]
     total_acquisition_cost: float
+    cost_unit: str | None
     budget_exceeded: bool
 
     def __post_init__(self) -> None:
@@ -233,6 +293,9 @@ def evaluate_context_candidate(
         if candidate.spatial_resolution is None:
             resolution_sufficient = False
             reasons.append("spatial_resolution_unknown")
+        elif candidate.spatial_resolution_unit != requirement.spatial_resolution_unit:
+            resolution_sufficient = False
+            reasons.append("spatial_resolution_unit_mismatch")
         elif candidate.spatial_resolution > requirement.max_spatial_resolution:
             resolution_sufficient = False
             reasons.append("spatial_resolution_too_coarse")
@@ -257,6 +320,33 @@ def evaluate_context_candidate(
         usable=applicable and resolution_sufficient,
         reasons=tuple(reasons),
     )
+
+
+def _resolve_cost_unit(
+    task: TaskFrame,
+    selected_candidates: Sequence[ContextCandidate],
+) -> str | None:
+    candidate_units = {
+        candidate.cost_unit
+        for candidate in selected_candidates
+        if candidate.acquisition_cost > 0
+    }
+    if len(candidate_units) > 1:
+        units = ", ".join(sorted(unit for unit in candidate_units if unit))
+        raise ValueError(
+            "selected candidate acquisition costs use incompatible units: "
+            f"{units}"
+        )
+
+    candidate_unit = next(iter(candidate_units), None)
+    if task.context_budget is not None:
+        if candidate_unit is not None and candidate_unit != task.context_budget_unit:
+            raise ValueError(
+                "selected candidate acquisition cost unit does not match "
+                "task context budget unit"
+            )
+        return task.context_budget_unit
+    return candidate_unit
 
 
 def assess_task_context(
@@ -319,6 +409,7 @@ def assess_task_context(
             ):
                 refinement.append(requirement.requirement_id)
 
+    cost_unit = _resolve_cost_unit(task, selected_candidates)
     total_cost = sum(item.acquisition_cost for item in selected_candidates)
     budget_exceeded = (
         task.context_budget is not None and total_cost > task.context_budget
@@ -341,5 +432,6 @@ def assess_task_context(
         gap_requirement_ids=tuple(sorted(gaps)),
         refinement_requirement_ids=tuple(sorted(set(refinement))),
         total_acquisition_cost=total_cost,
+        cost_unit=cost_unit,
         budget_exceeded=budget_exceeded,
     )

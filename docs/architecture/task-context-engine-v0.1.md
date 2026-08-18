@@ -62,6 +62,8 @@ GeoTask should not pursue complete information. It should determine whether the 
 
 If context is insufficient, the system should expose a bounded context gap rather than silently continue.
 
+Information sufficiency and acquisition cost are separate dimensions: a context may contain enough information and still exceed the task's declared budget.
+
 ### 4.4 Resolution — do we need to look more closely?
 
 Finer spatial or temporal detail is not automatically better. Higher resolution costs more and may add noise.
@@ -69,6 +71,8 @@ Finer spatial or temporal detail is not automatically better. Higher resolution 
 The preferred rule is:
 
 > **Use the coarsest resolution that is still sufficient for the task; refine only when resolution uncertainty can change the task outcome.**
+
+Spatial resolution must carry an explicit unit. Temporal resolution is explicitly represented in seconds in the v0.1 baseline. Core performs no implicit unit conversion.
 
 v0.1 only represents and checks declared resolution requirements. Automatic decision-sensitive refinement remains a target capability.
 
@@ -119,7 +123,7 @@ Defines the task before context is selected:
 - spatial scope;
 - temporal scope;
 - requested outputs;
-- optional context budget.
+- optional context budget plus explicit budget unit.
 
 ### ContextRequirement
 
@@ -128,7 +132,8 @@ Declares one piece of context the task requires:
 - what is needed and why;
 - whether it is critical;
 - applicable spatial/temporal scope;
-- maximum acceptable spatial/temporal resolution;
+- maximum acceptable spatial resolution plus explicit unit;
+- maximum acceptable temporal resolution in seconds;
 - optional tolerance/metadata.
 
 ### ContextCandidate
@@ -137,11 +142,12 @@ Describes one available context input:
 
 - source and requirement bindings;
 - declared spatial/temporal scope;
-- available spatial/temporal resolution;
-- acquisition cost;
+- available spatial resolution plus explicit unit;
+- available temporal resolution in seconds;
+- acquisition cost plus explicit cost unit when non-zero;
 - metadata needed for explicit applicability checks.
 
-A derived TaskContext records selected candidates, gaps, cost, and sufficiency state.
+A derived TaskContext records selected candidates, gaps, refinement requirements, declared cost/unit, and sufficiency/budget state.
 
 ## 8. v0.1 deterministic baseline
 
@@ -150,10 +156,13 @@ The first Core implementation should remain deliberately small:
 1. accept an explicit TaskFrame;
 2. accept explicit ContextRequirements;
 3. accept caller-selected ContextCandidates;
-4. check requirement binding, scope compatibility, and declared resolution;
-5. report critical gaps and refinement needs;
-6. calculate declared acquisition cost and budget status;
-7. never infer missing scope, relevance, source authority, or decision truth.
+4. check requirement binding and exact declared scope compatibility;
+5. fail closed on incompatible or missing spatial-resolution units;
+6. check declared spatial/temporal resolution;
+7. report critical gaps and refinement needs;
+8. keep information sufficiency separate from budget readiness;
+9. reject incompatible acquisition-cost units rather than convert them silently;
+10. never infer missing scope, relevance, source authority, or decision truth.
 
 This is a contract-and-assessment baseline, not an automatic context search engine.
 
@@ -175,6 +184,8 @@ The optimization objective is conceptually:
 minimize context preparation cost
 subject to critical context miss <= epsilon
 ```
+
+Heterogeneous cost dimensions must not be collapsed into one number unless the normalization/conversion method is declared.
 
 No benchmark result should be presented as general physical-world decision accuracy unless the underlying domain data and outcome labels support that claim.
 
@@ -204,7 +215,9 @@ GeoTask should not claim to perform real flight authorization or vehicle control
 - **Task first:** do not build a world model before knowing the task.
 - **Bounded context:** represent only the part of the physical world required by the task.
 - **Explicit scope:** do not infer spatial, temporal, object, or source applicability without a declared method.
+- **Explicit units:** do not compare resolution or normalized cost values across incompatible units.
 - **Coarsest sufficient resolution:** refinement requires a task-related reason.
+- **Sufficiency ≠ affordability:** information completeness for the task and budget readiness remain separate states.
 - **Unknown remains unknown:** a missing critical context item is a gap, not `false`.
 - **Tool last:** GIS, models, maps, sensors, and Agent runtimes are replaceable providers/carriers.
 - **No decision guarantee:** better context preparation does not transfer responsibility for the final domain decision to GeoTask.

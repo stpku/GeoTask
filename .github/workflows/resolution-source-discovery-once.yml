@@ -1,0 +1,124 @@
+name: resolution-source-discovery-once
+
+on:
+  push:
+    branches:
+      - acquire/task-context-resolution-source-discovery-20260818
+    paths:
+      - .github/workflows/resolution-source-discovery-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Query USGS TNM Access 1-meter DEM products
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import json
+          from pathlib import Path
+          import time
+          from urllib.parse import urlencode
+          from urllib.request import Request, urlopen
+
+          API = "https://tnmaccess.nationalmap.gov/api/v1/products"
+          DATASET = "Digital Elevation Model (DEM) 1 meter"
+          CANDIDATES = {
+              "phoenix_south_mountain": [-112.10, 33.32, -112.02, 33.38],
+              "phoenix_camelback": [-112.00, 33.49, -111.93, 33.55],
+              "boulder_foothills": [-105.32, 39.98, -105.22, 40.08],
+              "jackson_wy": [-110.95, 43.17, -110.88, 43.22],
+          }
+
+          def digest(payload: bytes) -> str:
+              return hashlib.sha256(payload).hexdigest()
+
+          result = {
+              "stage": "SOURCE_DISCOVERY_COMPLETE",
+              "scoring": False,
+              "source_api": API,
+              "dataset": DATASET,
+              "selection_rule": (
+                  "choose a candidate with non-empty 1-meter product coverage; "
+                  "do not inspect any resolution benchmark metric during discovery"
+              ),
+              "candidates": {},
+          }
+
+          for name, bbox in CANDIDATES.items():
+              params = {
+                  "datasets": DATASET,
+                  "bbox": ",".join(str(value) for value in bbox),
+                  "prodFormats": "GeoTIFF",
+                  "outputFormat": "JSON",
+                  "max": "50",
+              }
+              url = API + "?" + urlencode(params)
+              request = Request(
+                  url,
+                  headers={
+                      "User-Agent": "GeoTask-Resolution-Stress/0.1 (+https://github.com/stpku/GeoTask)"
+                  },
+                  method="GET",
+              )
+              started = time.perf_counter()
+              with urlopen(request, timeout=60) as response:
+                  payload = response.read()
+              elapsed = time.perf_counter() - started
+              document = json.loads(payload.decode("utf-8"))
+              if not isinstance(document, dict):
+                  raise RuntimeError(f"{name}: TNM response is not an object")
+              items = document.get("items")
+              if not isinstance(items, list):
+                  raise RuntimeError(f"{name}: TNM response has no items list")
+
+              compact_items = []
+              for item in items[:10]:
+                  if not isinstance(item, dict):
+                      continue
+                  compact_items.append(
+                      {
+                          "title": item.get("title"),
+                          "sourceId": item.get("sourceId"),
+                          "format": item.get("format"),
+                          "sizeInBytes": item.get("sizeInBytes"),
+                          "publicationDate": item.get("publicationDate"),
+                          "lastUpdated": item.get("lastUpdated"),
+                          "boundingBox": item.get("boundingBox"),
+                          "downloadURL": item.get("downloadURL"),
+                      }
+                  )
+
+              result["candidates"][name] = {
+                  "bbox": bbox,
+                  "product_count": len(items),
+                  "response_bytes": len(payload),
+                  "response_sha256": digest(payload),
+                  "wall_clock_seconds": elapsed,
+                  "products": compact_items,
+              }
+
+          root = Path("resolution-source-discovery")
+          root.mkdir(parents=True, exist_ok=True)
+          (root / "summary.json").write_text(
+              json.dumps(result, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(result, sort_keys=True))
+          PY
+      - name: Commit compact discovery evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add resolution-source-discovery/summary.json
+          git commit -m "data: record 3DEP one-meter source discovery"
+          git push

@@ -1,0 +1,108 @@
+name: tc1-real-ddof-select-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-ddof-20260818
+    paths:
+      - .github/workflows/tc1-real-ddof-select-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  select:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Select exact task bbox from recorded DDOF source
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          from benchmarks.tc1_real.ddof_processing import (
+              extract_single_csv_from_zip,
+              select_ddof_csv_context,
+          )
+          from benchmarks.tc1_real.measurement import sha256_bytes
+
+          root = Path("tc1-real-ddof-acquisition")
+          source_summary = json.loads((root / "summary.json").read_text(encoding="utf-8"))
+          zip_payload = (root / "daily-ddof.zip").read_bytes()
+          if sha256_bytes(zip_payload) != source_summary["zip_sha256"]:
+              raise SystemExit("recorded DDOF ZIP SHA mismatch")
+
+          member, csv_payload = extract_single_csv_from_zip(zip_payload)
+          if member != source_summary["csv_member"]:
+              raise SystemExit("recorded DDOF CSV member changed")
+          if sha256_bytes(csv_payload) != source_summary["csv_sha256"]:
+              raise SystemExit("recorded DDOF CSV SHA mismatch")
+
+          bbox = (-112.1, 33.4, -112.0, 33.5)
+          result = select_ddof_csv_context(
+              csv_payload,
+              bbox=bbox,
+              latitude_field="LATDEC",
+              longitude_field="LONDEC",
+          )
+          result_path = root / "phx-task-selection.json"
+          result_path.write_text(
+              json.dumps(result.to_json_dict(), indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+
+          status_counts = Counter(
+              str(row.get("VERIFIED STATUS", "")) for row in result.selected_rows
+          )
+          summary = {
+              "bbox": list(bbox),
+              "latitude_field": "LATDEC",
+              "longitude_field": "LONDEC",
+              "verification_field_observed": "VERIFIED STATUS",
+              "verification_filter_applied": False,
+              "status_counts": dict(sorted(status_counts.items())),
+              "source_zip_sha256": source_summary["zip_sha256"],
+              "source_csv_sha256": source_summary["csv_sha256"],
+              "input_csv_bytes": result.measurement.input_csv_bytes,
+              "input_row_count": result.measurement.input_row_count,
+              "selected_row_count": result.measurement.selected_row_count,
+              "selected_serialized_bytes": result.measurement.selected_serialized_bytes,
+              "row_reduction_ratio": result.measurement.row_reduction_ratio,
+              "byte_reduction_ratio": result.measurement.byte_reduction_ratio,
+              "selection_wall_clock_seconds": result.measurement.wall_clock_seconds,
+          }
+          (root / "phx-task-selection-summary.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(summary, sort_keys=True))
+          PY
+      - name: Validate selection is source-bound and non-authoritative
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path("tc1-real-ddof-acquisition")
+          source = json.loads((root / "summary.json").read_text(encoding="utf-8"))
+          selection = json.loads((root / "phx-task-selection-summary.json").read_text(encoding="utf-8"))
+          if selection["source_csv_sha256"] != source["csv_sha256"]:
+              raise SystemExit("selection not bound to exact recorded DDOF CSV")
+          if selection["verification_filter_applied"]:
+              raise SystemExit("first spatial selection must preserve both verified and unverified rows")
+          if selection["selected_row_count"] <= 0:
+              raise SystemExit("DDOF task bbox returned no rows; M2 fixture not activated")
+          PY
+      - name: Commit DDOF selection evidence to temporary branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-ddof-acquisition/phx-task-selection.json tc1-real-ddof-acquisition/phx-task-selection-summary.json
+          git commit -m "data: record task-bounded DDOF selection evidence"
+          git push

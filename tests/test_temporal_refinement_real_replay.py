@@ -91,6 +91,29 @@ def test_real_temporal_result_freezes_positive_and_countermetrics() -> None:
     )
 
 
+def test_real_refinement_case_identities_are_frozen() -> None:
+    result = run_temporal_real_stress(FIXTURE_PATH)
+
+    refined = {
+        (
+            case.window_index,
+            case.wind_threshold_kmh,
+            case.precip_threshold_percent,
+            case.final_resolution_hours,
+        )
+        for case in result.cases
+        if case.refined
+    }
+    expected = {
+        (1, 10.0, precip, 3)
+        for precip in PRECIP_PROBABILITY_THRESHOLDS_PERCENT
+    } | {
+        (1, 20.0, precip, 6)
+        for precip in PRECIP_PROBABILITY_THRESHOLDS_PERCENT
+    }
+    assert refined == expected
+
+
 def test_current_real_fixture_does_not_overclaim_negative_action_coverage() -> None:
     result = run_temporal_real_stress(FIXTURE_PATH)
 

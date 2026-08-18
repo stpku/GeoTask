@@ -1,0 +1,296 @@
+name: tc1-real-planning-measure-once
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-planning-phx-complete-20260818
+    paths:
+      - .github/workflows/tc1-real-planning-measure-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Measure complete source responses without committing source records
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          from datetime import datetime, timezone
+          import hashlib
+          import json
+          from pathlib import Path
+          import time
+          from urllib.request import Request, urlopen
+
+          from benchmarks.tc1_real.spatial_planning.arcgis_acquisition import (
+              build_numeric_in_where,
+              build_object_ids_query_url,
+              build_spatial_ids_query_url,
+              build_table_ids_query_url,
+              chunk_object_ids,
+              extract_object_ids,
+          )
+          from benchmarks.tc1_real.spatial_planning.source_profiles import (
+              PHX_GROWTH_PROJECTIONS,
+              PHX_LAND_USE_ZONES,
+              PHX_LIBRARIES,
+          )
+
+          out = Path("tc1-real-planning-measurement")
+          out.mkdir(parents=True, exist_ok=True)
+          broad = (-112.20, 33.30, -111.90, 33.60)
+          task = (-112.10, 33.40, -112.00, 33.50)
+          hotspot = (-112.075, 33.425, -112.050, 33.450)
+
+          def sha(payload: bytes) -> str:
+              return hashlib.sha256(payload).hexdigest()
+
+          def set_sha(values) -> str:
+              payload = ",".join(str(value) for value in sorted(set(values))).encode("utf-8")
+              return sha(payload)
+
+          def fetch(url: str) -> tuple[bytes, dict[str, object], float]:
+              req = Request(
+                  url,
+                  headers={"Accept": "application/json,application/geo+json,*/*", "User-Agent": "GeoTask-TC1-Real/0.1 (+https://github.com/stpku/GeoTask)"},
+                  method="GET",
+              )
+              started = time.perf_counter()
+              with urlopen(req, timeout=60) as response:
+                  payload = response.read()
+              elapsed = time.perf_counter() - started
+              try:
+                  doc = json.loads(payload.decode("utf-8"))
+              except Exception as exc:
+                  raise SystemExit(f"non-JSON ArcGIS response: {exc}")
+              if not isinstance(doc, dict) or "error" in doc:
+                  raise SystemExit(f"ArcGIS error response: {doc!r}")
+              return payload, doc, elapsed
+
+          def attrs(feature: dict[str, object], fmt: str) -> dict[str, object]:
+              key = "properties" if fmt == "geojson" else "attributes"
+              value = feature.get(key)
+              if not isinstance(value, dict):
+                  raise SystemExit(f"feature missing {key}")
+              return value
+
+          def complete_spatial(name, endpoint, bbox, oid_field, fmt):
+              ids_url = build_spatial_ids_query_url(layer_endpoint=endpoint, bbox=bbox)
+              ids_payload, ids_doc, ids_time = fetch(ids_url)
+              ids = extract_object_ids(ids_payload)
+              retrieved = set()
+              rows = []
+              page_bytes = 0
+              page_time = 0.0
+              page_hashes = []
+              chunks = chunk_object_ids(ids, chunk_size=1000)
+              for chunk in chunks:
+                  url = build_object_ids_query_url(
+                      layer_endpoint=endpoint,
+                      object_ids=chunk,
+                      out_fields=("*",),
+                      return_geometry=True,
+                      output_format=fmt,
+                  )
+                  payload, doc, elapsed = fetch(url)
+                  page_bytes += len(payload)
+                  page_time += elapsed
+                  page_hashes.append(sha(payload))
+                  features = doc.get("features")
+                  if not isinstance(features, list):
+                      raise SystemExit(f"{name} page has no features")
+                  for feature in features:
+                      if not isinstance(feature, dict):
+                          continue
+                      item = attrs(feature, fmt)
+                      oid = int(item[oid_field])
+                      if oid in retrieved:
+                          raise SystemExit(f"{name} duplicate OID {oid}")
+                      retrieved.add(oid)
+                      rows.append(item)
+              if retrieved != set(ids):
+                  raise SystemExit(f"{name} incomplete object-ID retrieval")
+              return {
+                  "scope": list(bbox),
+                  "id_count": len(ids),
+                  "id_set_sha256": set_sha(ids),
+                  "ids_response_bytes": len(ids_payload),
+                  "ids_response_sha256": sha(ids_payload),
+                  "page_count": len(chunks),
+                  "page_hashes": page_hashes,
+                  "page_response_bytes": page_bytes,
+                  "network_bytes": len(ids_payload) + page_bytes,
+                  "request_count": 1 + len(chunks),
+                  "wall_clock_seconds": ids_time + page_time,
+                  "complete": True,
+              }, rows, set(ids)
+
+          spatial = {}
+          growth_rows = {}
+          growth_ids = {}
+          growth_units = {}
+          for scope_name, bbox in (("broad", broad), ("task", task)):
+              summary, rows, ids = complete_spatial(
+                  f"growth-{scope_name}",
+                  PHX_GROWTH_PROJECTIONS.observed_machine_endpoint + "/2",
+                  bbox,
+                  "objectid",
+                  "geojson",
+              )
+              spatial[f"growth-{scope_name}"] = summary
+              growth_rows[scope_name] = rows
+              growth_ids[scope_name] = ids
+              units = {int(row["newluau"]) for row in rows if row.get("newluau") is not None}
+              if not units:
+                  raise SystemExit(f"growth-{scope_name} has no newluau values")
+              growth_units[scope_name] = units
+              summary["newluau_count"] = len(units)
+              summary["newluau_set_sha256"] = set_sha(units)
+
+          library_ids = {}
+          for scope_name, bbox in (("broad", broad), ("task", task)):
+              summary, _, ids = complete_spatial(
+                  f"libraries-{scope_name}",
+                  PHX_LIBRARIES.observed_machine_endpoint,
+                  bbox,
+                  "OBJECTID",
+                  "geojson",
+              )
+              spatial[f"libraries-{scope_name}"] = summary
+              library_ids[scope_name] = ids
+
+          land_ids = {}
+          for scope_name, bbox in (("broad", broad), ("task", task), ("hotspot", hotspot)):
+              summary, _, ids = complete_spatial(
+                  f"land-use-{scope_name}",
+                  PHX_LAND_USE_ZONES.observed_machine_endpoint,
+                  bbox,
+                  "fid",
+                  "json",
+              )
+              spatial[f"land-use-{scope_name}"] = summary
+              land_ids[scope_name] = ids
+
+          population = {}
+          population_rows = {}
+          fields = ("objectid", "newluau", "popvar", "vardesc", "year", "popcount")
+          for scope_name in ("broad", "task"):
+              where = build_numeric_in_where("newluau", growth_units[scope_name])
+              ids_url = build_table_ids_query_url(
+                  table_endpoint=PHX_GROWTH_PROJECTIONS.observed_machine_endpoint + "/13",
+                  where=where,
+              )
+              ids_payload, _, ids_time = fetch(ids_url)
+              ids = extract_object_ids(ids_payload)
+              chunks = chunk_object_ids(ids, chunk_size=1000)
+              retrieved = set()
+              rows = []
+              page_bytes = 0
+              page_time = 0.0
+              page_hashes = []
+              for chunk in chunks:
+                  url = build_object_ids_query_url(
+                      layer_endpoint=PHX_GROWTH_PROJECTIONS.observed_machine_endpoint + "/13",
+                      object_ids=chunk,
+                      out_fields=fields,
+                      return_geometry=False,
+                      output_format="json",
+                  )
+                  payload, doc, elapsed = fetch(url)
+                  page_bytes += len(payload)
+                  page_time += elapsed
+                  page_hashes.append(sha(payload))
+                  features = doc.get("features")
+                  if not isinstance(features, list):
+                      raise SystemExit(f"population-{scope_name} page has no features")
+                  for feature in features:
+                      if not isinstance(feature, dict):
+                          continue
+                      item = attrs(feature, "json")
+                      oid = int(item["objectid"])
+                      if oid in retrieved:
+                          raise SystemExit(f"population-{scope_name} duplicate OID {oid}")
+                      retrieved.add(oid)
+                      rows.append(item)
+              if retrieved != set(ids):
+                  raise SystemExit(f"population-{scope_name} incomplete object-ID retrieval")
+              years = sorted({int(row["year"]) for row in rows if row.get("year") is not None})
+              popvars = sorted({str(row["popvar"]) for row in rows if row.get("popvar") is not None})
+              vardesc = {}
+              for row in rows:
+                  key = str(row.get("popvar"))
+                  if row.get("vardesc") is not None:
+                      vardesc.setdefault(key, str(row["vardesc"]))
+              population_rows[scope_name] = rows
+              population[scope_name] = {
+                  "unit_count": len(growth_units[scope_name]),
+                  "unit_set_sha256": set_sha(growth_units[scope_name]),
+                  "id_count": len(ids),
+                  "id_set_sha256": set_sha(ids),
+                  "ids_response_bytes": len(ids_payload),
+                  "ids_response_sha256": sha(ids_payload),
+                  "page_count": len(chunks),
+                  "page_hashes": page_hashes,
+                  "page_response_bytes": page_bytes,
+                  "network_bytes": len(ids_payload) + page_bytes,
+                  "request_count": 1 + len(chunks),
+                  "wall_clock_seconds": ids_time + page_time,
+                  "years": years,
+                  "popvars": popvars,
+                  "vardesc": vardesc,
+                  "complete": True,
+              }
+
+          relations = {
+              "growth_task_ids_subset_broad": growth_ids["task"].issubset(growth_ids["broad"]),
+              "growth_task_units_subset_broad": growth_units["task"].issubset(growth_units["broad"]),
+              "libraries_task_subset_broad": library_ids["task"].issubset(library_ids["broad"]),
+              "land_use_hotspot_subset_task": land_ids["hotspot"].issubset(land_ids["task"]),
+              "land_use_task_subset_broad": land_ids["task"].issubset(land_ids["broad"]),
+              "land_use_broad_irrelevant_to_hotspot_count": len(land_ids["broad"] - land_ids["hotspot"]),
+              "land_use_task_irrelevant_to_hotspot_count": len(land_ids["task"] - land_ids["hotspot"]),
+              "land_use_hotspot_count": len(land_ids["hotspot"]),
+          }
+          if not all(relations[key] for key in (
+              "growth_task_ids_subset_broad",
+              "growth_task_units_subset_broad",
+              "libraries_task_subset_broad",
+              "land_use_hotspot_subset_task",
+              "land_use_task_subset_broad",
+          )):
+              raise SystemExit(f"nested-scope completeness invariant failed: {relations}")
+
+          result = {
+              "retrieval_timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+              "raw_source_records_committed": False,
+              "raw_source_policy": "measurement-only because upstream source-use terms differ by provider",
+              "scopes": {"broad": list(broad), "task": list(task), "hotspot": list(hotspot)},
+              "source_endpoints": {
+                  "growth": PHX_GROWTH_PROJECTIONS.observed_machine_endpoint,
+                  "libraries": PHX_LIBRARIES.observed_machine_endpoint,
+                  "land_use": PHX_LAND_USE_ZONES.observed_machine_endpoint,
+              },
+              "spatial": spatial,
+              "population": population,
+              "relations": relations,
+              "diagnostic_status": "COMPLETE_IDS_FIRST_MEASUREMENT",
+          }
+          (out / "summary.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(result, sort_keys=True))
+          PY
+      - name: Commit compact measurement evidence only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-planning-measurement/summary.json
+          git commit -m "data: record complete planning measurement summary"
+          git push

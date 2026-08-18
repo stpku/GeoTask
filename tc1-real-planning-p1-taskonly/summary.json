@@ -1,0 +1,25 @@
+{
+  "base_unit_lookup_network_bytes": 6663,
+  "base_unit_lookup_wall_clock_seconds": 0.7695692779999987,
+  "complete": true,
+  "covered_unit_count": 125,
+  "extra_unit_count": 0,
+  "missing_unit_count": 0,
+  "population_carried_bytes": 17261,
+  "population_ids_sha256": "7efbbefbbf621f0a838c2cca23e2e0bd7e591fc5a9271e8ac2a76312838858c6",
+  "population_network_bytes": 18015,
+  "population_page_hashes": [
+    "b187e9445bf4b52960904140ce3619708daf541eadb9a69270a599766ce536e7"
+  ],
+  "population_request_count": 2,
+  "population_row_count": 125,
+  "population_wall_clock_seconds": 0.7982470090000007,
+  "raw_source_records_committed": false,
+  "source_description": "Houshold Population",
+  "stage": "TASK_POPULATION_MEASURED",
+  "unit_count": 125,
+  "unit_coverage_complete": true,
+  "unit_set_sha256": "4b30f9c5d49dc84dd708fe46181ece91442e0bc942a586986ad63387a011ddcd",
+  "variable": "HHPop",
+  "year": 2030
+}

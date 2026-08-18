@@ -1,0 +1,49 @@
+{
+  "bbox": [
+    -112.1,
+    33.4,
+    -112.0,
+    33.5
+  ],
+  "cycle_utc": 6,
+  "date": "20260818",
+  "extra_levels": [
+    "2_m_above_ground"
+  ],
+  "extra_variables": [
+    "DPT",
+    "GUST",
+    "RH",
+    "TMP"
+  ],
+  "forecast_hour": 4,
+  "levels": [
+    "10_m_above_ground",
+    "surface",
+    "2_m_above_ground"
+  ],
+  "payload_bytes": 1580,
+  "request_count": 1,
+  "required_levels": [
+    "10_m_above_ground",
+    "surface"
+  ],
+  "required_variables": [
+    "UGRD",
+    "VGRD",
+    "VIS"
+  ],
+  "run_time": "2026-08-18T06:00:00Z",
+  "sha256": "1dabc9412ae7ea9ee7ce37d115443d479413e1cb78f8195a94c82c801abbb705",
+  "valid_time": "2026-08-18T10:00:00Z",
+  "variables": [
+    "UGRD",
+    "VGRD",
+    "VIS",
+    "GUST",
+    "TMP",
+    "DPT",
+    "RH"
+  ],
+  "wall_clock_seconds": 1.0959672639999951
+}

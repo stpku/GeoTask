@@ -1,0 +1,15 @@
+{
+  "baseline": "R0/broad-regional-uasfm",
+  "bbox": [
+    -112.2,
+    33.3,
+    -111.9,
+    33.6
+  ],
+  "feature_count": 516,
+  "payload_bytes": 280585,
+  "retrieval_timestamp": "2026-08-18T10:37:47.602765Z",
+  "sha256": "fe9ef445eb75444c2b90848fb5fb6b88d217638411ba5e57c0e0c70dcf013e95",
+  "source_url": "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/ArcGIS/rest/services/FAA_UAS_FacilityMap_Data/FeatureServer/0/query?where=1%3D1&geometry=-112.2%2C33.3%2C-111.9%2C33.6&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CCEILING%2CUNIT%2CMAP_EFF%2CLAST_EDIT%2CLATITUDE%2CLONGITUDE%2CAPT1_FAAID%2CAPT1_ICAO%2CAPT1_NAME%2CAPT1_LAANC%2CAIRSPACE_1%2CREGION&returnGeometry=true&outSR=4326&f=geojson",
+  "wall_clock_seconds": 0.7391411730000073
+}

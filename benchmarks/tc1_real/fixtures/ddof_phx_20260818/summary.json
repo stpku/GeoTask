@@ -1,0 +1,14 @@
+{
+  "csv_bytes": 98840705,
+  "csv_member": "DOF.CSV",
+  "csv_row_count": 653466,
+  "csv_sha256": "a01c47f57202305a39faf0b3c6bd44bb30428c2397312b2085006c012aba6f16",
+  "monetary_cost": null,
+  "request_count": 1,
+  "retrieval_timestamp": "2026-08-18T10:48:07.252806Z",
+  "source_id": "faa-ddof",
+  "source_url": "https://aeronav.faa.gov/Obst_Data/DAILY_DOF_CSV.ZIP",
+  "wall_clock_seconds": 0.12639463499999692,
+  "zip_bytes": 20518681,
+  "zip_sha256": "5cb2d97cd07553f51ce09b88829ea397041fdcb2e9f4b1963079592eaf7bf57d"
+}

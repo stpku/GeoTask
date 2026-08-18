@@ -1,0 +1,14 @@
+{
+  "bbox": [
+    -112.1,
+    33.4,
+    -112.0,
+    33.5
+  ],
+  "feature_count": 124,
+  "payload_bytes": 67529,
+  "retrieval_timestamp": "2026-08-18T10:33:14.973330Z",
+  "sha256": "e9cf9402fb7c2fd583d04de5700e0bf7ac67bdda4a8d17a486105ea02470df05",
+  "source_url": "https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/ArcGIS/rest/services/FAA_UAS_FacilityMap_Data/FeatureServer/0/query?where=1%3D1&geometry=-112.1%2C33.4%2C-112%2C33.5&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CCEILING%2CUNIT%2CMAP_EFF%2CLAST_EDIT%2CLATITUDE%2CLONGITUDE%2CAPT1_FAAID%2CAPT1_ICAO%2CAPT1_NAME%2CAPT1_LAANC%2CAIRSPACE_1%2CREGION&returnGeometry=true&outSR=4326&f=geojson",
+  "wall_clock_seconds": 0.3136501239999987
+}

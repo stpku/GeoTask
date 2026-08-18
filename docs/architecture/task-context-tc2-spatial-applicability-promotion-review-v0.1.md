@@ -1,6 +1,6 @@
 # GeoTask TC2 Spatial Applicability Promotion Review v0.1
 
-**Status:** TC2.0 OPERATOR PROMOTION = APPROVE; TC2.1 TASK-CONTEXT BINDING = HOLD  
+**Status:** TC2.0 OPERATOR PROMOTION = APPROVE / IMPLEMENTATION IN DRAFT; TC2.1 TASK-CONTEXT BINDING = HOLD  
 **Date:** 2026-08-18
 
 ## 1. Promotion question
@@ -83,15 +83,16 @@ GeoTask Core already owns deterministic spatial predicates including:
 Therefore TC2 should reuse the existing deterministic spatial kernel rather than
 introducing a second GIS or world-model subsystem.
 
-The missing primitive for the two TC1 real proofs is narrower:
+The missing primitives for the two TC1 real proofs are narrower:
 
 ```text
 rect_contains_rect(container, target)
-rect_overlaps_rect(a, b)
+rect_intersects_rect(a, b)
 ```
 
-Boundary contact semantics must be explicit and consistent with existing closed
-rectangle predicates.
+`intersects` is used rather than `overlaps` because boundary contact is included.
+That naming matches the existing `line_intersects_rect` convention and avoids an
+ambiguous implication that positive-area overlap is required.
 
 ## 6. TC2.0 decision — APPROVE operator-only promotion
 
@@ -106,8 +107,8 @@ existing Core spatial-operator layer.
 4. closed-boundary semantics are explicit;
 5. malformed/min-max ordering remains a validation responsibility at the
    contract/document boundary, consistent with existing Core design;
-6. unit tests cover equality, strict containment, partial overlap, boundary
-   contact, and disjoint scopes;
+6. unit tests cover equality, strict containment, partial intersection, boundary
+   contact, disjoint scopes, and intersection symmetry;
 7. both low-altitude and planning benchmark adapters can replay against the new
    predicates without changing their frozen task requirements.
 
@@ -168,7 +169,26 @@ new domain-specific Core concepts -> 0
 A performance benchmark is unnecessary at this stage; the operators are constant
 size comparisons and the primary risk is semantic duplication, not runtime.
 
-## 9. Resulting architecture if TC2.0 passes
+## 9. Current implementation slice
+
+The Draft TC2.0 branch now contains:
+
+```text
+geotask_core.spatial_scope.rect_contains_rect
+geotask_core.spatial_scope.rect_intersects_rect
+```
+
+The low-altitude M1 replay has replaced its benchmark-local containment arithmetic
+with `rect_contains_rect`. A dual-domain replay test also proves the planning
+`broad -> task -> hotspot` hierarchy is computable by the same Core primitive
+while preserving the frozen TC1 outputs.
+
+These primitives are intentionally **not yet registered as public v1 assertion
+operators**. Registry promotion is a second decision after the primitive/replay
+slice passes full CI; making a relation Core-computable does not automatically
+mean it should immediately expand the public language surface.
+
+## 10. Resulting architecture if TC2.0 passes
 
 ```text
 Task / Provider scopes
@@ -177,7 +197,7 @@ Task / Provider scopes
 existing normalized geometry / bbox representation
         |
         v
-Core deterministic spatial relation operators
+Core deterministic spatial relation primitives
         |
         v
 benchmark / adapter applicability proof
@@ -189,7 +209,7 @@ existing Task Context exact-scope assessment
 This keeps the architectural subject as **Task Context**, while using the mature
 GeoTask spatial kernel as the physical-world grounding layer.
 
-## 10. Promotion verdict
+## 11. Promotion verdict
 
 ```text
 Generic problem repeated across independent domains       PASS
@@ -203,8 +223,8 @@ Task Context native geometry contract already proven      NO
 
 Therefore:
 
-> **APPROVE TC2.0: add minimal rectangle scope-relation operators to the existing
-> Core spatial kernel.**
+> **APPROVE TC2.0: add minimal rectangle scope-relation primitives to the existing
+> Core spatial kernel and validate them through both TC1 real proof lines.**
 
 > **HOLD TC2.1: do not yet redesign Task Context scope fields or make geometry
 > applicability an implicit part of `assess_task_context()`.**

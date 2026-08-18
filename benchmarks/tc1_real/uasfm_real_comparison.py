@@ -13,6 +13,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
+from geotask_core.spatial_scope import rect_contains_rect
+
 
 @dataclass(frozen=True)
 class UASFMRealComparison:
@@ -37,18 +39,6 @@ def _bbox(value: Sequence[object], name: str) -> tuple[float, float, float, floa
     if min_lon >= max_lon or min_lat >= max_lat:
         raise ValueError(f"{name} has invalid bounds")
     return result  # type: ignore[return-value]
-
-
-def _contains(
-    outer: tuple[float, float, float, float],
-    inner: tuple[float, float, float, float],
-) -> bool:
-    return (
-        outer[0] <= inner[0]
-        and outer[1] <= inner[1]
-        and outer[2] >= inner[2]
-        and outer[3] >= inner[3]
-    )
 
 
 def _positive_int(value: object, name: str) -> int:
@@ -94,7 +84,7 @@ def compare_recorded_uasfm(
 
     task_bbox = _bbox(task_summary["bbox"], "task bbox")  # type: ignore[arg-type]
     r0_bbox = _bbox(r0_summary["bbox"], "R0 bbox")  # type: ignore[arg-type]
-    if not _contains(r0_bbox, task_bbox):
+    if not rect_contains_rect(r0_bbox, task_bbox):
         raise ValueError("R0 bbox must contain the task bbox")
 
     task_features = _positive_int(task_summary["feature_count"], "task feature_count")

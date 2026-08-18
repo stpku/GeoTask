@@ -23,6 +23,7 @@ from geotask_core.task_context import (
     TaskFrame,
     assess_task_context,
 )
+from geotask_core.spatial_scope import rect_contains_rect
 
 from benchmarks.tc1_real.experiment_cases import (
     EXPERIMENT_SPATIAL_SCOPE,
@@ -226,12 +227,7 @@ def _normalize_r0_candidates(
 
     task_bbox = bbox(uasfm_task["bbox"])
     r0_bbox = bbox(uasfm_r0["bbox"])
-    if not (
-        r0_bbox[0] <= task_bbox[0]
-        and r0_bbox[1] <= task_bbox[1]
-        and r0_bbox[2] >= task_bbox[2]
-        and r0_bbox[3] >= task_bbox[3]
-    ):
+    if not rect_contains_rect(r0_bbox, task_bbox):
         raise ValueError("recorded UASFM R0 bbox does not contain task bbox")
 
     hrrr_provenance = hrrr_r0_record["provenance"]

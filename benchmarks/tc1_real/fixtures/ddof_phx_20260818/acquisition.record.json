@@ -1,0 +1,27 @@
+{
+  "fixture_path": "tc1-real-ddof-work/DAILY_DOF_CSV.ZIP",
+  "measurement": {
+    "bytes_transferred": 20518681,
+    "human_preparation_seconds": null,
+    "monetary_cost": null,
+    "processing_cpu_seconds": null,
+    "request_count": 1,
+    "storage_bytes": 20518681,
+    "wall_clock_seconds": 0.12639463499999692
+  },
+  "notes": "Broad DDOF ZIP acquisition. Provider does not expose a task-bounded spatial query in this TC1-Real profile; local filtering is measured separately.",
+  "provenance": {
+    "content_sha256": "5cb2d97cd07553f51ce09b88829ea397041fdcb2e9f4b1963079592eaf7bf57d",
+    "request_parameters": {},
+    "retrieval_timestamp": "2026-08-18T10:48:07.252806Z",
+    "source_crs": "WGS84",
+    "source_effective_at": null,
+    "source_family": "FAA Daily Digital Obstacle File",
+    "source_id": "faa-ddof",
+    "source_resolution": null,
+    "source_units": {},
+    "source_url": "https://aeronav.faa.gov/Obst_Data/DAILY_DOF_CSV.ZIP",
+    "valid_from": null,
+    "valid_until": null
+  }
+}

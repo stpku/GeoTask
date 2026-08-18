@@ -1,0 +1,40 @@
+{
+  "accepted_verification_values": null,
+  "bbox": [
+    -112.1,
+    33.4,
+    -112.0,
+    33.5
+  ],
+  "byte_reduction_ratio": 0.9995204303732961,
+  "input_csv_bytes": 98840705,
+  "input_row_count": 653466,
+  "latitude_field": "LATDEC",
+  "longitude_field": "LONDEC",
+  "obstacle_type_counts": {
+    "ANTENNA           ": 1,
+    "BLDG              ": 98,
+    "BLDG-TWR          ": 5,
+    "CTRL TWR          ": 1,
+    "FENCE             ": 5,
+    "NAVAID            ": 3,
+    "POLE              ": 77,
+    "SIGN              ": 10,
+    "STADIUM           ": 1,
+    "T-L TWR           ": 40,
+    "TANK              ": 1,
+    "TOWER             ": 64,
+    "UTILITY POLE      ": 6,
+    "WINDMILL          ": 1
+  },
+  "processing_wall_clock_seconds": 3.9159282620000013,
+  "row_reduction_ratio": 0.9995210156304996,
+  "selected_row_count": 313,
+  "selected_serialized_bytes": 47401,
+  "source_csv_sha256": "a01c47f57202305a39faf0b3c6bd44bb30428c2397312b2085006c012aba6f16",
+  "verification_field": "VERIFIED STATUS",
+  "verification_status_counts": {
+    "O": 139,
+    "U": 174
+  }
+}

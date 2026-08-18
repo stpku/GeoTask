@@ -36,7 +36,7 @@ def test_low_altitude_tc1_cost_miss_tradeoff():
     assert manual.gap_requirement_ids == ("obstacles",)
     assert manual.refinement_requirement_ids == ("obstacles",)
 
-    assert geotask.context_status == "sufficient"
+    assert geotask.context_status == "sufficient_with_gaps"
     assert geotask.critical_context_miss_rate == 0.0
     assert geotask.context_preparation_cost == 8.0
     assert geotask.context_reduction_ratio_items == pytest.approx(3 / 6)
@@ -69,7 +69,7 @@ def test_spatial_planning_tc1_uses_coarse_district_and_local_refinement():
     # missing-context gap rather than a selected-but-too-coarse refinement.
     assert manual.refinement_requirement_ids == ()
 
-    assert geotask.context_status == "sufficient"
+    assert geotask.context_status == "sufficient_with_gaps"
     assert geotask.critical_context_miss_rate == 0.0
     assert geotask.context_preparation_cost == 8.0
     assert geotask.context_reduction_ratio_items == pytest.approx(4 / 7)

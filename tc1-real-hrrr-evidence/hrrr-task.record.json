@@ -7,7 +7,7 @@
     "processing_cpu_seconds": null,
     "request_count": 1,
     "storage_bytes": 594,
-    "wall_clock_seconds": 0.7039385799999991
+    "wall_clock_seconds": 0.7786113619999995
   },
   "notes": "Read-only bounded NOMADS HRRR GRIB2 subset. Exact variable/level interpretation remains part of downstream task context semantics.",
   "provenance": {
@@ -32,7 +32,7 @@
         "VIS"
       ]
     },
-    "retrieval_timestamp": "2026-08-18T10:54:50.974620Z",
+    "retrieval_timestamp": "2026-08-18T10:56:27.019284Z",
     "source_crs": null,
     "source_effective_at": "2026-08-18T06:00:00Z",
     "source_family": "NOAA/NCEP High-Resolution Rapid Refresh",

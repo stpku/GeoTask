@@ -17,7 +17,7 @@
   "r0_monetary_cost": null,
   "r0_request_count": 1,
   "r0_sha256": "5780d52a6ab74f10a5a46e983bb78f61d96e5a482028e4c547d6045528e1f7f3",
-  "r0_wall_clock_seconds": 0.7032487130000007,
+  "r0_wall_clock_seconds": 0.6329548490000008,
   "run_time": "2026-08-18T06:00:00Z",
   "task_bbox": [
     -112.1,
@@ -29,7 +29,7 @@
   "task_monetary_cost": null,
   "task_request_count": 1,
   "task_sha256": "bc0a27b7194b4079d3ed0b0c4afc4287f79c379ec86ffe2c766ef099d112f357",
-  "task_wall_clock_seconds": 0.7039385799999991,
+  "task_wall_clock_seconds": 0.7786113619999995,
   "valid_time": "2026-08-18T10:00:00Z",
   "variables": [
     "UGRD",

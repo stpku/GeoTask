@@ -1,0 +1,45 @@
+name: tc1-real-planning-score-staged
+
+on:
+  push:
+    branches:
+      - acquire/tc1-real-planning-phx-scoring-20260818
+    paths:
+      - .github/workflows/tc1-real-planning-score-staged.yml
+
+permissions:
+  contents: write
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: pip install -e .
+      - name: Mark scoring started
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p tc1-real-planning-scoring
+          printf '{"stage":"STARTED","raw_source_records_committed":false}\n' > tc1-real-planning-scoring/stage.json
+          git add tc1-real-planning-scoring/stage.json
+          git commit -m "data: start TC1 real planning score"
+          git push
+      - name: Measure and score frozen context
+        run: python tools/tc1_real_planning_score_once.py
+      - name: Commit compact success/failure evidence
+        if: always()
+        run: |
+          git add tc1-real-planning-scoring/stage.json || true
+          for f in measurement.json score.json failure.json; do
+            if [ -f "tc1-real-planning-scoring/$f" ]; then
+              git add "tc1-real-planning-scoring/$f"
+            fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "data: record TC1 real planning score evidence"
+            git push
+          fi

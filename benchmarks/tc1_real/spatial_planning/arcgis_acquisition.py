@@ -3,6 +3,11 @@
 The helpers keep acquisition mechanics in the benchmark layer. They do not add
 planning semantics to GeoTask Core and do not infer that any source is
 sufficient for a real investment decision.
+
+ArcGIS services can cap ordinary feature queries at ``maxRecordCount``. TC1-Real
+therefore treats a single bounded response as diagnostic unless completeness is
+proven. The ID-query + object-ID chunk helpers below provide a deterministic way
+to retrieve all matching records without silently accepting truncation.
 """
 
 from __future__ import annotations
@@ -57,6 +62,13 @@ def _query_endpoint(layer_endpoint: str) -> str:
     return endpoint + "/query"
 
 
+def _validate_where(where: str) -> str:
+    normalized = str(where).strip()
+    if not normalized:
+        raise ValueError("where must be non-empty")
+    return normalized
+
+
 def build_spatial_query_url(
     *,
     layer_endpoint: str,
@@ -66,17 +78,20 @@ def build_spatial_query_url(
     return_geometry: bool = True,
     output_format: str = "geojson",
 ) -> str:
-    """Build a WGS84 envelope query for a public ArcGIS feature layer."""
+    """Build one bounded WGS84 feature query.
+
+    This does not by itself prove completeness when the provider has a record
+    limit. Use ``build_spatial_ids_query_url`` plus object-ID chunks when the
+    result can exceed ``maxRecordCount``.
+    """
 
     min_lon, min_lat, max_lon, max_lat = normalize_bbox(bbox)
     fields = _normalize_out_fields(out_fields)
     if output_format not in {"json", "geojson"}:
         raise ValueError("output_format must be json or geojson")
-    if not where.strip():
-        raise ValueError("where must be non-empty")
 
     params = {
-        "where": where,
+        "where": _validate_where(where),
         "geometry": f"{min_lon},{min_lat},{max_lon},{max_lat}",
         "geometryType": "esriGeometryEnvelope",
         "inSR": "4326",
@@ -85,6 +100,27 @@ def build_spatial_query_url(
         "returnGeometry": "true" if return_geometry else "false",
         "outSR": "4326",
         "f": output_format,
+    }
+    return _query_endpoint(layer_endpoint) + "?" + urlencode(params)
+
+
+def build_spatial_ids_query_url(
+    *,
+    layer_endpoint: str,
+    bbox: Sequence[float],
+    where: str = "1=1",
+) -> str:
+    """Build a bounded ``returnIdsOnly`` query used to prove completeness."""
+
+    min_lon, min_lat, max_lon, max_lat = normalize_bbox(bbox)
+    params = {
+        "where": _validate_where(where),
+        "geometry": f"{min_lon},{min_lat},{max_lon},{max_lat}",
+        "geometryType": "esriGeometryEnvelope",
+        "inSR": "4326",
+        "spatialRel": "esriSpatialRelIntersects",
+        "returnIdsOnly": "true",
+        "f": "json",
     }
     return _query_endpoint(layer_endpoint) + "?" + urlencode(params)
 
@@ -109,17 +145,93 @@ def build_table_query_url(
     """Build a read-only ArcGIS table query URL."""
 
     fields = _normalize_out_fields(out_fields)
-    if not where.strip():
-        raise ValueError("where must be non-empty")
     if output_format != "json":
         raise ValueError("table output_format must be json")
     params = {
-        "where": where,
+        "where": _validate_where(where),
         "outFields": ",".join(fields),
         "returnGeometry": "false",
         "f": output_format,
     }
     return _query_endpoint(table_endpoint) + "?" + urlencode(params)
+
+
+def build_table_ids_query_url(*, table_endpoint: str, where: str) -> str:
+    """Build a table ``returnIdsOnly`` query used before chunk retrieval."""
+
+    params = {
+        "where": _validate_where(where),
+        "returnIdsOnly": "true",
+        "f": "json",
+    }
+    return _query_endpoint(table_endpoint) + "?" + urlencode(params)
+
+
+def normalize_object_ids(object_ids: Iterable[int]) -> tuple[int, ...]:
+    normalized = tuple(sorted({int(value) for value in object_ids}))
+    if not normalized:
+        raise ValueError("object_ids must contain at least one id")
+    if any(value < 0 for value in normalized):
+        raise ValueError("object_ids must be non-negative")
+    return normalized
+
+
+def chunk_object_ids(
+    object_ids: Iterable[int], *, chunk_size: int = 1000
+) -> tuple[tuple[int, ...], ...]:
+    """Return deterministic object-ID chunks smaller than provider row caps."""
+
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be > 0")
+    normalized = normalize_object_ids(object_ids)
+    return tuple(
+        normalized[index : index + chunk_size]
+        for index in range(0, len(normalized), chunk_size)
+    )
+
+
+def build_object_ids_query_url(
+    *,
+    layer_endpoint: str,
+    object_ids: Iterable[int],
+    out_fields: Iterable[str],
+    return_geometry: bool,
+    output_format: str,
+) -> str:
+    """Build one deterministic feature/table retrieval for explicit IDs."""
+
+    ids = normalize_object_ids(object_ids)
+    fields = _normalize_out_fields(out_fields)
+    if output_format not in {"json", "geojson"}:
+        raise ValueError("output_format must be json or geojson")
+    if output_format == "geojson" and not return_geometry:
+        # A geometry-free table response has clearer ArcGIS JSON semantics.
+        raise ValueError("geometry-free object-id query must use json format")
+
+    params = {
+        "objectIds": ",".join(str(value) for value in ids),
+        "outFields": ",".join(fields),
+        "returnGeometry": "true" if return_geometry else "false",
+        "f": output_format,
+    }
+    if return_geometry:
+        params["outSR"] = "4326"
+    return _query_endpoint(layer_endpoint) + "?" + urlencode(params)
+
+
+def extract_object_ids(payload: bytes) -> tuple[int, ...]:
+    """Parse one ArcGIS ``returnIdsOnly`` response fail-closed."""
+
+    try:
+        document = json.loads(payload.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("ArcGIS ID response is not valid JSON") from exc
+    if not isinstance(document, dict) or "error" in document:
+        raise ValueError("ArcGIS ID response is not a successful object")
+    values = document.get("objectIds")
+    if not isinstance(values, list):
+        raise ValueError("ArcGIS ID response has no objectIds list")
+    return normalize_object_ids(int(value) for value in values)
 
 
 def acquire_public_bytes(
@@ -141,7 +253,10 @@ def acquire_public_bytes(
         raise ValueError("public acquisition URL must use https")
     request = Request(
         url,
-        headers={"Accept": "application/json,application/geo+json,*/*", "User-Agent": DEFAULT_USER_AGENT},
+        headers={
+            "Accept": "application/json,application/geo+json,*/*",
+            "User-Agent": DEFAULT_USER_AGENT,
+        },
         method="GET",
     )
     started = time.perf_counter()

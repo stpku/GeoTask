@@ -1,8 +1,8 @@
 """Minimal task-context contracts for GeoTask.
 
 This module is the first additive engineering slice for the Task Context Engine
-architecture direction.  It deliberately does *not* discover context, infer
-source authority, or make domain decisions.  Callers declare a task frame,
+architecture direction. It deliberately does *not* discover context, infer
+source authority, or make domain decisions. Callers declare a task frame,
 context requirements, and candidate context items; Core performs explicit,
 deterministic scope/resolution/sufficiency checks.
 
@@ -44,8 +44,8 @@ class TaskFrame:
     """Bounded physical-world task before context selection.
 
     ``spatial_scope`` and ``temporal_scope`` are explicit caller-declared
-    references.  Core v0.1 does not infer containment or overlap between scope
-    identifiers.  Domain packs may bind these references to richer geometry or
+    references. Core v0.1 does not infer containment or overlap between scope
+    identifiers. Domain packs may bind these references to richer geometry or
     temporal objects.
     """
 
@@ -69,7 +69,7 @@ class TaskFrame:
 class ContextRequirement:
     """One explicit piece of context required by a task.
 
-    Resolution values use a "smaller is finer" convention.  Their physical
+    Resolution values use a "smaller is finer" convention. Their physical
     meaning and units must be declared by the surrounding domain/profile; Core
     only performs numeric ordering.
     """
@@ -104,7 +104,7 @@ class ContextCandidate:
     """One available context item proposed for the current task.
 
     ``requirement_ids`` is an explicit relevance binding supplied by the
-    caller/provider.  GeoTask Core does not infer relevance from text or source
+    caller/provider. GeoTask Core does not infer relevance from text or source
     names in this first slice.
     """
 
@@ -171,9 +171,25 @@ class TaskContext:
 
     @property
     def sufficient(self) -> bool:
-        """Whether all critical requirements are covered at required resolution."""
+        """Whether all critical information requirements are covered.
 
-        return self.status in {"sufficient", "sufficient_with_gaps"}
+        Budget is intentionally orthogonal: a context can be informationally
+        sufficient and still be too expensive for the declared task budget.
+        """
+
+        return self.status != "insufficient"
+
+    @property
+    def within_budget(self) -> bool:
+        """Whether declared acquisition cost is within the task budget."""
+
+        return not self.budget_exceeded
+
+    @property
+    def ready(self) -> bool:
+        """Whether the context is both informationally sufficient and affordable."""
+
+        return self.sufficient and self.within_budget
 
 
 def evaluate_context_candidate(
@@ -183,12 +199,17 @@ def evaluate_context_candidate(
 ) -> CandidateContextAssessment:
     """Evaluate explicit relevance, applicability, and resolution.
 
-    The function intentionally uses exact scope-reference matching.  It never
+    The function intentionally uses exact scope-reference matching. It never
     assumes that two differently named spatial/temporal scopes overlap or that
-    one contains the other.  Rich scope reasoning belongs in a declared
+    one contains the other. Rich scope reasoning belongs in a declared
     operator/domain pack and can feed normalized scope references into this
     baseline contract.
     """
+
+    # ``task`` is part of the public assessment signature because future
+    # declared task/scope operators may use it. The v0.1 baseline deliberately
+    # avoids inferring relationships between opaque scope identifiers.
+    _ = task
 
     reasons: list[str] = []
 
@@ -246,10 +267,10 @@ def assess_task_context(
     """Assess a bounded, caller-selected context for sufficiency.
 
     This function does not search for candidates and does not choose an
-    "optimal" context.  It answers the narrower v0.1 question: given this task,
+    "optimal" context. It answers the narrower v0.1 question: given this task,
     these explicit requirements, and these selected context items, are all
-    critical requirements covered at the declared resolution and within the
-    declared acquisition budget?
+    critical requirements covered at the declared resolution, and does their
+    declared acquisition cost fit the task budget?
     """
 
     requirement_ids = [item.requirement_id for item in requirements]

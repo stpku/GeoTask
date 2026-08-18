@@ -8,19 +8,22 @@ on:
       - .github/workflows/tc1-real-uasfm-acquire-once.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   acquire:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: acquire/tc1-real-uasfm-20260818
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - run: pip install -e .
       - name: Acquire bounded UASFM fixture
         run: |
+          rm -rf tc1-real-acquisition
           mkdir -p tc1-real-acquisition
           python -m benchmarks.tc1_real.uasfm_acquisition \
             --bbox=-112.10,33.40,-112.00,33.50 \
@@ -74,3 +77,10 @@ jobs:
           path: tc1-real-acquisition/
           if-no-files-found: error
           retention-days: 14
+      - name: Persist exact acquisition on temporary branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tc1-real-acquisition/
+          git commit -m "data: record bounded UASFM acquisition [skip ci]"
+          git push origin HEAD:acquire/tc1-real-uasfm-20260818

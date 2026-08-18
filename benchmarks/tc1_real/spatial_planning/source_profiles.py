@@ -13,7 +13,7 @@ from benchmarks.tc1_real.source_profiles import PublicSourceProfile
 PHX_GROWTH_PROJECTIONS = PublicSourceProfile(
     source_id="phx-growth-projections",
     source_family="City of Phoenix Growth Projections",
-    role="coarse planning-unit geometry and population-projection context",
+    role="base planning-unit geometry and related population-projection context",
     official_landing_url=(
         "https://mapportal.phoenix.gov/pds/rest/services/Hosted/"
         "GrowthProjections_MapViewer_0524_WFL1/FeatureServer/layers"
@@ -26,9 +26,12 @@ PHX_GROWTH_PROJECTIONS = PublicSourceProfile(
     query_formats=("json", "geojson", "pbf"),
     can_authorize_real_action=False,
     notes=(
-        "Experiment uses spatial planning-unit layer 2 and related population "
-        "table 13. The service exposes a newluau key; table fields observed in "
-        "the public service metadata include popvar, vardesc, year and popcount. "
+        "Experiment uses base planning-unit layer 4 (FinalLUAUs), which the "
+        "public service relates to population table 13 (New_Pop_Emp_Data). "
+        "An initial diagnostic used joined layer 2 (FinalLUAUs_PopEmp) and "
+        "observed massive repeated geometry; that representation is retained "
+        "as negative evidence and excluded from scoring. The service exposes "
+        "a newluau key; table fields include popvar, vardesc, year and popcount. "
         "No investment recommendation or population-model accuracy claim is "
         "inferred from source availability."
     ),

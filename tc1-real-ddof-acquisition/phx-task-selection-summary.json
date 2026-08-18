@@ -1,0 +1,25 @@
+{
+  "bbox": [
+    -112.1,
+    33.4,
+    -112.0,
+    33.5
+  ],
+  "byte_reduction_ratio": 0.9995203936218514,
+  "input_csv_bytes": 98833131,
+  "input_row_count": 653416,
+  "latitude_field": "LATDEC",
+  "longitude_field": "LONDEC",
+  "row_reduction_ratio": 0.9995209789781702,
+  "selected_row_count": 313,
+  "selected_serialized_bytes": 47401,
+  "selection_wall_clock_seconds": 3.8863141819999782,
+  "source_csv_sha256": "af2b944c3854267e54b92793073c812981942b2da9982dd845d28fe99ce840db",
+  "source_zip_sha256": "afa5879a01c605cb9a823a20086137afe3389ac2f66bffb5139ff8efa136d3e3",
+  "status_counts": {
+    "O": 139,
+    "U": 174
+  },
+  "verification_field_observed": "VERIFIED STATUS",
+  "verification_filter_applied": false
+}

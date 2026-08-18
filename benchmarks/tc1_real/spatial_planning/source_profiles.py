@@ -69,12 +69,13 @@ PHX_LAND_USE_ZONES = PublicSourceProfile(
         "Land_Use_Area_Zones/FeatureServer/14"
     ),
     spatial_reference="native service WKID 2868; request/replay normalized to EPSG:4326",
-    query_formats=("json", "geojson", "pbf"),
+    query_formats=("json",),
     can_authorize_real_action=False,
     notes=(
-        "Land-use polygons are treated as local planning context only. Geometry "
-        "or labels are not transformed into a recommendation score inside this "
-        "benchmark."
+        "The public service currently declares JSON query format rather than "
+        "GeoJSON/PBF. Land-use polygons are treated as local planning context "
+        "only; geometry or labels are not transformed into a recommendation "
+        "score inside this benchmark."
     ),
 )
 

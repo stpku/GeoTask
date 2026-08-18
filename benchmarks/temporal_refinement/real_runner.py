@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import asdict, dataclass
+from datetime import datetime
 import json
 from pathlib import Path
 from typing import Mapping
@@ -55,10 +56,21 @@ class TemporalRealSummary:
     adaptive_context_payload_bytes: int
     always_hourly_context_payload_bytes: int
     context_payload_reduction_ratio: float
+    payload_overhead_case_count: int
+    worst_case_payload_ratio: float
     mandatory_stop_control_present: bool
     mandatory_refine_control_present: bool
     cross_domain_stress_gate_pass: bool
     cases: tuple[TemporalCaseResult, ...]
+
+
+def _parse_fixture_time(value: object, *, label: str) -> datetime:
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{label} must be a non-empty ISO timestamp")
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        raise ValueError(f"{label} must be timezone-aware")
+    return parsed
 
 
 def load_pinned_hourly_fixture(path: Path) -> tuple[HourlyWeather, ...]:
@@ -67,20 +79,30 @@ def load_pinned_hourly_fixture(path: Path) -> tuple[HourlyWeather, ...]:
         raise ValueError("temporal fixture must be a mapping")
     if document.get("stage") != "HOURLY_REFERENCE_ACQUIRED":
         raise ValueError("temporal fixture is not in acquired state")
+    if document.get("period_count") != FINE_PERIOD_COUNT:
+        raise ValueError("temporal fixture period_count differs from frozen experiment")
     periods = document.get("periods")
     if not isinstance(periods, list) or len(periods) != FINE_PERIOD_COUNT:
         raise ValueError("temporal fixture does not contain the frozen 24 hours")
 
     result: list[HourlyWeather] = []
+    previous_end: datetime | None = None
     for index, item in enumerate(periods):
         if not isinstance(item, dict):
             raise ValueError(f"temporal fixture period {index} is not a mapping")
+        start = _parse_fixture_time(item.get("start_time"), label=f"period {index} start")
+        end = _parse_fixture_time(item.get("end_time"), label=f"period {index} end")
+        if (end - start).total_seconds() != 3600:
+            raise ValueError(f"temporal fixture period {index} is not exactly one hour")
+        if previous_end is not None and start != previous_end:
+            raise ValueError(f"temporal fixture period {index} is not contiguous")
         result.append(
             HourlyWeather(
                 wind_kmh=float(item["wind_kmh"]),
                 precip_probability_percent=float(item["precip_probability_percent"]),
             )
         )
+        previous_end = end
     return tuple(result)
 
 
@@ -152,6 +174,18 @@ def run_temporal_real_stress(fixture_path: Path) -> TemporalRealSummary:
     adaptive_bytes = adaptive_floats * FLOAT32_BYTES
     hourly_bytes = hourly_floats * FLOAT32_BYTES
     reduction = 0.0 if hourly_bytes == 0 else 1.0 - adaptive_bytes / hourly_bytes
+    overhead_cases = sum(
+        case.payload_float_count > case.always_hourly_payload_float_count
+        for case in frozen
+    )
+    worst_ratio = max(
+        (
+            case.payload_float_count / case.always_hourly_payload_float_count
+            for case in frozen
+            if case.always_hourly_payload_float_count
+        ),
+        default=0.0,
+    )
     stop_present = coarse_stop > 0
     refine_present = refined > 0
 
@@ -169,6 +203,8 @@ def run_temporal_real_stress(fixture_path: Path) -> TemporalRealSummary:
         adaptive_context_payload_bytes=adaptive_bytes,
         always_hourly_context_payload_bytes=hourly_bytes,
         context_payload_reduction_ratio=reduction,
+        payload_overhead_case_count=overhead_cases,
+        worst_case_payload_ratio=worst_ratio,
         mandatory_stop_control_present=stop_present,
         mandatory_refine_control_present=refine_present,
         cross_domain_stress_gate_pass=(

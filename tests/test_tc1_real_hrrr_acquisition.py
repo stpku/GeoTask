@@ -112,11 +112,11 @@ def test_hrrr_invalid_variable_level_or_endpoint_is_rejected():
         bbox=(-112.10, 33.40, -112.00, 33.50),
     )
 
-    with pytest.raises(ValueError, match="variables"):
+    with pytest.raises(ValueError, match="variable"):
         build_hrrr_query_url(**common, variables=(), levels=("surface",))
-    with pytest.raises(ValueError, match="levels"):
+    with pytest.raises(ValueError, match="level"):
         build_hrrr_query_url(**common, variables=("GUST",), levels=())
-    with pytest.raises(ValueError, match="variables"):
+    with pytest.raises(ValueError, match="variable"):
         build_hrrr_query_url(
             **common,
             variables=("UGRD&var_ALL",),

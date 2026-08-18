@@ -61,6 +61,7 @@ class BenchmarkResult:
     context_preparation_cost: float
     cost_unit: str | None
     context_reduction_ratio_items: float
+    gap_requirement_ids: tuple[str, ...]
     refinement_requirement_ids: tuple[str, ...]
     task_outcome_regret: float | None = None
 
@@ -198,6 +199,7 @@ def _evaluate_selection(
             len(selected),
             len(case.candidates),
         ),
+        gap_requirement_ids=context.gap_requirement_ids,
         refinement_requirement_ids=context.refinement_requirement_ids,
         # Synthetic TC1 fixtures do not contain an independently validated
         # downstream domain outcome model. Reporting zero regret would be a
@@ -228,16 +230,17 @@ def run_case(case: BenchmarkCase) -> tuple[BenchmarkResult, ...]:
 
 def format_results(results: Sequence[BenchmarkResult]) -> str:
     lines = [
-        "case | policy | CCMR | cost | reduction(items) | status | refine",
-        "--- | --- | ---: | ---: | ---: | --- | ---",
+        "case | policy | CCMR | cost | reduction(items) | status | gaps | refine",
+        "--- | --- | ---: | ---: | ---: | --- | --- | ---",
     ]
     for result in results:
         cost = f"{result.context_preparation_cost:g} {result.cost_unit or '-'}"
+        gaps = ",".join(result.gap_requirement_ids) or "-"
         refine = ",".join(result.refinement_requirement_ids) or "-"
         lines.append(
             f"{result.case_id} | {result.policy} | "
             f"{result.critical_context_miss_rate:.3f} | {cost} | "
             f"{result.context_reduction_ratio_items:.3f} | "
-            f"{result.context_status} | {refine}"
+            f"{result.context_status} | {gaps} | {refine}"
         )
     return "\n".join(lines)

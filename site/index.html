@@ -109,7 +109,7 @@ Sensor Change → Bounded Temporal Reassessment</div><p>例如：当“通道实
           <div class="case-grid">
             <a class="case" href="gt21/"><span class="case-id">GT21</span><h3>遥测显示延误60秒，运行审核记录显示55秒，AI应该相信哪一个？</h3><p>同一架无人机的延误数据来自两个系统。直接覆盖、取平均或按到达顺序选择都会掩盖冲突，必须使用业务方明确声明的处理规则。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt22/"><span class="case-id">GT22</span><h3>无人机的位置和电量来自两个系统，AI怎样形成同一时刻的可靠运行快照？</h3><p>位置与电量分别到达时，不能简单拼接成“当前状态”。系统必须确认对象、时间和字段归属，才能形成可追溯的统一运行快照。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt23/"><span class="case-id">GT23</span><h3>无人机飞行五分钟后位置和电量都变了，系统如何证明“现在”不是“刚才”？</h3><p>只覆盖最新值会丢失历史和变化依据。系统必须保留前后运行快照，绑定300秒时间差，并明确记录位置、电量和对象有效期变化。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt23/"><span class="case-id">GT23</span><h3>无人机飞行五分钟后位置和电量都变了，系统如何证明“现在”不是“刚才”？</h3><p>只覆盖最新值会丢失历史和变化依据。系统必须保留前后快照，绑定300秒时间差，并明确记录位置、电量和对象有效期变化。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt24/"><span class="case-id">GT24</span><h3>临时禁飞区发布后，哪些航线、任务和审批结论必须重新检查？</h3><p>医疗航线穿越临时禁飞区，巡检航线绕开。系统只将医疗航线、任务、审批和起飞动作纳入复核链，避免全量重算或只更新地图。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt25/"><span class="case-id">GT25</span><h3>无人机位置更新后，哪些安全距离需要重算，哪些结果可以继续沿用？</h3><p>无人机从走廊100米移动到130米后，只重算与无人机位置相关的两项安全距离，同时保留固定设施间距和电池余量。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt26/"><span class="case-id">GT26</span><h3>飞行服务站营业时间已经失效，系统应该改哪条数据，而不是推翻全部结果？</h3><p>服务站营业计划从08:00—22:00调整为09:00—18:00，系统只允许替换营业计划，保留位置、频率、服务类型和联系方式，并阻断20:30任务直至复核。</p><span class="go">进入体验 →</span></a>
@@ -122,7 +122,7 @@ Sensor Change → Bounded Temporal Reassessment</div><p>例如：当“通道实
           <div class="case-grid">
             <a class="case" href="gt29/"><span class="case-id">GT29</span><h3>气象服务数据和现场传感器冲突时，AI应该相信谁？</h3><p>模拟气象服务给出8米/秒，现场传感器给出13米/秒。两个来源都新鲜且相互独立，但数值仍然冲突，因此天气结论保持未知，并请求第三个独立来源。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt30/"><span class="case-id">GT30</span><h3>第三个独立气象来源加入后，冲突就自动解决了吗？</h3><p>第三个独立来源也给出13米/秒，形成二比一；但可信保证策略没有声明多数表决规则，因此系统仍保持未知，不静默删除8米/秒来源，并请求显式气象审定。</p><span class="go">进入体验 →</span></a>
-            <a class="case" href="gt31/"><span class="case-id">GT31</span><h3>人工复核解决气象冲突后，天气合格就能自动起飞吗？</h3><p>人工复核精确绑定GT30冲突响应与虚构上下文证据，保留三份原始响应并将两份13米/秒读数限定为局部测试气流影响；8米/秒天气结论可用，但自动起飞授权与起飞指令继续阻断。</p><span class="go">进入体验 →</span></a>
+            <a class="case" href="gt31/"><span class="case-id">GT31</span><h3>人工复核解决气象冲突后，天气合格就能自动起飞吗？</h3><p>人工复核精确绑定GT30冲突响应与虚构上下文证据，保留三份原始响应并将两份13米/秒读数限定为局部测试气流影响；8米/秒天气结论可用，但自动起飞授权和起飞指令继续阻断。</p><span class="go">进入体验 →</span></a>
             <a class="case" href="gt32/"><span class="case-id">GT32</span><h3>五项授权陆续到达后，什么时候才算可起飞？</h3><p>空域、运营人、起降场、气象放行和任务授权逐项到达，未知项从5降至0；最后两个起飞相关输出转为可用，但公共核心不发布结果、不发送指令，也不执行飞行动作。</p><span class="go">进入体验 →</span></a>
           </div>
         </div>

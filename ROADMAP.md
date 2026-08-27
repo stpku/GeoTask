@@ -246,6 +246,17 @@ v0.1–v0.6 阶段已经发布的以下资产继续保留：
 
 它们是已发布公共兼容资产与项目历史，不静默删除。
 
+为保持历史 Release / RC 证据可追溯，旧 Roadmap 使用过的阶段标签仍登记在这里，但**不再作为未来主线**：
+
+- `v0.1：公共预览`
+- `v0.2.0：制品契约`
+- `v0.3.0：Agent集成（上一稳定版）`
+- `v0.4.0：Core产品化、Reference Agent与Runtime接口（当前稳定）`
+- `v0.5：Verifiable World-State Cycle`
+- `v0.6：验证提供方与生态扩展（进行中）`
+
+对应已发布历史 Artifact / 命令包括 `Observation v0.1 Artifact`、`World State v0.1 Artifact`、`State Transition v0.1 Artifact`、`Verification Session v0.1 Artifact` 与 `geotask recheck`。这里的“当前稳定/进行中”是**原阶段标签原文**，不应覆盖本页顶部的当前 Task Context Engine 定位。
+
 但从本 Roadmap 起：
 
 ```text
@@ -358,6 +369,8 @@ Providers remain open and implementation-neutral: WorldState, GIS, APIs, sensors
 ### 11. Legacy / compatibility
 
 Previously released Verifiable Task Protocol, World-State Cycle, Verification, Runtime/Provider, Reference Agent, GT examples, and historical documentation remain public compatibility assets and project history.
+
+Historical release labels remain recorded above for release/RC traceability; they are not the forward roadmap.
 
 They no longer define the long-term positioning:
 

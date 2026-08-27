@@ -1,0 +1,25 @@
+{
+  "acquisition_date": "2026-08-18",
+  "raw_source_records_committed": false,
+  "population": {
+    "task": {
+      "complete": true,
+      "variable": "HHPop",
+      "source_description": "Houshold Population",
+      "year": 2030,
+      "unit_count": 125,
+      "unit_set_sha256": "4b30f9c5d49dc84dd708fe46181ece91442e0bc942a586986ad63387a011ddcd",
+      "id_count": 125,
+      "covered_unit_count": 125,
+      "unit_coverage_complete": true,
+      "missing_unit_count": 0,
+      "extra_unit_count": 0,
+      "network_bytes": 18015,
+      "carried_bytes": 17261,
+      "request_count": 2,
+      "population_ids_sha256": "7efbbefbbf621f0a838c2cca23e2e0bd7e591fc5a9271e8ac2a76312838858c6",
+      "population_page_sha256": "b187e9445bf4b52960904140ce3619708daf541eadb9a69270a599766ce536e7",
+      "base_unit_lookup_network_bytes": 6663
+    }
+  }
+}

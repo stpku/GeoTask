@@ -1,0 +1,106 @@
+{
+  "acquisition_date": "2026-08-18",
+  "raw_source_records_committed": false,
+  "growth": {
+    "broad": {
+      "complete": true,
+      "id_count": 471,
+      "id_set_sha256": "77d4f4d9b7ef572051b40c608eab36bfde3f7de9eecd3637054cc135f0101b77",
+      "ids_response_bytes": 1858,
+      "ids_response_sha256": "b9fb674d969657b89c499905ba7ccc99606963add53822c62918d5787cc7ae22",
+      "network_bytes": 24237,
+      "newluau_count": 471,
+      "newluau_set_sha256": "68eeec98778dd020eaae151b161d56794d1d2abbcd44769bf6d37245fc7ca2a0",
+      "page_count": 1,
+      "page_response_bytes": 22379,
+      "page_sha256": "d24f14711c7a93124c003dca3a922426d354871186e89ba587c40e8f9cb91c40",
+      "request_count": 2
+    },
+    "task": {
+      "complete": true,
+      "id_count": 125,
+      "id_set_sha256": "4228b1650fa1ba165cf103110324dcde5c9c950849dfe526d0d73c2ba4bc6936",
+      "ids_response_bytes": 510,
+      "ids_response_sha256": "0f0c9a41a49c1b2564a2795315d1ad57aa5cc25c8f8a5824b657e94794f1555e",
+      "network_bytes": 6663,
+      "newluau_count": 125,
+      "newluau_set_sha256": "4b30f9c5d49dc84dd708fe46181ece91442e0bc942a586986ad63387a011ddcd",
+      "page_count": 1,
+      "page_response_bytes": 6153,
+      "page_sha256": "4416788122f9f69d6813ae73092b3afbe094c38a602be86d08d03d4837f1e1d9",
+      "request_count": 2
+    }
+  },
+  "libraries": {
+    "broad": {
+      "complete": true,
+      "id_count": 12,
+      "id_set_sha256": "3a9a739750472dab46e4ddbe1235f739f3b4387a3c0d7370381a14d37a108183",
+      "ids_response_bytes": 76,
+      "ids_response_sha256": "cd4966070d554b14f699f79525ad99dd4d10490e28f4e5a7fe56e0496d3ed441",
+      "network_bytes": 2527,
+      "page_count": 1,
+      "page_response_bytes": 2451,
+      "page_sha256": "6a594d0a5e068bad2f2ea30468ed3520656282e26c907e2bdbea550cccd1b801",
+      "request_count": 2
+    },
+    "task": {
+      "complete": true,
+      "id_count": 2,
+      "id_set_sha256": "0b104dde4ce6b67ca02d1bfebd61a5195c45fe6616a54b47c3e518f008d51ca6",
+      "ids_response_bytes": 50,
+      "ids_response_sha256": "761946f47a1f29c2e3d1ad71dc76a0474dc8de76488963edcc9771c723dc9702",
+      "network_bytes": 488,
+      "page_count": 1,
+      "page_response_bytes": 438,
+      "page_sha256": "cb05ced6043d6f0ff248f48dec151d560a5550d3ed75767b7eb0a5cf09287e9f",
+      "request_count": 2
+    }
+  },
+  "land_use": {
+    "broad": {
+      "complete": true,
+      "id_count": 45,
+      "id_set_sha256": "24b63b878adbb3bad6174aaad78ce7bf3acb29a4faf22d77b7e86d590be64a80",
+      "ids_response_bytes": 167,
+      "ids_response_sha256": "73516b4890525ec3e38a2dc75e3b7b0a4ad9a723a415b4bf7bdbb3eb9072ef7d",
+      "network_bytes": 383445,
+      "page_count": 1,
+      "page_response_bytes": 383278,
+      "page_sha256": "bf90cf3b5ea0a9cd6697b169ec40fc1b2084d489ab5809aeb0e27f4ab1475cfa",
+      "request_count": 2
+    },
+    "task": {
+      "complete": true,
+      "id_count": 17,
+      "id_set_sha256": "2d75445f3c783c1219f2e752599a69e908f544c3bc60b16b8c31b8a4eb4dc21f",
+      "ids_response_bytes": 90,
+      "ids_response_sha256": "9be4988d7b8c29df54567d1cf2db502ca9b82b415e44902373148837d82a9a09",
+      "network_bytes": 145870,
+      "page_count": 1,
+      "page_response_bytes": 145780,
+      "page_sha256": "120caba17c7bd86be184694e186cc06a674253bb6d2ad81ff82e0ed0654b43f1",
+      "request_count": 2
+    },
+    "hotspot": {
+      "complete": true,
+      "id_count": 3,
+      "id_set_sha256": "1a770b893e7e31dcdc50a557c2b825f00e33d811452c83fb8e652d511ede8287",
+      "ids_response_bytes": 50,
+      "ids_response_sha256": "1f731f03c1cc5bf2a73664ab8212f922253bff29756cc24001b9612f31eb3980",
+      "network_bytes": 26147,
+      "page_count": 1,
+      "page_response_bytes": 26097,
+      "page_sha256": "39bea4bd444938901b177a41cc563c6e8ff930819c640ae3416851c50871b33f",
+      "request_count": 2
+    }
+  },
+  "relations": {
+    "task_units_subset_broad": true,
+    "library_task_subset_broad": true,
+    "land_task_subset_broad": true,
+    "land_hotspot_subset_task": true,
+    "land_broad_irrelevant_to_hotspot_count": 42,
+    "land_task_irrelevant_to_hotspot_count": 14
+  }
+}

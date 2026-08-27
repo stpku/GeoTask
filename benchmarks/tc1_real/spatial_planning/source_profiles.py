@@ -1,0 +1,99 @@
+"""Public source profiles for the TC1-Real spatial-planning experiment.
+
+These are experiment observations, not an authority registry. Every live
+acquisition must record the exact machine endpoint, request parameters, time and
+content hash that were actually used.
+"""
+
+from __future__ import annotations
+
+from benchmarks.tc1_real.source_profiles import PublicSourceProfile
+
+
+# Experiment source identities are explicit rather than scattered magic numbers.
+# They remain benchmark/provider metadata, not GeoTask Core semantics.
+PHX_GROWTH_BASE_LAYER_ID = 4
+PHX_GROWTH_POPULATION_TABLE_ID = 13
+PHX_GROWTH_JOINED_DIAGNOSTIC_LAYER_ID = 2
+PHX_LAND_USE_LAYER_ID = 14
+PHX_LIBRARIES_LAYER_ID = 0
+
+
+PHX_GROWTH_PROJECTIONS = PublicSourceProfile(
+    source_id="phx-growth-projections",
+    source_family="City of Phoenix Growth Projections",
+    role="base planning-unit geometry and related population-projection context",
+    official_landing_url=(
+        "https://mapportal.phoenix.gov/pds/rest/services/Hosted/"
+        "GrowthProjections_MapViewer_0524_WFL1/FeatureServer/layers"
+    ),
+    observed_machine_endpoint=(
+        "https://mapportal.phoenix.gov/pds/rest/services/Hosted/"
+        "GrowthProjections_MapViewer_0524_WFL1/FeatureServer"
+    ),
+    spatial_reference="EPSG:3857 source service; request/replay normalized to EPSG:4326",
+    query_formats=("json", "geojson", "pbf"),
+    can_authorize_real_action=False,
+    notes=(
+        "Experiment uses base planning-unit layer 4 (FinalLUAUs), which the "
+        "public service relates to population table 13 (New_Pop_Emp_Data). "
+        "An initial diagnostic used joined layer 2 (FinalLUAUs_PopEmp) and "
+        "observed massive repeated geometry; that representation is retained "
+        "as negative evidence and excluded from scoring. The service exposes "
+        "a newluau key; table fields include popvar, vardesc, year and popcount. "
+        "No investment recommendation or population-model accuracy claim is "
+        "inferred from source availability."
+    ),
+)
+
+
+PHX_LIBRARIES = PublicSourceProfile(
+    source_id="phx-libraries",
+    source_family="City of Phoenix Libraries",
+    role="existing public-library location context",
+    official_landing_url=(
+        "https://maps.phoenix.gov/pub/rest/services/Public/Libraries/MapServer/0"
+    ),
+    observed_machine_endpoint=(
+        "https://maps.phoenix.gov/pub/rest/services/Public/Libraries/MapServer/0"
+    ),
+    spatial_reference="native service WKID 2868; request/replay normalized to EPSG:4326",
+    query_formats=("json", "geojson", "pbf"),
+    can_authorize_real_action=False,
+    notes=(
+        "The experiment uses library point locations only. It does not infer "
+        "building capacity, service quality, staffing, opening hours or a need "
+        "for a new facility."
+    ),
+)
+
+
+PHX_LAND_USE_ZONES = PublicSourceProfile(
+    source_id="phx-land-use-zones",
+    source_family="City of Phoenix Land Use Area Zones",
+    role="fine local land-use context for the frozen planning hotspot",
+    official_landing_url=(
+        "https://maps.phoenix.gov/pds/rest/services/Hosted/"
+        "Land_Use_Area_Zones/FeatureServer"
+    ),
+    observed_machine_endpoint=(
+        "https://maps.phoenix.gov/pds/rest/services/Hosted/"
+        "Land_Use_Area_Zones/FeatureServer/14"
+    ),
+    spatial_reference="native service WKID 2868; request/replay normalized to EPSG:4326",
+    query_formats=("json",),
+    can_authorize_real_action=False,
+    notes=(
+        "The public service currently declares JSON query format rather than "
+        "GeoJSON/PBF. Land-use polygons are treated as local planning context "
+        "only; geometry or labels are not transformed into a recommendation "
+        "score inside this benchmark."
+    ),
+)
+
+
+SPATIAL_PLANNING_SOURCE_PROFILES = (
+    PHX_GROWTH_PROJECTIONS,
+    PHX_LIBRARIES,
+    PHX_LAND_USE_ZONES,
+)

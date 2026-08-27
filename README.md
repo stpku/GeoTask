@@ -95,7 +95,7 @@ GeoTask **不拥有世界真值**，也不替代 Agent Harness、GIS、数据库
 
 ```text
 World / Data Providers
-WorldState · GIS · API · Sensor · Database · GSTAR · ...
+WorldState · GIS · API · Sensor · Database · Other Provider
                     │
                     ▼
               ┌─────────┐

@@ -3,6 +3,12 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
+from benchmarks.tc1_real.spatial_planning.provider_representation_proof import (
+    analyze_provider_representation,
+)
+
 
 FIXTURE = (
     Path(__file__).parents[1]
@@ -19,29 +25,35 @@ def _evidence() -> dict[str, object]:
 
 
 def test_joined_representation_repeats_base_planning_units() -> None:
-    evidence = _evidence()
-    joined = evidence["joined_representation"]
-    base = evidence["base_representation"]
+    result = analyze_provider_representation(_evidence())
 
-    assert joined["complete"] is True
-    assert base["complete"] is True
-    assert joined["unique_planning_unit_count"] == 471
-    assert base["unique_planning_unit_count"] == 471
-    assert base["complete_feature_count"] == 471
-    assert joined["complete_feature_count"] == 118190
-
-    duplication_factor = joined["complete_feature_count"] / joined["unique_planning_unit_count"]
-    assert 250.0 < duplication_factor < 252.0
+    assert result.joined_feature_count == 118190
+    assert result.unique_planning_unit_count == 471
+    assert result.base_feature_count == 471
+    assert result.base_is_one_feature_per_unit is True
+    assert result.joined_records_per_unit == pytest.approx(250.9342, rel=1e-4)
 
 
 def test_cross_representation_network_bytes_are_not_a_compression_claim() -> None:
-    evidence = _evidence()
-    note = str(evidence["provenance_note"])
-    assert "do not carry identical semantics" in note
-    assert "must not be reported as compression savings" in note
+    result = analyze_provider_representation(_evidence())
+    assert result.byte_ratio_scoreable is False
 
 
 def test_population_semantics_remain_related_separately() -> None:
     evidence = _evidence()
     relation = evidence["relationship"]
     assert relation == {"population_table_id": 13, "key": "newluau"}
+
+
+def test_incomplete_representation_evidence_fails_closed() -> None:
+    evidence = _evidence()
+    evidence["joined_representation"]["complete"] = False
+    with pytest.raises(ValueError, match="complete acquisition evidence"):
+        analyze_provider_representation(evidence)
+
+
+def test_mismatched_unique_unit_sets_fail_closed() -> None:
+    evidence = _evidence()
+    evidence["base_representation"]["unique_planning_unit_count"] = 470
+    with pytest.raises(ValueError, match="same unique unit set"):
+        analyze_provider_representation(evidence)

@@ -260,7 +260,7 @@ The existing Runtime Interface Profile and Verification Provider Descriptor rema
 
 Useful legacy entry points:
 
-- [GeoTask Architecture Series v0.1](docs/articles/architecture-series/README.md)
+- [GeoTask Architecture Series v0.1](docs/articles/architecture-series/README.zh-CN.md)
 - [Documentation index](docs/README.en.md)
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
 - [GT21–GT28 World-State Cycle](docs/cookbook/gt21-gt28.md)

@@ -225,7 +225,6 @@ GIS
 API
 Sensor
 Database
-GSTAR
 Other Provider
 ```
 
@@ -354,7 +353,7 @@ The durable public assets are:
 
 > **Task Context Method / Engine / Benchmark / Open Protocol**
 
-Providers remain open and implementation-neutral: WorldState, GIS, APIs, sensors, databases, GSTAR, and other providers can participate when they map cleanly to GeoTask contracts.
+Providers remain open and implementation-neutral: WorldState, GIS, APIs, sensors, databases, and other providers can participate when they map cleanly to GeoTask contracts.
 
 ### 11. Legacy / compatibility
 

@@ -1,0 +1,27 @@
+{
+  "scenario": "Phoenix public-library service-coverage context preparation",
+  "source_family": "City of Phoenix Growth Projections",
+  "joined_representation": {
+    "layer_id": 2,
+    "name": "FinalLUAUs_PopEmp",
+    "complete_feature_count": 118190,
+    "unique_planning_unit_count": 471,
+    "network_bytes": 172127458,
+    "page_count": 119,
+    "complete": true
+  },
+  "base_representation": {
+    "layer_id": 4,
+    "name": "FinalLUAUs",
+    "complete_feature_count": 471,
+    "unique_planning_unit_count": 471,
+    "network_bytes": 24237,
+    "request_count": 2,
+    "complete": true
+  },
+  "relationship": {
+    "population_table_id": 13,
+    "key": "newluau"
+  },
+  "provenance_note": "Values are copied from the frozen TC1-Real planning diagnostic and compact spatial measurement. The two representations do not carry identical semantics; network byte ratios must not be reported as compression savings."
+}

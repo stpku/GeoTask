@@ -95,7 +95,7 @@ GeoTask **does not own world truth** and does not replace an agent harness, GIS,
 
 ```text
 World / Data Providers
-WorldState · GIS · API · Sensor · Database · GSTAR · ...
+WorldState · GIS · API · Sensor · Database · Other Provider
                     │
                     ▼
               ┌─────────┐

@@ -1,0 +1,40 @@
+{
+  "evidence_status": "RECORDED_REAL_DIAGNOSTIC",
+  "scenario": "Phoenix public-library service-coverage context preparation",
+  "source_id": "phx-growth-projections",
+  "source_family": "City of Phoenix Growth Projections",
+  "representation": {
+    "layer_id": 2,
+    "layer_name": "FinalLUAUs_PopEmp",
+    "role": "joined Pop/Emp diagnostic representation",
+    "scoring_status": "EXCLUDED_WRONG_REPRESENTATION"
+  },
+  "frozen_scopes": {
+    "broad_bbox": [-112.20, 33.30, -111.90, 33.60],
+    "task_bbox": [-112.10, 33.40, -112.00, 33.50]
+  },
+  "ordinary_single_query": {
+    "observed_transfer_ceiling_count": 2000,
+    "broad": {
+      "feature_count": 2000,
+      "response_bytes": 4573559
+    },
+    "task": {
+      "feature_count": 2000,
+      "response_bytes": 2485291
+    }
+  },
+  "ids_first_complete_broad": {
+    "feature_count": 118190,
+    "unique_newluau_count": 471,
+    "page_count": 119,
+    "network_bytes": 172127458,
+    "complete": true
+  },
+  "interpretation_boundary": {
+    "ordinary_query_is_complete": false,
+    "ordinary_task_vs_broad_reduction_is_scoreable": false,
+    "reason": "The ordinary broad/task responses both hit the observed 2000-record transfer ceiling. IDs-first retrieval later proved 118190 complete features for the same broad joined representation."
+  },
+  "source_document": "docs/reference/task-context-tc1-real-spatial-planning-diagnostic-v0.1.md"
+}

@@ -233,14 +233,41 @@ These are research and public capability directions, not delivery-date commitmen
 
 Earlier public GeoTask releases centered on a verifiable spatiotemporal task protocol, World-State Cycle, Verification, and related Artifacts. Those assets remain for compatibility, traceability, and maintenance of released capabilities, but they **no longer define GeoTask's long-term product positioning**.
 
+### Released v0.4.1 compatibility surface
+
+These capabilities remain real public compatibility commitments. Earlier v0.4.x release material described GeoTask as an **“Open verifiable spatiotemporal task protocol and deterministic Core”** and discussed a **“trusted world-state runtime”**; those phrases are retained here only as historical release context.
+
+| Release item | Version | Notes |
+|---|---:|---|
+| GeoTask Core package | `0.4.1` | [v0.4.1 release notes](docs/release_v0_4_1.md) |
+
+Released deterministic operators include `distance_2d`, `line_intersects_rect`, `point_to_line_distance_2d`, `rect_contains_point`, `time_overlap`, and `altitude_overlap`. Base object types include `point`, `polyline`, `rect`, `time_interval`, `altitude_interval`, and `feature_collection`.
+
+Existing Agent / Runtime / Provider tooling remains compatible:
+
+```bash
+geotask agent prepare
+geotask agent retry
+geotask runtime inspect
+geotask runtime check
+geotask runtime mock
+geotask provider inspect
+geotask provider check
+geotask provider validate
+```
+
+The existing Runtime Interface Profile and Verification Provider Descriptor remain bounded compatibility contracts: the Core does not **invent undeclared source precedence**, and provider validation does not turn an external response into world truth.
+
 Useful legacy entry points:
 
+- [GeoTask Architecture Series v0.1](docs/articles/architecture-series/README.md)
 - [Documentation index](docs/README.en.md)
 - [GT01–GT20 Cookbook](docs/cookbook/gt01-gt20.md)
 - [GT21–GT28 World-State Cycle](docs/cookbook/gt21-gt28.md)
 - [Reference Agent](docs/reference/reference-agent-v0.1.md)
 - [Verification Quality Benchmark](docs/reference/verification-quality-benchmark-v0.2.md)
 - [Historical White Paper v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
+- [Historical White Paper English Abstract](docs/whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)
 
 > Historical documents that describe “GeoTask = World-State Runtime / Verifiable World Model” should be read in their release-era context. The current positioning is **Task Context Engine**.
 

@@ -69,6 +69,8 @@ def test_legacy_cases_are_archive_not_current_positioning() -> None:
     assert "展开全部 42 个原始案例与七阶段目录" in html
     assert "<!-- CASE_CATALOG:START -->" in html
     assert "<!-- CASE_CATALOG:END -->" in html
+    assert 'id="reference-agent"' in html
+    assert "P1 Reference Agent" in html
     for number in range(1, 43):
         assert f'href="gt{number:02d}/"' in html
 

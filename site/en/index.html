@@ -35,63 +35,18 @@
         <h1>Not more context.<br>The context this task actually needs.</h1>
         <p class="lead">GeoTask constructs spatiotemporal context that is <strong>relevant, applicable, resolution-adequate, and explicitly sufficient</strong>, then reassesses only the parts that are actually affected when reality changes.</p>
         <div class="hero-line">Task Sufficiency at Minimum Context Cost — minimize carried context while keeping critical context misses visible.</div>
-        <div class="actions">
-          <a class="button primary" href="https://github.com/stpku/GeoTask">Open GitHub</a>
-          <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/examples/independent_consumers/warehouse_robot_picking/README.md">Independent consumer</a>
-          <a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/README.en.md">Read README</a>
-        </div>
-        <div class="proofs">
-          <div class="proof"><strong>Task-relative</strong><span>Context for the task, not “the whole world”</span></div>
-          <div class="proof"><strong>Provider-neutral</strong><span>GIS / API / Sensor / WorldState</span></div>
-          <div class="proof"><strong>Explicit Sufficiency</strong><span>Sufficiency and gaps stay observable</span></div>
-          <div class="proof"><strong>Minimum Context</strong><span>Lower cost without hiding critical misses</span></div>
-        </div>
+        <div class="actions"><a class="button primary" href="https://github.com/stpku/GeoTask">Open GitHub</a><a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/examples/independent_consumers/warehouse_robot_picking/README.md">Independent consumer</a><a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/README.en.md">Read README</a></div>
+        <div class="proofs"><div class="proof"><strong>Task-relative</strong><span>Context for the task, not “the whole world”</span></div><div class="proof"><strong>Provider-neutral</strong><span>GIS / API / Sensor / WorldState</span></div><div class="proof"><strong>Explicit Sufficiency</strong><span>Sufficiency and gaps stay observable</span></div><div class="proof"><strong>Minimum Context</strong><span>Lower cost without hiding critical misses</span></div></div>
       </div>
     </section>
 
-    <section class="section" id="problem">
-      <div class="shell">
-        <div class="section-head"><p class="kicker">Problem</p><h2>The context problem is not how much an agent can carry. It is what is sufficient.</h2><p>Long context windows, RAG, databases, and tools can expose more information. They do not automatically prove that information applies to the current task.</p></div>
-        <div class="grid three">
-          <article class="card"><h3>Relevant ≠ Applicable</h3><p>A fact can match the topic and still be wrong for the current object, place, time window, or operating condition.</p></article>
-          <article class="card"><h3>Available ≠ Adequate</h3><p>A map, forecast, inventory value, or sensor reading may exist while its spatial, temporal, precision, or semantic resolution is still inadequate.</p></article>
-          <article class="card"><h3>Large ≠ Sufficient</h3><p>A huge payload can still miss one critical requirement; optional context can also add token, network, and human recovery cost without helping the task.</p></article>
-        </div>
-      </div>
-    </section>
+    <section class="section" id="problem"><div class="shell"><div class="section-head"><p class="kicker">Problem</p><h2>The context problem is not how much an agent can carry. It is what is sufficient.</h2><p>Long context windows, RAG, databases, and tools can expose more information. They do not automatically prove that information applies to the current task.</p></div><div class="grid three"><article class="card"><h3>Relevant ≠ Applicable</h3><p>A fact can match the topic and still be wrong for the current object, place, time window, or operating condition.</p></article><article class="card"><h3>Available ≠ Adequate</h3><p>A map, forecast, inventory value, or sensor reading may exist while its spatial, temporal, precision, or semantic resolution is still inadequate.</p></article><article class="card"><h3>Large ≠ Sufficient</h3><p>A huge payload can still miss one critical requirement; optional context can also add token, network, and human recovery cost without helping the task.</p></article></div></div></section>
 
-    <section class="section" id="method">
-      <div class="shell">
-        <div class="flow">
-          <h2>Task → Context, not World → Prompt</h2>
-          <p>GeoTask starts from task requirements, then assesses candidate information. Relevance, applicability, resolution, and sufficiency remain separate so the final TaskContext and its gaps are explicit.</p>
-          <div class="pipeline" aria-label="GeoTask Task Context Pipeline">
-            <span class="node">Task</span><span class="arrow">→</span><span class="node">Requirements</span><span class="arrow">→</span><span class="node">Candidates</span><span class="arrow">→</span><span class="node">Relevance</span><span class="arrow">→</span><span class="node">Applicability</span><span class="arrow">→</span><span class="node">Resolution</span><span class="arrow">→</span><span class="node">Sufficiency</span><span class="arrow">→</span><span class="node">Minimum TaskContext</span>
-          </div>
-          <div class="flow-note">Core concepts include <strong>TaskFrame, ContextRequirement, ContextCandidate, ContextAssessment, ContextGap, SufficiencyAssessment, TaskContext, ContextConstructionTrace</strong>, plus Minimum Context and Temporal Reassessment contracts.</div>
-        </div>
-      </div>
-    </section>
+    <section class="section" id="method"><div class="shell"><div class="flow"><h2>Task → Context, not World → Prompt</h2><p>GeoTask starts from task requirements, then assesses candidate information. Relevance, applicability, resolution, and sufficiency remain separate so the final TaskContext and its gaps are explicit.</p><div class="pipeline" aria-label="GeoTask Task Context Pipeline"><span class="node">Task</span><span class="arrow">→</span><span class="node">Requirements</span><span class="arrow">→</span><span class="node">Candidates</span><span class="arrow">→</span><span class="node">Relevance</span><span class="arrow">→</span><span class="node">Applicability</span><span class="arrow">→</span><span class="node">Resolution</span><span class="arrow">→</span><span class="node">Sufficiency</span><span class="arrow">→</span><span class="node">Minimum TaskContext</span></div><div class="flow-note">Core concepts include <strong>TaskFrame, ContextRequirement, ContextCandidate, ContextAssessment, ContextGap, SufficiencyAssessment, TaskContext, ContextConstructionTrace</strong>, plus Minimum Context and Temporal Reassessment contracts.</div></div></div></section>
 
-    <section class="section" id="boundary">
-      <div class="shell">
-        <div class="section-head"><p class="kicker">Boundary</p><h2>GeoTask does not own world truth and does not replace an agent runtime.</h2><p>Its independent value is task-relative context. Upstream systems provide candidate reality; downstream systems keep reasoning, domain decisions, authorization, and execution.</p></div>
-        <div class="boundary">
-          <div class="layer"><small>Upstream</small><strong>World / Data Providers</strong><p>WorldState, GIS, APIs, sensors, databases, GSTAR, or other providers expose candidate facts, provenance, and state.</p></div>
-          <div class="layer"><small>GeoTask</small><strong>Task Context</strong><p>Determines what the task needs and whether candidates are relevant, applicable, resolution-adequate, and sufficient.</p></div>
-          <div class="layer"><small>Downstream</small><strong>Agent / Domain System</strong><p>The harness runs reasoning; domain systems continue to own professional judgment, authorization, execution, and responsibility.</p></div>
-        </div>
-        <div class="equals" style="margin-top:14px">Context Sufficient ≠ Domain Decision ≠ Action Authorization</div>
-      </div>
-    </section>
+    <section class="section" id="boundary"><div class="shell"><div class="section-head"><p class="kicker">Boundary</p><h2>GeoTask does not own world truth and does not replace an agent runtime.</h2><p>Its independent value is task-relative context. Upstream systems provide candidate reality; downstream systems keep reasoning, domain decisions, authorization, and execution.</p></div><div class="boundary"><div class="layer"><small>Upstream</small><strong>World / Data Providers</strong><p>WorldState, GIS, APIs, sensors, databases, or other providers expose candidate facts, provenance, and state.</p></div><div class="layer"><small>GeoTask</small><strong>Task Context</strong><p>Determines what the task needs and whether candidates are relevant, applicable, resolution-adequate, and sufficient.</p></div><div class="layer"><small>Downstream</small><strong>Agent / Domain System</strong><p>The harness runs reasoning; domain systems continue to own professional judgment, authorization, execution, and responsibility.</p></div></div><div class="equals" style="margin-top:14px">Context Sufficient ≠ Domain Decision ≠ Action Authorization</div></div></section>
 
-    <section class="section" id="proof">
-      <div class="shell">
-        <div class="section-head"><p class="kicker">Current Public Proof</p><h2>An independent consumer now proves the model outside its original domain.</h2><p>The public Core includes Task Context contracts, provider candidates, relevance / applicability / resolution, sufficiency composition, minimum context, and temporal continuity, with a non-low-altitude consumer.</p></div>
-        <div class="case">
-          <h3>Warehouse Robot Picking</h3>
-          <p>Indoor GIS, an inventory API, and an aisle-clearance sensor provide ContextCandidates. GeoTask derives requirements, evaluates relevance, applicability, and resolution separately, composes sufficiency, builds minimum context, and refreshes only the affected requirement after a sensor change.</p>
-          <div class="case-flow">Indoor GIS / Inventory API / Aisle Sensor
+    <section class="section" id="proof"><div class="shell"><div class="section-head"><p class="kicker">Current Public Proof</p><h2>An independent consumer now proves the model outside its original domain.</h2><p>The public Core includes Task Context contracts, provider candidates, relevance / applicability / resolution, sufficiency composition, minimum context, and temporal continuity, with a non-low-altitude consumer.</p></div><div class="case"><h3>Warehouse Robot Picking</h3><p>Indoor GIS, an inventory API, and an aisle-clearance sensor provide ContextCandidates. GeoTask derives requirements, evaluates relevance, applicability, and resolution separately, composes sufficiency, builds minimum context, and refreshes only the affected requirement after a sensor change.</p><div class="case-flow">Indoor GIS / Inventory API / Aisle Sensor
         ↓
 TaskFrame → ContextRequirement[] → ContextCandidate[]
         ↓
@@ -99,50 +54,13 @@ Relevance / Applicability / Resolution Adequacy
         ↓
 Sufficiency → Minimum Sufficient TaskContext
         ↓
-Sensor Change → Bounded Temporal Reassessment</div>
-          <p><strong>Counterexample by design:</strong> even when the measured aisle is narrower than the robot, GeoTask may correctly conclude that the <em>context is sufficient</em> if that measurement is relevant, applicable, fresh, and resolution-adequate. It still does not decide that the robot may traverse the aisle.</p>
-          <a href="https://github.com/stpku/GeoTask/tree/main/examples/independent_consumers/warehouse_robot_picking">Open the complete example →</a>
-        </div>
-      </div>
-    </section>
+Sensor Change → Bounded Temporal Reassessment</div><p><strong>Counterexample by design:</strong> even when the measured aisle is narrower than the robot, GeoTask may correctly conclude that the <em>context is sufficient</em> if that measurement is relevant, applicable, fresh, and resolution-adequate. It still does not decide that the robot may traverse the aisle.</p><a href="https://github.com/stpku/GeoTask/tree/main/examples/independent_consumers/warehouse_robot_picking">Open the complete example →</a></div></div></section>
 
-    <section class="section" id="measure">
-      <div class="shell">
-        <div class="section-head"><p class="kicker">Measure</p><h2>The objective is not context reduction by itself. It is minimum cost under sufficiency.</h2><p>Every positive “reduce context” metric needs a counter-metric so the system cannot look efficient by silently dropping critical information.</p></div>
-        <div class="metric">
-          <div class="metric-row"><strong>Critical Requirement Coverage ↑</strong><span>Counter: Critical Context Miss Rate</span></div>
-          <div class="metric-row"><strong>Sufficiency Accuracy ↑</strong><span>Counter: False Sufficiency Rate</span></div>
-          <div class="metric-row"><strong>Context Reduction ↑</strong><span>Counter: Critical Context Miss Rate</span></div>
-          <div class="metric-row"><strong>Applicability Accuracy ↑</strong><span>Counter: Irrelevant / Inapplicable Context Rate</span></div>
-          <div class="metric-row"><strong>Context Rebuild Locality ↑</strong><span>Counter: Unnecessary Context Rebuild</span></div>
-        </div>
-      </div>
-    </section>
+    <section class="section" id="measure"><div class="shell"><div class="section-head"><p class="kicker">Measure</p><h2>The objective is not context reduction by itself. It is minimum cost under sufficiency.</h2><p>Every positive “reduce context” metric needs a counter-metric so the system cannot look efficient by silently dropping critical information.</p></div><div class="metric"><div class="metric-row"><strong>Critical Requirement Coverage ↑</strong><span>Counter: Critical Context Miss Rate</span></div><div class="metric-row"><strong>Sufficiency Accuracy ↑</strong><span>Counter: False Sufficiency Rate</span></div><div class="metric-row"><strong>Context Reduction ↑</strong><span>Counter: Critical Context Miss Rate</span></div><div class="metric-row"><strong>Applicability Accuracy ↑</strong><span>Counter: Irrelevant / Inapplicable Context Rate</span></div><div class="metric-row"><strong>Context Rebuild Locality ↑</strong><span>Counter: Unnecessary Context Rebuild</span></div></div></div></section>
 
-    <section class="section" id="roadmap">
-      <div class="shell">
-        <div class="section-head"><p class="kicker">Research Roadmap</p><h2>The next frontier is the Task Context method itself, not more numbered examples.</h2><p>GeoTask evolves as an independent foundation with its own problems, benchmarks, and cross-domain evidence.</p></div>
-        <div class="grid three">
-          <article class="card"><h3>Requirement Derivation</h3><p>Move from manually supplied requirements toward stable <code>Task → Requirement</code> methods with explicit lineage.</p></article>
-          <article class="card"><h3>Applicability & Resolution</h3><p>Prove that the same fact can have different applicability across tasks while making spatial, temporal, precision, and semantic adequacy testable.</p></article>
-          <article class="card"><h3>Minimum Context Cost</h3><p>Reduce carried bytes, tokens, provider latency, and recovery cost without increasing critical misses.</p></article>
-          <article class="card"><h3>Temporal Reassessment</h3><p>Map reality changes to affected requirements and perform bounded reassessment plus only the rebuild that is actually needed.</p></article>
-          <article class="card"><h3>Independent Consumers</h3><p>Validate the Core in additional domains so no single product or data model shapes GeoTask semantics.</p></article>
-          <article class="card"><h3>Open Method & Protocol</h3><p>The durable public asset is a Task Context Method, Engine, Benchmark, and open contracts — not a closed domain platform.</p></article>
-        </div>
-        <div class="legacy" style="margin-top:18px"><strong>About the previous positioning:</strong> early Verifiable World Model / World-State Cycle / Verification assets remain public and maintained for compatibility and traceability. They no longer define long-term semantic ownership. The current positioning is <strong>Task Context Engine</strong>.</div>
-      </div>
-    </section>
+    <section class="section" id="roadmap"><div class="shell"><div class="section-head"><p class="kicker">Research Roadmap</p><h2>The next frontier is the Task Context method itself, not more numbered examples.</h2><p>GeoTask evolves as an independent foundation with its own problems, benchmarks, and cross-domain evidence.</p></div><div class="grid three"><article class="card"><h3>Requirement Derivation</h3><p>Move from manually supplied requirements toward stable <code>Task → Requirement</code> methods with explicit lineage.</p></article><article class="card"><h3>Applicability & Resolution</h3><p>Prove that the same fact can have different applicability across tasks while making spatial, temporal, precision, and semantic adequacy testable.</p></article><article class="card"><h3>Minimum Context Cost</h3><p>Reduce carried bytes, tokens, provider latency, and recovery cost without increasing critical misses.</p></article><article class="card"><h3>Temporal Reassessment</h3><p>Map reality changes to affected requirements and perform bounded reassessment plus only the rebuild that is actually needed.</p></article><article class="card"><h3>Independent Consumers</h3><p>Validate the Core in additional domains so no single product or data model shapes GeoTask semantics.</p></article><article class="card"><h3>Open Method & Protocol</h3><p>The durable public asset is a Task Context Method, Engine, Benchmark, and open contracts — not a closed domain platform.</p></article></div><div class="legacy" style="margin-top:18px"><strong>About the previous positioning:</strong> early Verifiable World Model / World-State Cycle / Verification assets remain public and maintained for compatibility and traceability. They no longer define long-term semantic ownership. The current positioning is <strong>Task Context Engine</strong>.</div></div></section>
 
-    <section class="section">
-      <div class="shell">
-        <div class="cta">
-          <h2>Move from “give the model more information” to “prove this task has enough information.”</h2>
-          <p>GeoTask Core is MIT licensed. Start with the independent consumer, the Python API, or the existing public examples, then connect your own GIS, API, sensor, or WorldState provider.</p>
-          <div class="actions" style="justify-content:center"><a class="button primary" href="https://github.com/stpku/GeoTask">GitHub Repository</a><a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/README.en.md">Developer Guide</a><a class="button secondary" href="../">中文</a></div>
-        </div>
-      </div>
-    </section>
+    <section class="section"><div class="shell"><div class="cta"><h2>Move from “give the model more information” to “prove this task has enough information.”</h2><p>GeoTask Core is MIT licensed. Start with the independent consumer, the Python API, or the existing public examples, then connect your own GIS, API, sensor, WorldState, or other provider.</p><div class="actions" style="justify-content:center"><a class="button primary" href="https://github.com/stpku/GeoTask">GitHub Repository</a><a class="button secondary" href="https://github.com/stpku/GeoTask/blob/main/README.en.md">Developer Guide</a><a class="button secondary" href="../">中文</a></div></div></div></section>
   </main>
 
   <footer><div class="shell footer"><span>GeoTask · Spatiotemporal Task Context Engine for AI Agents</span><span>Updated positioning: 2026-08-27 · <a href="https://github.com/stpku/GeoTask">GitHub</a></span></div></footer>

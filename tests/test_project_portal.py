@@ -17,51 +17,55 @@ DEPLOY_SCRIPT = SITE / "deploy-nginx.sh"
 MANIFEST = ROOT / ".release" / "public-manifest.yaml"
 
 
-def test_root_page_is_project_portal_not_gt01_experience() -> None:
+def test_root_page_is_task_context_engine_portal() -> None:
     html = PORTAL.read_text(encoding="utf-8")
 
-    assert "智能体的可验证" in html
-    assert "时空世界模型" in html
-    assert "让大模型理解世界，让GeoTask验证并维护世界" in html
-    assert "智能体不只需要理解世界，更需要一个可以验证的世界模型" in html
-    assert "30秒看懂一次世界状态更新" in html
-    assert "四个平面构成可验证时空世界模型" in html
-    assert "六类能力共同维护智能体的世界" in html
-    assert "观测记录、世界状态、受限观测合并、状态转换、验证会话、差异报告、纠偏请求、影响图、受限重算推导、受限后继状态物化、增量复核结果、验证提供方公共合同" in html
-    assert "自动差异计算、对象身份发现、未声明策略的歧义冲突消解、影响关系自动发现与传播执行" in html
-    assert "新Observation" not in html
-    assert "公共Artifact" not in html
-    assert "保护商业运行层" not in html
-    assert "商业边界" not in html
-    assert "GT01—GT42公开参考例" in html
-    assert "42个可验证参考例" in html
-    assert "38个场景入口" in html
-    assert "巡检无人机短暂失联后被重新编号" in html
-    assert html.count('<article class="case case-series">') == 1
-    assert 'id="demo"' in html
-    assert 'id="cases"' in html
-    assert 'id="architecture"' in html
-    assert 'id="docs"' in html
+    assert "时空任务上下文引擎" in html
+    assert "不是给 Agent 更多上下文" in html
+    assert "Task Sufficiency at Minimum Context Cost" in html
+    assert "相关 ≠ 适用" in html
+    assert "Task → Context" in html
+    assert "Context Sufficient ≠ Domain Decision ≠ Action Authorization" in html
+    assert "Warehouse Robot Picking" in html
+    assert "GT01—GT42 继续保留" in html
+
+    # The previous World-State / Verifiable-World-Model positioning is historical,
+    # not the current portal identity.
+    assert "面向智能体的可验证时空世界模型" not in html
+    assert "让大模型理解世界，让GeoTask验证并维护世界" not in html
+    assert "六类能力共同维护智能体的世界" not in html
+
+    for section_id in (
+        "problem",
+        "method",
+        "boundary",
+        "architecture",
+        "proof",
+        "measure",
+        "roadmap",
+        "cases",
+        "docs",
+    ):
+        assert f'id="{section_id}"' in html
 
     assert 'id="copy-open"' not in html
     assert 'id="task-source"' not in html
     assert 'id: "minimal-distance-v1"' not in html
 
 
-def test_portal_exposes_gt16_world_state_update_demo() -> None:
+def test_portal_exposes_independent_task_context_consumer() -> None:
     html = PORTAL.read_text(encoding="utf-8")
 
     for fragment in (
-        "初始世界状态",
-        "新的观测记录",
-        "世界关系更新",
-        "行动资格更新",
-        "计划间隔120秒",
-        "A机最新遥测显示延误40秒",
-        "预测间隔缩至80秒",
-        "间隔降至60秒",
-        "世界模型不是一次性结论",
-        'href="gt16/"',
+        "Indoor GIS / Inventory API / Aisle Sensor",
+        "TaskFrame → ContextRequirement[] → ContextCandidate[]",
+        "Relevance / Applicability / Resolution Adequacy",
+        "Sufficiency → Minimum Sufficient TaskContext",
+        "Sensor Change → Bounded Temporal Reassessment",
+        "通道实测宽度小于机器人宽度",
+        "上下文充分",
+        "机器人可以通行",
+        "examples/independent_consumers/warehouse_robot_picking",
     ):
         assert fragment in html
 
@@ -80,20 +84,14 @@ def test_portal_links_primary_public_resources() -> None:
 
     required = (
         "https://github.com/stpku/GeoTask",
+        "README.md",
+        "ROADMAP.md",
+        "examples/independent_consumers/warehouse_robot_picking",
+        "docs/tutorials/quickstart.zh-CN.md",
         "docs/whitepaper/GeoTask_White_Paper_v0.1.md",
         "docs/spec/geotask-language-spec-v1.0.md",
         "docs/spec/geotask-world-state-v0.1.md",
-        "docs/spec/geotask-state-transition-v0.1.md",
-        "docs/spec/geotask-verification-session-v0.1.md",
-        "docs/spec/geotask-discrepancy-report-v0.1.md",
-        "docs/spec/geotask-correction-request-v0.1.md",
-        "docs/spec/geotask-impact-graph-v0.1.md",
-        "docs/spec/geotask-incremental-reevaluation-result-v0.1.md",
-        "docs/tutorials/quickstart.zh-CN.md",
-        "docs/spec/geotask-verification-provider-profile-v0.1.zh-CN.md",
-        "docs/spec/geotask-trajectory-profile-v0.1.zh-CN.md",
-        "docs/terminology.zh-CN.md",
-        "schemas/geotask-v1.0.schema.json",
+        "docs/reference/verification-quality-benchmark-v0.2.md",
     )
     for fragment in required:
         assert fragment in html
@@ -110,7 +108,7 @@ def test_portal_has_search_and_share_metadata() -> None:
         '<meta property="og:url" content="https://stpku.github.io/GeoTask/">',
         '<meta name="twitter:card" content="summary">',
         '<script type="application/ld+json">',
-        '"@type": "SoftwareSourceCode"',
+        '"@type":"SoftwareSourceCode"',
     )
     for fragment in required:
         assert fragment in html

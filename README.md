@@ -233,14 +233,41 @@ Minimal rebuild only when needed
 
 GeoTask 早期公开版本以“可验证时空任务协议 / World-State Cycle / Verification”为主线，已经形成大量可验证 Artifact、案例和文档。这些资产继续保留，用于兼容、可追溯历史和已发布能力维护，但**不再定义 GeoTask 的长期产品定位**。
 
+### 已发布 v0.4.1 兼容面
+
+下面这些能力仍是真实的公共兼容面，不因为长期定位纠偏而删除。历史 v0.4.x 的发布语境曾使用“**面向AI智能体的可验证时空任务协议与确定性核心**”和“**可信世界状态运行时**”等表述；这些词现在仅作为历史版本语境保留。
+
+| 发布项 | 版本 | 说明 |
+|---|---:|---|
+| GeoTask Core包 | `0.4.1` | [v0.4.1 发布说明](docs/release_v0_4_1.md) |
+
+已发布确定性算子包括 `distance_2d`、`line_intersects_rect`、`point_to_line_distance_2d`、`rect_contains_point`、`time_overlap`、`altitude_overlap`；基础对象类型包括 `point`、`polyline`、`rect`、`time_interval`、`altitude_interval`、`feature_collection`。
+
+已有 Agent / Runtime / Provider 工具继续保持兼容：
+
+```bash
+geotask agent prepare
+geotask agent retry
+geotask runtime inspect
+geotask runtime check
+geotask runtime mock
+geotask provider inspect
+geotask provider check
+geotask provider validate
+```
+
+这些历史接口继续遵守既有边界：运行时接口规范不把外部结果自动当作真值；验证提供方描述符用于验证 Provider 合同；Core **不推断未声明的来源优先级**。
+
 需要理解旧资产时，可从以下入口进入：
 
+- [GeoTask Architecture Series v0.1](docs/articles/architecture-series/README.zh-CN.md)
 - [中文文档导航](docs/README.md)
 - [GT01—GT20 Cookbook](docs/cookbook/gt01-gt20.zh-CN.md)
 - [GT21—GT28 World-State Cycle](docs/cookbook/gt21-gt28.zh-CN.md)
 - [Reference Agent](docs/reference/reference-agent-v0.1.md)
 - [Verification Quality Benchmark](docs/reference/verification-quality-benchmark-v0.2.md)
 - [历史白皮书 v0.1](docs/whitepaper/GeoTask_White_Paper_v0.1.md)
+- [历史白皮书 English Abstract](docs/whitepaper/GeoTask_White_Paper_v0.1.md#english-abstract)
 
 > 历史文档中的 “GeoTask = World-State Runtime / Verifiable World Model” 应按其发布时的版本语境理解；当前定位以 **Task Context Engine** 为准。
 
